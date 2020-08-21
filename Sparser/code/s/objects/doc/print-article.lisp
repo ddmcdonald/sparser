@@ -18,13 +18,18 @@
    full content is short of bringing them up in our web-based
    article viewer."))
 
-
 (defmethod write-out-document ((a article) stream)
   (unless stream (setq stream *standard-output*))
   ;; title and other 'front matter'
-  (dolist (section (children a))
-    (write-out-document section stream)))
-
+  (format stream  "~&~%~%")
+  (let ((title (title a)))
+    (when title
+      (typecase title
+        (title-text (write-out-document title stream))
+        (otherwise (break "title is a ~a~%'~a'"
+                          (type-of title) title))))
+    (dolist (section (children a))
+      (write-out-document section stream))))
 
 (defmethod write-out-document ((ss section-of-sections) stream)
   (format stream "~&~%~%")
@@ -33,7 +38,6 @@
       (format stream "~&~a~%" (content-string title)))
     (dolist (s (children ss))
       (write-out-document s stream))))
-
 
 (defmethod write-out-document ((s section) stream)
   (format stream "~&~%~%")
@@ -47,14 +51,22 @@
   (dolist (p (children s))
     (write-out-document p stream)))
 
+(defmethod write-out-document ((tt title-text) stream)
+  (let ((string (content-string tt)))
+    (format stream "~a" string)))
 
 (defmethod write-out-document ((p paragraph) stream)
   (format stream "~&   ") ; indent
   (let ((string (content-string p)))
     (format stream "~a" string)))
 
+(defmethod write-out-document ((unexpected T) stream)
+  (push-debug `(,unexpected))
+  (break "A ~a -- '~a' passed to write-out-document"
+         (type-of unexpected) unexpected))
 
-;; document structure type for Score
+
+;;--- document structure types for Score
 
 (defmethod write-out-document ((hp heading-paragraph) stream)
   (let* ((kind (flag hp))
@@ -70,7 +82,6 @@
        (format stream "~&~a " title)))
     (when string
       (format stream "~a" string))))
-  
 
 (defmethod write-out-document ((sh subheading-paragraph) stream)
   (let ((string (flag sh)))
@@ -79,9 +90,22 @@
       (break "no string on ~a" sh))
     (format stream "~&~a" string)))
 
+;;;-------------------
+;;; writing to a file
+;;;-------------------
 
-(defmethod write-out-document ((unexpected t) stream)
-  (push-debug `(,unexpected))
-  (break "A ~a -- '~a' passed to write-out-document"
-         (type-of unexpected) unexpected))
+;; (write-article-to-file a "~/temp/")
 
+(defun write-article-to-file (article directory)
+  (let ((name (name article)))
+    (unless name (setq name "anonymous"))
+    (let* ((namestring (string-append directory name ".txt"))
+           (pathname (pathname namestring)))
+      (format t "Writing to ~a~%" pathname)
+      (with-open-file (stream
+                       pathname
+                       :direction :output :if-exists :supersede)
+        (write-out-document article stream)))))
+
+
+    
