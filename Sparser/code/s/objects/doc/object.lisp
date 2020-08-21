@@ -291,9 +291,13 @@
 
 (defmethod print-object ((s section) stream)
   (print-unreadable-object (s stream :type t)
-    (when (and (slot-boundp s 'title)
-               (typep (title s) 'title-text))
-      (format stream "~s" (content-string (title s))))))
+    (cond
+      ((and (slot-boundp s 'title)
+            (typep (title s) 'title-text))
+       (format stream "~s" (content-string (title s))))
+      ((and (slot-boundp s 'name) ;; named-object pattern
+            (name s))
+       (format stream "~a" (name s))))))
 
 (define-resource section)
 

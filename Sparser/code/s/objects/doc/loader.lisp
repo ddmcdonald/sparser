@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  April 2020
+;;;  Version:  August 2020
 
 ;; initiated 10/91
 ;; 0.1  (10/21 v2.0) Bumped [section] to "1".  Added [SGML tags]
@@ -65,4 +65,6 @@
 (lload "doc;save-doc-semantics")
 (lload "doc;remove-preprint-text")
 (lload "doc;json-articles")
+(lload "doc;score-articles")
+(lload "doc;print-article")
 
