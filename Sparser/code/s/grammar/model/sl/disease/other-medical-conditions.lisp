@@ -534,7 +534,7 @@
 (def-indiv-with-id disease "DRESS" "NCIT:C112208" :name "drug hypersensitivity syndrome") 
 (def-indiv-with-id disease "MDCL" "NCIT:C148369" :name "muscular dystrophy congenital, LMNA-related") 
 (def-indiv-with-id disease "CIPA" "NCIT:C118633" :name "congenital insensitivity to pain with anhidrosis") 
-(def-indiv-with-id disease "IDDM" "EFO:0001359" :name "type I diabetes mellitus") 
+(def-indiv-with-id disease "IDDM" "EFO:0001359" :name "type I diabetes mellitus" :synonyms ("diabetes" "type I diabetes" "type 1 diabetes")) 
 (def-indiv-with-id disease "DSD" "NCIT:C103186" :name "sexual differentiation disorder") 
 (def-indiv-with-id disease "EME" "NCIT:C116593" :name "early myoclonic encephalopathy") 
 (def-indiv-with-id disease "VAPP" "NCIT:C113671" :name "vaccine-associated paralytic poliomyelitis") 
