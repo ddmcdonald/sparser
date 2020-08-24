@@ -174,6 +174,7 @@
      :in cell-type
      :in cellular-location
      :in context
+     :in disease
      :in info-context
      :in non-cellular-location
      :in organ
