@@ -1450,10 +1450,13 @@
 (define-category upregulate
   :specializes positive-bio-control
   :realization
-  (:verb   "upregulate" :noun "upregulation"
+  (:verb   "upregulate"
+           :noun "upregulation"
    :etf (svo-passive)))
 
 (def-synonym upregulate (:verb "up-regulate" :noun "up-regulation" :etf (svo-passive)))
+
+(def-synonym upregulate (:verb ("up regulate" :past-participle "up regulated" :past "up regulated" :present "up regulating" :etf (svo-passive)))
 
 (def-synonym upregulate (:verb "positively regulate" :noun "positive regulation" :etf (svo-passive)))
 
