@@ -723,6 +723,7 @@
       ((singular-noun-and-present-verb? e)
        (or (aux-before-np? :in-vg? t)
            (preceding-pronoun-or-which? e edges-before)
+           (preceding-plural-deictic? e)
            (preceding-plural-noun? e)
            (and (not (and (preceding-det-prep-poss-or-adj e edges-before)
                           ;; allow for "to form GDP"
@@ -1197,6 +1198,9 @@ than a bare "to".  |#
       (break))
  
     (cond
+      ((and (eq eform 'preposition)
+            (eq ecat 'of))
+       t)
       ((and (loop for ev in evlist
                   thereis
                     (loop for ee in (ev-edges ev)
@@ -1269,6 +1273,7 @@ than a bare "to".  |#
 
       ((singular-noun-and-present-verb? e)
        (and (not (preceding-pronoun-or-which? e))
+            (not (preceding-plural-deictic? e))
             (not (and (not (preceding-determiner? e))
                       (aux-before-np?)))
             (not (and
