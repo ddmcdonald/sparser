@@ -542,7 +542,8 @@ val-pred-var (pred vs modifier - left or right?)
 ;;#####################################################################  
   (cond
     (*subcat-test*
-     (let ((right-edge (right-edge-for-referent)))
+     (let ((left-edge (left-edge-for-referent))
+           (right-edge (right-edge-for-referent)))
        (not (or (word-p head) ;; this happened with word = HYPHEN, "from FCS-treated cells"
                 ;; also happened with "nontargeting"
                 (null head) ;; happens when head is a bio-entity
@@ -553,6 +554,12 @@ val-pred-var (pred vs modifier - left or right?)
                      (itypep (edge-referent right-edge) 'time))
                 (itypep head 'amount-of-time) ; "two weeks"
                 (itypep qualifier 'time) ; [the December ]11, [2012 edition]
+                ;; block "which of those target CDH1?" --
+                ;;  where "target" is a noun and verb
+                (and (singular-noun-and-present-verb? left-edge)
+                     (preceding-plural-deictic? left-edge))
+                (and (singular-noun-and-present-verb? right-edge)
+                     (preceding-plural-deictic? right-edge))
                 ))))
     
     ((itypep head 'determiner) ;; had strange case with "some cases this" -- head was "this"
