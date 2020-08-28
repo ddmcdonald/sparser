@@ -74,9 +74,10 @@
     (when read
       (if quiet
         (with-total-quiet (sp::read-from-document article))
-        (let ((*show-section-printouts* show-sect))
-          (declare (special *show-sectsion-printouts*))
-          (read-from-document article))))
+        (with-total-quiet
+          (let ((*show-section-printouts* show-sect))
+            (declare (special *show-section-printouts*))
+            (read-from-document article)))))
     (if stats
       (summary-document-stats article)
       (else

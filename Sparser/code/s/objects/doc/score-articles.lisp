@@ -1,4 +1,4 @@
-;;; -*- Mode: LISP; Syntax: Common-Lisp; Package: CLIC -*-
+;;; -*- Mode: LISP; Syntax: Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; Copyright (c) 2020 Smart Information Flow Technologies
 ;;;
 ;;;     File:  "score-articles"
@@ -8,6 +8,17 @@
 ;; Broken out of drivers/sources/score.lisp 8/20/20
 
 (in-package :sparser)
+
+;;;--------------------
+;;; specialize article
+;;;--------------------
+
+(defclass score-article (article)
+  ((position :initarg :n :accessor position-in-corpus))
+  (:documentation
+   "Provides a hook for incorporating score-specific
+    informationn"))
+
 
 ;;;-------------------------
 ;;; subclasses of paragraph

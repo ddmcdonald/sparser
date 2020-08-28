@@ -1,4 +1,4 @@
-;;; -*- Mode: LISP; Syntax: Common-Lisp; Package: CLIC -*-
+;;; -*- Mode: LISP; Syntax: Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; Copyright (c) 2020 Smart Information Flow Technologies
 ;;;
 ;;;     File:  "print-article"
@@ -20,12 +20,13 @@
 
 (defmethod write-out-document ((a article) stream)
   (unless stream (setq stream *standard-output*))
-  ;; title and other 'front matter'
+  ;;////  other 'front matter'
   (format stream  "~&~%~%")
   (let ((title (title a)))
     (when title
       (typecase title
         (title-text (write-out-document title stream))
+        (string (format stream "~a" title))
         (otherwise (break "title is a ~a~%'~a'"
                           (type-of title) title))))
     (dolist (section (children a))
@@ -42,11 +43,14 @@
 (defmethod write-out-document ((s section) stream)
   (format stream "~&~%~%")
   (cond
-    ((and (slot-boundp s 'title)
-            (typep (title s) 'title-text))
-     (format stream "~s" (content-string (title s))))
+    ((slot-boundp s 'title)
+     (let ((title (title s)))
+       (etypecase title
+         (title-text (write-out-document title stream))
+         (string
+          (format stream "~a" (string-capitalize title))))))
     ((and (slot-boundp s 'name) ;; named-object pattern
-            (name s))
+          (name s))
      (format stream "~a" (name s))))
   (dolist (p (children s))
     (write-out-document p stream)))
@@ -94,12 +98,17 @@
 ;;; writing to a file
 ;;;-------------------
 
-;; (write-article-to-file a "~/temp/")
+;; (write-article-to-file a "~/temp/Score articles/")
 
 (defun write-article-to-file (article directory)
-  (let ((name (name article)))
+  (let ((name (name article))
+        (number (when (typep article 'score-article)
+                  (position-in-corpus article))))
     (unless name (setq name "anonymous"))
-    (let* ((namestring (string-append directory name ".txt"))
+    (let* ((namestring
+            (if number
+              (string-append directory name "-" number ".txt")
+              (string-append directory name ".txt")))
            (pathname (pathname namestring)))
       (format t "Writing to ~a~%" pathname)
       (with-open-file (stream

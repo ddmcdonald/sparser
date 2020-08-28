@@ -1,4 +1,4 @@
-;;; -*- Mode: LISP; Syntax: Common-Lisp; Package: CLIC -*-
+;;; -*- Mode: LISP; Syntax: Common-Lisp; Package: (SPARSER LISP) -*-
 ;;; Copyright (c) 2020 Smart Information Flow Technologies
 ;;;
 ;;;     File:  "score"
@@ -15,6 +15,12 @@
    -- Converts the JSON to our document structure then calls run-json-article,
      with quiet off and show-sect on so you can see the text. Displays the CoV stats
 
+;; Don't parse everything (list is next to the function)
+ (setup-sections-to-ignore-for-score)
+
+;; Look at what the article says
+(write-article-to-file a "~/temp/")
+
 ;; Looking at intermdiate results
 
 (print-extracted-block-texts)
@@ -25,6 +31,10 @@
   -- same idea for the specialized paragraph objects that the blocks' text
    is converted to. Very useful for debugging mistaken assumptions about
    the structure of a document and for extending the vocabulary ok known labels
+
+(print-ready-paragraphs)
+  -- These are the cleaned paragraphs we aggregate into sections
+
 |#
 
 ;;;-----------------------------
@@ -112,11 +122,12 @@
 ;;; driver
 ;;;--------
 
-(defun run-nth-score-article (n)
+(defun run-nth-score-article (n &key quiet show-sect stats)
   "Process the nth ('1' -> nth of 0) json article in the directory.
    Assemble paragraphs and sections from the blocks in the source JSON
    to make an article, then pass the article to the standard run-json-article
-   function. //presently its keyword argument values are burned in."
+   function. Keywords are passed through to run-json-article with the usual
+   interpretation."
   (declare (special *json-files-to-read*))
   (unless *json-files-to-read*
     (error "Run collect-score-json"))
@@ -128,7 +139,7 @@
       (return-from run-nth-score-article nil))
     (format t "~&~%Reading ~a~%" filename)
     (let ((sexp (cl-json::decode-json-from-source pathname)))
-      (let* ((article (make-instance 'article))
+      (let* ((article (make-instance 'score-article :n n))
              (*current-article* article))
         (declare (special *current-article*))
         (setq *current-article* article)
@@ -136,12 +147,9 @@
         (setf (article-source article) pathname)
         (sort-out-score-paragraphs article sexp)
         (when (children article) ; could have aborted in para. construction
-          (run-json-article article
-                            :quiet nil ; show paragraph chunking
-                            :stats t
-                            :show-sect t ; crude way to separate the paragraph text
-                            )
-          article)))))
+          (run-json-article
+           article :quiet quiet :show-sect show-sect :stats stats))
+        article))))
 
 
 ;;--- Organizes all the work
@@ -238,11 +246,16 @@
     p))
 
 (defun clean-score-paragraphs (action-paragraphs)
-  "Extract the string to delete from the action paragraphs
-   and sweep over the sequence of paragrahs modifying their
-   text strings as needed. Stash the result in *ready-paragraphs*"
-  (declare (special *raw-paragraphs* *ready-paragraphs*))
-  
+  "Extract the string to delete from the action paragraphs,
+   then sweep over the sequence of paragrahs, collecting them into
+   a new list (*ready-paragraphs*). Look for the string in each
+   paragraph and modify the content-string of a paragraph to excise it
+   if it's there.
+     ///////////
+"
+  (declare (special *raw-paragraphs*
+                    *ready-paragraphs*))
+
   (flet ((lift-string-from-action-para (para)
            "Pull the string to remove out of the paragraph object"
            (let ((string (get-sp-arg para :header)))
@@ -263,11 +276,10 @@
              (text-paragraph
               (let* ((text-string (content-string p))
                      (index (search string-to-remove text-string)))
-                ;;(break "index = ~a p: ~a" index p)
                 (if index
-                  (let ((before (subseq text-string 0 index))
-                        (after (subseq text-string (+ index (length string-to-remove)))))
-                    ;;(break "before: ~s~%after: ~s" before after)
+                  (let* ((before (subseq text-string 0 index))
+                         (index-after (+ index (length string-to-remove)))
+                         (after (subseq text-string index-after)))
                     (let ((result (string-append before after)))
                       ;;//// check for stranded page numbers
                       ;;// If this is just one line (as in #90) then
@@ -278,7 +290,6 @@
                       (setf (prefix p) result)
                       p))
                   p)))
-    
              (otherwise ; don't change anything
               p))))
     
@@ -286,23 +297,40 @@
                              collect (lift-string-from-action-para p))))
       ;; the paragraphs retain their identities, only the text
       ;; in their content-string fields is affected
+
       (when (cdr filter-strings)
-        (break "mutiple strings to remove")) ; rewrite as loop over the strings
+        (setq filter-strings (remove-duplicates filter-strings :test #'string=)))
 
-      (let ((string-to-remove (car filter-strings)))
-        (unless (stringp string-to-remove)
-          (break "Too many parens around 'string-to-remove' (??)"))
+      (let ((paragraphs *raw-paragraphs*)
+            cleaned )
+        ;; updata the paragraphs and 'clean', string by string
 
+        (do ((paragraphs *raw-paragraphs* cleaned)
+             (string-to-remove (car filter-strings) (car remaining-strings))
+             (remaining-strings (cdr filter-strings) (cdr remaining-strings)))
+            ((null string-to-remove))
+          (setq cleaned
+                (loop for p in paragraphs
+                  unless (eq (type-of p) 'action-paragraph)
+                  collect (remove-specified-text p string-to-remove))))
+
+        (setq *ready-paragraphs* cleaned)
+        cleaned))))
+        
+
+    #| original single string operation
         ;; loop over the paragraphs, doing the deletion
         ;; and dropping the action paragraphs on the floor
         (let ((clean
                (loop for p in *raw-paragraphs*
                   unless (eq (type-of p) 'action-paragraph)
                   collect (remove-specified-text p string-to-remove))))
+
+
           ;; --> Turn on when the format statement is being used
           ;;(break "Look at the cleaned paragraphs")
           (setq *ready-paragraphs* clean)
-          clean )))))
+          clean )  |#
 
 
 ;;;-----------------------------
@@ -314,6 +342,7 @@
    identify larger-scale section-type structure. We also identify
    the title, keywords, etc. and directly fill the slots on the article."
   ;;/// ignoring keyword, authors and other front matter for now
+  (declare (special *score-sections*))
   (let ((index -1)
         (max-index (length paragraphs))
         index-after-title
@@ -340,8 +369,10 @@
 
 
 (defun collect-all-the-sections (starting-at paragraph-list)
-  "Walk through the paragraphs starting at a heading, and collect successive
-   sections through to the end. Caller will take care of kniting them together"
+  "Walk through the paragraphs starting at a heading, and call
+   collect-next-section to collect successive sections through to the end
+   of the text. The caller (aggregate-score-para-into-sections) knits them
+   together"
   (let ((max-index (1- (length paragraph-list)))
         sections section header-index index-of-next )
     (setq header-index starting-at)
@@ -355,11 +386,11 @@
     (nreverse sections)))
 
 (defun collect-next-section (header-index paragraph-list)
-  "Collect the paragraphs from the starting para (and header)
+  "Collect the paragraphs from the starting para (a heading-paragraph)
    up to but not including the next header (or the end of the
-   list of paragraphs). Make the section object based on the header paragraph
-   and set the accumulated paragraphs to be its children and knit them
-   together."
+   list of paragraphs). Make the section object based on the header paragraph.
+   Set the accumulated paragraphs to be its children and knit the
+   paragraphs together."
   (let* ((header-para (nth header-index paragraph-list))
          (index-of-next (index-of-next-header (1+ header-index) paragraph-list))
          (start (1+ header-index))
@@ -367,9 +398,8 @@
     (let* ((section-paras
             (loop for i from start to end
                collect (nth i paragraph-list)))
-           (s (make-instance 'section))
-           (name (flag header-para))) ; e.g. :results
-      (setf (name s) name)
+           (s (make-instance 'section)))
+      (setup-name-for-score-section s header-para)
       (setf (children s) section-paras)
       (knit-paragraphs section-paras s) ; set previous, next, parent pointers
       (values s
@@ -377,17 +407,16 @@
 
 (defun index-of-next-header (start paragraphs)
   "Walk the index across successive paragraphs until
-   a major header is reached. Return the value of the index.
+   a 'major' heading-paragraph is reached. Return the value of the index.
    When we're getting to the end of the list of pagagraphs
    we don't expect it to end in a header paragraphs, but we
-   check for that"
+   aren't checking for that"
   (let* ((index start)
          (max-index (length paragraphs))
          (para (nth index paragraphs)))
     (if (and (null para)
              (= index max-index))
-      ;; we were called at the moment the outer walk had reached the end
-      (1- index)
+      (1- index) ; we were called at the moment the outer walk had reached the end
       (else
         (until (major-section? para)
             index
@@ -396,6 +425,18 @@
           (when (>= index max-index)
             (return-from index-of-next-header (1- index)))
           (setq para (nth index paragraphs)))))))
+
+
+(defun setup-name-for-score-section (section heading-para)
+  "The point is to connect with ignore-this-document-section in the document
+   reader. It looks at the title field of the section"
+  (let ((name (flag heading-para)) ; e.g. :results
+        (string (content-string heading-para))) ; "References"
+    (setf (name section) name)
+    (setf (title section) (or string
+                              name))
+    section))
+
 
 
 ;;--- Article titles
@@ -569,9 +610,9 @@
               (position #\- text)))))
 
 
-;;;----------------
-;;; section titles
-;;;----------------
+;;;------------------------
+;;; categories of headings
+;;;------------------------
 
 (defparameter *major-section-flags*
   '(:abstract    
@@ -586,11 +627,48 @@
   (:documentation "Is this paragraph a heading paragraph whose flag
     is listed in the *major-section-flags*  Used when consolidating
     paragraphs into sections. Non-major heading paras (such as figures)
-    are incorporated into the body of the section")
+    are incorporated into the body of the accumulating section")
   (:method ((p heading-paragraph))
     (memq (flag p) *major-section-flags*))
   (:method ((p paragraph)) nil))
 
+
+(defparameter *post-references-section-headings*
+  `("Figure" "Fig" "Figures"
+    "Supplementary Materials"
+     "Table" "Tables"  ))
+
+(defgeneric significant-heading? (paragraph)
+  (:documentation "Is this heading significant enough to ensure that
+    it is exposed to form a section after we've created a section like
+    'References' which the parser is going to ignore.")
+  (:method ((p heading-paragraph))
+    (memq (flag p) *post-references-section-headings*))
+  (:method ((p paragraph)) nil))
+
+
+(defparameter *score-sections-to-ignore*
+  '("References" "Reference list")
+  "Has to be one of the major section types.")
+
+(defgeneric section-parser-ignores? (paragraph)
+  (:documentation "This paragraph might be the basis for a section
+    (see collect-next-section), but we've told the document scanner
+    not to parse instances of this section (see drivers/sources/document.lisp)")
+  (:method ((p heading-paragraph))
+    (memq (flag p) *score-sections-to-ignore*))
+  (:method ((p paragraph)) nil))
+
+(defun setup-sections-to-ignore-for-score ()
+  "Arranges to set the globals that control what sections we parse
+   and which we ignore"
+  (declare (special *score-sections-to-ignore*))
+  (set-sections-to-ignore *score-sections-to-ignore* nil))
+
+
+;;;----------------
+;;; section titles
+;;;----------------
     
 ;; This list is used by detect-score-title for matching against texts
 (defparameter *score-sect-titles*
@@ -612,12 +690,14 @@
     "Introduction" ;; can be line-final -- on keywords line
     "Keywords"
     "Limitations"
+    "Main Text"
     "Measures" "Measurements"
     "Method"
     "Method and Results"
     "Model"
     "Notes"
     "Objective"
+    "One Sentence Summary"
     "Original article"
     "Participants"
     "Participants and Procedures" ; subtitle
