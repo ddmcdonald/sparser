@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "document"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:   April 2020
+;;;  Version:   August 2020
 
 ;; initiated 4/25/15 to driving reading from a fully populated
 ;; article object. Continually modifying/adding routines through
@@ -498,7 +498,6 @@
 ;;;-------------------------------------------------
 ;;; arranging to ignore certain (toplevel) sections
 ;;;-------------------------------------------------
-;;//// needs a setter
 
 (defparameter *sections-to-ignore* 
   '("authors' contributions"
@@ -517,7 +516,17 @@
 
 (defparameter *ignore-methods-sections* t)
 
+(defun set-sections-to-ignore (list-of-strings methods?)
+  (declare (special *sections-to-ignore* *ignore-methods-sections*))
+  (assert (every #'stringp list-of-strings))
+  (setq *sections-to-ignore* list-of-strings)
+  (if methods?
+    (setq *ignore-methods-sections* t)
+    (setq *ignore-methods-sections* nil)))
+
+
 (defun ignore-this-document-section (section)
+  "This is checked in the article method to read-from-document"
   (when *sections-to-ignore*
     (unless (typep section 'paragraph)
       ;; A paragraph at the level of the article is not
