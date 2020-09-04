@@ -58,7 +58,7 @@
       (:otherwise
        coverage))))
 
-(defparameter *parse-between-parentheses-action* t)
+(defparameter *parse-between-parentheses-action* t) ;; is it permited
 
 (defun parse-between-parentheses-boundaries (left-bound right-bound)
   "The traversal action that sets this in motion is
@@ -70,9 +70,13 @@
       This isn't specific to parenthese, just a punctuation pair that
    is handled by do-paired-punctionation-interior, the proximate caller."
   (when *parse-between-parentheses-action*
-    ;;(push-debug `(,left-bound ,right-bound))
-    ;;(break "parse-between ~a and ~a" left-bound right-bound)
-    (let ((chunks (find-chunks/bounded left-bound right-bound)))
+    (let ((*readout-segments-inline-with-text* nil)
+          (chunks (find-chunks/bounded left-bound right-bound)))
+      ;; Blocking pts's call to print-segment-and-pending-out-of-segment-word
+      ;; by turning off its flag because that would lead to very confusing
+      ;; printing of the segments. Right now though (9/2/20) we completely
+      ;; lose any display of the segments structure of these spans
+      (declare (special *readout-segments-inline-with-text*))
       ;; We're parsing the chunks online, so we just run them
       ;; here. Using subroutine from identify-chunks
       (handle-chunks chunks)

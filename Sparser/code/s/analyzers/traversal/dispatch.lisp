@@ -45,10 +45,10 @@
 
   (let ((layout (analyze-segment-layout pos-after-open
                                         pos-before-close))
+        ;; when there are multiple single-term edges this choice
+        ;; of accessor gives us the topmost (most recent) of
+        ;; those edges
         (first-edge (right-treetop-at/edge pos-after-open)))
-          ;; when there are multiple single-term edges this choice
-          ;; of accessor gives us the topmost (most recent) of
-          ;; those edges
 
     (when (word-p first-edge)
       ;; these are irrelevant, so we turn off the flag that controls
@@ -113,7 +113,7 @@
     (tr :layout-between-punct layout)
 
     (labels ((referent-for-vanila-edge ()
-               "Edges need referents, even their semantically vacuous"
+               "Edges need referents, even when they are semantically vacuous"
                (if (and first-edge
                         (edge-p first-edge))
                    (edge-referent first-edge)

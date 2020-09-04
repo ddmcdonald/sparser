@@ -310,7 +310,7 @@ there were ever to be any.  ///hook into final actions ??  |#
        (setq *where-print-segment-left-off* 1)))
 ; 
 (defun print-segment-and-pending-out-of-segment-words ;; new word-based version
-    (start-pos end-pos &optional (stream *standard-output*))
+      (start-pos end-pos &optional (stream *standard-output*))
   "Called from pts when the *readout-segments-inline-with-text* flag
  is up before any of the within-segment processing is done. Start and
  end positions correspond to the two boundaries of the current segment.
@@ -318,8 +318,7 @@ there were ever to be any.  ///hook into final actions ??  |#
  and prepositions because the chunker only makes segments for noun groups,
  verb groups and adjective groups. Any of these stranded words that
  are pending to the left of the current segment are printed before
- the segment's text is."
-  ;; Writers are in analyzers/chart-level/display.lisp
+ the segment's text is." ;; Writers are in analyzers/chart-level/display.lisp
   (when (there-are-words-between-segments start-pos)
     (print-characters-between-segments start-pos stream))
   (format stream "[")
