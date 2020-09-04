@@ -10,16 +10,17 @@
 #| 
  (collect-score-json) ; first prime the pump -- 100 articles
 
-;; The driver
- (run-nth-score-article 9)
-   -- Converts the JSON to our document structure then calls run-json-article,
-     with quiet off and show-sect on so you can see the text. Displays the CoV stats
-
 ;; Don't parse everything (list is next to the function)
  (setup-sections-to-ignore-for-score)
 
+;; The driver
+ (run-nth-score-article 9 :quiet t :show-sect nil :stats t)
+   -- Converts the JSON to our document structure then calls run-json-article,
+     with quiet off and show-sect on so you can see the text. Displays the CoV stats
+
+
 ;; Look at what the article says
-(write-article-to-file a "~/temp/")
+;; (write-article-to-file a "~/temp/Score articles/")
 
 ;; Looking at intermdiate results
 
@@ -384,6 +385,11 @@
          (return))
        (setq header-index index-of-next))
     (nreverse sections)))
+
+#| When we encounter a section-parser-ignore? pagragraph (like references)
+then we start making sections for significant-heading? paragraphs so the
+parser will get to see them.
+|#
 
 (defun collect-next-section (header-index paragraph-list)
   "Collect the paragraphs from the starting para (a heading-paragraph)
