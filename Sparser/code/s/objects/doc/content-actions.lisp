@@ -372,12 +372,15 @@ and make that file easier to understand. |#
     (loop for entry in top-n
        do (summarize-term-entry entry stream))))
 
-(defun summarize-term-entry (entry stream)
+(defun summarize-term-entry (entry stream &optional index)
   (let ((term (car entry))
         (count (second entry))
         (mentions (third entry)))
-    (format stream "~&~5T~a  ~a~%"
-            (print-form-for-term term) count)))
+    (if index
+      (format stream "~&~a~5T~a  ~a~%"
+              index (print-form-for-term term) count)
+      (format stream "~&~5T~a  ~a~%"
+              (print-form-for-term term) count))))
 
 (defgeneric print-form-for-term (term)
   (:method ((i individual))
@@ -391,6 +394,21 @@ and make that file easier to understand. |#
 ;;; exploring the mentions
 ;;;------------------------
 
+(defgeneric print-bucket-contents (article bucket &key count)
+  (:documentation "Print the contents of this bucket.
+    Either 'count' of them or all if count is nil.
+    Include an index with each entry (zero-based) to make
+    it easy to examine individual mentions")
+  (:method ((article article) (slot symbol) &key count)
+    (let* ((c (contents article))
+           (entries (slot-value c slot))
+           (stream *standard-output*)
+           (index -1))
+      (unless count
+        (loop for entry in entries
+           do (summarize-term-entry entry stream (incf index)))))))
+
+
 (defgeneric m-string (article bucket n)
   (:documentation "Get the nth item in this bucket (e.g. 'other)
     of this article and extract the text")
@@ -399,7 +417,7 @@ and make that file easier to understand. |#
   (:method ((article article) (slot symbol) (n integer))
     (let* ((c (contents article))
            (entries (slot-value c slot))
-           (entry (nth (1- n) entries))
+           (entry (nth n entries))
            (mentions (third entry))
            (m (car mentions))
            (offsets (mention-offsets m))
@@ -408,6 +426,7 @@ and make that file easier to understand. |#
       (if (string-equal "" text)
         (format nil "no content in ~a" paragraph)            
         (subseq text (1- (car offsets)) (1- (cdr offsets)))))))
+  
 
 (defgeneric bucket-entry (article bucket n)
   (:documentation "Return the individual for nth item in this bucket")
