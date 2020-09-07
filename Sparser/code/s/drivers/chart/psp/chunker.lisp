@@ -490,7 +490,10 @@
     (ng (if (sentential-adverb? edge)
             (loop for ee in (edges-before edge)
                   thereis (member (form-cat-name ee) '(det demonstrative possessive)))
-            (ng-compatible? edge ev-list)))
+            (or (ng-compatible? edge ev-list)
+                ;; for "all of these/those/them"
+                (member (edge-cat-name edge)
+                        '(those these pronoun/plural)))))
     (vg (and
          (compatible-with-vg? edge)
          (not (loop for ev in ev-list
@@ -1198,8 +1201,19 @@ than a bare "to".  |#
       (break))
  
     (cond
+       ;; why was this added by RJB on 8/23???
+      #+ignore
       ((and (eq eform 'preposition)
             (eq ecat 'of))
+       t)
+      ((and (eq eform 'preposition)
+            (eq ecat 'of)
+            (loop for ee in before
+                  thereis
+                    (or (member (edge-cat-name ee)
+                                '(which ))
+                        (member (form-cat-name ee)
+                                '(quantifier)))))
        t)
       ((and (loop for ev in evlist
                   thereis
