@@ -224,6 +224,8 @@
   *all-subcat-patterns*)
 
 (defun find-plausible-subcat-patterns (label val)
+  (cond ((stringp label) (setq label (resolve label)))
+        ((symbolp label) (setq label (resolve (pname label)))))
   (let ((subcat-patterns (gethash label (all-subcat-patterns))))
     (or #+ignore(loop for sp in subcat-patterns
               when
