@@ -20,18 +20,6 @@
 
 (in-package :sparser)
 
-
-;;;-----------
-;;; the array
-;;;-----------
-
-(defparameter *character-dispatch-array* (make-array 256)
-  "This is essentially ascii plus the second 128 character block
-   of UTF-8, where a lot of Latin-1 lives.
-   NOTE -- this number is burned into the code of continue-token 
-   because we don't want to further burden the inner-most of
-   inner loops.")
-
 #| the 'out of band' characters (i.e. code points higher than 256)
 are defined in an alist in alphabet.lisp that is bound to
 the parameter *entries-for-out-of-band-characters* that is
@@ -44,14 +32,45 @@ explicit call to define-punctuation. For all other punctuation
 it is added to a list in the file that is bound to
 *out-of-band-punctuation*. At the bottom of the punctuation file
 there is a call to add-punctuation-chars which maps the function
-add-punctuation-char over the list.
+add-punctuation-char over the list. |#
 
-|#
 
+;;--- crib sheet and utility fn
+
+;; (code-char 954) => #\Greek_Small_Letter_Kappa
+;; (format nil "~x" 954) => 3BA
+;; (format nil "~a" (code-char 954)) => "κ"
+
+(defun to-hex (n)
+  (format nil "~x" n))
+
+;; Reader macro #x goes from hex to ordinary decimal
+;; #x2015 = 8213
+
+
+;;;-----------
+;;; the array
+;;;-----------
+
+(defparameter *character-dispatch-array* (make-array 256)
+  "This is essentially ascii plus the second 128 character block
+   of UTF-8, where a lot of Latin-1 lives.
+   NOTE -- this number is burned into the code of continue-token 
+   because we don't want to further burden the inner-most of
+   inner loops.")
+
+
+;;;-------------------------------------------------
+;;; caching new instances of out-of-band characters
+;;;-------------------------------------------------
 
 (defparameter *cache-out-of-band-characters* t)
 
 (defun entry-for-out-of-band-character (char-code)
+  "Called by character-entry and entry-given-char-code when reading
+   from the character-buffers to form tokens. Looks up the character
+   and returns it if it's defined. Otherwise it caches the entry
+   for later (manual) processing"
   (declare (special *entries-for-out-of-band-characters*))
   (let ((entry
          (cadr (assoc char-code *entries-for-out-of-band-characters*))))
@@ -66,10 +85,10 @@ add-punctuation-char over the list.
    across runs if you don't actually make the definitions.")
 
 (defun cache-out-of-band-character (char-code)
-  ;; Called from character-entry when zero is returned or from
-  ;; entry-given-char-code for the characters above 256.
-  ;; Announce what's happening. Store the character code.
-  ;; Return an inoccuous character is its place.
+  "Called from character-entry when zero is returned or from
+   entry-given-char-code for the characters above 256.
+   Announce what's happening. Store the character code.
+   Return an inoccuous character is its place."
   (let ((character (code-char char-code)))
     (format t "~&~%The character \"~a\", (code = ~a) is not in the alphabet yet.~
                  ~%Using a space in its place.~%"
@@ -93,24 +112,24 @@ add-punctuation-char over the list.
  go to grammar/rules/words/punctuation.lisp and add definitions for them.
 |#
 
+(defun write-lines-for-out-of-band-cache (&optional (stream *standard-output*))
+  (let ((data (sort-out-of-band-cache)))
+    (loop for datum in data
+          do (write-alphabet-entry-line datum stream))))
+
 (defun sort-out-of-band-cache ()
   (when *new-characters-to-define*
     (sort (copy-list *new-characters-to-define*) #'<  :key #'cdr)))
+
+(defun write-lines-for-char-codes (char-codes &optional (stream *standard-output*))
+    (loop for ccode in char-codes
+       do (write-alphabet-entry-line (cons (code-char ccode) ccode) stream)))
 
 (defun write-alphabet-entry-line (cache-data stream)
   (let ((character (car cache-data))
         (char-code (cdr cache-data)))
     (format stream "~&(~a (:alphabetical . (:lowercase .,(code-char ~a)))) ;; ~@c ~%"
             char-code char-code character)))
-
-(defun write-lines-for-out-of-band-cache (&optional (stream *standard-output*))
-  (let ((data (sort-out-of-band-cache)))
-    (loop for datum in data
-          do (write-alphabet-entry-line datum stream))))
-
-(defun write-lines-for-char-codes (char-codes &optional (stream *standard-output*))
-    (loop for ccode in char-codes
-       do (write-alphabet-entry-line (cons (code-char ccode) ccode) stream)))
 
 
 
@@ -159,16 +178,6 @@ This will usually entail a web search. There are lots of unicode web pages.
 This is a reasonable choice http://www.fileformat.info/info/unicode/char/search.htm
 |#
 
-
-;; (code-char 954) => #\Greek_Small_Letter_Kappa
-;; (format nil "~x" 954) => 3BA
-;; (format nil "~a" (code-char 954)) => "κ"
-
-(defun to-hex (n)
-  (format nil "~x" n))
-
-;; Reader macro #x goes from hex to ordinary decimal
-;; #x2015 = 8213
 
 ;;;----------------------------
 ;;; access function (off-line)

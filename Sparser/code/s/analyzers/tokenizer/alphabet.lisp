@@ -1006,7 +1006,8 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (774 (:alphabetical . (:lowercase ., (code-char 774)))) ;; "̆"
     (775 (:alphabetical . (:lowercase ., (code-char 775)))) ;; "̇"
     (776 (:punctuation  .,(punctuation-named (code-char 776)))) ;; #\Combining_Diaeresis
-    (778 (:alphabetical . (:uppercase .,(code-char 778))))      ;;̊
+    (778 (:alphabetical . (:uppercase .,(code-char 778))))
+    (780 (:alphabetical . (:lowercase .,(code-char 780)))) ;; #\COMBINING_CARON
     (787 (:alphabetical . (:lowercase .,(code-char 787)))) ;; #\COMBINING_COMMA_ABOVE 
     (788 (:alphabetical . (:lowercase .,(code-char 788)))) ;; #\COMBINING_REVERSED_COMMA_ABOVE 
     (799 (:alphabetical . (:lowercase .,(code-char 799)))) ;; #\COMBINING_PLUS_SIGN_BELOW 
@@ -1244,6 +1245,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (1349 (:alphabetical . (:lowercase .,(code-char 1349)))) ;; #\ARMENIAN_CAPITAL_LETTER_YI 
     (1350 (:alphabetical . (:uppercase .,(code-char 1350)))) ;; #\ARMENIAN_CAPITAL_LETTER_NOW 
     (1363 (:alphabetical .(:lowercase .,(code-char 1363))))  ;;  "Փ"
+    (1370 (:punctuation .,(punctuation-named #\' ) ))        ;; #\ARMENIAN_APOSTROPHE 
     (1398 (:alphabetical . (:lowercase .,(code-char 1398)))) ;; #\ARMENIAN_SMALL_LETTER_NOW 
     (1408 (:alphabetical . (:lowercase .,(code-char 1408)))) ;; #\ARMENIAN_SMALL_LETTER_REH 
     (1426 (:alphabetical . (:lowercase .,(code-char 1426)))) ;; #\HEBREW_ACCENT_SEGOL 
