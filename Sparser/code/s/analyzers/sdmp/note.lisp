@@ -84,6 +84,8 @@
   (:method ((w word)) nil)
   (:method ((pw polyword)) nil)
 
+  (:method ((p position)) nil) ; "Bunnell BE, Davidson TM, Ruggiero KJ."
+
   (:method ((ignore null))
     ;; Aborted referent calculations return nil for *referent*
     ))
