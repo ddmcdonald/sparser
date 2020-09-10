@@ -185,11 +185,12 @@
                (ecase caps-type
                  (:initial-letter-capitalized
                   (string-capitalize (word-pname lc-word)))
+                 (:single-capitalized-letter
+                  (word-pname lc-word))
                  (:all-caps
                   (string-upcase (word-pname lc-word)))
                  (:mixed-case
                   (get-word-string-from-position lc-word position))
-
                  (:punctuation (word-pname lc-word))
                  (:digits (word-pname lc-word)))))
 
