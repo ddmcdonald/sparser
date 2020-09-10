@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994-2005,2011-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2005,2011-2020 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "operations"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  July 2017
+;;;  version:  September 2020
 
 ;; initiated 9/28/94 v2.3.  Added Super-categories-of 3/3/95
 ;; Added Compute-daughter-relationships 6/21.  Added Super-category-has-variable-named
@@ -59,11 +59,11 @@
     (category item)))
 
 
-(defmethod base-category-of-lp ((lp lattice-point))
-  (base-category-of-lp (lp-top-lp lp)))
-
-(defmethod base-category-of-lp ((lp top-lattice-point))
-  (lp-category lp))
+(defgeneric base-category-of-lp (lp)
+  (:method ((lp lattice-point))
+    (base-category-of-lp (lp-top-lp lp)))
+  (:method ((lp top-lattice-point))
+    (lp-category lp)))
 
 
 (defun corresponding-lattice-point (unit)
@@ -95,10 +95,8 @@
 (defgeneric single-on-variable-on-category (category)
   (:documentation "If the category has any variables
     and there is just one of them, then return that variable.")
-  
   (:method ((i individual))
     (single-on-variable-on-category (itype-of i)))
-  
   (:method ((c model-category))
     (let ((variables (cat-slots c)))
       (when (= (length variables) 1)
@@ -137,7 +135,9 @@
   (:method ((no null)) nil))
 
 
-;;--- entry points
+;;;-------------
+;;; entry point
+;;;-------------
 
 (defgeneric super-categories-of (category)
   (:documentation "If the category is in the lattice then
@@ -210,6 +210,7 @@
             (setf (get-tag :super-categories c) ordered-supers)
             ordered-supers)))))
 
+
 (defun reorder-categories-to-put-top-last (category-list)
   "We want to be able to use 'top' as the stopping point of the
    walks up the superc chains, but since we are not being clever
@@ -239,7 +240,6 @@
      append (super-categories-of category) into supers
      finally (return supers)))
   
-
 
 (defun collect-supercategories-off-lp (c lp)
   "We gather the categories defined directly on c, that is c and
@@ -316,6 +316,7 @@
       
       (remove-duplicates supers))))
 
+
 ;;--- misc
 
 (defun lattice-depth (c)
@@ -325,6 +326,20 @@
         (1+ (lattice-depth superc))
         1 ))
     0))
+
+(defgeneric bottom-n-supercs (category n)
+  (:documentation "Collect the first 'n' of the super categories
+    of 'category', from most specific to most general")
+  (:method ((name symbol) (n integer))
+    (bottom-n-supercs (category-named name :errorp) n))
+  (:method ((index number) (n integer))
+    (bottom-n-supercs (individual-object# index) n))
+  (:method ((i individual) (n integer))
+    (bottom-n-supercs (itype-of i) n))
+  (:method ((c category) (n integer))
+    (let ((list (super-categories-of c)))
+      (take-first-n n list))))
+
 
 
 
