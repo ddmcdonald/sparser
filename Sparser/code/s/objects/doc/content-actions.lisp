@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "content-actions"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  April 2020
+;;;  Version:  September 2020
 
 #| Created 8/27/19 to move general action out of content-methods.lisp
 and make that file easier to understand. |#
@@ -314,12 +314,12 @@ and make that file easier to understand. |#
       
 
 
-;;;----------
-;;; printing 
-;;;----------
+;;;------------------------------
+;;; printing document statistics
+;;;------------------------------
 
 (defgeneric summary-document-stats (document-element &optional stream)
-  (:documentation "Principally for information while debugging.
+  (:documentation "Principally for information while exploring.
    This method is called when you specify :stats in a json article function
    such as run-json-article-from-handle")
   (:method ((a article) &optional stream)
@@ -331,8 +331,8 @@ and make that file easier to understand. |#
     (display-top-bio-terms a stream)))
 
 
-(defun show-parse-performance (doc-element
-                               &optional (stream *standard-output*))
+(defun show-parse-performance (doc-element &optional (stream *standard-output*))
+  "Report the crude parse-quality stats for this particular element"
   (declare (special *readout-segments-inline-with-text*))
   (let ((content (contents doc-element)))
     (if (not (typep content 'sentence-parse-quality))
@@ -349,20 +349,18 @@ and make that file easier to understand. |#
            (format stream "~&~%~%")))))))
 
 
-
 (defgeneric display-top-bio-terms (document-element &optional stream)
   (:documentation "Called as part of summary-document-stats on any article.
     Useful to get a set of what we're getting for an article without running
     the visual interface.")
   (:method ((a article) &optional stream)
-    (declare (special *term-buckets*))
+    (declare (special *term-buckets-to-show*))
     (let* ((stream (or stream *standard-output*))
            (c (contents a)))
       (terpri stream)
-      (loop for bucket in *term-buckets*
+      (loop for bucket in *term-buckets-to-show*
          as contents = (slot-value c bucket)
-         when contents do
-           (bio-term-summary c bucket 5 stream)))))
+         when contents do (bio-term-summary c bucket 5 stream)))))
 
 (defun bio-term-summary (container slot-name n stream)
   (let* ((contents (slot-value container slot-name))
@@ -371,6 +369,20 @@ and make that file easier to understand. |#
             slot-name (length contents))
     (loop for entry in top-n
        do (summarize-term-entry entry stream))))
+
+#| The entries for the slots in the aggregated-bio-terms class
+are created by an interior function of aggregate-terms in content-methods.lisp.
+They are three element lists, where the first is the individual,
+the second is the number of times it was mentioned, and the third
+is the actual list of mentions.
+
+("Slovakia" 3
+ (#<m:34581 i2056 Slovakia cavojova_covid.4.p4.s3 411-420>
+  #<m:33229 i2056 Slovakia cavojova_covid.3.p10.s3 454-462>
+  #<m:31281 i2056 Slovakia cavojova_covid.2.p8.s11 1036-1044>))
+
+Summarize-term-entry uses print-for-for-term to render the
+individual as a string.  |#
 
 (defun summarize-term-entry (entry stream &optional index)
   (let ((term (car entry))
@@ -393,6 +405,16 @@ and make that file easier to understand. |#
 ;;;------------------------
 ;;; exploring the mentions
 ;;;------------------------
+
+(defgeneric bucket-contents (article bucket)
+  (:documentation "Retrieve the value of the 'bucket' field
+    of the articles contents object and return the list
+    of mentions that it contains")
+  (:method ((article article) (slot symbol))
+    (unless (memq slot *term-buckets*)
+      (error "Spelling? ~a is not defined in *term-buckets*" slot))
+    (slot-value (contents article) slot)))
+
 
 (defgeneric print-bucket-contents (article bucket &key count)
   (:documentation "Print the contents of this bucket.
@@ -471,3 +493,29 @@ and make that file easier to understand. |#
     (let* ((paragraph (cdr (mentioned-in-article-where m)))
            (text (content-string paragraph)))
       (values paragraph text))))
+
+
+(defgeneric first-n-types-in-bucket (article bucket n)
+  (:method ((article article) (slot symbol) (n integer))
+    (let* ((bucket-contents (bucket-contents article slot))
+           (top-n (take-first-n n bucket-contents)))
+      (loop for b in top-n
+         do (describe-bucket-entry b)))))
+
+(defun describe-bucket-entry (entry &optional (stream *standard-output*))
+  "Similar to summarize-term-entry but intended to convey more information.
+   We print the individual and its count followed by the first M categories
+   in its superc chain (super-categories-of)"
+  (let* ((term (car entry))
+         (count (second entry))
+         (mentions (third entry))
+         (m1 (car mentions))
+         (i (if (and (slot-boundp m1 'ci) ; copied from aggregation-target
+                      (contextual-description m1)) ; it might be bound but nil
+               (contextual-description m1)
+               (base-description m1)))
+         (first-n-supercs (bottom-n-supercs i 5))
+         (subc-names (loop for c in first-n-supercs collect (cat-name c))))
+    (format stream "~&~a ~a~12,4T ~{ ~a~}" count i (cdr subc-names))
+    m1))
+
