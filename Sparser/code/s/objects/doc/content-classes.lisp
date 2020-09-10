@@ -39,8 +39,7 @@
      Note that if you extend this class you need to also extend
      *term-buckets* to match.
      The type check that directs mentions to one of these 'buckets'
-     is done by aggregation-target in objects/doc/content-methods.lisp
-"))
+     is done by aggregation-target in objects/doc/content-methods.lisp"))
 
 (defparameter *term-buckets*
   '(drugs proteins residues other-chemical-entities ;;molecule
@@ -54,7 +53,19 @@
   "Used by downstream routines that are performing the identical
  operation on each of the slots in aggregated-bio-terms.")
 
+(defparameter *term-buckets-to-show* *term-buckets*
+  "Will be a subset of the term buckets tailored to show what's
+   relevant (reliable) for a given application. Defaults to the full set")
 
+(defun tailor-term-buckets-to-covid ()
+  (declare (special *term-buckets-to-show*))
+  (setq *term-buckets-to-show* *term-buckets*))
+
+(defun tailor-term-buckets-to-score ()
+  (declare (special *term-buckets-to-show*))
+  (setq *term-buckets-to-show*
+        '(experimental-methods medical-conditions infectious-agents
+          biological-predications locations comlex other)))
 
 ;;--- paragraph level
 
