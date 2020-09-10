@@ -40,9 +40,11 @@
 
 (defun string/city (c)
   (let ((name (value-of 'name c)))
-    (etypecase name
-      (word (word-pname name))
-      (polyword (pw-pname name)))))
+    (if name ; could be nil
+      (etypecase name
+        (word (word-pname name))
+        (polyword (pw-pname name)))
+      "city-with-no-recorded-name")))
 
 
 ;;;---------------
