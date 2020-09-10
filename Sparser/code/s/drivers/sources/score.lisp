@@ -1,26 +1,40 @@
-;;; -*- Mode: LISP; Syntax: Common-Lisp; Package: (SPARSER LISP) -*-
+7;;; -*- Mode: LISP; Syntax: Common-Lisp; Package: (SPARSER LISP) -*-
 ;;; Copyright (c) 2020 Smart Information Flow Technologies
 ;;;
 ;;;     File:  "score"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:  August 2020
+;;;  Version:  September 2020
 
 (in-package :sparser)
 
-#| 
- (collect-score-json) ; first prime the pump -- 100 articles
 
-;; Don't parse everything (list is next to the function)
+#| 2do:
+-- the set of buckets needs to be variablized so we have the option to
+     ignore the ones that are constitently wrong
+-- people's names are taken as bio-entities. Can we incorporate PNF into bio?
+-- there is sometimes clearly interesting things in the meta-data between
+     the title and the abstract, we should make a section for it
+-- the title can be hard to find (#20), maybe try earlier before cleaning is done
+|#
+
+
+#| Usage:
+
+;; 1st first prime the pump - 100 articles
+ (collect-score-json) ; specialize *score-json* to your setup
+
+;; 2d. Don't parse everything (the list is next to the function)
  (setup-sections-to-ignore-for-score)
 
-;; The driver
+;; 3d call the driver with the number of the article you want to parse
  (run-nth-score-article 9 :quiet t :show-sect nil :stats t)
    -- Converts the JSON to our document structure then calls run-json-article,
      with quiet off and show-sect on so you can see the text. Displays the CoV stats
 
+;; Run-nth.. returns the article object.
+;; Bind it to 'a' and Look at what the article says
+ (write-article-to-file a "~/temp/Score articles/")
 
-;; Look at what the article says
-;; (write-article-to-file a "~/temp/Score articles/")
 
 ;; Looking at intermdiate results
 
@@ -166,11 +180,9 @@
     (identify-score-block-texts sexp) ;; -> *sequence-of-block-texts*
     ;; (print-extracted-block-texts)
 
-    ;; is the 1st line a tacit running head?
-    (when (tacit-running-head? (nth 0 *sequence-of-block-texts*))
-      (push (make-running-head (nth 0 *sequence-of-block-texts*))
-            action-paragraphs))
-
+    (setq action-paragraphs ; look for implicit running heads
+          (look-for-tacit-running-heads *sequence-of-block-texts*))
+    
     (collect-score-json-paragraphs sexp) ;; -> *raw-paragraphs*
     ;; (print-raw-paragraphs)
 
@@ -233,6 +245,14 @@
     (or body-action-paragraphs
         tacit-action-paras)))
 
+(defun look-for-tacit-running-heads (block-text-list)
+  "There can be more than one, e.g. #20, so we search the first handful
+   of blocks and make paragraphs for them as our return value"
+  (loop for i from 0 to 5
+     as text = (nth i block-text-list)
+     when (tacit-running-head? text)
+     collect (make-running-head text)))
+
 (defun tacit-running-head? (text-line)
   "Is this line the sort of thing that we'd expect to find as running
    header or maybe footer?"
@@ -251,13 +271,11 @@
    then sweep over the sequence of paragrahs, collecting them into
    a new list (*ready-paragraphs*). Look for the string in each
    paragraph and modify the content-string of a paragraph to excise it
-   if it's there.
-     ///////////
-"
+   if it's there."
   (declare (special *raw-paragraphs*
                     *ready-paragraphs*))
 
-  (flet ((lift-string-from-action-para (para)
+  (labels ((lift-string-from-action-para (para)
            "Pull the string to remove out of the paragraph object"
            (let ((string (get-sp-arg para :header)))
              (unless string
@@ -267,6 +285,21 @@
                (setq string (remove-trailing-whitespace
                              (subseq string 0 (- (length string) 2)))))
              (format t "~&Cleaning instances of ~s~%" string)
+             string))
+
+         (remove-numbers (string)
+           "walk up the string from the beginning, shortening it as spaces
+            and numbers are encountered. If an alphabetic character is encountered
+            first then the triggering number must be further on and should stay"
+           (let ((index -1))
+             (loop for c across string ; remove leading space(s)
+                do (if (eql c #\space) (incf index) (return)))
+             (setq string (subseq string (1+ index))
+                   index 0)
+             (when (digit-char? (aref string 0))
+               (loop for d across string
+                  do (if (digit-char? d) (incf index) (return)))
+               (setq string (subseq string index)))
              string))
          
          (remove-specified-text (p string-to-remove)
@@ -281,6 +314,8 @@
                   (let* ((before (subseq text-string 0 index))
                          (index-after (+ index (length string-to-remove)))
                          (after (subseq text-string index-after)))
+                    (when (some #'digit-char? after)
+                      (setq after (remove-numbers after)))
                     (let ((result (string-append before after)))
                       ;;//// check for stranded page numbers
                       ;;// If this is just one line (as in #90) then
@@ -317,21 +352,7 @@
 
         (setq *ready-paragraphs* cleaned)
         cleaned))))
-        
 
-    #| original single string operation
-        ;; loop over the paragraphs, doing the deletion
-        ;; and dropping the action paragraphs on the floor
-        (let ((clean
-               (loop for p in *raw-paragraphs*
-                  unless (eq (type-of p) 'action-paragraph)
-                  collect (remove-specified-text p string-to-remove))))
-
-
-          ;; --> Turn on when the format statement is being used
-          ;;(break "Look at the cleaned paragraphs")
-          (setq *ready-paragraphs* clean)
-          clean )  |#
 
 
 ;;;-----------------------------
@@ -439,8 +460,12 @@ parser will get to see them.
   (let ((name (flag heading-para)) ; e.g. :results
         (string (content-string heading-para))) ; "References"
     (setf (name section) name)
-    (setf (title section) (or string
-                              name))
+    (if (and string (not (string-equal "" string)))
+      (setf (title section) string)
+      (else ; use the name
+        (let* ((pname (symbol-name name))
+               (title-string (string-capitalize pname)))
+          (setf (title section) title-string))))
     section))
 
 
@@ -542,7 +567,7 @@ parser will get to see them.
       (setf (content-string p) text)
       (return-from make-score-paragraph p))
     
-    (multiple-value-bind (keyword residue)
+    (multiple-value-bind (keyword residue from-end?)
         (detect-score-title text)
       (unless keyword
         (if (likely-short-header length text)
@@ -562,7 +587,7 @@ parser will get to see them.
         
       (when keyword
         (case keyword
-          (:running-head
+          ((:running-head :running-title)
            (setq p (make-instance
                     'action-paragraph :flag :running-head :index index))
            (setf (arg-alist p) `(:header ,residue)))
@@ -594,12 +619,19 @@ parser will get to see them.
              (setf (content-string p) residue)
              (setf (arg-alist p) `(:text ,residue))))
 
-          ;; heading-paragraph -- no residue
           (otherwise
-           (setq p (make-instance
-                    'heading-paragraph :flag keyword :index index))
-           (setf (content-string p) text)
-           (setf (arg-alist p) `(:caption ,text)))))
+           (cond
+             (residue
+              ;; heading, but store the residue, not the text - like table or figures
+              ;; where there is content in the rest of the line
+              (setq p (make-instance 'heading-paragraph :flag keyword :index index))
+              (setf (arg-alist p) `(:caption ,residue)))
+
+             (t ;; heading-paragraph -- no residue
+              (setq p (make-instance
+                       'heading-paragraph :flag keyword :index index))
+              (setf (content-string p) text)
+              (setf (arg-alist p) `(:caption ,text)))))))
       
       p )))
 
@@ -678,7 +710,7 @@ parser will get to see them.
     
 ;; This list is used by detect-score-title for matching against texts
 (defparameter *score-sect-titles*
-  '("Running Head"
+  '("Running Head" "Running title"
     "Abstract"
     "Acknowledgement" "Acknowledgments"
     "aim"
@@ -694,7 +726,7 @@ parser will get to see them.
     "Figure" "Fig" "Figures"
     "Footnotes"
     "Introduction" ;; can be line-final -- on keywords line
-    "Keywords"
+    "Keywords" "Key words"
     "Limitations"
     "Main Text"
     "Measures" "Measurements"
@@ -737,20 +769,33 @@ parser will get to see them.
    Both arguments are strings"
   (let ((text-length (length text))
         (title-length (length title)))
-    (when (>= text-length title-length)
-      (let ((index (search title text :test #'string-equal)))
-        (when (and index ; // zero is the beginning of the line
-                   (= 0 index))
-          (let ((more? (subseq text title-length)))
-            (if (string-equal more? "")
-              (setq more? nil)
-              (setq more? (string-left-trim '(#\space #\: )
-                                            more?)))
-            (let ((key-name (string-upcase
-                             (substitute #\- #\space title))))
-              
-              (values (intern key-name (find-package :keyword))
-                      more?))))))))
+    (flet ((key-name (title)
+             (intern (string-upcase
+                      (substitute #\- #\space title))
+                     (find-package :keyword))))
+
+      (when (>= text-length title-length)
+        (let ((index (search title text :test #'string-equal))
+              (end-index (search title text :test #'string-equal :from-end t)))
+          (cond
+            ((and index ; // zero is the beginning of the line
+                  (= 0 index))
+             (let ((more? (subseq text title-length)))
+               (if (string-equal more? "")
+                 (setq more? nil)
+                 (setq more? (string-left-trim '(#\space #\: ) more?)))
+               (let ((key-name (string-upcase
+                                (substitute #\- #\space title))))              
+                 (values (intern key-name (find-package :keyword))
+                         more?))))
+            ((and end-index ; "REPUBLICANS AND COVID-19 JUDGMENTS 31 Introduction"
+                  (= text-length (+ end-index title-length)))
+             ;; But it has to be the last thing in the string
+             (let ((prefix (subseq text 0 end-index)))
+               (values (key-name title)
+                       prefix
+                       :from-end)))
+            (t nil)))))))
 
 
 ;;;-------------------------------
