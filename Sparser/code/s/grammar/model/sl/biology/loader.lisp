@@ -61,6 +61,7 @@
 (gload "bio;new-defs;new-bio-complexes")
 (gload "bio;bio-methods")
 (gload "bio;new-defs;new-bio-meth")
+(gload "bio;bio-stats") ;; new set, broken out from bio-methods
 (gload "bio;bio-processes")
 (gload "bio;new-defs;new-bio-proc")
 (gload "bio;bio-predications")

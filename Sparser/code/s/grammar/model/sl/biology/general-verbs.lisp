@@ -555,7 +555,7 @@
 (define-category expect :specializes bio-rhetorical
     :realization
     (:verb "expect" 
-           :noun "expectgation" 
+           :noun "expectation" 
            :etf (svo-passive)))
 
 

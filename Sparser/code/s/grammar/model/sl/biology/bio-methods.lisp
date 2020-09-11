@@ -54,9 +54,7 @@
 (define-category clone :specializes bio-method
                  )
 
-(define-category clustering :specializes bio-method
-  :realization (:verb ("cluster" :present-participle "clustering" :past-tense "clustered")
-                      :etf (svo-passive)))
+
 
 
 (define-category digest ;; as in a chemical process for breaking down proteins
@@ -72,9 +70,7 @@
    :noun "dissection" 
    :etf (svo-passive)))
 
-(define-category distinguish :specializes bio-method
-  :realization
-  (:verb "distinguish" :etf (svo-passive)))
+
 
 (define-category elute :specializes bio-method
     :binds ((source biological))
@@ -124,18 +120,9 @@
 (def-synonym immunoprecipitate
     (:noun "IP"))
 
-(define-category investigate :specializes bio-method 
-  :mixins (bio-whethercomp)
-  :realization
-  (:verb "investigate" :noun "investigation"
-         :etf (svo-passive)))
 
-(define-category isolate :specializes bio-method
-  :binds ((background biological))
-  :realization
-  (:verb "isolate" :etf (svo-passive)
-         ;;:from background
-         ))
+
+
 
 (define-category lyse :specializes bio-method
   :realization
@@ -159,12 +146,7 @@
   (:verb   "replate"
    :etf (svo-passive)))
 
-(define-category screen :specializes  bio-method
-  :realization
-  (:verb "screen" :etf (svo-passive)))
 
-(def-synonym screen
-    (:noun "screen"))
 
 (define-category bio-sequence :specializes bio-method
     :binds ((method bio-method))
@@ -179,14 +161,6 @@
     (:verb "starve" 
            :noun "starvation"
 	   :etf (svo-passive)))
-
-(define-category subject :specializes bio-method
-      :binds ((treatment biological))
-      :realization
-      (:verb "subject"
-             :etf (svo-passive)
-             :adj "subject"
-             :to treatment))
 
 (define-category tag :specializes bio-method
     :binds ((molecular-location molecular-location))    ;; :mixins (has-location)
@@ -302,10 +276,7 @@
 (noun  "plate" :super bio-method)
 (noun "sequential immunoblotting" :super bio-method)
 (noun "immunofluorescence" :super bio-method)
-(noun "approach" :super bio-method)
-(noun "baseline" :super  bio-method)
 (noun "bifc" :super bio-method)
-(noun "control" :super bio-method)
 (noun "denaturing gel electrophoresis" :super bio-method)
 (define-category fluorescence :specializes bio-method
   :realization
@@ -353,10 +324,6 @@
       (:noun "means"
              :of process))
 
-(noun "method" :super bio-method)
-
-(noun "mode" :super bio-method)
-(noun "modeling" :super bio-method) ;; but modeling is a nominal that is used
 (noun ("mutagenesis" :plural "mutageneses") :super bio-method)
 (noun "mutagenic approaches" :super mutagenesis)
 
@@ -404,11 +371,6 @@
 (noun "SDS-PAGE"  :super bio-method)
 (noun "spectrometry" :super bio-method)
 
-(noun "strategy" :super bio-method
-      :binds ((goal bio-process))
-      :realization
-      (:noun "strategy"
-             :for goal))
 (noun "two-dimensional isoelectric focussing" :super bio-method)
 
 (noun ("ViroChip" "virochip") :super bio-method) ;; a panviral DNA microarray assay
@@ -529,7 +491,6 @@
 (noun "miniMACS" :super bio-method) 
 (noun "mirVana" :super bio-method) 
 (noun "nQuery" :super bio-method) 
-(noun "rANOVA" :super bio-method) 
 
 
 
@@ -591,11 +552,6 @@ with something else
 
 (noun ("medium" :plural "media") :super experimental-condition)
 (noun "unstimulated" :super experimental-condition)
-(define-category absence :specializes experimental-condition
-  :binds ((measurement (:or measurement bio-scalar)))
-  :realization
-  (:noun "absence"
-	 :of measurement))
 ;;(noun "condition" :super experimental-condition) OBE -- in taxonomy
 ;(noun "fetal calf serum" :super experimental-condition)
 ;(def-synonym category::fetal-calf-serum  (:noun "FCS")) ; added with id now in new-bio-meths
@@ -621,13 +577,7 @@ with something else
                  
 
 (noun "natural growth conditions" :super experimental-condition)
-(define-category presence :specializes experimental-condition
-  :binds ((measurement
-           (:or biological ;; can be "in the presence of of HRAS V12"
-                measurement bio-scalar)))
-  :realization
-  (:noun "presence"
-	 :of measurement))
+
 (noun "radioactivity" :super experimental-condition
       :binds ((material molecule))
       :realization
@@ -635,10 +585,7 @@ with something else
              :of material))
 ; moved serum to substance rather than experimental condition because it can be used to activate proteins
 
-(noun "setting" :super bio-context)
-(noun "trial" :super bio-context)
-(noun "pilot" :super bio-context)
-(def-synonym pilot (:noun "pilot study"))
+
 
 
 (noun "RCT" :super bio-method)
@@ -656,7 +603,6 @@ with something else
 (noun "slice" :super bio-preparation) ;; brain slices
 (noun "networking" :super bio-mechanism) ;; unsure of this -- "receptor networking"
 
-(noun "consequence" :super bio-quality)
 (noun "role" :super bio-quality
       :binds ((process bio-process))
       :realization
@@ -668,17 +614,7 @@ with something else
   (:noun "aspect"
          :of whole))
 
-(define-adverb "at baseline")
 
 (noun "gain" :super positive-bio-control)
 
-(define-category paradigm :specializes process
-   :mixins (biological)
-  ;; not sure this is the correct term, but intended for things like "forms of ras" 
-  :binds ((basis bio-process)) ;; can be a gene or protein, or something else
-  :instantiates :self
-  :realization
-  (:noun "paradigm"
-         :m basis
-         :of basis
-         :for basis))
+

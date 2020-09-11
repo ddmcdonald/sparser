@@ -124,16 +124,6 @@
 (define-adjective "transmembrane")
 (define-adjective "tumorigenic") ;tumorigenesis
 
-(define-category equivalent :specializes bio-relation
-  :realization
-  (:adj "equivalent" :noun "equivalence"
-	:to participant))
-
-(define-category prerequisite :specializes bio-relation
-  :realization
-  (:adj "prerequisite" ;;deacetylation of GR by HDAC2 may be prerequisite for GR association with the p65–NF-κB–activated complex
-	:noun "prerequisite"
-	:for participant))
 
 
 
