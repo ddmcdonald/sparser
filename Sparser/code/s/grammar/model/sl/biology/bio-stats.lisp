@@ -23,6 +23,10 @@
 (def-indiv-with-id bio-method "end-point" "NCIT:C82866" :name "endpoint value derivation technique")
 (def-indiv-with-id bio-method "Endpoint" "NCIT:C82866" :name "endpoint value derivation technique") 
 (def-indiv-with-id bio-method "imputation" "NCIT:C80304" :name "statistical imputation")
+
+(def-indiv-with-id bio-method "LOCF" "NCIT:C81198" :name "last observation carried forward imputation technique") 
+(def-indiv-with-id bio-method "MOTH" "NCIT:C81204" :name "mean of other group imputation technique" :maintain-case t) 
+(def-indiv-with-id bio-method "ROSE" "NCIT:C121991" :name "recognition of outliers by sampling ends" :maintain-case t)
 (def-indiv-with-id bio-method "WOV" "NCIT:C81206" :name "worst observed value in a group imputation technique")
 (def-indiv-with-id bio-method "permutation" "NCIT:C64219" :name "permutation") 
 (def-indiv-with-id bio-method "cross-correlation" "NCIT:C68833" :name "cross-correlation")
@@ -36,7 +40,7 @@
 
 (def-indiv-with-id bio-method "null-hypothesis" "NCIT:C142616" :name "null hypothesis") 
 (def-indiv-with-id bio-method "t-distribution" "NCIT:C53220" :name "t-distribution")
-(def-indiv-with-id bio-method "γ-distribution" "NCIT:C53223" :name "gamma distribution")
+(def-indiv-with-id bio-method "γ-distribution" "NCIT:C53223" :name "gamma distribution" :synonyms ("Gamma-distribution"))
 
 (define-category investigate :specializes bio-method 
   :mixins (bio-whethercomp)
@@ -76,10 +80,11 @@
 (def-indiv-with-id bio-measurement "root-mean-square" "NCIT:C73485" :name "root mean square") 
 (def-indiv-with-id bio-measurement "percentile" "NCIT:C48919" :name "percentile") 
 (def-indiv-with-id bio-method "FWER" "NCIT:C64215" :name "family-wise error rate") 
-
+(def-indiv-with-id bio-method "alpha-1" "NCIT:C67050" :name "affy alpha1 significance") 
 
 ;; really more of a predicate
 (def-indiv-with-id bio-method "computational" "NCIT:C19233" :name "computational technique")
+(def-indiv-with-id bio-method "alpha2" "NCIT:C67051" :name "affy alpha2 significance") 
 
 ;; other more general experimentally relevant things:
 
