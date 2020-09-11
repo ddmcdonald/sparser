@@ -532,9 +532,9 @@ parser will get to see them.
             (if (typep (nth 1 raw-paragraphs) 'action-paragraph)
               2 1))
            (t 0))))
-    (let ((title-para (or (title-paragraph? (nth start-here paragraphs))
-                          (title-paragraph? (nth (+ 1 start-here) paragraphs))
-                          (title-paragraph? (nth (+ 2 start-here) paragraphs))))
+    (let ((title-para (or (title-paragraph? (nth start-here raw-paragraphs))
+                          (title-paragraph? (nth (+ 1 start-here) raw-paragraphs))
+                          (title-paragraph? (nth (+ 2 start-here) raw-paragraphs))))
           (title-index start-here))
       (when title-para ; it was explictly marked
         (setf (title article) (content-string title-para))
@@ -770,7 +770,7 @@ parser will get to see them.
 
 
 (defparameter *score-sections-to-ignore*
-  '("References" "Reference list")
+  '("References" "Reference list" "Metadata")
   "Has to be one of the major section types.")
 
 (defgeneric section-parser-ignores? (paragraph)
