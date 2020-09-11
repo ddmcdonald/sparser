@@ -1,4 +1,4 @@
-7;;; -*- Mode: LISP; Syntax: Common-Lisp; Package: (SPARSER LISP) -*-
+;;; -*- Mode: LISP; Syntax: Common-Lisp; Package: (SPARSER LISP) -*-
 ;;; Copyright (c) 2020 Smart Information Flow Technologies
 ;;;
 ;;;     File:  "score"
@@ -9,14 +9,10 @@
 
 
 #| 2do:
--- the set of buckets needs to be variablized so we have the option to
-     ignore the ones that are constitently wrong
 -- people's names are taken as bio-entities. Can we incorporate PNF into bio?
--- there is sometimes clearly interesting things in the meta-data between
-     the title and the abstract, we should make a section for it
--- the title can be hard to find (#20), maybe try earlier before cleaning is done
+-- The running heads are deviously tricky to find, and can incorporate
+  useful information inside them, e.g. #25.  Couldn't find it for #27
 |#
-
 
 #| Usage:
 
@@ -128,9 +124,45 @@
     "Gelfand_covid_n8dr9" ; #34 can't encode 56319
     "Kachanoff_covid_gy9n7" ; 47 ditto
     "Wise_covid_4qm4q" ; 96 ditto. Also 5741 -- caught by tokenizer so where's the complaint?
+    "Du_covid_yl7p9" ; #26 - does substitution for 56319 when reading the JSON
     )
-  "The reader chokes when reading these file, how to fix (or even debug) this
+   "The reader chokes when reading these file, how to fix (or even debug) this
    isn't clear yet, so simplest to just ignore them")
+#|
+ For #26 it automatically did substitution for 56319 when reading the JSON
+but it's still in the file (I presume) and it dies when try to write out the
+file with this 'unable to encode' complaint.
+   
+Invalid protocol message:
+Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
+
+(:return (:ok ((":utf-8 stream encoding error on
+#<sb-sys:fd-stream
+  for \"file /Users/ddm/temp/Score articles/Du_covid-26.txt\"
+  {105FD386C3}>:
+
+  the character with code 56319 cannot be encoded." "
+
+  [Condition of type sb-int:stream-encoding-error]" nil)
+    (("output-nothing" "Skip output of this character.")
+     ("output-replacement" "Output replacement string.")
+     ("retry" "Retry SLIME REPL evaluation request.")
+     ("*abort" "Return to SLIME's top level.")
+     ("abort" "abort thread (#<thread \"repl-thread\" running {10157A8003}>)"))
+   ((0 "(sb-impl::stream-encoding-error-and-handle #<sb-sys:fd-stream
+           for \"file /Users/ddm/temp/Score articles/Du_covid-26.txt\" {105FD386C3}> 56319)")
+    (1 "(sb-impl::output-bytes/utf-8 #<sb-sys:fd-stream for \"file /Users/ddm/temp/Score articles/Du_covid-26.txt\" {105FD386C3}> \"Hongfei Du, Department of Psychology, Guangzhou University, Guangzhou, China. E..") 
+    (2 "(sb-impl::fd-sout #<sb-sys:fd-stream for \"file /Users/ddm/temp/Score articles/Du_covid-26.txt\" {105FD386C3}> \"Hongfei Du, Department of Psychology, Guangzhou University, Guangzhou, China. Email\xDBFF\xDC02dhfps..") 
+    (3 "(sb-impl::%write-string \"Hongfei Du, Department of Psychology, Guangzhou University, Guangzhou, China. Email\xDBFF\xDC02dhfpsy@gmail.com\" #<sb-sys:fd-stream for \"file /Users/ddm/temp/Score articles/Du_covid-26...") 
+    (4 "((labels sb-impl::handle-it :in sb-kernel:output-object) #<sb-sys:fd-stream for \"file /Users/ddm/temp/Score articles/Du_covid-26.txt\" {105FD386C3}>)") 
+    (5 "(princ \"Hongfei Du, Department of Psychology, Guangzhou University, Guangzhou, China. Email\xDBFF\xDC02dhfpsy@gmail.com\" #<sb-sys:fd-stream for \"file /Users/ddm/temp/Score articles/Du_covid-26.txt\" {105FD386C3}..") 
+    (6 "((lambda (stream #:format-arg352 &rest sb-format::args) :in \"/Users/ddm/sparser/Sparser/code/s/objects/doc/print-article.lisp\") #<sb-sys:fd-stream for \"file /Users/ddm/temp/Score articles/Du_covid-26...") 
+    (7 "(format #<sb-sys:fd-stream for \"file /Users/ddm/temp/Score articles/Du_covid-26.txt\" {105FD386C3}> #<FUNCTION (lambda (stream #:format-arg352 &rest sb-format::args) :in \"/Users/ddm/sparser/Sparser/cod..") 
+    (8 "((:method write-out-document (heading-paragraph t)) #<heading-paragraph 1 corresponding-author> #<sb-sys:fd-stream for \"file /Users/ddm/temp/Score articles/Du_covid-26.txt\" {105FD386C3}>) [fast-method.." (:restartable t)) 
+    (9 "((:method write-out-document (section t)) #<section metadata> #<sb-sys:fd-stream for \"file /Users/ddm/temp/Score articles/Du_covid-26.txt\" {105FD386C3}>) [fast-method]" (:restartable t))) (959 958))) 959)
+    ) |#
+
+ 
 
 
 ;;;--------
@@ -177,6 +209,7 @@
   (declare (special *sequence-of-block-texts* *raw-paragraphs*
                     *ready-paragraphs* ))
   (let ( action-paragraphs )
+    
     (identify-score-block-texts sexp) ;; -> *sequence-of-block-texts*
     ;; (print-extracted-block-texts)
 
@@ -186,13 +219,17 @@
     (collect-score-json-paragraphs sexp) ;; -> *raw-paragraphs*
     ;; (print-raw-paragraphs)
 
+    (collect-title-and-meta-data article *raw-paragraphs* action-paragraphs)
+
     (if (or (blocks-include-any 'action-paragraph *raw-paragraphs*)
             action-paragraphs)
-      (setq *ready-paragraphs*
+      (setq *ready-paragraphs* ; drops any action-paragraphs from the raw list
             (clean-score-paragraphs (gather-action-paragraphs action-paragraphs)))
       (setq *ready-paragraphs* *raw-paragraphs*))
+    ;; (print-ready-paragraphs)
 
     (aggregate-score-para-into-sections *ready-paragraphs* article)
+    ;; (children article)
 
     article ))
 
@@ -265,6 +302,8 @@
   (let ((p (make-instance  'action-paragraph :flag :running-head)))
     (setf (arg-alist p) `(:header ,text-line))
     p))
+
+
 
 (defun clean-score-paragraphs (action-paragraphs)
   "Extract the string to delete from the action paragraphs,
@@ -360,29 +399,36 @@
 ;;;-----------------------------
 
 (defun aggregate-score-para-into-sections (paragraphs article)
-  "Loop through the list of paragraph objects and see if we can
+  "Loop through the list of 'ready' paragraph objects and see if we can
    identify larger-scale section-type structure. We also identify
    the title, keywords, etc. and directly fill the slots on the article."
   ;;/// ignoring keyword, authors and other front matter for now
   (declare (special *score-sections*))
   (let ((index -1)
         (max-index (length paragraphs))
-        index-after-title
+        meta-section  index-after-title
         first-section-head
         p  section sections  index-of-next  )
     
-    ;; First collect the first tagged title para, or accept the 1st line as the title
-    (setq index-after-title (find-a-title-para paragraphs article))
+    ;; The article may have gotten a title and an initial 'meta-data'
+    ;; section attached to it. We start there to aggregate the next set
+    ;; of paragraphs into sections.
+    (when (children article)
+      (setq meta-section (children article)) ; singleton - not a list
+      (setq index-after-title (1+ (index-of-final-paragraph meta-section))))
+    (unless (children article)
+      (break "?? no meta-data ??"))
 
     ;; From the index of the title, walk through the list of paragraphs
-    ;; until the first major heading is reached.
+    ;; until the next major heading is reached.
     (setq first-section-head (index-of-next-header index-after-title paragraphs))
 
     ;; From that section head, loop through the rest of the
     ;; paragraphs. Creat a new section at each heading whose children
     ;; are the paragraphs from there to just before the next heading
     (setq sections
-          (collect-all-the-sections first-section-head paragraphs))
+          (cons meta-section
+                (collect-all-the-sections first-section-head paragraphs)))
     (knit-sections sections article)
     (setq *score-sections* sections)
 
@@ -396,7 +442,7 @@
    of the text. The caller (aggregate-score-para-into-sections) knits them
    together"
   (let ((max-index (1- (length paragraph-list)))
-        sections section header-index index-of-next )
+        sections  section  header-index  index-of-next )
     (setq header-index starting-at)
     (loop
        (multiple-value-setq (section index-of-next)
@@ -433,11 +479,10 @@ parser will get to see them.
               index-of-next))))
 
 (defun index-of-next-header (start paragraphs)
-  "Walk the index across successive paragraphs until
-   a 'major' heading-paragraph is reached. Return the value of the index.
-   When we're getting to the end of the list of pagagraphs
-   we don't expect it to end in a header paragraphs, but we
-   aren't checking for that"
+  "Walk the index across successive paragraphs until a 'major' 
+   heading-paragraph is reached. Return the value of the index.
+   When we're getting to the end of the list of pagagraphs we don't
+   expect them to end in a header paragraphs, but we aren't checking for that"
   (let* ((index start)
          (max-index (length paragraphs))
          (para (nth index paragraphs)))
@@ -463,34 +508,73 @@ parser will get to see them.
     (if (and string (not (string-equal "" string)))
       (setf (title section) string)
       (else ; use the name
-        (let* ((pname (symbol-name name))
-               (title-string (string-capitalize pname)))
+        (let ((title-string (string-capitalize (symbol-name name))))
           (setf (title section) title-string))))
     section))
 
 
 
-;;--- Article titles
+;;--- Article titles, and pre-abstract meta-data
 
-(defun find-a-title-para (paragraphs article)
-  "Identify and set the title of the article.
-   Return the index of the paragraph that comes just after the title"
-  ;;/// doesn't independently account for prior running heads and such
-  ;;  And these definitely confuse it. ///Try positioning this ahead ot
-  ;;  the clean up
-  (flet ((title-para? (p)
-           (when (and (typep p 'heading-paragraph)
-                      (memq (flag p) '(:title :short-title)))
-             (setf (content-string p) (get-sp-arg p :text))
-             p)))
-    (if (title-para? (nth 0 paragraphs))
-      (then
-        (setf (title article) (content-string (nth 0 paragraphs)))
-        (if (title-para? (nth 1 paragraphs)) 2 1))
-      (else
-        (setf (title article) (content-string (first paragraphs)))
-        1
-        ))))
+(defun collect-title-and-meta-data (article raw-paragraphs tacit-action-paragraphs)
+  "Called from sort-out-score-paragraphs before their running heads
+   have been cleaned. Tries to identify the title, then collects
+   all the raw paragraphs between there and the first major overt section
+   (usually Abstract) and creates a section with the name 'Meta-data'.
+   It attaches the section to the article where aggregate-score-para-into-sections
+   will notice it and include it with the other sections."
+  (let ((start-here
+         ;; the index of the paragraph to presume is the title, as an additional
+         ;; benefit this skips the index over any action paragraphs
+         (cond
+           (tacit-action-paragraphs (1- (length tacit-action-paragraphs)))
+           ((typep (nth 0 raw-paragraphs) 'action-paragraph)
+            (if (typep (nth 1 raw-paragraphs) 'action-paragraph)
+              2 1))
+           (t 0))))
+    (let ((title-para (or (title-paragraph? (nth start-here paragraphs))
+                          (title-paragraph? (nth (+ 1 start-here) paragraphs))
+                          (title-paragraph? (nth (+ 2 start-here) paragraphs))))
+          (title-index start-here))
+      (when title-para ; it was explictly marked
+        (setf (title article) (content-string title-para))
+        (setq title-index (para-index title-para)))
+      (unless title-para
+        ;; use the first non-action line for the title
+        (let ((first-usable (nth start-here raw-paragraphs)))
+          (setf (title article) (content-string first-usable))
+          (setq title-index (1+ (para-index first-usable)))))
+      (let* ((index-of-next-header (index-of-next-header title-index raw-paragraphs))
+             ;; The paragraph at that index is a header-paragraph
+             (section-paras
+              (loop for i from title-index to (1- index-of-next-header)
+                 collect (nth i raw-paragraphs))))
+        ;;//// would be nice to juse use collect-next-section, but its not
+        ;; factored in a way we could just use -- copying code from it.
+        ;;???? Maybe make a dummy header-paragraph to use -- then we
+        ;;  could also use setup-name-for-score-section
+        (let ((s (make-instance 'section)))
+          (setf (name s) :metadata)
+          (setf (title s) "MetaData") ;// goes on ignore list
+          (setf (children s) section-paras)
+          (knit-paragraphs section-paras s)
+          (setf (children article) s))))))
+
+;;/// move
+(defun index-of-final-paragraph (section)
+  "Return the para-index of the final paragraph in this section"
+  (let* ((paragraphs (children section))
+         (last-para (car (last paragraphs))))
+    (para-index last-para)))
+
+(defun title-paragraph? (p)
+  "Is this paragraph exlicitly marked as a title?"
+  (when (and (typep p 'heading-paragraph)
+             (memq (flag p) '(:title :short-title)))
+    (setf (content-string p) (get-sp-arg p :text))
+    p))
+
+ 
 
 
 ;;;--------------
