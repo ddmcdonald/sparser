@@ -63,12 +63,14 @@
                                       "SEVERE ACUTE RESPIRATORY SYNDROME CORONAVIRUS 2"
                                       "COV-2" "CoV-2")))
 
-#+ignore
-(def-indiv-with-id betacoronavirus "SARS-CoV" "NCIT:C112432" :name "SARS coronavirus"
-                   :synonyms ("SARS Coronavirus" "SARS virus" "HCoV-SARS" "SARSCoV" "SARS-CoV-1"
-                                                 "Severe Acute Respiratory Syndrome Coronavirus"
-                                                 "severe acute respiratory syndrome (SARS) virus" "hSARS"
-                                                 "SARScoronavirus"))
+
+(define-category SARS-CoV :specializes betacoronavirus
+                 :bindings (uid "NCIT:C112432")
+                 :realization (:noun ("SARS-CoV" "SARS coronavirus"
+                                          "SARS Coronavirus" "SARS virus" "HCoV-SARS" "SARSCoV" "SARS-CoV-1"
+                                          "Severe Acute Respiratory Syndrome Coronavirus"
+                                          "severe acute respiratory syndrome (SARS) virus" "hSARS"
+                                          "SARScoronavirus")))
 (def-indiv-with-id disease "SARS" "NCIT:C85064" :name "Severe Acute Respiratory Syndrome"
                    :synonyms ("severe acute respiratory syndrome"))
 

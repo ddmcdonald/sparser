@@ -1308,7 +1308,7 @@
 (def-indiv-with-id disease "rNSs" "EFO:1001838" :name "renal nutcracker syndrome") 
 (def-indiv-with-id disease "pHCMV" "EFO:0001062" :name "cytomegalovirus infection") 
 (def-indiv-with-id disease "msFc" "EFO:1001897" :name "Morvan syndrome") 
-(def-indiv-with-id disease "hSARS" "ORPHANET:2182" :name "Hydrocephalus with stenosis of the aqueduct of Sylvius") 
+;(def-indiv-with-id disease "hSARS" "ORPHANET:2182" :name "Hydrocephalus with stenosis of the aqueduct of Sylvius") 
 (def-indiv-with-id disease "Typhidot" "EFO:0006789" :name "typhoid fever") 
 (def-indiv-with-id disease "STIs" "NCIT:C3365" :name "sexually transmitted disorder") 
 (def-indiv-with-id disease "Pneudart" "NCIT:C114852" :name "new onset diabetes after transplant") 
