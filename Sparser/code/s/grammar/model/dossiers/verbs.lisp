@@ -350,7 +350,9 @@ come
 ;;------------------------ from places/moving.lisp ---------------
 
 (unless (or (current-script :biology)
-            (current-script :blocks-world))
+            (current-script :blocks-world)
+            (current-script :score))
+  ;; Let bio;verbs avoid hassle of trying to overwite these
   (define-movement-verb "cross")
   (define-movement-verb "drive")
   (define-movement-verb "follow")

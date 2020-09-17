@@ -1,14 +1,19 @@
-;;; -*- Mode: LISP; Syntax: Common-Lisp; Package: SPARSER -*-
-;;; Copyright (c) 2016-2019 SIFT LLC. All Rights Reserved.
+;;; Copyright (c) 2016-2020 SIFT LLC. All Rights Reserved.
 ;;;
 ;;;      File: "scripts"
 ;;;    Module: "init;loaders;"
-;;;   Version: November 2019
+;;;   Version: September 2020
 
 (in-package :sparser)
 
+;;;--------------------------
+;;; implementation of scripts
+;;;--------------------------
+
 (defvar script :default
-  "Specifies a set of Sparser parameters, switch values, grammar files, etc.")
+  "Specifies a set of Sparser parameters, switch values, grammar files, etc.
+   Coordiated with a pattern in sparser.asd to load a named system corresponding
+   to a specific script.")
 
 (defmacro defscript (name supers &rest script-options &aux
                      (script-doc ; optional string
@@ -84,6 +89,9 @@ are stashed on the script symbol's plist for the script function below."
        (turn-off-interfering-rules script))))
  *post-load-hooks*)
 
+;;;------------------
+;;; specific scripts
+;;;------------------
 
 (defscript bbn ()
   "Goes with a release of Sparser to BBN in the early 1990s to use
@@ -101,6 +109,34 @@ in conjunction with an early version of Hark. Notable for using the
    (*index-bindings-to-variables* nil))
   (:grammar-configuration "bio-grammar")
   (:switches bio-setting))
+
+(defscript score ()
+  "Social and Behavior Science for SCORE program"
+  (:script-variable *SBS*)
+  (:parameters
+   (*description-lattice* t)
+   (*ignore-literal-edges* t)
+   (*index-under-permanent-instances* t)
+   (*index-bindings-to-variables* nil)
+   (*filter-vocabulary* :score))
+  (:grammar-configuration "bio-grammar")
+  (:switches bio-setting))
+
+(defscript fire ()
+  "FIRE stands for 'Free-text Information and Relation Extraction'.
+It is essentially GROK going forward."
+  (:parameters
+   (*description-lattice* t)
+   (*index-bindings-to-variables* t))
+  (:grammar-configuration "full grammar")
+  (:switches neo-fire-setting))
+
+(defscript grok ()
+  (:grammar-configuration "grok")
+  (:parameters
+   (*index-bindings-to-variables* t))
+  (:interfering-rules ((comma-number ("," number))))
+  (:switches strider-setting))
 
 (defscript blocks-world ()
   "Blocks-world configuration for CwC project."
@@ -130,22 +166,6 @@ and setting up to do style work by collecting statistics."
   (:parameters
    (*index-bindings-to-variables* t))
   (:switches top-edges-setting/ddm)) ;; use-default-settings ??
-
-(defscript fire ()
-  "FIRE stands for 'Free-text Information and Relation Extraction'.
-It is essentially GROK going forward."
-  (:parameters
-   (*description-lattice* t)
-   (*index-bindings-to-variables* t))
-  (:grammar-configuration "full grammar")
-  (:switches neo-fire-setting))
-
-(defscript grok ()
-  (:grammar-configuration "grok")
-  (:parameters
-   (*index-bindings-to-variables* t))
-  (:interfering-rules ((comma-number ("," number))))
-  (:switches strider-setting))
 
 (defscript just-dm&p ()
   "Domain Modeling & Population."
