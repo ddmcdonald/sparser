@@ -1674,7 +1674,7 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                 (swap-rule-head *pobj-edge* i)
                 i))
 
-             ((when (valid-method 'compose np pp)
+             ((when (valid-method compose np pp)
                 ;; e.g. has-location + location : "the block at the left end of the row"
                 (let ((result (compose np pp)))
                   (when result
