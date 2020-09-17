@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2013-2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2013-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "generic"
 ;;;    Module:   "objects;rules;rule links;"
-;;;   Version:   Octover 2017
+;;;   Version:   September 2020
 
 ;;  1.1  (v1.5)  cat-rules -> cat-rule-set
 ;;  1.2  (3/20/91 v1.8.1)  Changed Establish-rule-set-for to look for an
@@ -23,6 +23,7 @@
 (defun rule-set-for (obj)
   (etypecase obj
     (label (label-rule-set obj))
+    (string (label-rule-set (word-named obj))) ; convenient when debugging
     (individual)))
 
 (defun (setf rule-set-for) (rule-set obj)
