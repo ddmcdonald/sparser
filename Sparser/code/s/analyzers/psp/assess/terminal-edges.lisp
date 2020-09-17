@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "terminal edges"
 ;;;   Module:  "analyzers;psp:assess:"
-;;;  Version:  January 2020
+;;;  Version:  September 2020
 
 ;; initiated 9/12 v2.3
 ;; 1.1 (10/23) reorganized what kinds of property edges are created
@@ -93,8 +93,12 @@
                    (tr :install/no-rule-set word)
                    (preterminals-for-unknown
                     word position-scanned next-position)))))
-          
-          (setq edges (remove-if #'unneeded-polyword-literal edges))
+
+          (setq edges (remove-nil-values edges))
+          ;; some may have been filtered out
+
+          (when edges
+            (setq edges (remove-if #'unneeded-polyword-literal edges)))
 
           (tr :edges-installed edges word)
           
@@ -103,7 +107,9 @@
                                           next-position))
 
           (set-status :preterminals-installed position-scanned)
-          edges )))) ;)
+          edges ))))
+
+
 
 
 

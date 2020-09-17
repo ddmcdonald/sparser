@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2014,2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "single-new"
 ;;;    Module:   "analyzers;psp:edges:"
-;;;   Version:   1.3 August 2014
+;;;   Version:   September 2020
 
 ;; 1.0 (9/7/92 v2.3) flushed out of date field references
 ;;     (11/3) fixed typo
@@ -70,6 +70,13 @@
                                              form
                                              referent )
 
+  (declare (special *filter-vocabulary*))
+
+  (when *filter-vocabulary*
+    (when (cfr-p rule) ; vs. :its-a-number or such from DA
+      (when (ignore-rule? rule)
+        (return-from make-completed-unary-edge nil))))
+
   (when (and category daughter
              (edge-p daughter)) ;; Dec#2
     (when (eq category (edge-category daughter))
@@ -88,7 +95,6 @@
                 (return-from make-completed-unary-edge nil) ;;(break "abort")
                 t ;;(break "different rule")
                 )))))))
-
 
   (let ((edge (next-edge-from-resource)))
     (knit-edge-into-positions edge

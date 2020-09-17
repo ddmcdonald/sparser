@@ -66,6 +66,62 @@
 
 
 
+;;;------------------------------------------------------
+;;; "filtering" rules -- keeping them from forming edges
+;;;------------------------------------------------------
+
+;; The master gate -- *filter-vocabulary* -- and can be set in
+;; a script.
+
+(defvar *rule-categories-to-ignore* nil
+  "The basic mechanism for ignoring a rule is by checking its lefthand
+   side against a list of proscribed categories. This variable holds
+   a list of the categories (in the Sparser package), and it set in
+   setup-vocabulary-suppression according to the set specified by
+   the value of *filter-vocabulary*")
+
+
+(defun setup-vocabulary-suppression ()
+  "Consult the value of *filter-vocabulary* and set up the corresponding
+   filters."
+  ;;/// if this evolves into a lot of cases and/or more structure to
+  ;; the filtering, then define a standalone-definition capability so these
+  ;; can be distributed to closer to what they control.
+  (declare (special *filter-vocabulary* *rule-categories-to-ignore*))
+  (when *filter-vocabulary*
+    (ecase *filter-vocabulary*
+      (:score
+       (setq *rule-categories-to-ignore*
+             '(cellular-location cell-type
+               protein transcription-factor ; protein
+               protein-domain binding-domain ; protein-domain
+               )))
+      (:nothing
+       (setq *rule-categories-to-ignore* nil)))))
+
+
+
+(defun ignore-rule? (rule)
+  "Called from make-completed-unary-edge."
+  (declare (special *filter-vocabulary* *rule-categories-to-ignore*))
+  (let ((name (cat-name (cfr-category rule))))
+    (memq name *rule-categories-to-ignore*)))
+  
+
+(defgeneric supress-rules? (word)
+  (:documentation "Called during find-word when we're deciding whether
+    the word just supplied by finish-token is 'known' or 'unknown'.
+    Usually, having an associated rule-set is enough to determine that
+    the word is known, but if the single-term-rewrite rules are the sort
+    that we should ignore, then we pass the word through as unknown.
+    Returning non-nil marks the word as unknown.")
+  (:method ((rs rule-set))
+    (declare (special *filter-vocabulary*))
+    (when *filter-vocabulary*
+      (let* ((unary-rules (rs-single-term-rewrites rs)))
+        (some #'ignore-rule? unary-rules)))))
+
+
 
 ;;;--------------------------
 ;;; turning rules on and off

@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1990  Content Technologies Inc.
-;;; copyright (c) 1992,2012-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992,2012-2020 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "lookup"
 ;;;   Module:  "analysers/tokenizer/"
-;;;  Version:  April 2016
+;;;  Version:  September 2020
 
 ;;  1.1 (v1.6 12/14/90) Cleans up the mess in Lookup as part of doing :ignore
 ;;      unknown words.
@@ -37,32 +37,32 @@
   (handler-case
       (let ((symbol (lookup-word-symbol))) ;; pull it from the buffer
         (if symbol
-            (if (boundp symbol)
-                (let ((word (symbol-value symbol)))
-                  (cond
-                    ((not (word-p word))
-                     ;; this should not occur
-                     (error "The symbol '~a' in package ~a~
+          (if (boundp symbol)
+            (let ((word (symbol-value symbol)))
+              (cond
+                ((not (word-p word))
+                 ;; this should not occur
+                 (error "The symbol '~a' in package ~a~
                    ~%was returned from the tokenizer's lookup buffer~
                    ~%but is a ~a rather than a word."
-                            symbol (symbol-package symbol)
-                            (type-of word)))
-                    (*edge-for-unknown-words*
-                     ;; mostly concerned with portions of polywords
-                     (really-known-word? word char-type))
-                    (t
-                     ;; We're not making edges over unknown words
-                     word)))
+                        symbol (symbol-package symbol)
+                        (type-of word)))
+                (*edge-for-unknown-words*
+                 ;; mostly concerned with portions of polywords
+                 (really-known-word? word char-type))
+                (t
+                 ;; We're not making edges over unknown words
+                 word)))
 
-                ;; Symbol exists but isn't bound
-                (else
-                  (tr :fw-symbol-unbound symbol)
-                  (establish-unknown-word char-type)))
-
-            ;; There's no symbol
+            ;; Symbol exists but isn't bound
             (else
-              (tr :fw-no-symbol)
-              (establish-unknown-word char-type))))
+              (tr :fw-symbol-unbound symbol)
+              (establish-unknown-word char-type)))
+
+          ;; There's no symbol
+          (else
+            (tr :fw-no-symbol)
+            (establish-unknown-word char-type))))
    
     (error (e) (resolve/make "UnknownWord"))))
 
@@ -90,7 +90,9 @@
           word)
 
          ((rs-single-term-rewrites rs)
-          word)
+          (if (supress-rules? rs)
+            (establish-unknown-word char-type word)
+            word))
 
          ((and char-type (current-script :biology))
           ;; The test is really "do we require that this word is

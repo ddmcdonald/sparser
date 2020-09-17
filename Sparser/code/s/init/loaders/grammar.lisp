@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:  "grammar"
 ;;;    Module:  "init;loaders;"
-;;;   version:  July 2020
+;;;   version:  September 2020
 
 ;; broken out from loaders;master-loader 4/19/94. Added Whos-news-post-dossiers-loader
 ;;  4/29 added [words;whitespace assignments].  5/25 consolidated the
@@ -289,7 +289,7 @@ omitted and then run (perhaps) after the image has been launched."
   (gload "words;porter-stemmer")
   (gload "one-offs;loader")
 
-  (gload "dossiers;loader")
+  (gload "dossiers;loader") ; n.b. includes verbs
   
   (when *DM&P*
     (gload "DM&P;measure"))
@@ -315,7 +315,7 @@ omitted and then run (perhaps) after the image has been launched."
   (let ((*inhibit-construction-of-systematic-semantic-rules* t))
     (declare (special *inhibit-construction-of-systematic-semantic-rules*))
     (gate-grammar *biology*
-                  (gload "bio;loader")))
+        (gload "bio;loader")))
 
   (gate-grammar *disease*
     (disease-loaded-after-bio))
@@ -323,6 +323,8 @@ omitted and then run (perhaps) after the image has been launched."
   (gload "bio;category-defining-words.lisp")
   ;; Defines lemmas for categories that don't naturally or easily
   ;; support them.
+
+  (setup-vocabulary-suppression)
 
   (gate-grammar *testing*
     (gate-grammar *miscellaneous*

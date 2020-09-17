@@ -1,9 +1,9 @@
 ;;; -*- Mode: LISP; Syntax: Common-Lisp; Package: SPARSER -*-
-;;; Copyright (c) 2016-2019 SIFT LLC. All Rights Reserved.
+;;; Copyright (c) 2016-2020 SIFT LLC. All Rights Reserved.
 ;;;
 ;;;      File: "parameters"
 ;;;    Module: "init;"
-;;;   Version: June 2019
+;;;   Version: September 2020
 
 ;;;----------------------------
 ;;; parameterizing the loading
@@ -145,11 +145,20 @@ individual.")
   "Controls whether we use the table on a variable to keep 
 track of its bindings.")
 
+(defvar *filter-vocabulary* nil
+  "The master gating global for dynamically inhibiting the application
+   of designated rules as part of tuning vocabulary to a particular
+   domain. 
+")
+
 ;;;-----------------------------------------------------------------------
 ;;; Mutually exclusive application settings.
 ;;; These correspond to alternative system configurations, some of them
 ;;; now very old and mothballed (i.e. not incorporated in the present codebase).
 ;;; They dictate choices of grammar modules to load and values for parameters.
+;;;
+;;; These are set by the choice of script (init/loaders/scripts.lisp)
+;;; and usually selected via a corresponding system in sparser.asd
 ;;;-----------------------------------------------------------------------
 
 (defvar *grok* nil
@@ -167,12 +176,15 @@ whose rules get in the way.")
   "Uses a configuration similar a bit larger than the one for C3,
 along with a grammar module (sublanguage) for the blocks world.")
 
-(defvar *checkpoint-operations* nil
-  "In mothballs.")
-
 (defvar *fire*  nil
   "Fire stands for 'Free-text Information and Relation Extraction'.
 It is essentially Grok going forward.")
+
+(defvar *sbs* nil
+  "Stands for 'Social and Behavioral Science'")
+
+(defvar *checkpoint-operations* nil
+  "In mothballs.")
 
 (defvar *pure-dm&p-load* nil)
 

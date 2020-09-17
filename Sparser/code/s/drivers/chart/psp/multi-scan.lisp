@@ -450,7 +450,8 @@
          (let ((edges (do-just-terminal-edges word position-before position-after)))
            (tr :scanned-terminal-edges edges position-before position-after)
            (when edges ;; e.g. digit-sequence
-             (run-any-edge-fsa edges)))))))))
+             (unless (list-of-nil? edges)
+               (run-any-edge-fsa edges))))))))))
 
 
 
