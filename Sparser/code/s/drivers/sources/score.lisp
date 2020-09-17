@@ -48,6 +48,12 @@
 
 |#
 
+(defun initialize-score-article-parsing ()
+  (unless (probe-file *score-json*)
+    (error "Set *score-json* to where the articles are"))
+  (collect-score-json)
+  (setup-sections-to-ignore-for-score))
+
 ;;;-----------------------------
 ;;; State globals and utilities
 ;;;-----------------------------
@@ -177,14 +183,14 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
    interpretation."
   (declare (special *json-files-to-read*))
   (unless *json-files-to-read*
-    (error "Run collect-score-json"))
+    (initialize-score-article-parsing))
   (let* ((pathname (nth (1- n) *json-files-to-read*))
          (filename (pathname-name pathname))
          (handle (subseq filename 0 (position #\_ filename :from-end t))))
     (when (member filename *bad-score-files* :test #'string-equal)
       (format t "~&Ignoring bad file: ~a" filename)
       (return-from run-nth-score-article nil))
-    (format t "~&~%Reading ~a~%" filename)
+    (format t "~&Reading ~a~%" filename)
     (let ((sexp (cl-json::decode-json-from-source pathname)))
       (let* ((article (make-instance 'score-article :n n))
              (*current-article* article))
@@ -212,6 +218,11 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
     
     (identify-score-block-texts sexp) ;; -> *sequence-of-block-texts*
     ;; (print-extracted-block-texts)
+    (when (>= 2 (length *sequence-of-block-texts*))
+      (format t "~%Only ~a text block(s) in the JSON. Aborting~%~a"
+              (length *sequence-of-block-texts*) (article-source article))
+      (setf (children article) nil) ; indication that we're punting
+      (return-from sort-out-score-paragraphs nil))
 
     (setq action-paragraphs ; look for implicit running heads
           (look-for-tacit-running-heads *sequence-of-block-texts*))
@@ -565,7 +576,8 @@ parser will get to see them.
   "Return the para-index of the final paragraph in this section"
   (let* ((paragraphs (children section))
          (last-para (car (last paragraphs))))
-    (para-index last-para)))
+    (when last-para
+      (para-index last-para))))
 
 (defun title-paragraph? (p)
   "Is this paragraph exlicitly marked as a title?"

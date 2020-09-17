@@ -327,8 +327,8 @@
   (:method ((e edge) (p position))
     (position-is-at-or-between p (pos-edge-starts-at e) (pos-edge-ends-at e)))
   (:method ((ev edge-vector) (p position)) nil)
-  (:method ((w word) (p position)) nil))
-
+  (:method ((w word) (p position)) nil)
+  #+ignore(:method ((ignore T) (p position)) (break "where are called from?")))
 
 (defun highest-edge (ev)
   ;; returns the edge most recently added to the vector
