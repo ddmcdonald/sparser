@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1995,2010-2018  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2010-2020  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "list hacking"
 ;;;    Module:   "util:"
-;;;   Version:   August 2018
+;;;   Version:   September 2020
 
 ;; initiated 12/30/93 v2.3.  4/11/95 added nil-checkers. 
 ;; 8/24/10 moved in quote-every-second-one from forms/categories
@@ -195,6 +195,16 @@ edge of the tree, except for nils. Can deal with non-list cdrs."
 
 
 
+(defun list-of-nil? (list)
+  "Is this a one-element list where that element is nil?"
+  (and (null (cdr list))
+       (eq nil (car list))))
+
+(defun remove-nil-values (list)
+  "Return a new list where any nil's in the input list
+   have been removed"
+  (loop for item in list
+     when item collect item))
 
 
 ;;;----------------------------------------------------------

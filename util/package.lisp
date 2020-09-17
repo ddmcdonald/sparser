@@ -42,9 +42,10 @@
            #:take-first-n
            #:singletonp
            #:deep-copy
-
            #:flatten #:flattenc
            #:all-the-same
+           #:list-of-nil?
+           #:remove-nil-values
            #:invert-type
        
            ;; strings
