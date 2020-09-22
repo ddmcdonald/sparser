@@ -149,7 +149,7 @@ explicit mapping in the mumble field.
                       :lp lp
                       :head m-head)))
     (otherwise
-     (lsp-break "Unanticipated part of speech in rdata: ~a" pos))))
+     (error "Unanticipated part of speech in rdata: ~a" pos))))
   
 ;;-- #2b subroutine
 
@@ -426,7 +426,7 @@ have been filled in if the rdata includes an etf and a word.
   (let ((pairs-pos (loop for pair in pairs
                       as m-pos = (m::lookup-pos pair)
                       collect `(,m-pos . pair))))
-    (lsp-break "Stub: Multiple pos on mdata for ~a~%~a" category pairs-pos)))
+    (error "Stub: Multiple pos on mdata for ~a~%~a" category pairs-pos)))
 
 ;;--- decoder
 
@@ -737,8 +737,8 @@ have been filled in if the rdata includes an etf and a word.
                     *during-rdata-initialization*))
   
   (when *recording-extended-mdata*
-    (lsp-break "Potential loop on ~a mdata~%On prior pass data was ~a"
-               category *recording-extended-mdata*))
+    (error "Potential loop on ~a mdata~%On prior pass data was ~a"
+           category *recording-extended-mdata*))
   (let ((*recording-extended-mdata* `(,lp ,m-word ,s-word)))
     (declare (special *recording-extended-mdata*))
 
@@ -755,9 +755,9 @@ have been filled in if the rdata includes an etf and a word.
         ;; another path through setup-rdata -> mumble resources
         ;; that has to be accommodated.
         (unless (rdata category)
-          (lsp-break "Why no realization on ~a?" category))
+          (error "Why no realization on ~a?" category))
         (unless (rdata/pos category s-pos)
-          (lsp-break "No head entry for ~a on ~a" s-pos category))
+          (error "No head entry for ~a on ~a" s-pos category))
 
         ;;  Look for the possibiity of inheriting map data.
         (let ((mdata
