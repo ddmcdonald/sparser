@@ -89,7 +89,16 @@
         (push (list morph-keyword word) *show-morphs*))
 
       (etypecase morph-keyword
-        (null (setup-unknown-word-by-default word))
+        (null
+         ;; we get here on short words where morphologically explict
+         ;; cases ('ly') are thrown out. Look for a comlex entry
+         ;; then default to noun.
+         (let ((entry (gethash (pname word) *primed-words*)))
+           (if entry
+             (then
+               (tr :make-word/entry entry)
+               (unpack-primed-word word (word-symbol word) entry))
+             (setup-unknown-word-by-default word))))
         (keyword
          (case morph-keyword
            ;;(:ends-in-s) ;; always ambiguous?
