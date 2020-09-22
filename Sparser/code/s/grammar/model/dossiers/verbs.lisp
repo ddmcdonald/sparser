@@ -144,6 +144,15 @@ come
                   :o artifact
                   :mumble ("build" svo :s agent :o artifact)))
 
+(define-category comply
+  :specializes state
+  :mixins (prop-attitude) ;;//// rework
+  ;; (comlex-entry "comply") -- ((verb (:subc ((pp :pval ("with")) (intrans)))))
+  :realization (:verb ("comply"
+                       :third-singular "complies"
+                       :past-tense "complied"
+                       :present-participle "complying")))
+
 (define-category contribute ;; "donate", maybe "provide, "give"??
   :specializes process
   :mixins (directed-action ;; agent __ theme 'to' beneficiary
@@ -192,6 +201,15 @@ come
                        :past-participle "gotten")) ;; "have gotten a block"
   :documentation "'Get' as in 'come to have'. Could be
     construded as generalized possession: 'I've got a cold'.")
+
+
+(define-category imply
+  :specializes state
+  :mixins (prop-attitude)
+  :realization (:verb ("imply"
+                       :third-singular "implies"
+                       :past-tense "implied"
+                       :present-participle "implying")))
 
 (define-category intend
   :specializes state
