@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "morphology"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  April 2020
+;;;  version:  September 2020
 
 ;; initiated 8/31/92 v2.3, fleshing out verb rules 10/12
 ;; 0.1 (11/2) fixed how lists of rules formed with synonyms
@@ -727,9 +727,8 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
       (eql character #\r)))
 
 (defun one-syllable? (pname)
-  ;; a c/v analysis would be better, 
-  ;; or just counting the number of vowels as a stand-in for syllables
-  (>= 4 (length pname)))
+  ;; a c/v analysis would be best 
+  (= 1 (count-vowels pname)))
 
 (defun count-vowels (pname)
   "Basic uestion is how many CV's are there as a sort of
