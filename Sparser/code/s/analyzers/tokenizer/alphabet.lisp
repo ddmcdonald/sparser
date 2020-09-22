@@ -1013,6 +1013,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (799 (:alphabetical . (:lowercase .,(code-char 799)))) ;; #\COMBINING_PLUS_SIGN_BELOW 
     (803 (:alphabetical . (:uppercase .,(code-char 803)))) ;; #\COMBINING_DOT_BELOW
     (807 (:punctuation  .,(punctuation-named (code-char 807)))) ;; ̧
+    (808 (:alphabetical . (:lowercase .,(code-char 808)))) ;; #\COMBINING_OGONEK  "̨"
     (817 (:punctuation  .,(punctuation-named (code-char 817)))) ;; ̱
     (820 (:alphabetical . (:lowercase .,(code-char 820)))) ;; #\COMBINING_TILDE_OVERLAY 
     (822 (:alphabetical . (:lowercase .,(code-char 822)))) ;; #\COMBINING_LONG_STROKE_OVERLAY 
@@ -4064,3 +4065,19 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 
 
 
+#|  Find reasonable equivalents for these. They are read into the text for some articles
+    but will block when you try to write.  These are combining codes, and not easy to get info on.
+    They're all Low Surrogates which run from U+DC00 to U+DFFF
+
+(56389 (:alphabetical . (:lowercase .,(code-char 56389)))) ;; #\UDC45  -- unassigned (Cn) in Low Surrogates block
+(56395 (:alphabetical . (:lowercase .,(code-char 56395)))) ;; #\UDC4B 
+(56396 (:alphabetical . (:lowercase .,(code-char 56396)))) ;; #\UDC4C 
+(56406 (:alphabetical . (:lowercase .,(code-char 56406)))) ;; #\UDC56 -- invalid character
+(56407 (:alphabetical . (:lowercase .,(code-char 56407)))) ;; #\UDC57 -- Byzantine musical symbol micron ison
+(56418 (:alphabetical . (:lowercase .,(code-char 56418)))) ;; #\UDC62 -- Supplemental Arrows-C 'Wide headed rightwards light barb arrow'
+(56419 (:alphabetical . (:lowercase .,(code-char 56419)))) ;; #\UDC63 -- Mathematical Italic Small V
+(57085 (:alphabetical . (:lowercase .,(code-char 57085)))) ;; #\UDEFD -- Mathematical Italic Small Beta
+(57087 (:alphabetical . (:lowercase .,(code-char 57087)))) ;; #\UDEFF 
+(57095 (:alphabetical . (:lowercase .,(code-char 57095)))) ;; #\UDF07 -- Mathematical Italic Small MU
+
+|#
