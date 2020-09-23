@@ -69,9 +69,41 @@
 ;;;------------------------------------------------------
 ;;; "filtering" rules -- keeping them from forming edges
 ;;;------------------------------------------------------
+#|
+  The idea of filtering lexical rules is to facilitate tailoring
+the vocabulary of a particular Sparser configuration. Rather than
+not loading these rules (e.g. by having them in specific grammar
+modules and omitting those modules from the load), the rules are
+loaded, but they are prohibited from adding edges to the chart --
+they are 'filtered out'.
 
-;; The master gate -- *filter-vocabulary* -- and can be set in
-;; a script.
+  The master gate is *filter-vocabulary*, which is defined in
+init/parameters.lisp. If this global is nil then nothing is
+filtered. It can be set in a script so that it the filtering can go into effect
+at load time, e.g. the 'score' script, which is defined in
+init/loaders/scripts.lisp with all the other scripts. Note that
+any script can be set up in ~/sparser/sparser.asd to tailor
+the whole configuration of the load.
+
+The filtering takes place at two points.
+ 1. During word lookup. As words are tokenized they are passed to
+find-word (analyzers/tokenizer/lookup.lisp) which has to distinguish
+between known and unknown words. A prerequisite for a word being 'known'
+is having a rule-set. If there are single-term rules in the rule set
+that we are going to filter (see supress-rules?), then the word is
+shunted to unknown word processing. The offending rule is still there,
+but we get the opportunity to, e.g., consult Comlex and bring in other
+readings.
+
+ 2. At make-completed-unary-edge. One of the early sweeps through
+a sentence introduces all the edges over each of the words. The words
+will specify the single-term rules that would introduce the edges for
+their different senses (e.g. the noun and verb senses of a word like "increase"),
+and these rules are passed one at a time through make-completed-unary-edge.
+There, if the flag *filter-vocabulary* is up, the rule object is passed to
+ignore-rule?, and if that function determines that the rule should be ignored
+then we immediately return from the call without creating an edge.
+|#
 
 (defvar *rule-categories-to-ignore* nil
   "The basic mechanism for ignoring a rule is by checking its lefthand

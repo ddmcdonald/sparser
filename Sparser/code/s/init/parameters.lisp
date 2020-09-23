@@ -148,8 +148,7 @@ track of its bindings.")
 (defvar *filter-vocabulary* nil
   "The master gating global for dynamically inhibiting the application
    of designated rules as part of tuning vocabulary to a particular
-   domain. 
-")
+   domain. Takes keyword values that are interpreted by setup-vocabulary-suppression")
 
 ;;;-----------------------------------------------------------------------
 ;;; Mutually exclusive application settings.
