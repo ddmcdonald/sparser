@@ -65,7 +65,7 @@
 
 (defclass action-paragraph (score-paragraph)
   ()
-  (:documentation "Assembly level should take some action,
+  (:documentation "Directs the assemble level to take some action,
     but otherwise this isn't a content paragraph. So far these are just
     used to flag headers and other things that need to be removed."))
 

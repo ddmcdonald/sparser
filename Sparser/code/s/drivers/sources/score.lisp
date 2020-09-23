@@ -101,12 +101,12 @@
   (nth n *raw-paragraphs*))
 
 
-(defun blocks-include (title paragraph-list)
+(defun blocks-include (flag paragraph-list)
   "Do any of the typed paragraphps in the list have this title?
    Can noyt be used on text blocks."
   (loop for p in paragraph-list
      when (and (typep p 'score-paragraph)
-               (eq (flag p) titlr))
+               (eq (flag p) flag))
      return p))
 
 (defun blocks-include-any (type-name paragraph-list)
@@ -129,6 +129,9 @@
     "Bello-Chavolla_covid_rb96l" ; #11 Error during string-to-utf8: Unable to encode character 54 as :utf-8.
     "Gelfand_covid_n8dr9" ; #34 can't encode 56319
     "Kachanoff_covid_gy9n7" ; 47 ditto
+    "Hossain_covid_7ol4m" ; 42 ditto -- reader recovers but writer chokes
+    ;; and truncates the file when it reaches that character
+    "Kenyon_covid_87mby" ; 51 ripping of file completely messed up -- just three blocks
     "Wise_covid_4qm4q" ; 96 ditto. Also 5741 -- caught by tokenizer so where's the complaint?
     "Du_covid_yl7p9" ; #26 - does substitution for 56319 when reading the JSON
     )
@@ -214,29 +217,29 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
    When that dust settles, assign the results to fields in the article."
   (declare (special *sequence-of-block-texts* *raw-paragraphs*
                     *ready-paragraphs* ))
-  (let ( action-paragraphs )
-    
-    (identify-score-block-texts sexp) ;; -> *sequence-of-block-texts*
-    ;; (print-extracted-block-texts)
-    (when (>= 2 (length *sequence-of-block-texts*))
+
+  (let ((length (identify-score-block-texts sexp)))
+    ;; populates *sequence-of-block-texts*  (print-extracted-block-texts)
+
+    (when (>= 2 length)
       (format t "~%Only ~a text block(s) in the JSON. Aborting~%~a"
-              (length *sequence-of-block-texts*) (article-source article))
+              length (article-source article))
       (setf (children article) nil) ; indication that we're punting
       (return-from sort-out-score-paragraphs nil))
-
-    (setq action-paragraphs ; look for implicit running heads
-          (look-for-tacit-running-heads *sequence-of-block-texts*))
     
     (collect-score-json-paragraphs sexp) ;; -> *raw-paragraphs*
     ;; (print-raw-paragraphs)
 
-    (collect-title-and-meta-data article *raw-paragraphs* action-paragraphs)
+    (collect-title-and-meta-data article *raw-paragraphs*)
 
-    (if (or (blocks-include-any 'action-paragraph *raw-paragraphs*)
-            action-paragraphs)
-      (setq *ready-paragraphs* ; drops any action-paragraphs from the raw list
-            (clean-score-paragraphs (gather-action-paragraphs action-paragraphs)))
-      (setq *ready-paragraphs* *raw-paragraphs*))
+    (setq *ready-paragraphs*
+          (clean-score-paragraphs (gather-action-paragraphs *raw-paragraphs*)))
+
+    ;; (if (or (blocks-include-any 'action-paragraph *raw-paragraphs*)
+    ;;         action-paragraphs)
+    ;;   (setq *ready-paragraphs*
+    ;;         (clean-score-paragraphs (gather-action-paragraphs #| action-paragraphs |#)))
+    ;;   (setq *ready-paragraphs* *raw-paragraphs*))
     ;; (print-ready-paragraphs)
 
     (aggregate-score-para-into-sections *ready-paragraphs* article)
@@ -250,7 +253,8 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
 (defun identify-score-block-texts (sexp)
   "First step is to collect up the text strings of each block
    in the input sexp of JSON->SEXP forms.
-   Stores the result in *sequence-of-block-texts*"
+   Stores the result in *sequence-of-block-texts*,
+   Returns the length."
   (declare (special *sequence-of-block-texts*))
   (let ((blocks (locate-blocks-in-json sexp)))
     (let ((texts (loop for b in blocks
@@ -262,13 +266,17 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
   "Map through the sexp of the text extracted from each block
    and wrap it in the appropriate type of paragraph.
    Sets the ordered list of objects to *raw-paragraphs* "
-  (declare (special *raw-paragraphs*))
-  (let ((blocks (locate-blocks-in-json sexp))
-        (index -1))
-    (let ((paragraphs
-           (loop for b in blocks
-              as text = (locate-text-in-score-block b)
-              collect (make-score-paragraph text (incf index)))))
+  (declare (special *raw-paragraphs* *paragraph-index*))
+  (let ((blocks (locate-blocks-in-json sexp)))
+    (setq *paragraph-index* -1)
+    (let ( text paragraph  paragraphs )
+      (dolist (b blocks)
+        (setq text (locate-text-in-score-block b))
+        (setq paragraph (make-score-paragraph text))
+        (if (consp paragraph)
+          (loop for p in paragraph do (push p paragraphs))
+          (push paragraph paragraphs)))
+      (setq paragraphs (nreverse paragraphs))
       (setq *raw-paragraphs* paragraphs)
       (length paragraphs))))
 
@@ -277,51 +285,26 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
 ;;; Recognizing and removing header material
 ;;;------------------------------------------
 
-(defun gather-action-paragraphs (tacit-action-paras)
+(defun gather-action-paragraphs (raw-paragraphs)
   "Feeder to clear-score-paragraphs -- collects and action-paragraphs
-   identified in the paragraph construction sweep and adds in one(s)
-   found at the start of the article.  This is guarded by a check that
-   these exist, so we have to find something."
-  (declare (special *raw-paragraphs*))
-  (let ((body-action-paragraphs
-         (loop for p in *raw-paragraphs*
+   identified in the paragraph construction sweep"
+  (let ((action-paragraphs
+         (loop for p in raw-paragraphs
             when (eq (type-of p) 'action-paragraph)
             collect p)))
-    (format t "~&action paras: ~a in body, ~a tacit~%"
-            (length body-action-paragraphs)
-            (length tacit-action-paras))
-    (or body-action-paragraphs
-        tacit-action-paras)))
-
-(defun look-for-tacit-running-heads (block-text-list)
-  "There can be more than one, e.g. #20, so we search the first handful
-   of blocks and make paragraphs for them as our return value"
-  (loop for i from 0 to 5
-     as text = (nth i block-text-list)
-     when (tacit-running-head? text)
-     collect (make-running-head text)))
-
-(defun tacit-running-head? (text-line)
-  "Is this line the sort of thing that we'd expect to find as running
-   header or maybe footer?"
-  (or (when (> (length text-line) 7) ;; line might have just one character on it
-        (string-equal "medRxiv" (subseq text-line 0 7)))
-      (when (> (length text-line) 19)
-        (string-equal "all rights reserved" (subseq text-line 0 19)))))
-
-(defun make-running-head (text-line)
-  (let ((p (make-instance  'action-paragraph :flag :running-head)))
-    (setf (arg-alist p) `(:header ,text-line))
-    p))
-
+    (when action-paragraphs
+      (format t "~& ~a action paragraphs~%" (length action-paragraphs))
+      action-paragraphs)))
 
 
 (defun clean-score-paragraphs (action-paragraphs)
-  "Extract the string to delete from the action paragraphs,
+  "Extract the strings to delete from the action paragraphs,
    then sweep over the sequence of paragrahs, collecting them into
    a new list (*ready-paragraphs*). Look for the string in each
    paragraph and modify the content-string of a paragraph to excise it
    if it's there."
+  ;; The paragraphs retain their identities, only the text
+  ;; in their content-string fields is affected
   (declare (special *raw-paragraphs*
                     *ready-paragraphs*))
 
@@ -334,7 +317,6 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
                ;; e.g. "FLOW DURING COVID-19 1" article #90
                (setq string (remove-trailing-whitespace
                              (subseq string 0 (- (length string) 2)))))
-             (format t "~&Cleaning instances of ~s~%" string)
              string))
 
          (remove-numbers (string)
@@ -378,31 +360,55 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
                   p)))
              (otherwise ; don't change anything
               p))))
-    
-    (let ((filter-strings (loop for p in action-paragraphs
-                             collect (lift-string-from-action-para p))))
-      ;; the paragraphs retain their identities, only the text
-      ;; in their content-string fields is affected
 
-      (when (cdr filter-strings)
-        (setq filter-strings (remove-duplicates filter-strings :test #'string=)))
+    (when action-paragraphs ; set by gather-action-paragraphs and could be nil
+      (let ((filter-strings (loop for p in action-paragraphs
+                               collect (lift-string-from-action-para p))))
 
-      (let ((paragraphs *raw-paragraphs*)
-            cleaned )
-        ;; updata the paragraphs and 'clean', string by string
+        (when (cdr filter-strings)
+          (when (> (length filter-strings) 3)
+            ;; They're likely in their own blocks so we just take the first few
+            ;; ///Ought to be a function to do this
+            (setq filter-strings (loop for i from 0 to 2
+                                    as string = (nth i filter-strings)
+                                    collect string)))
+          (setq filter-strings (remove-duplicates filter-strings :test #'string=)))
 
-        (do ((paragraphs *raw-paragraphs* cleaned)
-             (string-to-remove (car filter-strings) (car remaining-strings))
-             (remaining-strings (cdr filter-strings) (cdr remaining-strings)))
-            ((null string-to-remove))
-          (setq cleaned
-                (loop for p in paragraphs
-                  unless (eq (type-of p) 'action-paragraph)
-                  collect (remove-specified-text p string-to-remove))))
+        (let ((paragraphs *raw-paragraphs*)
+              cleaned )
+          ;; updata the paragraphs and 'clean', string by string
 
-        (setq *ready-paragraphs* cleaned)
-        cleaned))))
+          (do ((paragraphs *raw-paragraphs* cleaned)
+               (string-to-remove (car filter-strings) (car remaining-strings))
+               (remaining-strings (cdr filter-strings) (cdr remaining-strings)))
+              ((null string-to-remove))
+            (format t "~&Cleaning instances of ~s~%" string-to-remove)
 
+            (setq cleaned
+                  (loop for p in paragraphs
+                     unless (eq (type-of p) 'action-paragraph)
+                     collect (remove-specified-text p string-to-remove))))
+
+          (setq *ready-paragraphs* cleaned)
+          cleaned)))))
+
+
+#| moved to make-score-paragraph
+(defun look-for-tacit-running-heads (block-text-list)
+  "Called from sort-out-score-paragraphs as the next step after
+   pulling the texts from the JSON blocks and creating paragraph objects
+   for them. There can be more than one, e.g. #20, so we search the first handful
+   of blocks and make paragraphs for them as our return value"
+  (loop for i from 0 to 5
+     as text = (nth i block-text-list)
+     when (tacit-running-head? text)
+     collect (make-running-head text i)))
+
+(defun make-running-head (text-line index)
+  (let ((p (make-instance  'action-paragraph :flag :running-head)))
+    (setf (para-index p) index)
+    (setf (arg-alist p) `(:header ,text-line))
+    p))  |#
 
 
 ;;;-----------------------------
@@ -527,39 +533,32 @@ parser will get to see them.
 
 ;;--- Article titles, and pre-abstract meta-data
 
-(defun collect-title-and-meta-data (article raw-paragraphs tacit-action-paragraphs)
+(defun collect-title-and-meta-data (article raw-paragraphs)
   "Called from sort-out-score-paragraphs before their running heads
    have been cleaned. Tries to identify the title, then collects
    all the raw paragraphs between there and the first major overt section
    (usually Abstract) and creates a section with the name 'Meta-data'.
    It attaches the section to the article where aggregate-score-para-into-sections
    will notice it and include it with the other sections."
-  (let ((start-here
-         ;; the index of the paragraph to presume is the title, as an additional
-         ;; benefit this skips the index over any action paragraphs
-         (cond
-           (tacit-action-paragraphs (1- (length tacit-action-paragraphs)))
-           ((typep (nth 0 raw-paragraphs) 'action-paragraph)
-            (if (typep (nth 1 raw-paragraphs) 'action-paragraph)
-              2 1))
-           (t 0))))
-    (let ((title-para (or (title-paragraph? (nth start-here raw-paragraphs))
-                          (title-paragraph? (nth (+ 1 start-here) raw-paragraphs))
-                          (title-paragraph? (nth (+ 2 start-here) raw-paragraphs))))
-          (title-index start-here))
-      (when title-para ; it was explictly marked
-        (setf (title article) (content-string title-para))
-        (setq title-index (para-index title-para)))
-      (unless title-para
-        ;; use the first non-action line for the title
-        (let ((first-usable (nth start-here raw-paragraphs)))
-          (setf (title article) (content-string first-usable))
-          (setq title-index (1+ (para-index first-usable)))))
-      (let* ((index-of-next-header (index-of-next-header title-index raw-paragraphs))
-             ;; The paragraph at that index is a header-paragraph
-             (section-paras
-              (loop for i from title-index to (1- index-of-next-header)
-                 collect (nth i raw-paragraphs))))
+
+  (let* ((explicit-title (or (blocks-include :title raw-paragraphs)
+                             (blocks-include :short-title raw-paragraphs)))
+         (title ;; the paragraph, not the string yet
+          (or explicit-title
+              (loop for p in raw-paragraphs
+                 ;; first regular paragraph, e.g. skip leading action paragraphs
+                 when (typep p 'text-paragraph)
+                 return p)))
+         (title-index (para-index title)))
+
+    (setf (title article) (content-string title))
+
+    ;; now make the section for the article's meta data
+    (let* ((index-of-next-header (index-of-next-header title-index raw-paragraphs))
+           ;; The paragraph at this index is a header-paragraph
+           (section-paras
+            (loop for i from (1+ title-index) to (1- index-of-next-header)
+               collect (nth i raw-paragraphs))))
         ;;//// would be nice to juse use collect-next-section, but its not
         ;; factored in a way we could just use -- copying code from it.
         ;;???? Maybe make a dummy header-paragraph to use -- then we
@@ -569,7 +568,7 @@ parser will get to see them.
           (setf (title s) "MetaData") ;// goes on ignore list
           (setf (children s) section-paras)
           (knit-paragraphs section-paras s)
-          (setf (children article) s))))))
+          (setf (children article) s)))))
 
 ;;/// move
 (defun index-of-final-paragraph (section)
@@ -639,259 +638,6 @@ parser will get to see them.
     (setq *p* p)
     (format t "~&~a" p)
     p))
-
-   
-;;;--------------------------
-;;; text -> paragraph object
-;;;--------------------------
-
-(defun make-score-paragraph (text index)
-  "Many 'paragraphs' are actually section headings.
-   Try to detect these and use the specialized paragraph object
-   for them. There are a lot of other 'small' paragraph texts that
-   may play substantive roles in the structure of the document,
-   perhaps as table column headings. Try to identify these and
-   make them specialized paragraphs as well.
-     The point is to make it easier for the sweep over these
-   paragraphs to impose a reasonable document structure."
-  (let ((length (length text))
-        p )
-
-    ;; null-paragraph
-    (when (< length 2)
-      (setq p (make-instance 'null-paragraph :flag :too-short :index index))
-      (setf (content-string p) text)
-      (return-from make-score-paragraph p))
-    
-    (multiple-value-bind (keyword residue from-end?)
-        (detect-score-title text)
-      (unless keyword
-        (if (likely-short-header length text)
-          ;; subheading-paragraph
-          (then
-            (setq p (make-instance 'subheading-paragraph
-                                   :flag text :index index))
-            (setf (content-string p) text))
-          
-          (else ;; text-paragraph
-            (setq p (make-instance 'text-paragraph :index index))
-            (setf (content-string p) text)
-            (let ((size (if (> 12 length) length 12)))
-              ;;(format t "size: ~a~%" size)
-              (setf (prefix p) (subseq text 0 size)))))
-        p)
-        
-      (when keyword
-        (case keyword
-          ((:running-head :running-title)
-           (setq p (make-instance
-                    'action-paragraph :flag :running-head :index index))
-           (setf (arg-alist p) `(:header ,residue)))
-
-          ;; heading-paragraph -- with numbers
-          ((:table :figure :model :study :supplementary-materials)
-           (setq p (make-instance 'heading-paragraph :flag keyword :index index))
-           (let ((index-of-space (position #\space text)))
-             (when index-of-space
-               (let ((length-after (length (subseq text index-of-space))))
-                 (if (< length-after 4)
-                   (setf (arg-alist p) `(:number ,residue))
-                   (let ((next-space (position #\space residue)))
-                     (if next-space
-                       (then ; there's material after the number
-                         (let ((content (subseq residue next-space))
-                               (number (subseq residue 0 next-space)))
-                           (setf (content-string p) content)
-                           (setf (arg-alist p) `(:number ,number
-                                                 :caption ,content))))
-                       (else
-                         (setf (arg-alist p) `(:number ,residue))))))))))
-
-          ;; heading-paragraph
-          ((:title :short-title)
-           ;; Expect the content of the title to be in the residue text
-           (setq p (make-instance 'heading-paragraph :flag keyword :index index))
-           (when residue
-             (setf (content-string p) residue)
-             (setf (arg-alist p) `(:text ,residue))))
-
-          (otherwise
-           (cond
-             (residue
-              ;; heading, but store the residue, not the text - like table or figures
-              ;; where there is content in the rest of the line
-              (setq p (make-instance 'heading-paragraph :flag keyword :index index))
-              (setf (arg-alist p) `(:caption ,residue)))
-
-             (t ;; heading-paragraph -- no residue
-              (setq p (make-instance
-                       'heading-paragraph :flag keyword :index index))
-              (setf (content-string p) text)
-              (setf (arg-alist p) `(:caption ,text)))))))
-      
-      p )))
-
- 
-(defun likely-short-header (length text)
-  "A (sub)section header is a label that doesn't decompose into
-   useful parts that we'd want to model independently of its identify.
-   They run around a dozen characters and don't have any structural
-   elements: commas, colons"
-  (when (< length 35)
-    (null (or (position #\, text)
-              (position #\: text)
-              (position #\. text)
-              (position #\- text)))))
-
-
-;;;------------------------
-;;; categories of headings
-;;;------------------------
-
-(defparameter *major-section-flags*
-  '(:abstract    
-    :introduction
-    :method
-    :method-and-results
-    :discussion
-    :results
-    :references :reference-list))
-
-(defgeneric major-section? (paragraph)
-  (:documentation "Is this paragraph a heading paragraph whose flag
-    is listed in the *major-section-flags*  Used when consolidating
-    paragraphs into sections. Non-major heading paras (such as figures)
-    are incorporated into the body of the accumulating section")
-  (:method ((p heading-paragraph))
-    (memq (flag p) *major-section-flags*))
-  (:method ((p paragraph)) nil))
-
-
-(defparameter *post-references-section-headings*
-  `("Figure" "Fig" "Figures"
-    "Supplementary Materials"
-     "Table" "Tables"  ))
-
-(defgeneric significant-heading? (paragraph)
-  (:documentation "Is this heading significant enough to ensure that
-    it is exposed to form a section after we've created a section like
-    'References' which the parser is going to ignore.")
-  (:method ((p heading-paragraph))
-    (memq (flag p) *post-references-section-headings*))
-  (:method ((p paragraph)) nil))
-
-
-(defparameter *score-sections-to-ignore*
-  '("References" "Reference list" "Metadata")
-  "Has to be one of the major section types.")
-
-(defgeneric section-parser-ignores? (paragraph)
-  (:documentation "This paragraph might be the basis for a section
-    (see collect-next-section), but we've told the document scanner
-    not to parse instances of this section (see drivers/sources/document.lisp)")
-  (:method ((p heading-paragraph))
-    (memq (flag p) *score-sections-to-ignore*))
-  (:method ((p paragraph)) nil))
-
-(defun setup-sections-to-ignore-for-score ()
-  "Arranges to set the globals that control what sections we parse
-   and which we ignore"
-  (declare (special *score-sections-to-ignore*))
-  (set-sections-to-ignore *score-sections-to-ignore* nil))
-
-
-;;;----------------
-;;; section titles
-;;;----------------
-    
-;; This list is used by detect-score-title for matching against texts
-(defparameter *score-sect-titles*
-  '("Running Head" "Running title"
-    "Abstract"
-    "Acknowledgement" "Acknowledgments"
-    "aim"
-    "Authors"
-    "Background"
-    "Competing interest statement"
-    "Conclusion"
-    "Correspondant Author"  "Corresponding author"
-    "Data"
-    "Data Analysis"
-    "Design"
-    "Discussion"
-    "Figure" "Fig" "Figures"
-    "Footnotes"
-    "Introduction" ;; can be line-final -- on keywords line
-    "Keywords" "Key words"
-    "Limitations"
-    "Main Text"
-    "Measures" "Measurements"
-    "Method"
-    "Method and Results"
-    "Model"
-    "Notes"
-    "Objective"
-    "One Sentence Summary"
-    "Original article"
-    "Participants"
-    "Participants and Procedures" ; subtitle
-    "Procedures"
-    "Results"
-    "References" "Reference list"  ;; can be line-final
-    "Study"
-    "Supplementary Materials"
-    "Variables" 
-    "Table" "Tables" 
-    "Title" "Short title"
-    ))
-
-(defparameter *score-set-titles-taking-number*
-  '("aim" "Figure" "Model" "Table"))
-
-
-(defun detect-score-title (text)
-  "Called by make-score-paragraph - Loops over the titles in *score-sect-titles*.
-   If one of them matches, return it (as a keyword), along with any residue
-   that follows in the text"
-  (let ( keyword residue )
-    (dolist (title *score-sect-titles* nil)
-      (multiple-value-setq (keyword residue)
-        (test-score-title title text))
-      (when keyword
-        (return-from detect-score-title (values keyword residue))))))
-
-(defun test-score-title (title text)
-  "Is the text long enough? Does its prefix match? Is there residue to trim?
-   Both arguments are strings"
-  (let ((text-length (length text))
-        (title-length (length title)))
-    (flet ((key-name (title)
-             (intern (string-upcase
-                      (substitute #\- #\space title))
-                     (find-package :keyword))))
-
-      (when (>= text-length title-length)
-        (let ((index (search title text :test #'string-equal))
-              (end-index (search title text :test #'string-equal :from-end t)))
-          (cond
-            ((and index ; // zero is the beginning of the line
-                  (= 0 index))
-             (let ((more? (subseq text title-length)))
-               (if (string-equal more? "")
-                 (setq more? nil)
-                 (setq more? (string-left-trim '(#\space #\: ) more?)))
-               (let ((key-name (string-upcase
-                                (substitute #\- #\space title))))              
-                 (values (intern key-name (find-package :keyword))
-                         more?))))
-            ((and end-index ; "REPUBLICANS AND COVID-19 JUDGMENTS 31 Introduction"
-                  (= text-length (+ end-index title-length)))
-             ;; But it has to be the last thing in the string
-             (let ((prefix (subseq text 0 end-index)))
-               (values (key-name title)
-                       prefix
-                       :from-end)))
-            (t nil)))))))
 
 
 ;;;-------------------------------
