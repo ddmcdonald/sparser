@@ -270,6 +270,16 @@
 (defun word-consists-of-upper-and-lower-case-letters (word)
   (eq (word-capitalization word) :mixed-case))
 
+(defgeneric all-caps? (word)
+  (:documentation "Is this word (or string) consist of just capitalized
+    letters?")
+  (:method ((pname string))
+    (populate-word-lookup-buffer/string pname)
+    (let ((result (calculate-capitalization-of-word/in-buffer)))
+      (eq result :all-caps)))
+  (:method ((w word))
+    (eq :all-caps (word-capitalization w))))
+
 
 ;;;------------------
 ;;; state variables
