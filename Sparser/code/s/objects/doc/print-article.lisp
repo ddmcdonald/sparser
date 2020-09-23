@@ -84,8 +84,9 @@
        (format stream "~&~a ~a. " title number))
       (title
        (format stream "~&~a " title)))
-    (when string
-      (format stream "~a" string))))
+    (unless (string-equal string title)
+      (when string
+        (format stream "~a" string)))))
 
 (defmethod write-out-document ((sh subheading-paragraph) stream)
   (let ((string (flag sh)))
