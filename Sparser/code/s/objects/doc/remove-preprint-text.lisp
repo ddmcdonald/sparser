@@ -71,6 +71,9 @@ is the (which was not peer-reviewed) The copyright holder for this preprint . CC
 
 
 (defun remove-copyright-text (cpr-text)
+  "Called by make-paragraph to heuristically figure out where there is
+ header/footer debris in the article. Applied to JSON files for
+ the COVID-19 dataset."
   (cond ((search "CC-BY" cpr-text :test #'equal)
          (remove-copyright-text (resolve-cc-by cpr-text)))
         ((search "The copyright holder" cpr-text :test #'equal)
@@ -168,6 +171,10 @@ not peer-reviewed) is the author/funder. It" text)
            (remove-from-string start
                                (bad-str-end "The copyright holder" text)
                                text)))))
+
+
+;;---- mining overly long preprint-style texts from SCORE JSON
+
 
           
           
