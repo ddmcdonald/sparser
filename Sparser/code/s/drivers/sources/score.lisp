@@ -138,6 +138,9 @@
    "The reader chokes when reading these file, how to fix (or even debug) this
    isn't clear yet, so simplest to just ignore them")
 #|
+See Slime issue --  updating Slime solves it?
+https://github.com/slime/slime/issues/527
+
  For #26 it automatically did substitution for 56319 when reading the JSON
 but it's still in the file (I presume) and it dies when try to write out the
 file with this 'unable to encode' complaint.
