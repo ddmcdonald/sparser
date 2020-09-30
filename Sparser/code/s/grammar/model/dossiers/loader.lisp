@@ -183,6 +183,7 @@
 (gate-grammar *people*
   (gload "dossiers;person prefixes")
   (gload "dossiers;person versions")
+  (gload "dossiers;person-roles")
   (gload "dossiers;person interior rules")
   (gload "dossiers;person exterior rules"))
 

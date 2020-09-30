@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2011-20168 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2011-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "rules"
 ;;;   Module:  "model;core:titles:"
-;;;  version:  March 2018
+;;;  version:  October 2020
 
-;; initited 6/15/93, starting over from scratch. 3/17/05 These are
+;; initiated 6/15/93, starting over from scratch. 3/17/05 These are
 ;; interacting with rules made automatically from the etf schemas,
 ;; so selectively commenting them out while sorting out the issues.
 ;; 1/22/11 Addresing the intereaction with the schemas to keep these
@@ -117,7 +117,6 @@
       ;; "the Taliban's former deputy minister of communication"
       ;; Treat it the same way as a country
       title)
-      
 
      (t (when *break-on-unexpected-cases*
           (push-debug `(,possessive ,title))
@@ -190,5 +189,20 @@
       (polyword nil))))
 
 
+(defun convert-title-to-person (title title-edge)
+  ;; called from consider-converting-title-to-person
+  ;; and sort-out-possessive+title
+  ;;(push-debug `(,title ,title-edge))
+  (let ((person (define-or-find-individual 'title-based-person
+                  :role title)))
+    (make-completed-unary-edge
+     (edge-starts-at title-edge) ;; starting vector
+     (edge-ends-at title-edge)  ;; ending vector
+     :convert-title-to-person  ;; rule
+     title-edge  ;; daughter
+     category::person ;; category
+     category::np  ;; form
+     person)  ;; referent
 
-
+    ;; return value for routines that use the person
+    person))

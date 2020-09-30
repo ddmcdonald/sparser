@@ -82,32 +82,33 @@
 ;;; people defined implicitly by their role
 ;;;-----------------------------------------
 
-(define-category role-based-person
+(define-category title-based-person
   :instantiates person
   :specializes person
   :index (:key role)  ;; should these be permanent?
-  :binds ((role . title)))
+  :binds ((role . title))
+  :documentation "Virtually any job title can be used to refer
+ to people who hold that position, 
+")
 
+(define-category role-based-person
+  :instantiates person
+  :specializes person
+  :binds ((name :primitive word))
+  :realization (:common-noun name)
+  :documentation "Similar to how titles can refer, this covers
+ people construed by some role that they play in some relation.
+ That would subsume family-member (for instance), but we want
+ to maintain some semantic distinctions. Refining role-based into
+ finer subcategories is to the point if the differences have some
+ consequence.
+ N.b. the 'name' here is a simple word that labels the role
+ ('student', 'subject') the actual people, individuals serving
+ the role at some time, should have person-name objects in their
+ name file.")
 
-(defun convert-title-to-person (title title-edge)
-  ;; called from consider-converting-title-to-person
-  ;; and sort-out-passessive+title
-  ;;(push-debug `(,title ,title-edge))
-  (let ((person (define-or-find-individual 'role-based-person
-                  :role title)))
-    (make-completed-unary-edge
-     (edge-starts-at title-edge) ;; starting vector
-     (edge-ends-at title-edge)  ;; ending vector
-     :convert-title-to-person  ;; rule
-     title-edge  ;; daughter
-     category::person ;; category
-     category::np  ;; form
-     person)  ;; referent
-
-    ;; return value for routines that use the person
-    person))
-
-
+;; instances in dossiers/
+(define-type-instance-constructor role-based-person)
 
 ;;;------------
 ;;; operations
