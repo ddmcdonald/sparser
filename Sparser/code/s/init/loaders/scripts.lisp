@@ -119,7 +119,7 @@ in conjunction with an early version of Hark. Notable for using the
    (*index-under-permanent-instances* t)
    (*index-bindings-to-variables* nil)
    (*filter-vocabulary* :score))
-  (:grammar-configuration "bio-grammar")
+  (:grammar-configuration "score-grammar")
   (:switches bio-setting))
 
 (defscript fire ()
@@ -128,7 +128,7 @@ It is essentially GROK going forward."
   (:parameters
    (*description-lattice* t)
    (*index-bindings-to-variables* t))
-  (:grammar-configuration "full grammar")
+  (:grammar-configuration "fire-grammar")
   (:switches neo-fire-setting))
 
 (defscript grok ()

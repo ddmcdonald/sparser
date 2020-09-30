@@ -12,25 +12,7 @@
 (in-package :sparser)
 
 
-;;;-------------------------------------------------
-;;; flags controlling what goes on the Sparser menu
-;;;-------------------------------------------------
-;;  n.b. these aren't grammar modules, but there's a utility to
-;;  being able to conditionalize the contents of the menu by version,
-;;  and this is just such a place.
-
-(defparameter *spm/include-grammar-modules* t)
-(defparameter *spm/include-backup* t)
-(defparameter *spm/include-citations* t)
-(defparameter *spm/include-workbench* t)
-
-
-;;---------------------------------------------------------
-
-
 (include-grammar-module  *other*)
-
-
 (include-grammar-module  *testing*)
 (include-grammar-module  *citations*)
 (include-grammar-module  *miscellaneous*)
@@ -248,5 +230,5 @@
 ;; (include-grammar-module  *load-Tipster-grammar-into-image*)
 ;; (include-grammar-module  *jv/phrases*)
 ;; (include-grammar-module  *jv/relations-via-categories*)
-;;(include-grammar-module  *gl*)
+
 

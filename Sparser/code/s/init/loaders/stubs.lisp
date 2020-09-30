@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1997,2012-2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1997,2012-2020  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "stubs"
 ;;;   Module:  "init;loaders;"
-;;;  version:  January 2019
+;;;  version:  September 2020
 ;;;
 ;;; Provide definitions for functions we know (given the configuration)
 ;;; don't have definitions.
@@ -67,12 +67,12 @@
     (declare (ignore longer-name entity)))
   (defun find/company-with-name (name)
     (declare (ignore name)))
+  (defun consider-converting-title-to-person (convering-edge)
+    (declare (ignore convering-edge)))
   (defun make/company-with-name (name)
     (declare (ignore name)))
   (defun make-company-name-as-simple-sequence (original-items)
-    (declare (ignore original-items)))
-  (defun consider-converting-title-to-person (convering-edge)
-    (declare (ignore convering-edge))))
+    (declare (ignore original-items))))
 
 (unless *people*
   (defun find/person-with-name (name)
