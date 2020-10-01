@@ -9,20 +9,32 @@
 
 (defparameter *person-role-names*
   '(
+
+    "entrepreneur"
+    
+    "candidate"
+    "individual"   ; "Individuals with HIV"
     "professional"
 
     ;; specific to experiments
-    "participant" ; 'participates in some study or other activity
-    "respondent"
-    "subjects"
+    "participant" ; participates in some study or other activity
+    "respondent"  ; "565 responses (35.3%) were obtained"
+    "subject"
 
     "student"
     "undergraduate"
 
+    ;; medical
+    "patient"
+    
+    "physician"
+    "nurse"
+    "rehabilitation therapist"
+    "social worker"
     ))
 
 #| These too? 
-   outlier  "Ninety-one couples"
+   outlier  "Ninety-one couples" "The authors"
 |#
 
 (defun instantiate-person-roles ()
