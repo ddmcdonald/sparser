@@ -185,24 +185,25 @@
 (defun known-preterminals/check-caps (rule-set
                                       lc-word capitalized-variants
                                       position-scanned next-position)
-  ;; Called from Preterminals-for-known
-  ;; The lowercase version of the word has associated rules, but there are
-  ;; capitalized variants of the word that may as well, so we check them
-  ;; and give them priority.
+  "Called from Preterminals-for-known
+   The lowercase version of the word has associated rules, but there are
+   capitalized variants of the word that may also have rule as well, 
+   so we check them and give them priority."
+  
   (let ((actual-state (pos-capitalization position-scanned)))
     (tr :install/actual-capitalization actual-state position-scanned)
 
     (if (eq :lower-case actual-state)
-      ;; then it's the variant we already have the word for (lc-word)
+      ;; then it's the variant that we already have the word for (lc-word)
       (preterminals/word rule-set lc-word
                          position-scanned next-position)
       (else
         ;; otherwise we look for rules associated with the variants,
         ;; but go with those of the lowercase version if there aren't any
-        (unless (try-caps-variations capitalized-variants actual-state
-                                       position-scanned next-position)
-          (preterminals/word rule-set lc-word
-                             position-scanned next-position))))))
+        (or (try-caps-variations capitalized-variants actual-state
+                                 position-scanned next-position)
+            (preterminals/word rule-set lc-word
+                               position-scanned next-position))))))
 
 
 (defun try-caps-variations (capitalized-variants actual-state
