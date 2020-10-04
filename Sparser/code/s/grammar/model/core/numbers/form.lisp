@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "form"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  July 2020
+;;;  Version:  October 2020
 
 ;; 2.0  (7/20/92 v2.3) made over to use "real" categories
 ;; 2.1  (10/5) tweeked construct-temporary... to not make a polyword
@@ -35,7 +35,6 @@
 
 (in-package :sparser)
 
-
 ;;;-----------------------
 ;;; predicates over words
 ;;;-----------------------
@@ -49,6 +48,48 @@
     (> (length (word-pname word)) 1)))
 
 
+;;;-----------------------
+;;; predicates over edges
+;;;-----------------------
+
+(defgeneric edge-over-number-word? (edge)
+  (:documentation "Single edges over digits ('20') and number words
+   ('twenty') are identical with regards to category, form, and
+   referent. But they do pattern differently in some contexts.
+   This checks for the word case by looking at the capitalization
+   information in the edge's start position. Returns nil if the
+   edge spans more than one word.")
+  (:method ((n integer))
+    (edge-over-number-word? (edge# n)))
+  (:method ((e edge))
+    (when (one-word-long? e)
+      (let* ((start-pos (pos-edge-starts-at e))
+             (capitalization (pos-capitalization start-pos)))
+        ;; They can be :lower-case, :all-caps, etc.
+        (not (eq capitalization :digits))))))
+
+
+(defgeneric numeric-label (edge)
+  (:documentation "Return a keyword for use in word-numbers
+    value computation")
+  (:method ((n integer))
+    (numeric-label (edge# n)))
+  (:method ((e edge))
+    (unless (edge-over-number-word? e)
+      (error "Not a number-word edge: ~a" e))
+    (ecase (edge-cat-name e)
+      (ones-number :ones)
+      (teens-number :teens)
+      (tens-number :tens)
+      (multiplier :multiplicand)
+      (number ;; Happens in cases like "Twenty-five", where the
+       ;; individual number finished before the hyphen was seen
+       ;; in no-space operations and layered an edge over the
+       ;; label we want. 
+       (unless (eq :single-term (edge-right-daughter e))
+         (break "Unexpected daughter for 'number': ~a" e))
+       (numeric-label (edge-left-daughter e))))))
+      
 
 ;;;------
 ;;; form

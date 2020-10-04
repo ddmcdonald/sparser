@@ -161,8 +161,15 @@
 ;;; functions
 ;;;-----------
 
-(defun number-value (indiv-number)
-  (value-of 'value indiv-number))
+(defgeneric number-value (item)
+  (:documentation "Dispatch for extracting a lisp number from
+    the various things that contain representation of numbers")
+  (:method ((n integer))
+    (number-value (e# n)))
+  (:method ((e edge))
+    (number-value (edge-referent e)))
+  (:method ((i individual))
+   (integer-for-number i)))
 
 (defgeneric integer-for-number (number)
   (:documentation "Given a number individual, 
@@ -172,12 +179,21 @@
   (:method ((i individual))
     (cond
       ((or (number-ones i) ;; #<ones-number 2>
-           (number-teens i) ;;
+           (number-teens i) 
            (number-tens i))
-       (number-value i))
+       (value-of 'value i))
       ((itypep i 'multiplier)
-       (let ((n (value-of 'value i)))
-         (number-value n)))
+       ;;/// this is messed up -- review it
+       ;;   old-binds = (#<value = #<number "100">> #<name = #<word "hundred">>)
+       (let ((result (value-of 'value i)))
+         (etypecase result
+           (number result)
+           (individual
+            (unless (itypep result 'number)
+              (break "new case in mulplier"))
+            (value-of 'value result)))))
+      ((itypep i 'number)
+       (value-of 'value i))
       (t (error "Unexpected type of number object: ~a" i)))))
 
 

@@ -45,8 +45,12 @@
 (define-category ones-number :specializes class-of-numbers)
 (add-fsa category::ones-number *fsa-for-number-words*)
 
-
 (add-fsa category::multiplier *fsa-for-number-words*)
+
+(define-category number-product
+  :specializes class-of-numbers
+  :documentation "Labels edges over pairs of edges whose
+    value is the product of the values of the edges") 
 
 ;;;----------------
 ;;; paired numbers
