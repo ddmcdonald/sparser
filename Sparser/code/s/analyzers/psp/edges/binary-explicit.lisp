@@ -73,7 +73,7 @@
                     rule-name)))))
 
      (referent
-      (set-edge-referent edge (place-referent-in-lattice referent edge))
+      (set-edge-referent edge referent)
       (knit-edge-into-positions edge
                                 (edge-starts-at left-edge)
                                 (edge-ends-at right-edge))
