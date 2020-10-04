@@ -33,9 +33,7 @@
                           words
                           do-not-knit
                           ignore-used-in )
-  "Just a pass-through with a short name to 
-"
-  
+  "Just a pass-through with a short name to make-edge/all-keys"  
   (make-edge/all-keys
    :left-edge           left-edge 
    :right-edge          right-edge
@@ -70,11 +68,11 @@
                                 category
                                 form
                                 rule rule-name
-                             referent
-                             constituents
-                                 words
+                                referent
+                                constituents
+                                words
                                 do-not-knit
-                               ignore-used-in)
+                                ignore-used-in)
 
   (unless starting-position
     (unless left-edge
