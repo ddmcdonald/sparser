@@ -734,11 +734,6 @@
            :noun "escape"))
 
 
-(define-category exhibit :specializes caused-bio-process
-    :realization
-    (:verb "exhibit"
-	   :etf (svo-passive)))
-
 ;; as in "genes express proteins" or "cell (lines) express proteins" and not the abstract sense
 ;; tissues also express proteins "what tissues express stat3?"
 (define-category gene-transcript-express :specializes caused-bio-process
