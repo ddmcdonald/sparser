@@ -2,7 +2,7 @@
 ;;; copyright (c) 1992,1993,1994,1995  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "quotations"
-;;;   Module:  "grammar;rules:syntax:"
+;;;   Module:  "grammar;rules:traversal:"
 ;;;  Version:  July 1991
 
 ;; initiated 7/11/91
