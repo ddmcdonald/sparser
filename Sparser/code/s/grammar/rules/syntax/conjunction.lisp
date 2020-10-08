@@ -567,7 +567,7 @@
                            (category-p ref-before)
                            (itypep ref-before ref-before)))
                      t)
-                    (t (warn "conjunction-problem: conjunction of category and ~
+                    (t (warn-or-error "conjunction-problem: conjunction of category and ~
                               individual ~s and ~s" ref-before ref-after)
                        nil)))
              (when (current-script :biology)
