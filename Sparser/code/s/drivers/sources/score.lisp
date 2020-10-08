@@ -125,18 +125,19 @@
     (length pathnames)))
 
 (defparameter *bad-score-files*
-  '("Alyami_covid_yl789" ; Unable to encode character 56319 as :utf-8
+  '("Kenyon_covid_87mby" ; 51 ripping of file completely messed up -- just three blocks
+    "Lan_covid_l1q6p" ; 55 no heading paragraph until the end
+    "Wise_covid_4qm4q" ; 96 ditto. Also 5741 -- caught by tokenizer so where's the complaint?
+
+    ;; bad character places
+    "Alyami_covid_yl789" ; Unable to encode character 56319 as :utf-8
     "Bello-Chavolla_covid_rb96l" ; #11 Error during string-to-utf8: Unable to encode character 54 as :utf-8.
     "Gelfand_covid_n8dr9" ; #34 can't encode 56319
     "Kachanoff_covid_gy9n7" ; 47 ditto
-    "Hossain_covid_7ol4m" ; 42 ditto -- reader recovers but writer chokes
+    "Hossain_covid_7ol4m" ; 42 ditto -- reader recovers but writer chokes    
     ;; and truncates the file when it reaches that character
-    "Kenyon_covid_87mby" ; 51 ripping of file completely messed up -- just three blocks
-    "Wise_covid_4qm4q" ; 96 ditto. Also 5741 -- caught by tokenizer so where's the complaint?
     "Du_covid_yl7p9" ; #26 - does substitution for 56319 when reading the JSON
-    )
-   "The reader chokes when reading these file, how to fix (or even debug) this
-   isn't clear yet, so simplest to just ignore them")
+    ))
 #|
 See Slime issue --  updating Slime solves it?
 https://github.com/slime/slime/issues/527
@@ -235,20 +236,16 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
 
     (collect-title-and-meta-data article *raw-paragraphs*)
 
-    (setq *ready-paragraphs*
-          (clean-score-paragraphs (gather-action-paragraphs *raw-paragraphs*)))
+    (let ((action-paragraphs (gather-action-paragraphs *raw-paragraphs*)))
+      (setq *ready-paragraphs*
+            (if action-paragraphs
+              (clean-score-paragraphs action-paragraphs)
+              *raw-paragraphs*))
 
-    ;; (if (or (blocks-include-any 'action-paragraph *raw-paragraphs*)
-    ;;         action-paragraphs)
-    ;;   (setq *ready-paragraphs*
-    ;;         (clean-score-paragraphs (gather-action-paragraphs #| action-paragraphs |#)))
-    ;;   (setq *ready-paragraphs* *raw-paragraphs*))
-    ;; (print-ready-paragraphs)
+      (aggregate-score-para-into-sections *ready-paragraphs* article)
+      ;; (children article)
 
-    (aggregate-score-para-into-sections *ready-paragraphs* article)
-    ;; (children article)
-
-    article ))
+      article )))
 
 
 ;;--- text -> paragraphs
@@ -288,15 +285,20 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
 ;;; Recognizing and removing header material
 ;;;------------------------------------------
 
+(defvar *print-action-para-info* t
+  "lets us turn it off")
+
 (defun gather-action-paragraphs (raw-paragraphs)
   "Feeder to clear-score-paragraphs -- collects and action-paragraphs
    identified in the paragraph construction sweep"
+  (declare (special *print-action-para-info*))
   (let ((action-paragraphs
          (loop for p in raw-paragraphs
             when (eq (type-of p) 'action-paragraph)
             collect p)))
     (when action-paragraphs
-      (format t "~& ~a action paragraphs~%" (length action-paragraphs))
+      (when *print-action-para-info*
+        (format t "~& ~a action paragraphs~%" (length action-paragraphs)))
       action-paragraphs)))
 
 
@@ -308,8 +310,8 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
    if it's there."
   ;; The paragraphs retain their identities, only the text
   ;; in their content-string fields is affected
-  (declare (special *raw-paragraphs*
-                    *ready-paragraphs*))
+  (declare (special *raw-paragraphs* *ready-paragraphs*
+                    *print-action-para-info*))
 
   (labels ((lift-string-from-action-para (para)
            "Pull the string to remove out of the paragraph object"
@@ -385,7 +387,8 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
                (string-to-remove (car filter-strings) (car remaining-strings))
                (remaining-strings (cdr filter-strings) (cdr remaining-strings)))
               ((null string-to-remove))
-            (format t "~&Cleaning instances of ~s~%" string-to-remove)
+            (when *print-action-para-info*
+              (format t "~&Cleaning instances of ~s~%" string-to-remove))
 
             (setq cleaned
                   (loop for p in paragraphs
@@ -395,23 +398,6 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
           (setq *ready-paragraphs* cleaned)
           cleaned)))))
 
-
-#| moved to make-score-paragraph
-(defun look-for-tacit-running-heads (block-text-list)
-  "Called from sort-out-score-paragraphs as the next step after
-   pulling the texts from the JSON blocks and creating paragraph objects
-   for them. There can be more than one, e.g. #20, so we search the first handful
-   of blocks and make paragraphs for them as our return value"
-  (loop for i from 0 to 5
-     as text = (nth i block-text-list)
-     when (tacit-running-head? text)
-     collect (make-running-head text i)))
-
-(defun make-running-head (text-line index)
-  (let ((p (make-instance  'action-paragraph :flag :running-head)))
-    (setf (para-index p) index)
-    (setf (arg-alist p) `(:header ,text-line))
-    p))  |#
 
 
 ;;;-----------------------------
@@ -442,13 +428,17 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
     ;; From the index of the title, walk through the list of paragraphs
     ;; until the next major heading is reached.
     (setq first-section-head (index-of-next-header index-after-title paragraphs))
-
+    
+    (when (= first-section-head max-index) ;; #55
+      (break "Meta-section runs to the end"))
+ 
     ;; From that section head, loop through the rest of the
     ;; paragraphs. Creat a new section at each heading whose children
     ;; are the paragraphs from there to just before the next heading
     (setq sections
           (cons meta-section
                 (collect-all-the-sections first-section-head paragraphs)))
+
     (knit-sections sections article)
     (setq *score-sections* sections)
 
@@ -465,8 +455,14 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
         sections  section  header-index  index-of-next )
     (setq header-index starting-at)
     (loop
+       ;; (setq index-of-next (index-of-next-header header-index paragraph-list))
+       ;; (break "next-header: ~a" index-of-next)
+       ;; (setq section (collect-next-section header-index ; starting-at / given header
+       ;;                                     index-of-next ; the follow header
+       ;;                                     paragraph-list))
        (multiple-value-setq (section index-of-next)
          (collect-next-section header-index paragraph-list))
+
        (push section sections)
        (when (>= index-of-next max-index)
          (return))
@@ -478,7 +474,29 @@ then we start making sections for significant-heading? paragraphs so the
 parser will get to see them.
 |#
 
-(defun collect-next-section (header-index paragraph-list)
+(defun index-of-next-header (start paragraphs)
+  "Walk the index across successive paragraphs until a 'major' 
+   heading-paragraph is reached. Return the value of the index.
+   When we're getting to the end of the list of pagagraphs we don't
+   expect them to end in a header paragraphs, but we aren't checking for that"
+  (let* ((index start)
+         (max-index (length paragraphs))
+         (para (nth index paragraphs)))
+    (if (and (null para)
+             (= index max-index))
+      ;; Then we were called at the moment the outer walk had reached the end
+      ;; index ;;(break "index: ~a" index)
+      (1- index) 
+      (else
+        (until (major-section? para)
+            index
+          ;; (format t "~&~a ~a" index para) ; prints each paragraph being colected
+          (incf index)
+          (when (>= index max-index)
+            (return-from index-of-next-header (1- index)))
+          (setq para (nth index paragraphs)))))))
+
+(defun collect-next-section (header-index #|ndex-of-next|# paragraph-list)
   "Collect the paragraphs from the starting para (a heading-paragraph)
    up to but not including the next header (or the end of the
    list of paragraphs). Make the section object based on the header paragraph.
@@ -495,28 +513,8 @@ parser will get to see them.
       (setup-name-for-score-section s header-para)
       (setf (children s) section-paras)
       (knit-paragraphs section-paras s) ; set previous, next, parent pointers
-      (values s
-              index-of-next))))
-
-(defun index-of-next-header (start paragraphs)
-  "Walk the index across successive paragraphs until a 'major' 
-   heading-paragraph is reached. Return the value of the index.
-   When we're getting to the end of the list of pagagraphs we don't
-   expect them to end in a header paragraphs, but we aren't checking for that"
-  (let* ((index start)
-         (max-index (length paragraphs))
-         (para (nth index paragraphs)))
-    (if (and (null para)
-             (= index max-index))
-      (1- index) ; we were called at the moment the outer walk had reached the end
-      (else
-        (until (major-section? para)
-            index
-          ;; (format t "~&~a ~a" index para) ; prints each paragraph being colected
-          (incf index)
-          (when (>= index max-index)
-            (return-from index-of-next-header (1- index)))
-          (setq para (nth index paragraphs)))))))
+      (values s index-of-next)
+      )))
 
 
 (defun setup-name-for-score-section (section heading-para)
@@ -641,6 +639,18 @@ parser will get to see them.
     (setq *p* p)
     (format t "~&~a" p)
     p))
+
+
+(defun score-articles-timing-run (start-index last-index)
+  (let ((*print-action-para-info* nil)
+        (*show-handled-sentence-errors* nil))
+    (declare (special *print-action-para-info*
+                      *show-handled-sentence-errors*))
+    (loop for n from start-index to last-index
+       do (progn
+            (format t "~&~%--- #~a~%" n)
+            (ignore-errors
+              (run-nth-score-article n :quiet t :show-sect nil :stats nil))))))
 
 
 ;;;-------------------------------

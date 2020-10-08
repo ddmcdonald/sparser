@@ -131,11 +131,12 @@
 (defun tacit-running-head? (text-line)
   "Is this line the sort of thing that we'd expect to find as running
    header or maybe footer?"
-  (or (when (> (length text-line) 7) ;; line might have just one character on it
-        (string-equal "medRxiv" (subseq text-line 0 7)))
-      (when (> (length text-line) 19)
-        (string-equal "all rights reserved" (subseq text-line 0 19)))
-      (all-caps? (subseq text-line 0 3))))
+  (let ((length (length text-line)))
+    (or (when (> length 7) ;; line might have just one character on it
+          (string-equal "medRxiv" (subseq text-line 0 7)))
+        (when (> length 19)
+          (string-equal "all rights reserved" (subseq text-line 0 19)))
+        (all-caps? (subseq text-line 0 2)))))
 
   
 (defun likely-short-header (length text)
