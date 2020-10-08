@@ -318,6 +318,11 @@ and make that file easier to understand. |#
 ;;; printing document statistics
 ;;;------------------------------
 
+(defvar *print-bio-terms* t
+  "Rebind to nil to block including the bio-terms in the
+   summary-document-stats")
+
+
 (defgeneric summary-document-stats (document-element &optional stream)
   (:documentation "Principally for information while exploring.
    This method is called when you specify :stats in a json article function
@@ -328,7 +333,8 @@ and make that file easier to understand. |#
             a (insert-commas-into-number-string (token-count a)))
     (report-time-to-read-article a stream)
     (show-parse-performance a stream)
-    (display-top-bio-terms a stream)))
+    (when *print-bio-terms*
+      (display-top-bio-terms a stream))))
 
 
 (defun show-parse-performance (doc-element &optional (stream *standard-output*))

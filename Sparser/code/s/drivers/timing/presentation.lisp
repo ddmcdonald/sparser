@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "presentation"
 ;;;   Module:  "drivers;timing:"
-;;;  Version:  June 2020
+;;;  Version:  October 2020
 
 ;; file created 2/91. Given content 1/6/95
 ;; Added Time decoded 1/23. 10/2/07 Extended and added Allegro variation.
@@ -35,14 +35,16 @@
     (format t "~&speed: ~4,1F tokens/msec" (float tps))))
 
 (defun report-time-to-read-article (article &optional (stream *standard-output*))
-  "Provisionally invoked from run-json-article"
+  "Invoked from run-json-article as alternative the full statistics when :stats
+   parameter is nil"
   (declare (special *time-to-read-document*))
   (let* ((word-count (token-count article))
          (wps-string (compute-words-per-second
                       word-count *time-to-read-document* :msec))
          (total-time *time-to-read-document*))
-    (format stream "~&Parsing article: ~s, total time: ~a msec  ~a~%"
-            (name article)
+    (format stream "~& ~a words  time to parse: ~a msec  ~a~%"
+            ;; (name article) "Parsing article: ~s,"
+            (insert-commas-into-number-string word-count)
             (insert-commas-into-number-string total-time)
             wps-string)))
 

@@ -264,6 +264,7 @@
   "Wrapped scan-terminals-and-do-core inside an error catch"
   ;; Modeled on code in get-bracketing-from-string and
   ;; test-np-segmentation-for-sexp
+  (declare (special *show-handled-sentence-errors*))
   (handler-case 
       (scan-terminals-and-do-core sentence)
     (error (e)
