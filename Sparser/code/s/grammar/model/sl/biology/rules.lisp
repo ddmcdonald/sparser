@@ -238,6 +238,7 @@
 (defun create-residue-on-protein (explicit-residue amino-acid position substrate)
   (declare (special position category::residue-on-protein category::hyphenated-number))
   (when (and
+         (not (itypep position 'multiplier)) ; "A fraction of ..."
          (or (not (itypep amino-acid 'single-capitalized-letter))
              (gethash amino-acid *single-letters-to-amino-acids*))
          (or (null position)
