@@ -282,8 +282,8 @@ symbol 't' -- (t #<flow-endurant plural 98209>)   ddm 3/25/20|#
           (let* ((ival (interpret-in-context val)))
             (declare (special ival))
             (loop for i in interps when (not (or (individual-p i)(category-p i)))
-                  do (warn "non-individual among ~s in reinterp-list-using-bindings, in: ~s~%"
-                           interps (sentence-string *sentence-in-core*)))
+               do (warn-or-error "non-individual among ~s in reinterp-list-using-bindings, in: ~s~%"
+                                 interps (sentence-string *sentence-in-core*)))
             (setq interps
                   (loop for i in interps
                         when (individual-p i)

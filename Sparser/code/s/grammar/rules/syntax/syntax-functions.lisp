@@ -2837,7 +2837,7 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                        (search-tree-for-referent (left-edge-for-referent) comp-indiv)))
                   (unless edge-over-comparative
                     ;; usually due to an sdm-span-segment constituent with :long-edge
-                    (warn "Could not locate edge over ~a under ~a in~% ~s"
+                    (warn-or-break "Could not locate edge over ~a under ~a in~% ~s"
                           comp-indiv (left-edge-for-referent)
                           (current-string))
                     (return-from maybe-extend-comparative-with-than-np nil))

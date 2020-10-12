@@ -148,8 +148,8 @@
 
             (t 
              (push-debug `(,left ,right))
-             (warn "new configuration of daughters ~
-                         in vg that doesn't record tense: ~a in ~s"
+             (warn-or-error "new configuration of daughters ~
+                   in vg that doesn't record tense: ~a in ~s"
                    vg-edge
                    (current-string))))
         

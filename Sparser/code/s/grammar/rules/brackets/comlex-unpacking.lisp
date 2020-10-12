@@ -177,7 +177,7 @@ places. ]]
 
         (otherwise
          (push-debug `(,lemma ,clause))
-         (warn "unambiguous-comlex-primed-decoder -- Unexpected ~
+         (warn-or-error "unambiguous-comlex-primed-decoder -- Unexpected ~
                POS marker: '~a' on ~a, near ~s ~& in ~s" 
                pos-marker lemma
                (cur-string) (sentence-string (sentence)))
@@ -319,9 +319,9 @@ places. ]]
      (t (push-debug `(,lemma ,combinations ,clauses))
         (if (and (boundp '*word-to-be-defined?*)
                  *word-to-be-defined?*)
-          (warn "Comlex -- new POS combination in defining word ~
+          (warn-or-error "Comlex -- new POS combination in defining word ~
                   ~s \"~a\:: ~a" *word-to-be-defined?* lemma combinations)
-          (warn "Comlex -- new POS combination for \"~a\:: ~a"
+          (warn-or-error "Comlex -- new POS combination for \"~a\:: ~a"
                   lemma combinations))))))
 
 
