@@ -55,6 +55,7 @@
       (unless keyword
         (cond
           ((tacit-running-head? text) ; looks at just the prefix
+           ;;(break "running head: ~s" text)
            (setq p (make-instance  'action-paragraph :flag :running-head))
            (setf (para-index p) index)
            ;; -- detect stuff that's been buried
@@ -124,7 +125,8 @@
                        'heading-paragraph :flag keyword :index index))
               (setf (content-string p) text)
               (setf (arg-alist p) `(:caption ,text)))))))
-      
+
+      (unless p (break "'p' is nil"))
       p )))
 
 
@@ -136,7 +138,8 @@
           (string-equal "medRxiv" (subseq text-line 0 7)))
         (when (> length 19)
           (string-equal "all rights reserved" (subseq text-line 0 19)))
-        (all-caps? (subseq text-line 0 2)))))
+        (and (> length 12) ; rule out short lines "PH"
+             (all-caps? (subseq text-line 0 12))))))
 
   
 (defun likely-short-header (length text)

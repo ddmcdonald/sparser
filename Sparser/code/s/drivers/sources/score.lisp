@@ -273,9 +273,11 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
       (dolist (b blocks)
         (setq text (locate-text-in-score-block b))
         (setq paragraph (make-score-paragraph text))
-        (if (consp paragraph)
-          (loop for p in paragraph do (push p paragraphs))
-          (push paragraph paragraphs)))
+        (cond
+          ((null paragraph)) ;; one character text. 
+          ((consp paragraph)
+           (loop for p in paragraph do (push p paragraphs)))
+          (t (push paragraph paragraphs))))
       (setq paragraphs (nreverse paragraphs))
       (setq *raw-paragraphs* paragraphs)
       (length paragraphs))))
@@ -409,7 +411,8 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
    identify larger-scale section-type structure. We also identify
    the title, keywords, etc. and directly fill the slots on the article."
   ;;/// ignoring keyword, authors and other front matter for now
-  (declare (special *score-sections*))
+  (declare (special *score-sections*
+                    *index-after-metadata*))
   (let ((index -1)
         (max-index (length paragraphs))
         meta-section  index-after-title
@@ -419,15 +422,17 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
     ;; The article may have gotten a title and an initial 'meta-data'
     ;; section attached to it. We start there to aggregate the next set
     ;; of paragraphs into sections.
-    (when (children article)
+    (if (children article)
       (setq meta-section (children article)) ; singleton - not a list
-      (setq index-after-title (1+ (index-of-final-paragraph meta-section))))
-    (unless (children article)
       (break "?? no meta-data ??"))
+ 
+    ;; (setq index-after-title (1+ (index-of-final-paragraph meta-section)))
 
-    ;; From the index of the title, walk through the list of paragraphs
-    ;; until the next major heading is reached.
-    (setq first-section-head (index-of-next-header index-after-title paragraphs))
+    ;; Start with the heading paragraph that collect-title-and-meta-data
+    ;; identified as xxxxxxxxxxx
+    (setq first-section-head *index-after-metadata*)
+
+    ;; (index-of-next-header index-after-title paragraphs)
     
     (when (= first-section-head max-index) ;; #55
       (break "Meta-section runs to the end"))
@@ -534,42 +539,54 @@ parser will get to see them.
 
 ;;--- Article titles, and pre-abstract meta-data
 
+(defvar *index-after-metadata* nil
+  "This is the index of the next paragraph after the end of the
+   metadata section. It is used by aggregate-score-para-into-sections
+   to indicate where to start searching for the next section.
+   Since we do an index-of-next-header search here, this will index
+   will point to a header paragraph.")
+
 (defun collect-title-and-meta-data (article raw-paragraphs)
   "Called from sort-out-score-paragraphs before their running heads
    have been cleaned. Tries to identify the title, then collects
    all the raw paragraphs between there and the first major overt section
-   (usually Abstract) and creates a section with the name 'Meta-data'.
+   (usually Abstract), and creates a section for them with the name 'Meta-data'.
    It attaches the section to the article where aggregate-score-para-into-sections
-   will notice it and include it with the other sections."
-
+   will notice it and include it with the other sections.
+   It is also responsible for setting *index-after-metadata* xxxxx
+"
+  (declare (special *index-after-metadata*))
   (let* ((explicit-title (or (blocks-include :title raw-paragraphs)
                              (blocks-include :short-title raw-paragraphs)))
          (title ;; the paragraph, not the string yet
           (or explicit-title
+              ;; first regular paragraph, e.g. skip leading action paragraphs
               (loop for p in raw-paragraphs
-                 ;; first regular paragraph, e.g. skip leading action paragraphs
                  when (typep p 'text-paragraph)
                  return p)))
          (title-index (para-index title)))
 
     (setf (title article) (content-string title))
 
-    ;; now make the section for the article's meta data
     (let* ((index-of-next-header (index-of-next-header title-index raw-paragraphs))
            ;; The paragraph at this index is a header-paragraph
            (section-paras
             (loop for i from (1+ title-index) to (1- index-of-next-header)
                collect (nth i raw-paragraphs))))
-        ;;//// would be nice to juse use collect-next-section, but its not
-        ;; factored in a way we could just use -- copying code from it.
-        ;;???? Maybe make a dummy header-paragraph to use -- then we
-        ;;  could also use setup-name-for-score-section
-        (let ((s (make-instance 'section)))
-          (setf (name s) :metadata)
-          (setf (title s) "MetaData") ;// goes on ignore list
-          (setf (children s) section-paras)
-          (knit-paragraphs section-paras s)
-          (setf (children article) s)))))
+      (let ((s (make-instance 'section)))
+        (setf (name s) :metadata)
+        (setf (title s) "MetaData") ;// goes on ignore list
+        (setf (children article) s)
+        (if section-paras
+          (then
+            (setf (children s) section-paras)
+            (knit-paragraphs section-paras s)
+            (setq *index-after-metadata*
+                  (1+ (para-index (car (last section-paras))))))
+          (else
+            ;; Can happen when the abstract immediately follows
+            ;; the title, e.g. #1
+            (setq *index-after-metadata* index-of-next-header)))))))
 
 ;;/// move
 (defun index-of-final-paragraph (section)
@@ -642,6 +659,10 @@ parser will get to see them.
 
 
 (defun score-articles-timing-run (start-index last-index)
+  "Iterate over the articles from start to last, inhibiting most
+   sources of status/error printing and providing a compact
+   description of the timing status on each article.
+   Mask any errors along the way."
   (let ((*print-action-para-info* nil)
         (*show-handled-sentence-errors* nil))
     (declare (special *print-action-para-info*
