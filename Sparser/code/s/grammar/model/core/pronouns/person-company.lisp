@@ -15,23 +15,26 @@
 ;;; CA action
 ;;;-----------
 
-(define-completion-action  category::pronoun/inanimate  ;; label
-                           :pronoun                     ;; tag
-                           'seek-company-for-pronoun)   ;; function
+(unless (sucessive-sweeps?)
 
-(define-completion-action  category::pronoun/female
-                           :pronoun
-                           'seek-person-for-pronoun)
+  (define-completion-action  category::pronoun/inanimate  ;; label
+                             :pronoun                     ;; tag
+                            'seek-company-for-pronoun)   ;; function
 
-(define-completion-action  category::pronoun/male
-                           :pronoun
-                           'seek-person-for-pronoun)
+  (define-completion-action  category::pronoun/female
+                             :pronoun
+                             'seek-person-for-pronoun)
+
+  (define-completion-action  category::pronoun/male
+                             :pronoun
+                             'seek-person-for-pronoun)
 
 
-(define-completion-action  category::pronoun/plural   ;; "they", "them", "their"
-                           :pronoun
-                           'seek-collection-of-people-for-plural-pronoun )
+  (define-completion-action  category::pronoun/plural   ;; "they", "them", "their"
+                             :pronoun
+                             'seek-collection-of-people-for-plural-pronoun )
 
+  )
 
 ;;;---------------------------------------
 ;;; masculine/feminine 3d person pronouns
@@ -231,6 +234,7 @@
   (respan-pn-with-most-recent-collection-of-people pn-edge))
 
 (defun respan-pn-with-most-recent-collection-of-people (pn-edge)
+
   (let ((collections/dh (discourse-entry (category-named 'collection))))
     (when collections/dh
       (let ( type  collection  collections-of-people/dh  )
