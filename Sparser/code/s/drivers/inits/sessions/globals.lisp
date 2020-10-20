@@ -484,7 +484,8 @@
    interpret-in-context.")
 
 (defparameter *ignore-personal-pronouns* t
-  "Ignore situational deictics like 'I' or 'we' or 'you'.")
+  "Ignore situational deictics like 'I' or 'we' or 'you'.
+   Their grammar is handled in grammar/model/core/mid-level/interlocutor.lisp")
 
 ;;;---------
 ;;; readout
