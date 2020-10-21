@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2020 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "forest-gophers"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  November 2019
+;;;  Version:  October 2020
 
 ;; Initiated 8/30/14. To hold predicates and other little computations
 ;; done by the forest-level sweeping and island-driving. Also a good
@@ -21,20 +21,20 @@
 
 (defvar subject-seen? nil)
 (defvar main-verb-seen? nil)
-(defvar *edge*)
-(defvar *THE-CATEGORY-TO-BE*)
-(defvar *THE-PUNCTUATION-COMMA*)
 
 (defun clear-sweep-sentence-tt-state-vars ()
+  (declare (special nps-seen)) ; in sweep.lisp
   (setq subject-seen? nil
-        main-verb-seen? nil))
+        main-verb-seen? nil
+        nps-seen nil))
 
 ;;;----------------------------------------
 ;;; setting and getting fields of a layout
 ;;;----------------------------------------
 
+
 (defun set-subject (tt)
-  ;; Sugar to make the main line easier to read
+  (declare (special subject-seen?))
   (tr :setting-subject-to tt)
   (setf (subject (layout)) tt)
   (setq subject-seen? t))
@@ -408,7 +408,7 @@
 (defun copular-vp (edge)
   ;; The main verb under this edge is a form of the verb
   ;; 'to be' or its equivalent (seems, appears, ...)
-  (setq *edge* edge)
+  (declare (special *the-category-to-be*))
   (let ((verb-edge (find-verb edge)))
     (when verb-edge
       (when (eq (edge-category verb-edge) *the-category-to-be*)
@@ -556,6 +556,7 @@
        (eq (edge-left-daughter tt) (word-named "that"))))
 
 (defun includes-tt-over-comma (treetops)
+  (declare (special *the-punctuation-comma*))
   (loop for tt in treetops
     when (eq (edge-category tt) *the-punctuation-comma*)
     return tt))
@@ -611,6 +612,7 @@
 
 (defun ad-hoc-subj+copula-rule (subject copula)
   ;; goes in rules/syntax/be.lisp
+  (declare (special *the-category-to-be*))
   (let* ((subj-ref (edge-referent subject))
          (cop-ref (edge-referent copula)) ;; #<be)
          ;; cheat -- knowing that the copula of J1 was built

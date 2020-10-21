@@ -11,6 +11,14 @@
 
 (in-package :sparser)
 
+#| define-pronoun (string category-suffix form)
+     Person and plural are encoded in the category-suffix
+       for first and second person pronouns
+       Third person pronouns are organized by gender (he, she, it)
+
+     Case is in the form label, though the model only encoded
+       the most operationally salience distinctions
+|#
 
 ;;--- subject pronouns   "X did it"
 

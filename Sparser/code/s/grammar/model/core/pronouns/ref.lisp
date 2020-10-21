@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994-2005,2013-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2005,2013-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "ref"
 ;;;   Module:  "model;core:pronouns:"
-;;;  version:  December 2017
+;;;  version:  October 2020
 
 ;; 3.0 (7/11/94) completely redone from scratch
 ;; 4.0 (5/8/95) in progress ..5/22
@@ -31,6 +31,33 @@
 (defparameter *debug-pronouns* nil
   "Guards breaks like the one in seek-person-for-pronoun where the search
    was expected to return an entity but didn't.")
+
+;; (trace-pronouns)
+;; (trace-discourse-structure)
+;; (trace-treetops-sweep)
+;; (trace-paragraphs) ;; period hook
+
+
+;;;------------------------
+;;; doing pronouns in-line
+;;;------------------------
+
+(defvar *pending-pronoun* nil
+  "Holds the edge past to enqueue-pronoun and handled by xxx")
+
+(defun enqueue-pronoun (edge-over-pn)
+  "Called from sweep-sentence-treetops when it walks over a pronoun
+   we could potentially dereference"
+  ;;/// trace
+  (setq *pending-pronoun* edge-over-pn))
+
+(defun attempt-to-dereference-pronoun (edge-over-pn layout)
+  ;; Get the discriminiating properties of the pronoun
+  ;; If 3d person note the candidates based on same-sentence
+  ;; topology.
+  (push-debug `(,edge-over-pn ,layout))
+  (break "Pn at ~a" edge-over-pn))
+
 
 
 ;;;--------------------------------
@@ -77,11 +104,6 @@
              (when *debug-pronouns*
                (push-debug `(,edge ,form ,label))
                (break "Unhandled category of form on pronoun: ~a" form)))))))))
-
-;; (trace-pronouns)
-;; (trace-discourse-structure)
-;; (trace-treetops-sweep)
-;; (trace-paragraphs) ;; period hook
 
 
 

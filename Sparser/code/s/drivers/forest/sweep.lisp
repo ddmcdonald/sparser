@@ -41,10 +41,12 @@
 ;; (trace-treetops-sweep)
 
 (defun sweep-sentence-treetops (sentence start-pos end-pos)
-  "Scan the treetops left to right, notice their form, and stash
-   them into state variables that will be consulted during the
-   island-driven parsing that follows."
-  (declare (special category::that word::comma word::|of|))
+  "Scan the treetops of the sentence from left to right, 
+   notice their form, and stash them into state variables 
+   that will be consulted during the island-driven parsing that follows."
+  (declare (special category::that word::comma word::|of|
+                    *incrementally-resolve-pronouns* *pending-pronoun*
+                    *nps-seen*))
   (tr :sweep-sentence-treetops start-pos end-pos)
   (clear-sweep-sentence-tt-state-vars)
   (let ((rightmost-pos start-pos)
@@ -54,39 +56,39 @@
         tt  prior-tt  form  pos-after  multiple?  )
 
     (loop
-      (multiple-value-setq (tt pos-after multiple?)
-        (next-treetop/rightward rightmost-pos))
-      (incf count)
+       (multiple-value-setq (tt pos-after multiple?)
+         (next-treetop/rightward rightmost-pos))
+       (incf count)
 
-      (unless (pos-assessed? pos-after)
-        ;; catches bugs in the termination conditions
-        (if (and prior-tt ;; abbreviation swallowed terminal period
-                 (edge-spans-position? prior-tt end-pos))
-          (return)
-          (error "Walked beyond the bounds of the sentence")))
+       (unless (pos-assessed? pos-after)
+         ;; catches bugs in the termination conditions
+         (if (and prior-tt ;; abbreviation swallowed terminal period
+                  (edge-spans-position? prior-tt end-pos))
+           (return)
+           (error "Walked beyond the bounds of the sentence")))
 
-      (when (and (word-p tt)
-                 (eq tt *the-punctuation-period*))
-        (tr :terminated-sweep-at pos-after)
-        (return))
-      (tr :next-tt-swept tt pos-after)
+       (when (and (word-p tt)
+                  (eq tt *the-punctuation-period*))
+         (tr :terminated-sweep-at pos-after)
+         (return))
+       (tr :next-tt-swept tt pos-after)
 
-      (when multiple?
-        ;; Presume that we want the topmost edge. 
-        ;; This ignores real ambiguities
-        (when (eq 0 (ev-number-of-edges tt))
-          (break "0 edges in sweep-sentence-treetops"))
-        (setq tt (elt (ev-edge-vector tt)
-                      (1- (ev-number-of-edges tt)))))
+       (when multiple?
+         ;; Presume that we want the topmost edge. 
+         ;; This ignores real ambiguities
+         (when (eq 0 (ev-number-of-edges tt))
+           (break "0 edges in sweep-sentence-treetops"))
+         (setq tt (elt (ev-edge-vector tt)
+                       (1- (ev-number-of-edges tt)))))
 
-      (when (edge-p tt)
-        (setq form (edge-form tt))
-        
-        ;; Periods can get edges over them by accidentally
-        ;; being given as a literal in a rule.
-        ;; This check also catches all kinds of punctuation
-        (unless form
-          (cond
+       (when (edge-p tt)
+         (setq form (edge-form tt)))
+       
+       ;; Periods can get edges over them by accidentally
+       ;; being given as a literal in a rule.
+       ;; This check also catches all kinds of punctuation
+       (unless form
+         (cond
            ((eq (edge-category tt) ;; SBCL caught error
                 *the-punctuation-period*)  ;; we're done
             (return))
@@ -95,112 +97,166 @@
             (unless *no-error-on-no-form*
               (push-debug `(,tt ,pos-after))
               (error "No form value on ~a" tt)))))
-        
-        (when (category-p form)
-          (case (cat-name form)
-            ;; this is a gross control structure, but it works
-            
-            ((np proper-name proper-noun n-bar common-noun
-              pronoun wh-pronoun reflexive/pronoun possessive/pronoun)
-             (cond ((np-over-that? tt)
-                    (push-that tt))
-                   ((null prior-tt)
-                    (set-subject tt))
-                   ((and (edge-p prior-tt)
-                         (not main-verb-seen?)
-                         (or (eq (edge-category prior-tt) word::comma)
-                             (and (category-p (edge-category prior-tt))
-                                  (memq (cat-symbol (edge-category prior-tt))
-                                        '(category::pp category::adverb)))))
-                    (set-subject tt))
-                   (main-verb-seen?
-                    (push-loose-np tt))
-                   (t (push-loose-np tt)))
-             (when (and (pronoun-category? form)
-                        ;; don't deal with personal pronouns (in biology)
-                        (or (not  (current-script :biology))
-                            (not (ignore-this-type-of-pronoun (edge-category tt)))))
-               (tr :noticed-pronoun tt)
-               (push-pronoun tt)))
-            
-            (vg
-             (if main-verb-seen?
-                 ;;/// need to modify verb builder and set of form categories
-                 ;; to retain the participlial nature of, e.g. "inhibiting"
-                 (push-post-mvs-verbs tt)
-                 (set-main-verb tt))) ;;/// won't work for preposed participles
-            
-            (vp
-             (push-verb-phrase tt))
-            
-            (adjective
-             (push-loose-adjective tt))
-            
-            (s
-             (push-loose-clauses tt))
-            
-            (subj+verb
-             (push-loose-subj+verb tt))
-            
-            (adverb
-             (if sentence-initial?
-                 (setf (starts-with-adverb (layout)) tt)
-                 (push-loose-adverb tt)))
-            
-            ((preposition spatial-preposition spatio-temporal-preposition) ;; under
-             (when sentence-initial?
-               (setf (starts-with-prep (layout)) tt))
-             (let ((prep (edge-left-daughter tt)))
-               (if (eq prep word::|of|)
-                   (push-of tt)
-                   (push-preposition tt))))
-            
-            (pp
-             (push-prepositional-phrase tt))
-            
-            (conjunction
-             (push-conjunction tt))
-            
-            (subordinate-conjunction
-             (push-subordinate-conjunction tt))
-            
-            ((parentheses square-brackets)
-             (push-parentheses tt))
-            
-            (quantifier
-             ;; drop it on the floor for now: "each of"
-             )
-            (det
-             (if (eq (edge-category tt) category::that)
-                 (then
-                   (when *show-thatcomps* 
-                     (print "IGNORING LIKELY THATCOMP IN SWEEP")))
-                 (else
-                   (when *break-on-new-tt-sweep-cases*
-                     (push-debug `(,tt ,form))
-                     (break "deal with determiner that's not 'that'.~
+       
+       (when (category-p form)
+         (case (cat-name form)
+           ;; this is a gross control structure, but it works
+           
+           ((np proper-name proper-noun n-bar common-noun
+                pronoun wh-pronoun reflexive/pronoun possessive/pronoun)
+            ;;/// pull back inline when it's all worked out
+            (catalog-np-for-sweep tt prior-tt count form main-verb-seen? layout))
+
+           (vg
+            (if main-verb-seen?
+              ;;/// need to modify verb builder and set of form categories
+              ;; to retain the participlial nature of, e.g. "inhibiting"
+              (push-post-mvs-verbs tt)
+              (set-main-verb tt))) ;;/// won't work for preposed participles
+           
+           (vp
+            (push-verb-phrase tt))
+           
+           (adjective
+            (push-loose-adjective tt))
+           
+           (s
+            (push-loose-clauses tt))
+           
+           (subj+verb
+            (push-loose-subj+verb tt))
+           
+           (adverb
+            (if sentence-initial?
+              (setf (starts-with-adverb (layout)) tt)
+              (push-loose-adverb tt)))
+           
+           ((preposition spatial-preposition spatio-temporal-preposition) ;; under
+            (when sentence-initial?
+              (setf (starts-with-prep (layout)) tt))
+            (let ((prep (edge-left-daughter tt)))
+              (if (eq prep word::|of|)
+                (push-of tt)
+                (push-preposition tt))))
+           
+           (pp
+            (push-prepositional-phrase tt))
+           
+           (conjunction
+            (push-conjunction tt))
+           
+           (subordinate-conjunction
+            (push-subordinate-conjunction tt))
+           
+           ((parentheses square-brackets)
+            (push-parentheses tt))
+           
+           (quantifier
+            ;; drop it on the floor for now: "each of"
+            )
+           (det
+            (if (eq (edge-category tt) category::that)
+              (then
+                (when *show-thatcomps* 
+                  (print "IGNORING LIKELY THATCOMP IN SWEEP")))
+              (else
+                (when *break-on-new-tt-sweep-cases*
+                  (push-debug `(,tt ,form))
+                  (break "deal with determiner that's not 'that'.~
                      ~% tt = ~a~
                      ~% form = ~a"
-                            tt form)))))
-            
-            (otherwise
-             (when *break-on-new-tt-sweep-cases*
-               (push-debug `(,tt ,form))
-               (break "New case in sweep.~
+                         tt form)))))
+           
+           (otherwise
+            (when *break-on-new-tt-sweep-cases*
+              (push-debug `(,tt ,form))
+              (break "New case in sweep.~
                      ~% tt = ~a~
                      ~% form = ~a"
-                      tt form))))))
+                     tt form)))))
 
-      (when (known-subcategorization? tt)
-        (push-subcat tt))
+       (when (known-subcategorization? tt)
+         (push-subcat tt))
 
-      (when (eq pos-after end-pos)
-        (return)) ;; leave the loop
+       (when (eq pos-after end-pos)
+         (return)) ;; leave the loop
 
-      (when sentence-initial?
-        (setq sentence-initial? nil))
-      (setq rightmost-pos pos-after)
-      (setq prior-tt tt))
+       (when sentence-initial?
+         (setq sentence-initial? nil))
+       
+       (setq rightmost-pos pos-after
+             prior-tt tt)
+
+       ) ; bottom of the loop
+
+    (when *pending-pronoun*
+      (attempt-to-dereference-pronoun *pending-pronoun* layout))
 
     layout))
 
+
+;;--- NP handler
+
+(defvar nps-seen nil
+  "Initialized in clear-sweep-sentence-tt-state-vars, contains the edge
+   for each np (each type of form listed in the sweep leading to
+   the catalog NP call, particularly pronouns) along with the set of
+   properties we can deduce about them.")
+
+(defun catalog-np-for-sweep (tt prior-tt count form main-verb-seen? layout)
+  "Broken out as a subroutine just to make it easier to write alternatives"
+  ;; maintain a stack of sentential nps..
+  (let ((pending-np tt) ; to add to
+        (properties nil)
+        (referent (edge-referent tt)))
+    
+    (when (np-over-that? tt)
+      (push :that properties)
+      (push-that tt))
+
+    (when (null prior-tt)
+      ;; first constituent in the sentence
+      (push :subject properties)
+      (set-subject tt))
+
+    (when (and (edge-p prior-tt)
+               (not main-verb-seen?)
+               (or (eq (edge-category prior-tt) word::comma)
+                   (and (category-p (edge-category prior-tt))
+                        (memq (edge-cat-name prior-tt) '(pp adverb)))))
+      (push :subject properties)
+      (set-subject tt))
+    
+    (when (pronoun-category? form)
+      (tr :noticed-pronoun tt)
+      (push :pronoun properties)
+      (when (or (not  (current-script :biology))
+                (not (ignore-this-type-of-pronoun (edge-category tt))))
+        ;; We've got several options. If we're going to wait until the
+        ;; whole sentence is done and condition-anaphor-edge runs to
+        ;; record whatevern information the grammar can give us for v/r,
+        ;; the we just push the pronoun.
+        ;; If we going to do it now, then we can either wait until
+        ;; all of the features of this sentence have been determined,
+        ;; in which case we 'enqueue' the pronoun and a trap will find it.
+        ;; That might provide a better picture of the sentence layout.
+        ;; Alternatively we see if we can do it right now.
+        (if *incrementally-resolve-pronouns*
+          (then
+            (attempt-to-dereference-pronoun tt layout)
+            #+ignore(enqueue-pronoun tt))
+          (push-pronoun tt))))
+
+    (when main-verb-seen?
+      (push :post-verb properties)
+      (push-loose-np tt))
+
+    (when (individual-p referent)
+      (when (plural? referent)
+        (push :plural properties)))
+
+    ;; package this up
+    (let ((package (list pending-np
+                         count
+                         properties)))
+      (push package nps-seen))))
