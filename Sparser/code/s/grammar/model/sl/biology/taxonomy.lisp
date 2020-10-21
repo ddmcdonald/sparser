@@ -877,6 +877,7 @@
      :for disease
      :for medical-treatment ))
 
+(noun "therapy" :super medical-treatment)
 (noun "chemotherapy" :super medical-treatment)
 (noun "organ transplant" :super medical-treatment)
 (noun "therapeutic strategy" :super medical-treatment)

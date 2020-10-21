@@ -401,7 +401,7 @@
 (def-indiv-with-id disease "pseudorabies" "EFO:0007457" :name "pseudorabies") 
 (def-indiv-with-id disease "psoriasis" "EFO:0000676" :name "psoriasis") 
 (def-indiv-with-id disease "rectitis" "NCIT:C38011" :name "proctitis") 
-(def-indiv-with-id disease "regression" "NCIT:C118200" :name "developmental regression") 
+(def-indiv-with-id disease "developmental regression" "NCIT:C118200" :name "developmental regression") 
 (def-indiv-with-id disease "retinitis" "NCIT:C115993" :name "retinitis")
 (def-indiv-with-id disease "retinopathy" "EFO:0003839" :name "retinopathy")
 (def-indiv-with-id disease "rhinosinusitis" "NCIT:C128434" :name "rhinosinusitis") 
@@ -729,3 +729,7 @@
 (def-indiv-with-id disease "rhinosinusitus" "NCIT:C128434" :name "rhinosinusitis") 
 (def-indiv-with-id disease "varicelle" "EFO:0007204" :name "chickenpox") 
 (def-indiv-with-id disease "CMT2I" "ORPHANET:99942" :name "Autosomal dominant Charcot-Marie-Tooth disease type 2I") 
+(def-indiv-with-id disease "COPD" "NCIT:C3199" :name "Chronic Obstructive Pulmonary Disease") 
+(def-indiv-with-id disease "CKD" "NCIT:C80078" :name "Chronic Kidney Disease") 
+(def-indiv-with-id disease "ADHD" "NCIT:C97160" :name "Attention Deficit Hyperactivity Disorder")
+
