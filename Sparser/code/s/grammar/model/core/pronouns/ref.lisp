@@ -42,6 +42,9 @@
 ;;; doing pronouns in-line
 ;;;------------------------
 
+(defparameter *try-incrementally-resolve-pronouns* nil
+  "Controls how we get here in the layout sweep")
+
 (defvar *pending-pronoun* nil
   "Holds the edge past to enqueue-pronoun and handled by xxx")
 
@@ -51,12 +54,17 @@
   ;;/// trace
   (setq *pending-pronoun* edge-over-pn))
 
+
+(defparameter *record-rather-than-try-pronoun* t)
+
 (defun attempt-to-dereference-pronoun (edge-over-pn layout)
   ;; Get the discriminiating properties of the pronoun
   ;; If 3d person note the candidates based on same-sentence
   ;; topology.
   (push-debug `(,edge-over-pn ,layout))
-  (break "Pn at ~a" edge-over-pn))
+  (if *record-rather-than-try-pronoun*
+    (format t "Pronoun ~a in ~%~s~%" edge-over-pn (current-string))
+    (break "Pn at ~a" edge-over-pn)))
 
 
 

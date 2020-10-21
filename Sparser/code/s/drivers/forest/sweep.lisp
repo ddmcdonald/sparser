@@ -206,6 +206,7 @@
 (defun catalog-np-for-sweep (tt prior-tt count form main-verb-seen? layout)
   "Broken out as a subroutine just to make it easier to write alternatives"
   ;; maintain a stack of sentential nps..
+  (declare (special *try-incrementally-resolve-pronouns*))
   (let ((pending-np tt) ; to add to
         (properties nil)
         (referent (edge-referent tt)))
@@ -241,7 +242,7 @@
         ;; in which case we 'enqueue' the pronoun and a trap will find it.
         ;; That might provide a better picture of the sentence layout.
         ;; Alternatively we see if we can do it right now.
-        (if *incrementally-resolve-pronouns*
+        (if *try-incrementally-resolve-pronouns*
           (then
             (attempt-to-dereference-pronoun tt layout)
             #+ignore(enqueue-pronoun tt))
