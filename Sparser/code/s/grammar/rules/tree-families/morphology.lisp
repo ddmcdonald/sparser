@@ -1014,6 +1014,12 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
                 `(:head ,referent
                   :subtype ,(category-named 'plural)))))
 
+(defgeneric plural? (i)
+  (:documentation "Look for the plural category in the individual's
+    type field. Follows design choice in make-cn-plural-rule")
+  (:method ((i individual))
+    (member (category-named 'plural) (indiv-type i))))
+
 
 (defun unresolved-plural-referent? (item)
   "We have an unsolved issue with some plurals referents remaining as expressions.
