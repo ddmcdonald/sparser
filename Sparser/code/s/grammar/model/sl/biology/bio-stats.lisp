@@ -12,13 +12,34 @@
 
 (def-indiv-with-id bio-method "F-test" "NCIT:C53234" :name "F-test") 
 
+(def-indiv-with-id bio-method "regression" "NCIT:C53237" :name "regression method")
+
+;; statistical values to define:
+;; t, p, R2 (or other variations of R-squared), r, F, confidence interval (CI, 95%CI) (UCI = upper confidence interval, LCI = lower confidence interval), beta ("indirect effect standardized beta" but maybe that should be broken down) also b, n, df, SD/stdev/etc, SE, M (mean), (Mage = mean age), Cronbach \u03b1 or Cronbach alpha or Cronbach's alpha, d (Cohen's d) (effect size), OR (odd's ratio), HR (hazard ratio), c-statistic
+;; chi-square chi squared
+
+;; sometimes = (c-statistic=0.758) sometimes not: (HR 1.338, 95%CI 1.083-1.652) also (c-statistics 0.728 vs. 0.722, respectively)
+;; parsing stars in terms of significance (#***)
+;; at least p should have variant of p-value, but may also want t-value, etc
+
+;; need to also allow brackets post statistic (at least for F and t) that are the degrees of freedom
+
+;; "random effects" "random effect estimate" "mixed effect" "heterogeneity"
+
+;; Likert scale
+
+;; statistics software -- "R package". "R version"
+
+;; bello-chavolla is full of many particular stats -- 
+
 ;; experiment categories/analysis techniques
 (define-category clustering :specializes bio-method
                  :bindings (uid "NCIT:C63918")
   :realization (:verb ("cluster" :present-participle "clustering" :past-tense "clustered")
                       :etf (svo-passive)))
 
-(def-indiv-with-id bio-method "meta-analysis" "NCIT:C17886" :name "meta-analysis" :plural ("meta-analysises" "meta-analyses")) 
+(def-indiv-with-id bio-method "meta-analysis" "NCIT:C17886" :name "meta-analysis" :plural ("meta-analysises" "meta-analyses"))
+;; also post-hoc should be in here
 
 (def-indiv-with-id bio-method "end-point" "NCIT:C82866" :name "endpoint value derivation technique")
 (def-indiv-with-id bio-method "Endpoint" "NCIT:C82866" :name "endpoint value derivation technique") 
@@ -33,6 +54,7 @@
 ;; this also should have a non-biological grounding -- this EFO is for genetic duplication
 (def-indiv-with-id bio-method "duplication" "EFO:0004015" :name "duplication")
 ;; relatedly, "replication" is in new-defs/new-bio-proc as DNA replication...
+
 
 (def-indiv-with-id bio-method "preprocess" "NCIT:C64201" :name "preprocess") 
 
@@ -81,10 +103,10 @@
 (def-indiv-with-id bio-measurement "percentile" "NCIT:C48919" :name "percentile") 
 (def-indiv-with-id bio-method "FWER" "NCIT:C64215" :name "family-wise error rate") 
 (def-indiv-with-id bio-method "alpha-1" "NCIT:C67050" :name "affy alpha1 significance") 
+(def-indiv-with-id bio-method "alpha2" "NCIT:C67051" :name "affy alpha2 significance") 
 
 ;; really more of a predicate
 (def-indiv-with-id bio-method "computational" "NCIT:C19233" :name "computational technique")
-(def-indiv-with-id bio-method "alpha2" "NCIT:C67051" :name "affy alpha2 significance") 
 
 ;; other more general experimentally relevant things:
 
@@ -183,11 +205,14 @@
 
 ;; taxonomy
 ;; bio-groupings: group, set, subset, collection, cluster... also, currently these have members that must be bio-entities, so i'm wondering how that relates to talking about datapoints
-;; evidence: experiment, study, observation (which is divorced from observe)
-;; bio-methods: measure, correlate
+;; evidence: experiment, study, observation (which is divorced from observe - see general-verbs)
+;; bio-methods: measure, correlate, clinical-trial
 ;; bio-location: domain, segment -- these are complicated because they're currently protein-domains...
 ;; variant: varaiant specializes protein and includes variant, form, state, determinant, 
 
+
+;; from general-verbs
+;; effect (both verb and noun), interact, interfere, involve, lead, limit, lower and lower-adj, lose/loss, mean (imply, not average, although "means" is in bio-method), observe, perform (requires biological), run (bio-method), predict. prove, query/question, report, represent, require, result(v/n), sample, see, select, set, show, demonstrate, exhibit, statement, study, tend, test, use, 
 
 ;; rhetoric  also seem useful
 
