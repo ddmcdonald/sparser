@@ -109,7 +109,7 @@
   (:method ((e edge)) nil)
   (:method ((n number)) nil)
   (:method ((item T))
-    (warn "'~a' of type ~a passed to relevant type filter"
+    (warn-or-error "'~a' of type ~a passed to relevant type filter"
           item (type-of item))
     nil))
 
