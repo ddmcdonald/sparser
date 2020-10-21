@@ -317,6 +317,9 @@ omitted and then run (perhaps) after the image has been launched."
     (gate-grammar *biology*
         (gload "bio;loader")))
 
+  (gate-grammar *score-stats*
+        (gload "score-stats;loader"))
+  
   (gate-grammar *disease*
     (disease-loaded-after-bio))
 

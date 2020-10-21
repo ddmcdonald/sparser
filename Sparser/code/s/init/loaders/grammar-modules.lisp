@@ -441,6 +441,10 @@
                        :name "Biology for Big Mechanism"
                        :parent *sublanguages*)
 
+(define-grammar-module *score-stats*
+                       :name "Social and Behavior Science for SCORE program"
+                       :parent *sublanguages*)
+
 (define-grammar-module *hurricanes*
     :name "Hurricanes and the events they are part of"
     :parent *sublanguages*)
