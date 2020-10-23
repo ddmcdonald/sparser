@@ -4069,15 +4069,42 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     but will block when you try to write.  These are combining codes, and not easy to get info on.
     They're all Low Surrogates which run from U+DC00 to U+DFFF
 
-(56389 (:alphabetical . (:lowercase .,(code-char 56389)))) ;; #\UDC45  -- unassigned (Cn) in Low Surrogates block
-(56395 (:alphabetical . (:lowercase .,(code-char 56395)))) ;; #\UDC4B 
-(56396 (:alphabetical . (:lowercase .,(code-char 56396)))) ;; #\UDC4C 
-(56406 (:alphabetical . (:lowercase .,(code-char 56406)))) ;; #\UDC56 -- invalid character
-(56407 (:alphabetical . (:lowercase .,(code-char 56407)))) ;; #\UDC57 -- Byzantine musical symbol micron ison
-(56418 (:alphabetical . (:lowercase .,(code-char 56418)))) ;; #\UDC62 -- Supplemental Arrows-C 'Wide headed rightwards light barb arrow'
-(56419 (:alphabetical . (:lowercase .,(code-char 56419)))) ;; #\UDC63 -- Mathematical Italic Small V
-(57085 (:alphabetical . (:lowercase .,(code-char 57085)))) ;; #\UDEFD -- Mathematical Italic Small Beta
-(57087 (:alphabetical . (:lowercase .,(code-char 57087)))) ;; #\UDEFF 
-(57095 (:alphabetical . (:lowercase .,(code-char 57095)))) ;; #\UDF07 -- Mathematical Italic Small MU
+(56389 (:alphabetical . (:lowercase .,(code-char 56389)))) ;; #\uDC45  -- unassigned (Cn) in Low Surrogates block
+(56395 (:alphabetical . (:lowercase .,(code-char 56395)))) ;; #\uDC4B 
+(56396 (:alphabetical . (:lowercase .,(code-char 56396)))) ;; #\uDC4C 
+(56406 (:alphabetical . (:lowercase .,(code-char 56406)))) ;; #\uDC56 -- invalid character
+(56407 (:alphabetical . (:lowercase .,(code-char 56407)))) ;; #\uDC57 -- Byzantine musical symbol micron ison
+(56418 (:alphabetical . (:lowercase .,(code-char 56418)))) ;; #\uDC62 -- Supplemental Arrows-C 'Wide headed rightwards light barb arrow'
+(56419 (:alphabetical . (:lowercase .,(code-char 56419)))) ;; #\uDC63 -- Mathematical Italic Small V
+(57085 (:alphabetical . (:lowercase .,(code-char 57085)))) ;; #\uDEFD -- Mathematical Italic Small Beta
+(57087 (:alphabetical . (:lowercase .,(code-char 57087)))) ;; #\uDEFF 
+(57095 (:alphabetical . (:lowercase .,(code-char 57095)))) ;; #\uDF07 -- Mathematical Italic Small MU
+
+
+na\u00efve -- oomlaut over the i
+
+1\u00b0 degree superscript after the number
+
+"Experiments 1\u20133" -- 2em dash
+
+Medler and Binder\u2019s (2005) -- apostrophe
+
+|#
+
+
+#| correspondences for surrogate pairs
+
+\udbff\udc00 -- <
+\udbff\udc01 -- >
+
+\udbff\udc02 -- x   as in "1,024 Xx 768 resolution"
+
+\udbff\udc03 -- =
+
+\udbff\udc04 -- +
+\udbff\udc05 -- -
+
+\udbff\udc07 -- small black square at the end of the document - remove it
+
 
 |#
