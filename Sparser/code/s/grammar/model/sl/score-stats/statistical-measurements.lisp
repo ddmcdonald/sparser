@@ -43,19 +43,19 @@
 
 (defun define-statistical-measure (base-name &key stat-names spec-stat)
   (let ((stat-name (intern (string-upcase
-                            (format t "~a-statistic" base-name))
+                            (format nil "~a-statistic" base-name))
                            (find-package :sparser)))
         (measure-name (intern (string-upcase
-                            (format t "~a-stat-measure" base-name))
+                               (format nil "~a-stat-measure" base-name))
                               (find-package :sparser)))
         (stat-parent (if spec-stat
                          (intern (string-upcase
-                            (format t "~a-statistic" spec-stat))
+                                  (format nil "~a-statistic" spec-stat))
                                  (find-package :sparser))
                          'statistic))
         (measure-parent (if spec-stat
                          (intern (string-upcase
-                            (format t "~a-stat-measure" spec-stat))
+                                  (format nil "~a-stat-measure" spec-stat))
                                  (find-package :sparser))
                          'stat-measure)))
       `(progn
