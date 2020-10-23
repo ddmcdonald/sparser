@@ -87,9 +87,10 @@
        ;; Periods can get edges over them by accidentally
        ;; being given as a literal in a rule.
        ;; This check also catches all kinds of punctuation
-       (unless form
+       (when (and (edge-p tt)
+                  (null form))
          (cond
-           ((eq (edge-category tt) ;; SBCL caught error
+           ((eq (edge-category tt)
                 *the-punctuation-period*)  ;; we're done
             (return))
            ((edge-over-punctuation? tt)) ;; flag it?          
@@ -104,8 +105,9 @@
            
            ((np proper-name proper-noun n-bar common-noun
                 pronoun wh-pronoun reflexive/pronoun possessive/pronoun)
-            ;;/// pull back inline when it's all worked out
-            (catalog-np-for-sweep tt prior-tt count form main-verb-seen? layout))
+            (unless (word-p tt)
+              ;;/// pull back inline when it's all worked out
+              (catalog-np-for-sweep tt prior-tt count form main-verb-seen? layout)))
 
            (vg
             (if main-verb-seen?
@@ -185,6 +187,7 @@
          (setq sentence-initial? nil))
        
        (setq rightmost-pos pos-after
+             form nil ; reinitialize
              prior-tt tt)
 
        ) ; bottom of the loop
@@ -207,8 +210,8 @@
   "Broken out as a subroutine just to make it easier to write alternatives"
   ;; maintain a stack of sentential nps..
   (declare (special *try-incrementally-resolve-pronouns*))
-  (let ((pending-np tt) ; to add to
-        (properties nil)
+  (let ((pending-np tt)
+        (properties nil) ; to add to
         (referent (edge-referent tt)))
     
     (when (np-over-that? tt)
