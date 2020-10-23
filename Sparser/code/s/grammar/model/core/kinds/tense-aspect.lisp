@@ -25,6 +25,8 @@
 ;; "no" and "not" are quantifiers in words/quantifiers1
 
 (define-mixin-category takes-neg
+  :specializes adds-relation
+  :instantiates nil
   :binds ((negation)))
 
 

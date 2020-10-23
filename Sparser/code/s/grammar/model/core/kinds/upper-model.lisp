@@ -253,20 +253,6 @@
  to instantiate when we have reason to deference this type to something
  physical.")
 
-;;;----------------------
-;;; extension in a model
-;;;----------------------
-
-(define-mixin-category indexical
-  ;;:specializes relation
-  :binds ((extension))
-  :documentation "Most all Sparser interpretations describe things
- rather than denote them. This mix-in provides an option for portions
- of the system that do maintain proper mental models of the world
- where denotation is a sensible notion to use this 'extension' variable
- to hold the denotion rather than overload the 'referent' field of
- an edge.")
-
 
 
 ;;;------------------------------------------------
@@ -322,6 +308,21 @@
  'scalar-quality' in the model. They are unlikely to have any
  consequence given how light this is, but putting this back should
  provide some temporary relief.")
+
+;;;----------------------
+;;; extension in a model
+;;;----------------------
+
+(define-mixin-category indexical
+  :specializes adds-relation
+  :binds ((extension))
+  :instantiates nil
+  :documentation "Most all Sparser interpretations describe things
+ rather than denote them. This mix-in provides an option for portions
+ of the system that do maintain proper mental models of the world
+ where denotation is a sensible notion to use this 'extension' variable
+ to hold the denotion rather than overload the 'referent' field of
+ an edge.")
 
 
 ;;;------------------------------------------------------------

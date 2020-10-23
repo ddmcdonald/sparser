@@ -55,6 +55,11 @@
           (version . person-version)))
 
 
+(define-category part-of-a-person-name
+  :specializes name-component
+  :documentation "Labeling category to distinguish parts of
+    people's names from parts of other kinds of things names")
+
 ;;;------------
 ;;; operations
 ;;;------------

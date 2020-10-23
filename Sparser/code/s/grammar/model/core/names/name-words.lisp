@@ -67,6 +67,13 @@
         (bind-variable 'name-of c nw category::name-word))))) ;; obsolete in bind-dli-variable
 
 
+(define-category name-component
+  :instantiates nil
+  :specializes name
+  :documentation "Used for parts of names ('el', 'Ms.', 'junior')
+    that don't stand by themselves and don't refer. They can frequently
+    be separated from the rest of the name with it remaining recognizable")
+
 ;;--- sort routine
 
 (defun sort-lists-of-name-items (l1 l2)

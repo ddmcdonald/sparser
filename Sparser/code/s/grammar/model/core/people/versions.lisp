@@ -14,7 +14,7 @@
 
 (define-category  person-version     ;; e.g. "Jr."
   :instantiates self
-  :specializes nil
+  :specializes part-of-a-person-name
   :binds ((name  :primitive word))
   :index (:permanent :key name)
   :realization (:word name))

@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011,2020 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
 ;;;     File:  "NP"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  0.7 September 2011
+;;;  version:  October 2020
 
 ;; initiated 8/31/92 v2.3
 ;; 0.1 (6/2/93) added explicit definitions for the mix-in category
@@ -56,15 +56,22 @@
 ;;; Categories used for subtype specifications
 ;;;--------------------------------------------
 ;; But look at elaborations / alternatives in rules/syntax/articles
+;;  and in rules/words/determiners
 
-(define-mixin-category  indefinite)
+(define-mixin-category  indefinite
+  :instantiates nil
+  :specializes linguistic)
   ;; The idea is to be able to search off of this in the dh
   ;; to convert over any that are unresolved at the end.
   ;; //never exploited yet
 
-(define-mixin-category definite)
-(define-mixin-category possessive)
+(define-mixin-category definite
+  :instantiates nil
+  :specializes linguistic)
 
+(define-mixin-category possessive
+  :instantiates nil
+  :specializes linguistic)
 
 ;;;------------
 ;;; form rules

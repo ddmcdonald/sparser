@@ -19,7 +19,7 @@
 
 (define-category  person-prefix     ;; e.g. "Mr."
   :instantiates self
-  :specializes nil
+  :specializes part-of-a-person-name
   :binds ((name  :primitive word))
   :index (:permanent :key name)
   :realization (:word name))

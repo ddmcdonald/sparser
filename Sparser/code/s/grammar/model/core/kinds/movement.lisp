@@ -34,7 +34,7 @@ from 'from ... to ..' and such
 
 
 (define-mixin-category can-change-location
-  ;;:specializes relation
+  :specializes attribute
   :binds ((former-location location) ;; where it was before some event
           (present-location location)) ;; where it is afterwards
   :documentation 

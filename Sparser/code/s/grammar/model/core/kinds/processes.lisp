@@ -25,6 +25,8 @@
 ;; This is Split out, because category::collection can also take these
 ;; variables -- i.e. collections can be collections of perdurants
 (define-mixin-category takes-tense-aspect-modal
+  :specializes adds-relation
+  :instantiates nil
   :binds ((modal :primitive category)
           (present :primitive  category)
           (past :primitive  category)
@@ -32,7 +34,7 @@
           (perfect  category)))
 
 (define-mixin-category temporally-localized
-  :instantiates nil
+  :specializes adds-relation
   :documentation "Supplies a set of bindings and subcategorization
    specifications for temporal and other adjuncts that acrue to
    clauses that denote perdurants and perdurant-like categories."

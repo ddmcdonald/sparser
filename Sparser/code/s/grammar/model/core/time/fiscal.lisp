@@ -77,7 +77,7 @@ part even if it's invariably left out as obvious except in comparisons. |#
 ;;;-------------------------------------
 
 (define-category  end-date
-  ;; :specializes to-end  ;; not bothering with the general case and its
+  :specializes time  ;;  to-end  ;; not bothering with the general case and its
   :instantiates self      ;; automatic suptyping as yet.
   :binds ((thing-ended)
           (date . date))
@@ -108,6 +108,7 @@ part even if it's invariably left out as obvious except in comparisons. |#
 ;;;------------------------
 
 (define-category fiscal
+  :specializes modifier ;; it really is a qualifier, but we need to model that
   :instantiates self
   :realization (:adjective "fiscal"
                 #+ignore(:tree-family  adjective-creates-subtype
@@ -119,7 +120,7 @@ part even if it's invariably left out as obvious except in comparisons. |#
 
 ;;;-----------------------
 ;;; specific fiscal years
-;;;-----------------------
+;;;----------------------
 
 (define-category fiscal-year
   :specializes time
