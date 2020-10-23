@@ -182,6 +182,8 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
 ;;; driver
 ;;;--------
 
+
+
 (defun run-nth-score-article (n &key quiet show-sect stats)
   "Process the nth ('1' -> nth of 0) json article in the directory.
    Assemble paragraphs and sections from the blocks in the source JSON
@@ -197,6 +199,23 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
     (when (member filename *bad-score-files* :test #'string-equal)
       (format t "~&Ignoring bad file: ~a" filename)
       (return-from run-nth-score-article nil))
+    (read-score-json-article
+     pathname :handle handle :n n :quiet quiet :show-sect show-sect :stats stats)))
+
+(defun run-score-json-file (namestring &key handle quiet show-sect stats)
+  (let ((pathname (pathname namestring)))
+    (unless (probe-file pathname)
+      (error "Can't find ~a" namestring))
+    (let ((handle-to-use (or handle
+                             (file-namestring pathname))))
+      (read-score-json-article
+       pathname :handle handle-to-use :n 1001
+       :quiet quiet :show-sect show-sect :stats stats))))
+
+
+
+(defun read-score-json-article (pathname &key n handle style quiet show-sect stats)
+  (let ((filename (pathname-name pathname)))
     (format t "~&Reading ~a~%" filename)
     (let ((sexp (cl-json::decode-json-from-source pathname)))
       (let* ((article (make-instance 'score-article :n n))
