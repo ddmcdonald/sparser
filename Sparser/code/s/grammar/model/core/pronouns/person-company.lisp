@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2016-2010  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2020  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "person-company"
 ;;;   Module:  "model;core:pronouns:"
-;;;  version:  May 2019
+;;;  version:  October 2020
 
 ;; Broken out of ref.lisp 10/4/16
 
@@ -15,26 +15,34 @@
 ;;; CA action
 ;;;-----------
 
-(unless (sucessive-sweeps?)
+(eval-when (compile load eval)
 
-  (define-completion-action  category::pronoun/inanimate  ;; label
-                             :pronoun                     ;; tag
-                            'seek-company-for-pronoun)   ;; function
+  (when (eq (script) :ern)
 
-  (define-completion-action  category::pronoun/female
-                             :pronoun
-                             'seek-person-for-pronoun)
+    ;; These pronoun heuristics presume that all of the processing
+    ;; is incremental and on all levels simultaneously (as done by
+    ;; drivers/chart/psp/scan.lisp and some C3 modes).
+    ;; All of the information the heuristics want to look at is expected
+    ;; to be available at the moment the pronoun is encountered
 
-  (define-completion-action  category::pronoun/male
-                             :pronoun
-                             'seek-person-for-pronoun)
+    (define-completion-action  category::pronoun/inanimate  ;; label
+        :pronoun                     ;; tag
+      'seek-company-for-pronoun)   ;; function
+
+    (define-completion-action  category::pronoun/female
+        :pronoun
+      'seek-person-for-pronoun)
+
+    (define-completion-action  category::pronoun/male
+        :pronoun
+      'seek-person-for-pronoun)
 
 
-  (define-completion-action  category::pronoun/plural   ;; "they", "them", "their"
-                             :pronoun
-                             'seek-collection-of-people-for-plural-pronoun )
+    (define-completion-action  category::pronoun/plural   ;; "they", "them", "their"
+        :pronoun
+      'seek-collection-of-people-for-plural-pronoun )
 
-  )
+    ))
 
 ;;;---------------------------------------
 ;;; masculine/feminine 3d person pronouns
