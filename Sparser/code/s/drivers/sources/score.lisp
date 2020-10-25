@@ -332,7 +332,8 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
   ;; The paragraphs retain their identities, only the text
   ;; in their content-string fields is affected
   (declare (special *raw-paragraphs* *ready-paragraphs*
-                    *print-action-para-info*))
+                    *print-action-para-info*
+                    *index-after-metadata*))
 
   (labels ((lift-string-from-action-para (para)
            "Pull the string to remove out of the paragraph object"
@@ -416,8 +417,14 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
                      unless (eq (type-of p) 'action-paragraph)
                      collect (remove-specified-text p string-to-remove))))
 
-          (setq *ready-paragraphs* cleaned)
-          cleaned)))))
+          (let ((delta (- (length *raw-paragraphs*)
+                          (length cleaned))))
+            (when *print-action-para-info*
+              (format t "Removed ~a paragraphs from the raw list" delta))
+            (setq *index-after-metadata* (- *index-after-metadata* delta))
+
+            (setq *ready-paragraphs* cleaned)
+            cleaned))))))
 
 
 
@@ -448,7 +455,8 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
     ;; (setq index-after-title (1+ (index-of-final-paragraph meta-section)))
 
     ;; Start with the heading paragraph that collect-title-and-meta-data
-    ;; identified as xxxxxxxxxxx
+    ;; identified as the index of the header paragraph that
+    ;; terminated the metadata paragraph
     (setq first-section-head *index-after-metadata*)
 
     ;; (index-of-next-header index-after-title paragraphs)
@@ -526,19 +534,22 @@ parser will get to see them.
    list of paragraphs). Make the section object based on the header paragraph.
    Set the accumulated paragraphs to be its children and knit the
    paragraphs together."
-  (let* ((header-para (nth header-index paragraph-list))
-         (index-of-next (index-of-next-header (1+ header-index) paragraph-list))
-         (start (1+ header-index))
-         (end (1- index-of-next)))
-    (let* ((section-paras
-            (loop for i from start to end
-               collect (nth i paragraph-list)))
-           (s (make-instance 'section)))
-      (setup-name-for-score-section s header-para)
-      (setf (children s) section-paras)
-      (knit-paragraphs section-paras s) ; set previous, next, parent pointers
-      (values s index-of-next)
-      )))
+  (let ((header-para (nth header-index paragraph-list)))
+    (unless (typep header-para 'heading-paragraph)
+      (break "The para pointed to by ~a is not a header" header-index))
+    
+    (let* ((index-of-next (index-of-next-header (1+ header-index) paragraph-list))
+           (start (1+ header-index))
+           (end (1- index-of-next)))
+      
+      (let* ((section-paras
+              (loop for i from start to end
+                 collect (nth i paragraph-list)))
+             (s (make-instance 'section)))
+        (setup-name-for-score-section s header-para)
+        (setf (children s) section-paras)
+        (knit-paragraphs section-paras s) ; set previous, next, parent pointers
+        (values s index-of-next) ))))
 
 
 (defun setup-name-for-score-section (section heading-para)
@@ -556,7 +567,9 @@ parser will get to see them.
 
 
 
-;;--- Article titles, and pre-abstract meta-data
+;;;---------------------------------------------
+;;; Article titles, and pre-abstract meta-data
+;;;---------------------------------------------
 
 (defvar *index-after-metadata* nil
   "This is the index of the next paragraph after the end of the
@@ -572,8 +585,8 @@ parser will get to see them.
    (usually Abstract), and creates a section for them with the name 'Meta-data'.
    It attaches the section to the article where aggregate-score-para-into-sections
    will notice it and include it with the other sections.
-   It is also responsible for setting *index-after-metadata* xxxxx
-"
+   It is also responsible for setting *index-after-metadata* which is used
+   to communicate the see index to its call to collect-all-the-sections"
   (declare (special *index-after-metadata*))
   (let* ((explicit-title (or (blocks-include :title raw-paragraphs)
                              (blocks-include :short-title raw-paragraphs)))
@@ -605,7 +618,15 @@ parser will get to see them.
           (else
             ;; Can happen when the abstract immediately follows
             ;; the title, e.g. #1
-            (setq *index-after-metadata* index-of-next-header)))))))
+            (setq *index-after-metadata* index-of-next-header)))
+        ;;(break "look at indexes")
+        ;; Check that the global is correct
+        #+ignore(let ((next-header (nth *index-after-metadata* raw-paragraphs)))
+          (unless (typep next-header 'heading-paragraph)
+            (break "index of next ~a is no pointing at a header"
+                   *index-after-metadata*))) ))))
+
+
 
 ;;/// move
 (defun index-of-final-paragraph (section)
