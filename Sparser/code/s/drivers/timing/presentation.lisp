@@ -46,7 +46,8 @@
             ;; (name article) "Parsing article: ~s,"
             (insert-commas-into-number-string word-count)
             (insert-commas-into-number-string total-time)
-            wps-string)))
+            wps-string)
+    (force-output stream)))
 
 
 

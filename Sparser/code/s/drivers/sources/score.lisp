@@ -239,7 +239,8 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
         (sort-out-score-paragraphs article sexp)
         (when (children article) ; could have aborted in para. construction
           (run-json-article
-           article :quiet quiet :show-sect show-sect :stats stats))
+           article :quiet quiet :show-sect show-sect :stats stats ;; :skip-errors nil catch errors for debugging
+           ))
         article))))
 
 
@@ -716,14 +717,19 @@ parser will get to see them.
    description of the timing status on each article.
    Mask any errors along the way."
   (let ((*print-action-para-info* nil)
-        (*show-handled-sentence-errors* nil))
+        (*show-handled-sentence-errors* nil))  ;; RJB use T for debugging
     (declare (special *print-action-para-info*
                       *show-handled-sentence-errors*))
     (loop for n from start-index to last-index
        do (progn
             (format t "~&~%--- #~a~%" n)
+            (print (list n 'hhh))
+            (force-output t)
             (ignore-errors
-              (run-nth-score-article n :quiet t :show-sect nil :stats nil))))))
+               (run-nth-score-article n :quiet t :show-sect nil :stats nil)
+               ;;(run-nth-score-article n :quiet nil :show-sect nil :stats nil)
+              )
+            (force-output t)))))
 
 
 ;;;-------------------------------
