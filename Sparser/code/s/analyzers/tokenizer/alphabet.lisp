@@ -4063,7 +4063,9 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     ))
 
 
-
+;;;------------------------------
+;;; Dealing with surrogate pairs
+;;;------------------------------
 
 #|  Find reasonable equivalents for these. They are read into the text for some articles
     but will block when you try to write.  These are combining codes, and not easy to get info on.
@@ -4080,7 +4082,6 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 (57087 (:alphabetical . (:lowercase .,(code-char 57087)))) ;; #\uDEFF 
 (57095 (:alphabetical . (:lowercase .,(code-char 57095)))) ;; #\uDF07 -- Mathematical Italic Small MU
 
-
 na\u00efve -- oomlaut over the i
 
 1\u00b0 degree superscript after the number
@@ -4091,20 +4092,50 @@ Medler and Binder\u2019s (2005) -- apostrophe
 
 |#
 
-
 #| correspondences for surrogate pairs
-
 \udbff\udc00 -- <
 \udbff\udc01 -- >
-
 \udbff\udc02 -- x   as in "1,024 Xx 768 resolution"
-
 \udbff\udc03 -- =
-
 \udbff\udc04 -- +
 \udbff\udc05 -- -
 
 \udbff\udc07 -- small black square at the end of the document - remove it
-
-
 |#
+
+(defun replace-all-lower-surrogates-file (file-spec &optional force &aux out-file)
+  (setq out-file
+        (merge-pathnames (format nil "~a-replaced"(pathname-name file-spec ))
+                         file-spec))
+  (when (or force
+            (not (file-exists-p out-file)))
+                     
+    (with-open-file (in file-spec :direction :input)
+      (with-open-file (out (merge-pathnames (format nil "~a-replaced"(pathname-name file-spec ))
+                                            file-spec)
+                           :direction :output :if-does-not-exist :create :if-exists :supersede)
+        (let (ll)
+          (loop while (setq ll (read-line in nil nil))
+                do
+                  (when (search "\\ud" ll :test #'equal)
+                    (loop for pair in '(("\\udbff\\udc00" "<")
+                                        ("\\udbff\\udc01" ">")
+                                        ("\\udbff\\udc02" "x")
+                                        ("\\udbff\\udc03" "=")
+                                        ("\\udbff\\udc04" "+")
+                                        ("\\udbff\\udc05" "-")
+                                        ("\\udbff\\udc06" "*")
+                                        ("\\udbff\\udc07" "")
+                                        ("\\udbff\\udc08" "*")
+                                        ("\\udbff\\udc09" "≤")
+                                        ("\\udbff\\udc10" "≈")
+                                        ("\\udbff\\udc0a" " ")
+                                        ("\\udbff\\udc0f" "χ")
+                                        )
+                          do
+                            (setq ll (replace-all ll (car pair)  (second pair)))))
+                  (princ ll out)
+                  (terpri out))))))
+  out-file)
+
+
