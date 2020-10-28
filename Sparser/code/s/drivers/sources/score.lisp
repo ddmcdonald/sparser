@@ -3,21 +3,26 @@
 ;;;
 ;;;     File:  "score"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:  September 2020
+;;;  Version:  October 2020
 
 (in-package :sparser)
 
+#| File layout of the Sparser facilities for reading SCORE articles
 
-#| 2do:
--- people's names are taken as bio-entities. Can we incorporate PNF into bio?
--- The running heads are deviously tricky to find, and can incorporate
-  useful information inside them, e.g. #25.  Couldn't find it for #27
+objects/doc/score-articles.lisp
+
+drivers/sources/score-paragraphs.lisp
+
+drivers/sources/score.lisp
+  -- This file. 
+
+
 |#
 
 #| Usage:
 
 ;; 1st first prime the pump - 100 articles
- (collect-score-json) ; specialize *score-json* to your setup
+ (collect-score-json) ; you can specialize *score-json* parameter to your file setup
 
 ;; 2d. Don't parse everything (the list is next to the function)
  (setup-sections-to-ignore-for-score)
@@ -45,7 +50,12 @@
 
 (print-ready-paragraphs)
   -- These are the cleaned paragraphs we aggregate into sections
+|#
 
+#| 2do:
+-- people's names are taken as bio-entities. Can we incorporate PNF into bio?
+-- The running heads are deviously tricky to find, and can incorporate
+  useful information inside them, e.g. #25.  Couldn't find it for #27
 |#
 
 (defun initialize-score-article-parsing ()
@@ -78,7 +88,6 @@
   "Set by aggregate-score-para-into-sections after they've been knit together
    but before they're added to the article")
 
-
 ;;--- used by test-sp
 (defvar p-text "" "cache the sexp of the block we're working on")
 (defvar *p* nil "cache the paragraph we've constructed")
@@ -100,10 +109,9 @@
   (declare (special *raw-paragraphs*))
   (nth n *raw-paragraphs*))
 
-
 (defun blocks-include (flag paragraph-list)
-  "Do any of the typed paragraphps in the list have this title?
-   Can noyt be used on text blocks."
+  "Do any of the typed paragraphs in the list have this title?
+   Can not be used on text blocks."
   (loop for p in paragraph-list
      when (and (typep p 'score-paragraph)
                (eq (flag p) flag))
@@ -117,12 +125,16 @@
 
 
 ;; (collect-score-json)  <--- run before anything else
-(defun collect-score-json (&optional (dir *score-json*))
-  "Read out the directory into the standard global"
+(defun collect-score-json (&optional (dir *score-json*) (force t))
+  "Read out the directory into the standard global
+"
   (let ((pathnames
          (directory (merge-pathnames "*.json" dir))))
-    (setf *json-files-to-read* pathnames)
-    (length pathnames)))
+    (setf *json-files-to-read* 
+          (loop for pathname in pathnames
+             unless (search "-replace" (pathname-name pathname) :test #'equalp)
+             collect (replace-all-lower-surrogates-file pathname force)))
+    (length *json-files-to-read*)))
 
 (defparameter *bad-score-files*
   '("Kenyon_covid_87mby" ; 51 ripping of file completely messed up -- just three blocks
@@ -196,9 +208,9 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
   (let* ((pathname (nth (1- n) *json-files-to-read*))
          (filename (pathname-name pathname))
          (handle (subseq filename 0 (position #\_ filename :from-end t))))
-    (when (member filename *bad-score-files* :test #'string-equal)
-      (format t "~&Ignoring bad file: ~a" filename)
-      (return-from run-nth-score-article nil))
+    ;; (when (member filename *bad-score-files* :test #'string-equal)
+    ;;   (format t "~&Ignoring bad file: ~a" filename)
+    ;;   (return-from run-nth-score-article nil))
     (read-score-json-article
      pathname :handle handle :n n :quiet quiet :show-sect show-sect :stats stats)))
 
@@ -687,7 +699,7 @@ parser will get to see them.
 
 
 (defun test-sp (n) ; 'test score paragraph
-  "Call the paragraph maker on the designated json text block.
+  "Call the paragraph maker on the designated nth json text block.
    Stash text and paragraph on globals"
   (setq p-text (nth n *sequence-of-block-texts*))
   (format t "~&~a: ~s" n p-text)
