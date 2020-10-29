@@ -83,16 +83,16 @@
 (def-stat-measure "r" :stat-names ("r" "Pearson's r" "Pearson correlation coefficient" "Pearson's correlation coefficient" "PCC" "Pearson product-moment correlation coefficient" "PPMCC") :spec-stat "correlation-coefficient") 
 (def-stat-measure "rho" :stat-names ("rho" "Spearman's rho" "Spearman's ρ" "Spearman's rank correlation coefficient" "ρ") :spec-stat "correlation-coefficient")
 
-(def-stat-measure "R-squared" :stat-names ("R-squared" "r-squared" "R squared" "r squared" "R2" "r2" "r-2"))
+(def-stat-measure "R-squared" :stat-names ("R-squared" "r-squared" "R squared" "r squared" "R2" "r2" "r-2" "𝑅̅2"))
 (def-stat-measure "beta" :stat-names ("beta" "β" "B" "b")) 
-(def-stat-measure "chi-squared" :stat-names ("chi-squared" "χ2" "χ-2" "chi squared" "chi2" "chi-2")) 
+(def-stat-measure "chi-squared" :stat-names ("chi-squared" "χ2" "χ-2" "chi squared" "chi2" "chi-2" "χ 2")) 
 (def-stat-measure "Hazard-Ratio" :stat-names ("Hazard-Ratio" "Hazard Ratio" "HR")) 
 (def-stat-measure "odds-ratio" :stat-names ("odds-ratio" "odd's ratio" "odds ratio" "OR")) 
 
 ;; effect size
 (def-stat-measure "effect-size" :stat-names ("effect size"))
 (def-stat-measure "Cohens-d" :stat-names ("Cohens-d" "Cohen's d" "d") :spec-stat "effect-size") 
-(def-stat-measure "partial-eta-square-effect-size" :stat-names ("partial-eta-square-effect-size" "partial eta-square effect size" "np2" "Zp2" "Zp 2" "partial eta-squared" "nP2" "η2p" "η-2p" "ηp2") :spec-stat "effect-size") 
+(def-stat-measure "partial-eta-square-effect-size" :stat-names ("partial-eta-square-effect-size" "partial eta-square effect size" "np2" "Zp2" "Zp 2" "partial eta-squared" "nP2" "η2p" "η-2p" "ηp2" "partial η2") :spec-stat "effect-size") 
 (def-stat-measure "eta-squared" :stat-names ("eta-squared" "n2" "η2" "η-2") :spec-stat "effect-size") 
 (def-stat-measure "generalized-eta-squared" :stat-names ("generalized-eta-squared" "generalized eta-squared" "ng2" "nG2" "ηg2" "ηG2") :spec-stat "effect-size")
 
@@ -103,7 +103,7 @@
 (def-stat-measure "lower-confidence-interval" :stat-names ("lower-confidence-interval" "lower confidence interval" "Lower Confidence iInterval" "LCI") :spec-stat "confidence-interval")
 
 (def-stat-measure "Pillais-trace" :stat-names ("Pillais-trace" "Pillai's trace")) 
-(def-stat-measure "Cronbachs-alpha" :stat-names ("Cronbachs-alpha" "Cronbach's alpha" "Cronbach u03b1" "Cronbach alpha" "Cronbach's ɑ")) 
+(def-stat-measure "Cronbachs-alpha" :stat-names ("Cronbachs-alpha" "Cronbach's alpha" "Cronbach u03b1" "Cronbach alpha" "Cronbach's ɑ" "ɑ")) ;; agreement/reliability metric 
 (def-stat-measure "Bayesian-Information-Criterion" :stat-names ("Bayesian-Information-Criterion" "Bayesian Information Criterion" "BIC")) 
 (def-stat-measure "Receiver-operating-characteristic" :stat-names ("Receiver-operating-characteristic" "Receiver operating characteristic" "ROC")) 
 (def-stat-measure "Area-Under-Curve" :stat-names ("Area-Under-Curve" "Area Under Curve" "AUC" "A'" "a-prime" "c-statistic" "concordance statistic")) 
