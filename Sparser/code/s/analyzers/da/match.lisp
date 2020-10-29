@@ -1,17 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995,2011-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2011-2013,2020  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "match"
 ;;;   Module:  "analyzers;DA:"
-;;;  Version:  September 2013
+;;;  Version:  October 2020
 
 ;; initiated 5/5/95.  Elaborated ..5/12. 11/3/11 Fixing match against
 ;; multiple words as tt.  7/17/13 Cleaning up, elaborating debugging.
 ;; 9/19/13 Moed out look-under code to objects/chart/edge-vectors/peek.
 
 (in-package :sparser)
-(defvar *TRACE-DA*)
-(defvar *DA-SEARCH-IS-GOING-LEFTWARDS*)
 
 (defparameter *edge-tt* nil)
 (defparameter *word-tt* nil)
@@ -23,7 +21,6 @@
         *word-tt* nil
         *multiple-edges-over-word* nil
         *boundary-tt* nil))
-
 
 (defun setup-tt-type (tt)
   (initialize-tt-state-description)
@@ -50,15 +47,16 @@
 
 (defun arc-matches-tt? (arc tt)
   ;; called from Check-for-extension-from-vertex
+  (declare (special *da-execution*))
   (tr :arc-matches-tt? arc tt)
-  #+ignore(when *trace-DA*
+  (when *trace-da-match*
     (format t "   *edge-tt* = ~a~%   *word-tt* = ~a~
              ~%   *multiple-edges-over-word* = ~a~%   *boundary-tt* = ~a~
              ~%   The arc ~a is a ~a~
              ~%   tt = ~a"
             *edge-tt* *word-tt* *multiple-edges-over-word*
             *boundary-tt* arc (type-of arc) tt))
-  (push-debug `(,arc ,tt)) ;;(break "arc type")
+  ;; (push-debug `(,arc ,tt)) ;;(break "arc type")
   ;; (setq arc (car *) tt (cadr *))
 
   (let ((match?
@@ -66,7 +64,11 @@
 
            (form-arc
             (when *edge-tt*
-              (eq (edge-form tt) (arc-label arc))))
+              (or (eq (edge-form tt) (arc-label arc))
+                  ;; a significant number of categories are have both
+                  ;; referential-category and form-category aspects,
+                  ;; e.g. number -- so check the category as well
+                  (eq (edge-category tt) (arc-label arc)))))
 
            (label-arc
             (when *edge-tt*
@@ -138,6 +140,7 @@
   ;; Called from Arc-matches-tt? when a treetop edge is being
   ;; compared against its category label and there is not a
   ;; match.
+  (declare (special *da-search-is-going-leftwards*))
   (when *allow-da-to-look-under-edges*
     (if *da-search-is-going-leftwards*
       (da/look-under-edge/leftwards edge label)
