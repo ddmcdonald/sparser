@@ -4057,7 +4057,8 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (119974 (:alphabetical .(:uppercase .,(code-char 119974)))) ;;;; 𝒦
     (119977 (:alphabetical .(:lowercase .,(code-char 119977)))) ;; #\MATHEMATICAL_SCRIPT_CAPITAL_N 
     (119978 (:alphabetical .(:lowercase .,(code-char 119978)))) ;; #\MATHEMATICAL_SCRIPT_CAPITAL_O 
-    (119989 (:alphabetical .(:lowercase .,(code-char 119989)))) ;; #\MATHEMATICAL_SCRIPT_CAPITAL_Z 
+    (119877 (:alphabetical .(:lowercase .,(code-char 119877)))) ;; #\MATHEMATICAL_ITALIC_CAPITAL_R
+    (119989 (:alphabetical .(:lowercase .,(code-char 119989)))) ;; #\MATHEMATICAL_SCRIPT_CAPITAL_Z
     (120594 (:alphabetical .(:lowercase .,(code-char 120594)))) ;; #\MATHEMATICAL_ITALIC_SMALL_CHI 
     
     ))
