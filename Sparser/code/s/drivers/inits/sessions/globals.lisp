@@ -214,6 +214,12 @@
    words in the scaop of the terminals loop that
    aren't already covered by an edge.")
 
+(defparameter *sweep-for-da-patterns* nil
+  "Controls whether or not we run debris analysis during
+   the initial period of sweeping across a sentence for
+   particular grammatical phenomena. Tested as part of
+   sentence-processing-core sweep options.")
+
 (defparameter *smart-frequency-count* nil
   "Flag checked in scan-terminals-and-do-core that controls whether
    we stop the analysis at that point and just update the frequency

@@ -30,6 +30,30 @@
 (define-category p-statistic :specializes statistic
                  :realization (:noun ("p" "p-value")))
 
+;; "p< 0.001"
+(define-debris-analysis-rule p-less-than
+    :pattern (p-statistic "<" number)
+    :action (:function make-stat-measure first second third))
+
+(define-debris-analysis-rule p-greater-than
+    :pattern (p-statistic ">" number)
+    :action (:function make-stat-measure first second third))
+
+(defun make-stat-measure (statistic relation value)
+  (push-debug `(,statistic ,relation ,value))
+  ;;/// need to extend model to take the relation into account
+  ;;  Subcategorizing the measure would work.
+  ;;  Value of the relation decides among them
+  (let ((r (define-or-find-individual 'stat-measure
+               :stat (edge-referent statistic)
+               :value (edge-referent value))))
+    (make-edge-spec
+     :category category::stat-measure
+     :form category::np
+     :referent r)))
+
+
+
 (define-category p-measure :specializes stat-measure
                  :binds ((stat  p-statistic)
                          )

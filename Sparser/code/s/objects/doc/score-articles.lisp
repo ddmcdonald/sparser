@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "score-articles"
 ;;;   Module:  "objects/doc/"
-;;;  Version:  August 2020
+;;;  Version:  October 2020
 
 ;; Broken out of drivers/sources/score.lisp 8/20/20
 
@@ -17,7 +17,7 @@
   ((position :initarg :n :accessor position-in-corpus))
   (:documentation
    "Provides a hook for incorporating score-specific
-    informationn"))
+    information into the article"))
 
 
 ;;;-------------------------
@@ -33,12 +33,12 @@
     so we can write our sweeping routines in terms of encountering
     objects of a particular type. Parsing is transparent to these classes
     since it works off the inherited content-string field.
-    The 'arg-alist' is a misnomer that should be changed since
-    its actually plist accessed via member. The 'type' of section is
-    recorded in the flag field
-    The 'index' is a number that reflects which paragraph this
-    is in the sequence of paragraphs created by collect-score-json-paragraphs
-    and is zero based."))
+    -- The 'type' of section is recorded in the flag field
+    -- The 'arg-alist' is a misnomer that should be changed since
+     its actually a plist accessed via member.  See get-sp-arg below.
+    -- The 'index' is a number that reflects which paragraph this
+     is in the sequence of paragraphs created by collect-score-json-paragraphs
+     and is zero based."))
 
 (defmethod print-object ((p score-paragraph) stream)
   (print-unreadable-object (p stream :type t)
@@ -86,4 +86,26 @@
 (defmethod print-object ((p text-paragraph) stream)
   (print-unreadable-object (p stream :type t)
     (format stream "~a ~a..." (para-index p) (prefix p))))
+
+
+;;;-----------------------------------------------
+;;; documentation for Score JSON article handling
+;;;-----------------------------------------------
+
+#|
+
+The highlevel story for Score JSON is the same as the story for
+handline COVID-19 JSON or Big Mechanism NXML.
+ 1. Convert the JSON to an instance of document structure article
+ 2. Have the document structure analyzed by Sparser in the normal way
+
+Given how unstructured the Score JSON is, 
+
+To a first approximation, each block of JSON in a Score file
+corresponds to a visually distinct segment of the PDF it was
+derived from, but there is little uniformity 
+
+
+|#
+
 

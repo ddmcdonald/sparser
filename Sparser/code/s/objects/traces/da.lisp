@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "DA"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  May 2020
+;;;  Version:  October 2020
 
 ;; initiated 5/5/95.  Elaborated ..5/19. 11/3/11 added missing trace.
 
@@ -14,7 +14,6 @@
   (setq *trace-tucking* t))
 (defun untrace-tucking ()
   (setq *trace-tucking* nil))
-
 
 (defparameter *trace-DA-check* nil) ;; does anything apply?
 (defun trace-da-hook ()
@@ -32,7 +31,13 @@
   (declare (special *debug-questions* *show-wh-problems*))
   (untrace-da-hook) (untrace-da-execution)
   (untrace-questions) (setq *debug-questions* nil)
-   (setq *show-wh-problems* nil))
+  (setq *show-wh-problems* nil))
+
+(defvar *trace-da-match* nil)
+(defun trace-da-match () ; look at match detail
+  (setq *trace-da-match* t))
+(defun untrace-da-match ()
+  (setq *trace-da-match* nil))
 
 (defparameter *trace-DA* nil) ;; walking through the trie
 (defun trace-da ()
@@ -45,6 +50,12 @@
   (setq *da-execution* t))
 (defun untrace-da-execution ()
   (setq *da-execution* nil))
+
+(defvar *trace-embedded-da* nil)
+(defun trace-embedded-da ()
+  (setq *trace-embedded-da* t))
+(defun untrace-embedded-da ()
+  (setq *trace-embedded-da* nil))
 
 
 ;;---- checking whether pattern applies
@@ -142,8 +153,8 @@
 
 (deftrace :da-pattern-matched (rule)
   ;; called from Accept-pattern
-  (when *trace-DA*
-    (trace-msg "[DA] matched the pattern of ~A~%~%" rule)))
+  (when (or *trace-DA* *trace-embedded-da*)
+    (trace-msg "[DA] matched the pattern of ~A" rule)))
 
 
 
@@ -307,8 +318,6 @@
   (when *trace-tucking*
     (trace-msg "[tuck] about to reinterpret ~a"
                dominating-edge)))
-
-
 #|
 (deftrace : ()
   ;; called from 
@@ -319,6 +328,23 @@
   ;; called from 
   (when *trace-tucking*
     (trace-msg "[tuck] "))) |#
+
+
+;;--- 
+
+(deftrace :doing-da-over (sentence)
+  (when *trace-embedded-da*
+    (trace-msg "[DA] Applying embedded DA search to ~a" sentence)))
+
+(deftrace :embedded/triggers-trie (edge)
+  (when *trace-embedded-da*
+    (trace-msg "[DA] e~a starts a DA pattern"
+               #+ignore(edge-position-in-resource-array edge)
+               edge)))
+
+(deftrace :embeded-produced-edge (edge)
+  (when *trace-embedded-da*
+    (trace-msg "[DA] It succeeded and made ~a" edge)))
 
 
 

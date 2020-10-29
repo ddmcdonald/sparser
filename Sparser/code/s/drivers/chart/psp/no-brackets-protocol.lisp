@@ -308,6 +308,8 @@
     ;; based on polywords.
     (when *do-early-rules-sweep*
       (do-early-rules-sweep sentence))
+    (when *sweep-for-da-patterns*
+      (apply-debris-analysis sentence))
     (when *sweep-for-patterns*
       (pattern-sweep sentence))
     (when *sweep-for-early-information*
