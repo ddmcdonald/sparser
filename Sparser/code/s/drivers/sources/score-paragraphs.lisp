@@ -22,7 +22,7 @@
    given their own unique paragraph index.")
 
 (defun make-score-paragraph (text)
-  "Called from collect-score-json-paragraphs which has make its own
+  "Called from collect-score-json-paragraphs which has made its own
    call to locate-blocks-in-json, and is in a loop where it extracts
    the text from the block, increments an index, and calls us with
    this text. It collects the paragraphs that we return.
