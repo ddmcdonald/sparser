@@ -780,7 +780,8 @@ val-pred-var (pred vs modifier - left or right?)
     (unless (eq (edge-form pp-edge) category::preposition)
       ;; Rules out "all" + "of" where we've not filled in the of-pp
       (cond
-        ((eq 'which (cat-name (edge-category right-daughter)))
+        ((or (eq 'which (cat-name (edge-category right-daughter)))
+             (eq 'whom (cat-name (edge-category right-daughter))))
          (create-partitive-wh-relativizer spec of-pp))
         ((definite-np? right-daughter)
          (cond

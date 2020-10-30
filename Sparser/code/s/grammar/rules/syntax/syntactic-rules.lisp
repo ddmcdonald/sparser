@@ -108,6 +108,11 @@
     :head :left-edge
     :referent (:function create-partitive-np left-edge right-edge))
 
+(def-syntax-rule (superlative-adjective pp-wh-pronoun) ;; "most of whom"
+    :form np
+    :head :right-edge
+    :referent (:function create-partitive-np left-edge right-edge))
+
 ;;--- other cases of leading quantifiers making det's or np's
 
 (def-form-rule (all det) ;; e.g. "all these"
@@ -119,6 +124,7 @@
     :head :right-edge
     :form det
     :referent (:function quantifier-noun-compound left-edge right-edge))
+
 
 
 ;;--- post-position quantifiers
