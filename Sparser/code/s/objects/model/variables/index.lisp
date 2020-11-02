@@ -72,6 +72,14 @@
   (:method ((var anonymous-variable) (category category))
     (find-variable-for-category (pname var) category)))
 
+#| When you're editing the model, in particular when you rearrange
+what categories bing what variables, find-variable-for-category will
+fail to find the variable that you know is there.
+  That happens because the variable cache is stale. To refresh it
+run (cache-variable-lookup), which makes a sweep over all the categories
+and resets the cache.
+|#
+
 ;;;---------------
 ;;; cached lookup
 ;;;---------------
