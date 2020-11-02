@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "loader"
 ;;;  Module: "grammar/model/sl/score-stats
-;;; version: September 2020
+;;; version: October 2020
 
 ;;; started 9/2020 to gather tests and their metrics for reading
 ;;; articles for the SCORE project and other articles with statistics,
@@ -14,3 +14,5 @@
 (gload "score-stats;statistical-variables")
 (gload "score-stats;statistical-measurements")
 (gload "score-stats;statistical-tests")
+
+(gload "score-stats;experiment-language")

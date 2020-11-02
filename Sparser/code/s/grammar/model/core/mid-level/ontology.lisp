@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "ontology"
 ;;;   Module:  "model;core:relations:"
-;;;  version:  July 2017
+;;;  version:  November 2020
 
 ;; Initiated 12/3/15.
 
@@ -26,7 +26,7 @@ files once an area looks big enough to warrant it.  |#
  into its category.")
 
 (define-category has-an-orientation
-  ;;:specializes relation
+  :specializes adds-relation
   :binds ((orientation orientation))
   :documentation "Use as a mixin to indicate that
  something has an orientation. Says nothing about

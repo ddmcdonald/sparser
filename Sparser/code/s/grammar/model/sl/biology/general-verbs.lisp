@@ -1145,6 +1145,7 @@
 	   :etf (svo-passive) 
            :from source))
 
+#| moved to dossiers
 (delete-verb-cfr (resolve "report"))
 (delete-verb-cfr (resolve "reported"))
 (delete-verb-cfr (resolve "reporting"))
@@ -1154,7 +1155,7 @@
     :realization
     (:verb ("report" :past-tense "reported")
            :noun "report"
-	   :etf (svo-passive)))
+	   :etf (svo-passive)))  |#
 
 ;;TO-DO -- fix this one
 (define-category represent :specializes bio-relation

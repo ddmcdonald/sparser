@@ -308,6 +308,12 @@ come
    (:mumble ("propose" svscomp :o statement))
    (:tree-family ))) |#
 
+(define-category report
+  :specializes process
+  :mixins (scomp-verb)
+  :restrict ((theme (:or perdurant endurant)))
+  :realization (:verb "report"))
+
 (define-category sell
   :specializes process
   :mixins (directed-action)

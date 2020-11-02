@@ -1014,7 +1014,7 @@
 (define-adjective "useable")
 (unless (current-script :biology)
   (define-adjective "useful"))
-(define-adjective "variable")
+;; (define-adjective "variable") - moved to experiment-language
 (define-adjective "vast")
 (define-adjective "versatile")
 (define-adjective "viable")
