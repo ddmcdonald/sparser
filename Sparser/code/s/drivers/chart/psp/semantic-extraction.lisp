@@ -1245,3 +1245,19 @@ in cwc-integ/spire/interface/sparser.lisp
              (find-biochemical-entities s)
              s))))
 
+(defun contains-mention? (outer inner)
+  (or (eq outer inner)
+      (when (mention-p outer)
+        (loop for dep in (dependencies outer)
+              thereis
+                (contains-mention? (second dep) inner)))))
+
+(defmethod sentence-mention-sexprs ((str string))
+  (safe-parse str)
+  (sentence-mention-sexprs (sentence)))
+
+
+(defmethod sentence-mention-sexprs ((s sentence))  
+     (loop for m in (sort (copy-list (sentence-mentions s)) #'contains-mention?)
+           collect
+             (krisp->sexpr (base-description m))))
