@@ -28,6 +28,7 @@
 (assign-object category::copular-predication category::top 'value)
 
 (define-category copular-predicate
+  :specializes linguistic
   :documentation "This is strictly a labeling category that is used
  to label the edge over copular verb phrases ('has been unclear').
  The referent of those verb phrases is a copular-predication

@@ -9,7 +9,7 @@
 
 (in-package :sparser)
 
-(adj "spatio-temporal")
+(adj "spatio-temporal" :specializes modifier)
 #| Both words are defined, but we haven't needed to model
 this notion, so this short-cut will do.|#
 

@@ -381,6 +381,7 @@ We therefore have the special cases:
    :within location))
 
 (define-mixin-category with-point-mutation
+  :specializes adds-relation
   :binds ((new-amino-acid . amino-acid)
           (original-amino-acid . amino-acid)
           (position number)))

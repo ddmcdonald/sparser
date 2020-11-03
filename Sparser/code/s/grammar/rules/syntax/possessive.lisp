@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994-1995,2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1995,2012,2020  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "possessive"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.2 September 2009
+;;;  Version:  November 2020
 
 ;; developed for real from scratch 7/26/94 v2.3.  Added another special
 ;; case and checks for pronouns 8/19.  9/15 noticed possiblity of
@@ -23,7 +23,6 @@
 ;;;-------------------
 
 (defparameter *possessive-rule*
-
   (def-form-rule (np apostrophe-s)
     :form possessive
     :referent (:daughter left-edge))) ;;/// needs a subtype
@@ -91,7 +90,7 @@
 ;;;---------------------------------------------
 
 (define-category generalized-possession
-  :specializes nil
+  :specializes adds-relation
   :binds ((possessor)
 	  (possessed)))
 

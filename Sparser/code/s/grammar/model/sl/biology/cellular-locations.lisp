@@ -91,4 +91,6 @@
 
 ;; things to extend for viruses
 (define-cellular-location "envelope" "GO:0019031" :synonyms ("viral envelope" "viral glycoprotein" "viral outside membrane"))
-(adj "enveloped")
+
+(adj "enveloped" :specializes envelope)
+;; not really a specialization, more like the condition of having been

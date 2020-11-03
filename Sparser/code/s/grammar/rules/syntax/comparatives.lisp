@@ -137,6 +137,7 @@ abstract > abstract-region >
 
 (define-mixin-category shared-comparative-and-superlative
   :instantiates nil
+  :specializes adds-relation
   :binds ((direction) ;; more/less
           (reference-set)) ;; holds what we're comparing it to
   :documentation "These could be on comparative and superlatives

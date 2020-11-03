@@ -53,6 +53,7 @@
 (define-category blocked-category :specializes abstract)
 
 (define-category over-ridden)
+;; n.b. this is just a simple category
 ;; this is used only for over-riding inherited variables
 
 
@@ -60,7 +61,8 @@
 ;;; mixins
 ;;;--------
 
-(define-mixin-category type-marker ;;:specializes relation
+(define-mixin-category type-marker
+  :specializes linguistic
   :documentation "This is mixed into selected classes
    like 'protein' or 'pathway or 'cell line' so that their
    lemmas can trigger a specific compose method
@@ -68,11 +70,13 @@
 
 ;;--- labels needed by various sources / exports
 
-(define-mixin-category reactome-category ;;:specializes relation
+(define-mixin-category reactome-category
+  :specializes adds-relation
   :binds ((displayname)
            (reactome-id)))
 
-(define-mixin-category in-ras2-model ;;:specializes relation
+(define-mixin-category in-ras2-model
+  :specializes adds-relation
   :binds ((ras2-model)))
 
 
@@ -248,7 +252,8 @@
 ;;; measurements
 ;;;--------------
 
-(define-mixin-category with-measurement ;;:specializes relation
+(define-mixin-category with-measurement
+  :specializes adds-relation
   :binds ((at-measurement (:or bio-concentration measurement)) 
           (extent (:or amount measurement bio-scalar)))
   :realization
@@ -1285,11 +1290,12 @@
 
 
 
-(define-mixin-category with-specified-amino-acid ;;:specializes relation
+(define-mixin-category with-specified-amino-acid
+   :specializes adds-relation
    :binds ((amino-acid amino-acid)))
 
 (define-category post-translational-enzyme :specializes enzyme
-  :mixins (with-specified-amino-acid)
+                 :mixins (with-specified-amino-acid)
   :binds ((residue residue-on-protein)))
 
 

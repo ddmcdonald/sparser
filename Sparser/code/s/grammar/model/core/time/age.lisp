@@ -19,7 +19,7 @@
 ;;;---------------------------
 
 (define-category has-age
-  ;;:specializes relation
+  :specializes adds-relation
   :binds ((age age))
   :documentation "Everything that can be construed as alive
     has an age: people, legislation, houses, ... This provides
