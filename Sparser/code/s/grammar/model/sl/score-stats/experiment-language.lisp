@@ -47,3 +47,12 @@ was exceptional or ordinary.")
 ;;   :pattern ( s conjunction whethercomp )
 ;; But the actual conjunction is after the verb:
 ;;   {behavoral history ..} and {whether ...}
+
+#|
+(p "The authors decided to carry out this study using an internet based survey due to the current national strict measures on the face to face communication")
+[The authors ][decided ]to [carry ]out [this study ][using ][an internet based survey ]due to the current national strict [measures ]on [the face ]to [face ][communication] |#
+
+;; "study" is in taxonomy as 'evidence'
+;; "measure" defined as a verb in taxonomy
+
+
