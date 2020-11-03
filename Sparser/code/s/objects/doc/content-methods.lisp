@@ -430,6 +430,10 @@ using data collected by identify-relations |#
   (sentence-mentions (contents s)))
 
 
+(defmethod sentence-mentions ((s string))
+  (safe-parse s)
+  (sentence-mentions (contents (sentence))))
+
 (defmethod set-mentions ((s sentence))
   (let ((s-toc-ind (toc-index s))
         (init-mentions (find-all-mentions s)))
