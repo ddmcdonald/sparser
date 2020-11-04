@@ -12,6 +12,33 @@
 ;;;---------------
 ;;; Example texts
 ;;;---------------
+#|
+;;; Abstract from https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7075079/#:~:text=Levels%20of%20social%20support%20for,degree%20of%20anxiety%20and%20stress
+"Effects of Social Support on Sleep Quality of Medical Staff ..."
+
+;; Title
+"The Effects of Social Support on Sleep Quality of Medical Staff Treating Patients with Coronavirus Disease 2019 (COVID-19) in January and February 2020 in China"
+
+;; Abstract
+[ Background ]
+"Coronavirus disease 2019 (COVID-19), formerly known as severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) and 2019 novel coronavirus (2019-nCoV), was first identified in December 2019 in Wuhan City, China. Structural equation modeling (SEM) is a multivariate analysis method to determine the structural relationship between measured variables. This observational study aimed to use SEM to determine the effects of social support on sleep quality and function of medical staff who treated patients with COVID-19 in January and February 2020 in Wuhan, China."
+
+[ Material/Methods ]
+"A one-month cross-sectional observational study included 180 medical staff who treated patients with COVID-19 infection. Levels of anxiety, self-efficacy, stress, sleep quality, and social support were measured using the and the Self-Rating Anxiety Scale (SAS), the General Self-Efficacy Scale (GSES), the Stanford Acute Stress Rea
+ction (SASR) questionnaire, the Pittsburgh Sleep Quality Index (PSQI), and the Social Support Rate Scale (SSRS), respectively. Pearson’s correlation analysis and SEM identified the interactions between these factors."
+
+[ Results }
+"Levels of social support for medical staff were significantly associated with self-efficacy and sleep quality and negatively associated with the degree of anxiety and stress. Levels of anxiety were significantly associated with the levels of stress, which negatively impacted self-efficacy and sleep quality. Anxiety, stress, and self-efficacy were mediating variables associated with social support and sleep quality."
+
+[ Conclusions ]
+"SEM showed that medical staff in China who were treating patients with COVID-19 infection during January and February 2020 had levels of anxiety, stress, and self-efficacy that were dependent on sleep quality and social support."
+
+
+
+
+
+|#
+
 
 ;;; Washingtom Post Cov newsletter 8/12/20
 "The amount of viral particles someone is exposed to is called the viral dose. Scientists have known for decades that exposure to a small amount of any given virus is easier for our immune systems to overcome than exposure to a large amount. It's hard to research exactly how high a dose of the coronavirus it takes to make someone severely ill, since intentionally exposing humans to it would be unethical."
