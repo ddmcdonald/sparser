@@ -37,6 +37,16 @@ trie-for-1st-item and provide a little notation to distinguish them.
 One example of this is the its-a-number da rule that's triggered
 when the treetop is a number
 
+
+
+;; Define a new trie on a new constant
+da-trie-data => analyzers/da/trie-object
+
+;; be able to swap the indexing to ues that alternative
+index-trie-by-1st-item => ../index
+
+;; notice the this is a rule for the embedded case
+
 |#
 
 (in-package :sparser)
@@ -119,7 +129,9 @@ when the treetop is a number
    more than one of these initial edges could initiate a DA pattern
    but we stop with the first one we find. We return the
    specific edge that triggered it along with the da-node."
-  (let ( base-node )
+  (let ((*make-early-da-rule* t)
+        base-node )
+    (declare (special *make-early-da-rule*))    
     (etypecase tt
       (edge
        (setq base-node (trie-for-1st-item tt)) ; usually will be nil

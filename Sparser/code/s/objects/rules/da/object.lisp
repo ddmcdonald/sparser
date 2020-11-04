@@ -47,7 +47,7 @@
 
 #| Notes for re-doing the pattern sorter by following out from the heads
 
-(da-trie-data-table-of-first-labels *da-trie*) == only 30 heads
+(da-trie-data-table-of-first-labels (da-trie)) == only 30 heads
 sp> (all-hash-keys *)
 (#<ref-category NUMBER> #<ref-category QUANTIFIER> #<ref-category INTERJECTION>
  #<ref-category WH-PRONOUN> #<ref-category QUESTION-MARKER>

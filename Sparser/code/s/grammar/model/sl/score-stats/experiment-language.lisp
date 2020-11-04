@@ -55,4 +55,23 @@ was exceptional or ordinary.")
 ;; "study" is in taxonomy as 'evidence'
 ;; "measure" defined as a verb in taxonomy
 
+#| (p "We began with 16,805 women who were age 18 to 40 years when first observed in the survey, lived in a couple household, and were followed from the first time they began working")
+[We ][began ]with [16,805 women ][who ][were ][age ]18 to [40 years ]when [first observed ]in [the survey], [lived ]in [a couple household], and [were followed ]from [the first time they ][began ][working]  |#
+
+(define-early-debris-analysis-rule numberical-range
+    :pattern ( number "to" number )
+    :action (:function make-numerical-range first third))
+
+(defun make-numerical-range (from-edge to-edge)
+  ;;(break "got here from= ~a" from)
+  (let* ((from (edge-referent from-edge))
+         (to (edge-referent to-edge))
+         (i (define-or-find-individual 'range
+                :from from
+                :to to)))
+    (make-edge-spec
+     :category (category-named 'number)
+     :form (category-named 'np)
+     :referent i)))
+    
 

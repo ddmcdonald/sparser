@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2020  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "form"
 ;;;   Module:  "objects;rules:DA:"
-;;;  Version:  May 1995
+;;;  Version:  November 2020
 
 ;; initiated 5/5/95
 
@@ -15,3 +15,9 @@
 
   `(define-debris-analysis-rule/expr ',name ',pattern ',action))
 
+
+(defmacro define-early-debris-analysis-rule (name
+                                             &key pattern action)
+  `(let ((*make-early-da-rule* t))
+     (declare (special *make-early-da-rule*))
+     (define-debris-analysis-rule/expr ',name ',pattern ',action)))

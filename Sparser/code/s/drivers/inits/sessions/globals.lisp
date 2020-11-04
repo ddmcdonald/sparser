@@ -214,7 +214,7 @@
    words in the scaop of the terminals loop that
    aren't already covered by an edge.")
 
-(defparameter *sweep-for-da-patterns* nil
+(defparameter *sweep-for-da-patterns* t
   "Controls whether or not we run debris analysis during
    the initial period of sweeping across a sentence for
    particular grammatical phenomena. Tested as part of

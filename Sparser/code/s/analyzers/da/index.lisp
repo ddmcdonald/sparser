@@ -1,15 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995,2013,2018  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2013,2018,2020  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "index"
 ;;;   Module:  "analyzers;DA:"
-;;;  Version:  August 2018
+;;;  Version:  November 2020
 
 ;; initiated 5/5/95.  Elaborated ..5/22.  5/30 added case to Find-word-in-tt-alist
 ;; 7/18/13 Patched around case of getting a list of edges.
 
 (in-package :sparser)
-(defvar *TT-ALIST*)
 
 ;;;--------
 ;;; driver
@@ -55,14 +54,14 @@
 
     (let ((trie-vertex
            (gethash primary-key
-                    (da-trie-data-table-of-first-labels *da-trie*))))
+                    (da-trie-data-table-of-first-labels (da-trie)))))
 
       (when (and (null trie-vertex)
                  (edge-p tt))
         (let ((secondary-key (edge-form tt)))
           (setq trie-vertex
                 (gethash secondary-key
-                         (da-trie-data-table-of-first-labels *da-trie*)))))
+                         (da-trie-data-table-of-first-labels (da-trie))))))
 
       trie-vertex )))
 
@@ -71,7 +70,7 @@
   ;; Same idea, but for use when working against patterns rather
   ;; than treetops, e.g. in Check-for-clash-with-other-da-rules
   (gethash pattern-item
-           (da-trie-data-table-of-first-labels *da-trie*)))
+           (da-trie-data-table-of-first-labels (da-trie))))
 
 
 
@@ -79,7 +78,7 @@
 
 (defun index-trie-by-1st-item (vertex-0)
   (let ((1st-item (vertex-reference-item vertex-0))
-        (table (da-trie-data-table-of-first-labels *da-trie*)))
+        (table (da-trie-data-table-of-first-labels (da-trie))))
     (setf (gethash 1st-item table) vertex-0)))
 
 
@@ -100,7 +99,7 @@
                 (push-debug `(,tt))
                 (error "Unexpected type of treetop object: ~a~%  ~a"
                        (type-of tt) tt))))
-        (table (da-trie-data-table-of-labels-anywhere *da-trie*)))
+        (table (da-trie-data-table-of-labels-anywhere (da-trie))))
 
     (let ((arcs (gethash key table)))
       (when arcs
@@ -111,6 +110,7 @@
 (defun tt-not-part-of-last-DA-pattern-to-fire (tt)
   ;; called from Is-an-item-anywhere-in-a-trie. It looks up the
   ;; treetop in the alist and returns t if it isn't there.
+  (declare (special *tt-alist*))
   (let ((result
          (etypecase tt
            (edge  (not (rassoc tt *tt-alist* :test #'eq)))
@@ -119,6 +119,7 @@
     result ))
 
 (defun find-word-in-tt-alist (word)
+  (declare (special *tt-alist*))
   (let ( word-data )
     (dolist (entry *tt-alist* nil)
       (unless (edge-p (cdr entry))
@@ -131,7 +132,7 @@
 
 (defun index-item-as-somewhere-in-a-trie (item arc)
   ;; called from Make-arc-for-pattern-item
-  (let* ((table (da-trie-data-table-of-labels-anywhere *da-trie*))
+  (let* ((table (da-trie-data-table-of-labels-anywhere (da-trie)))
          (other-cases (gethash item table)))
 
     (setf (gethash item table)

@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2020 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "trie object"
 ;;;   Module:  "analyzers;DA:"
-;;;  Version:  May 1995
+;;;  Version:  November 2020
 
 ;; initiated 5/5/95.  5/17 Initialized the 'anywhere' case
 
@@ -17,6 +17,7 @@
   uid
   table-of-first-labels
   table-of-labels-anywhere
+  early
   )
             
 
@@ -32,5 +33,26 @@
                          :table-of-first-labels (make-hash-table
                                                  :test #'eq)
                          :table-of-labels-anywhere (make-hash-table
-                                                    :test #'eq)))
+                                                    :test #'eq)
+                         :early nil))
+
+(defparameter *early-da-trie* (make-da-trie-data
+                               :uid (incf *da-trie-data-count*)
+                               :table-of-first-labels (make-hash-table
+                                                       :test #'eq)
+                               :table-of-labels-anywhere (make-hash-table
+                                                          :test #'eq)
+                               :early t))
+
+
+
+(defvar *make-early-da-rule* nil
+  "Dynamically bound in the defining forms to specifiy the choice
+   of trie on which to index a rule pattern")
+
+(defun da-trie ()
+  (declare (special *make-early-da-rule*))
+  (if *make-early-da-rule*
+    *da-trie*
+    *early-da-trie*))
 
