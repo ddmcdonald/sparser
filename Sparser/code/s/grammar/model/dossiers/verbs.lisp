@@ -144,6 +144,12 @@ come
                   :o artifact
                   :mumble ("build" svo :s agent :o artifact)))
 
+(define-category carry-out
+  :specializes process
+  :mixins ( action-verb )
+  :restrict ((patient perdurant))
+  :realization (:verb ("carry" :prep "out")))
+
 (define-category comply
   :specializes state
   :mixins (prop-attitude) ;;//// rework
