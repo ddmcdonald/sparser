@@ -27,9 +27,11 @@
     ;; medical
     "patient"
     
-    "physician"
+    "doctor"
     "nurse"
+    "physician"
     "rehabilitation therapist"
+    "staff"
     "social worker"
     ))
 
