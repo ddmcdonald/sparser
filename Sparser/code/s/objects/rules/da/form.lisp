@@ -16,7 +16,7 @@
   `(define-debris-analysis-rule/expr ',name ',pattern ',action))
 
 
-(defmacro define-early-debris-analysis-rule (name
+(defmacro define-early-pattern-rule (name
                                              &key pattern action)
   `(let ((*make-early-da-rule* t))
      (declare (special *make-early-da-rule*))

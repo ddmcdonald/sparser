@@ -31,11 +31,11 @@
                  :realization (:noun ("p" "p-value")))
 
 ;; "p< 0.001"
-(define-early-debris-analysis-rule p-less-than
+(define-early-pattern-rule p-less-than
     :pattern (p-statistic "<" number)
     :action (:function make-stat-measure first second third))
 
-(define-early-debris-analysis-rule p-greater-than
+(define-early-pattern-rule p-greater-than
     :pattern (p-statistic ">" number)
     :action (:function make-stat-measure first second third))
 

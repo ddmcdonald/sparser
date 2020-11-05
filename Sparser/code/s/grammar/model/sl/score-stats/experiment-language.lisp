@@ -58,7 +58,7 @@ was exceptional or ordinary.")
 #| (p "We began with 16,805 women who were age 18 to 40 years when first observed in the survey, lived in a couple household, and were followed from the first time they began working")
 [We ][began ]with [16,805 women ][who ][were ][age ]18 to [40 years ]when [first observed ]in [the survey], [lived ]in [a couple household], and [were followed ]from [the first time they ][began ][working]  |#
 
-(define-early-debris-analysis-rule numberical-range
+(define-early-pattern-rule numberical-range
     :pattern ( number "to" number )
     :action (:function make-numerical-range first third))
 
