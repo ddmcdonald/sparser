@@ -82,12 +82,13 @@
                                   (format nil "~a-stat-measure" spec-stat))
                                  (find-package :sparser))
                          'stat-measure)))
-      `(progn
-         (define-category ,stat-name :specializes stat-parent
-           :realization
-           (:noun ,stat-names))
-         (define-category ,measure-name :specializes measure-parent
-                          :binds ((stat stat-name))))))
+    (let ((form
+           `(progn
+              (define-category ,stat-name :specializes ,stat-parent
+                :realization (:noun ,stat-names))
+              (define-category ,measure-name :specializes ,measure-parent
+                               :binds ((stat ,stat-name))))))
+      (eval form))))
 
 ;; descriptive stats
 (def-stat-measure "descriptive" :stat-names ("descriptive statistic"))
