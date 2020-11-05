@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2000  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2000,2014-2020 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "rules"
 ;;;   Module:  "grammar;model:core:numbers:"
-;;;  Version:  0.1 April 2000
+;;;  Version:  November 2020
 
 ;; trivial instance 10/91.  Added prefix rules for ordinals 8/16/94
 ;; 0.1 (6/24/99) Pulled the empty '10 million' rule. 
@@ -37,8 +37,23 @@ is easiest with a cs rule.  |#
   :form number
     :referent (:instantiate-individual number-range
                 :with (value left-edge
-                             range right-edge)))
+                       range right-edge)))
 
+
+(define-early-pattern-rule numberical-range
+    :pattern ( number "to" number )
+    :action (:function make-numerical-range first third))
+
+(defun make-numerical-range (from-edge to-edge)
+  (let* ((from (edge-referent from-edge))
+         (to (edge-referent to-edge))
+         (i (define-or-find-individual 'range
+                :from from
+                :to to)))
+    (make-edge-spec
+     :category (category-named 'number)
+     :form (category-named 'np)
+     :referent i)))
 
 
 ;;;---------------
