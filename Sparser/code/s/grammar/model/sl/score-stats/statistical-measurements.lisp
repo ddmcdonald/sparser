@@ -61,9 +61,7 @@
                  )
 
 (defmacro def-stat-measure (base-name &key stat-names spec-stat)
-  `(define-statistical-measure ',base-name
-       ,.(when stat-names `(:stat-names ',stat-names))
-       ,.(when spec-stat `(:spec-stat ',spec-stat))))
+  (define-statistical-measure base-name :stat-names stat-names :spec-stat spec-stat))
 
 (defun define-statistical-measure (base-name &key stat-names spec-stat)
   (let ((stat-name (intern (string-upcase
@@ -82,18 +80,19 @@
                                   (format nil "~a-stat-measure" spec-stat))
                                  (find-package :sparser))
                          'stat-measure)))
-    (let ((form
-           `(progn
-              (define-category ,stat-name :specializes ,stat-parent
+    `(progn
+              (define-category ,stat-name
+                :specializes ,stat-parent
                 :realization (:noun ,stat-names))
-              (define-category ,measure-name :specializes ,measure-parent
-                               :binds ((stat ,stat-name))))))
-      (eval form))))
+              (define-category ,measure-name
+                :specializes ,measure-parent
+                :binds ((stat ,stat-name))))))
+
 
 ;; descriptive stats
 (def-stat-measure "descriptive" :stat-names ("descriptive statistic"))
-(def-stat-measure "sample-size" :stat-names ("sample-size" "sample size" "n") :spec-stat "descriptive") 
-(def-stat-measure "mean" :stat-names ("mean" "M" "m" "average" "avg") :spec-stat "descriptive") 
+(def-stat-measure "sample-size" :stat-names ("sample-size" "sample size" "n" "N") :spec-stat "descriptive") 
+(def-stat-measure "mean" :stat-names ("mean" "M" "m" "average" "avg" "μ") :spec-stat "descriptive") 
 (def-stat-measure "median" :stat-names ("median" "mdn") :spec-stat "descriptive") 
 (def-stat-measure "standard-deviation" :stat-names ("standard-deviation" "standard deviation" "SD" "stdev" "st-dev" "S.D." "Std. Dev.") :spec-stat "descriptive") 
 (def-stat-measure "standard-error" :stat-names ("standard-error" "standard error" "SE" "S.E.") :spec-stat "descriptive")
