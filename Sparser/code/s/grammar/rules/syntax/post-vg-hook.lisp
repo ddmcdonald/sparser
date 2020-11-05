@@ -105,7 +105,8 @@
    variables, then look at this edge and its daughters, figure out the
    tense/aspect they imply, and give it one."
   (declare (special category::present category::past
-                    category::progressive category::perfect))
+                    category::progressive category::perfect
+                    *categories-based-on-apostrophe*))
   (let* ((i (edge-referent vg-edge))
          (referent-with-tense i)) ;; start here
     (unless (indicates-tense? i)
@@ -145,6 +146,12 @@
                 (assign-tense left))
                (t
                 (assign-tense right))))
+
+            ((and (word-p left) (null right) 
+                  (memq (edge-category vg-edge)
+                        *categories-based-on-apostrophe*))
+             ;; "as far as we’re concerned" -- nothing to add
+             )
 
             (t 
              (push-debug `(,left ,right))
