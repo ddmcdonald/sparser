@@ -61,7 +61,7 @@
    categories subdirectory of the sparser documentation directory.
    The filename is based on the current script, though if the category
    is not top it will be appended to the filename, e.g.
-     ~/sparser/Sparser/documentatipn/caetgories/blocks-world-linguistic.org "
+     ~/sparser/Sparser/documentation/categories/blocks-world-linguistic.org "
   (let ((category (category-named category-name :error-if-nil)))
     (unless reference-system
       (setq reference-system :sparser))

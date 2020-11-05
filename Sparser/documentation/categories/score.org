@@ -1,0 +1,3040 @@
+-*-org-*
+#+TITLE: Subcategory tree for the score configuration
+#+DATE: 11/5/20 11:12:41
+
+ + 0 top vars: {name, modifier, qualifier, negation, quantifier, number, items, predicate, predication, relative-prep, appositive-description, comp, subordinate-conjunction, relative-position-number, has-determiner, event-relation, amount-of-time, is-plural, intensity, comparative, compared-to, comparative-predication, that-rel, category, raw-text, in-the-literature, in-the-database, trailing-parenthetical}
+  + 1 biological vars: {context, disease, cell-line, cell-type, organ, preparation, cellular-location, cellular-process, organism, non-cellular-location, examples, excluding, like, unlike, location}
+    + 2 member vars: {set}
+    + 2 difference vars: {compared}
+    + 2 reference-item 
+      + 3 small-molecule-reference 
+    + 2 on-substrate vars: {substrate, site}
+    + 2 bio-context vars: {process, entity, relation, quantitative-condition}
+      + 3 pilot 
+      + 3 trial 
+      + 3 setting 
+      + 3 medical-condition vars: {organ}
+        + 4 normoxia 
+        + 4 injury vars: {organ}
+        + 4 disease vars: {organ}
+          + 5 covid-19 
+          + 5 disorder 
+          + 5 abnormality 
+          + 5 cancer 
+            + 6 melanoma 
+        + 4 symptom 
+        + 4 disorder  **  already diplayed #<ref-category DISORDER>
+        + 4 abnormality  **  already diplayed #<ref-category ABNORMALITY>
+      + 3 experimental-condition 
+        + 4 within-subject 
+        + 4 buffer 
+          + 5 hpb 
+        + 4 serum 
+        + 4 presence vars: {measurement}
+        + 4 absence vars: {measurement}
+        + 4 radioactivity vars: {material}
+        + 4 natural-growth-conditions 
+        + 4 in-vitro 
+        + 4 in-vivo 
+        + 4 in-situ 
+        + 4 petri-dish 
+        + 4 unstimulated 
+        + 4 medium 
+        + 4 experimental-system 
+  + 1 measurement vars: {units, quantity}
+    + 2 count-of vars: {item-counted}
+    + 2 content 
+    + 2 throughput 
+    + 2 dataset 
+      + 3 covidx 
+    + 2 data 
+    + 2 ratio vars: {measured, ratio, divisor}
+    + 2 value 
+    + 2 bio-measurement 
+      + 3 topopsa 
+      + 3 transient-measurement 
+      + 3 mape 
+    + 2 ordinal-fraction vars: {selector, unit}
+    + 2 rate-of-process vars: {process, value}
+    + 2 rate vars: {units, quantity}
+      + 3 qualitative-rate 
+    + 2 proportional-measurement vars: {units, quantity}
+    + 2 named-measure vars: {name}
+  + 1 speech-act 
+    + 2 discourse-adverbial 
+      + 3 anyway 
+    + 2 sa-propose 
+      + 3 explicit-suggestion vars: {marker, suggestion}
+    + 2 apology 
+    + 2 greeting 
+    + 2 acknowledgement vars: {name}
+  + 1 endurant vars: {number, quantifier, selector}
+    + 2 organism 
+      + 3 infectious-agent 
+        + 4 bacterium 
+        + 4 virus 
+          + 5 arkdpi 
+          + 5 vdpv 
+            + 6 ivdpv 
+          + 5 macv 
+          + 5 nnv 
+          + 5 nidovirus 
+          + 5 asfarviridae 
+          + 5 cnmv 
+          + 5 roniviridae 
+          + 5 phaeovirus 
+          + 5 wssv 
+          + 5 ssv 
+          + 5 archaeovirus 
+          + 5 paleovirus 
+          + 5 henipavirus 
+            + 6 niv 
+              + 7 niv-m 
+              + 7 niv-b 
+          + 5 fluv 
+            + 6 fluav 
+              + 7 h1n1 
+                + 8 h1n1-09 
+              + 7 hpai 
+                + 8 h5n1 
+                  + 9 h5n1vn1203 
+          + 5 pos-sense-ssrna-virus 
+            + 6 coronavirus 
+              + 7 hcov 
+              + 7 thcov 
+              + 7 tcov 
+              + 7 spacov 
+              + 7 quacov 
+              + 7 gucov 
+              + 7 gcov 
+              + 7 ddcov 
+              + 7 dcov 
+              + 7 cgcov 
+              + 7 avcov 
+              + 7 secov 
+              + 7 prcov 
+              + 7 porcov 
+              + 7 fecov 
+              + 7 fcov 
+              + 7 cfbcov 
+              + 7 cecov 
+              + 7 crcov 
+              + 7 ccov 
+              + 7 bucov 
+              + 7 bcov 
+              + 7 alccov 
+              + 7 acov 
+              + 7 neocov 
+              + 7 batcov 
+              + 7 mucov 
+              + 7 gammacoronavirus 
+              + 7 deltacoronavirus 
+                + 8 spdcov 
+                + 8 pdcov 
+              + 7 betacoronavirus 
+                + 8 hcov-hku1 
+                + 8 hcov-oc43 
+                + 8 chrcov 
+                + 8 rcov 
+                + 8 ericov 
+                + 8 ecov 
+                + 8 batcov-hku5 
+                + 8 batcov-hku4 
+                + 8 sars-cov 
+                + 8 sars-cov-2 
+                + 8 sarsr-cov 
+                  + 9 bat-sl-covzxc21 
+                  + 9 bat-sl-covzc45 
+                  + 9 bat-sl-ratg13 
+              + 7 alphacoronavirus 
+                + 8 hcov-nl63 
+                + 8 hcov-229e 
+                + 8 seacov 
+                + 8 accov-jc34 
+                + 8 accov 
+          + 5 neg-sense-ssrna-virus 
+      + 3 strain 
+      + 3 species 
+        + 4 human 
+        + 4 mouse 
+          + 5 idtr 
+          + 5 ad5-hdpp4 
+      + 3 animal 
+        + 4 male 
+        + 4 female 
+        + 4 mammal 
+          + 5 dam 
+    + 2 mechanism vars: {process, goal}
+      + 3 bio-mechanism vars: {participant}
+        + 4 path vars: {endpoints, start, end}
+        + 4 pathway vars: {protein-sequence, pathwaycomponent, pathwayendpoints, pathwayorder}
+          + 5 signaling-pathway 
+          + 5 pathway-segment vars: {ground}
+            + 6 upstream-segment 
+            + 6 downstream-segment 
+        + 4 route 
+        + 4 aspect vars: {whole}
+        + 4 networking 
+        + 4 feedback-loop 
+          + 5 negative-feedback-loop 
+          + 5 positive-feedback-loop 
+    + 2 named-object vars: {name}
+    + 2 non-physical 
+      + 3 information 
+        + 4 answer/info 
+      + 3 social-object 
+        + 4 social-nonagentivive 
+        + 4 social-agent 
+          + 5 organization vars: {name, uid}
+            + 6 moderna 
+            + 6 vaccitech 
+            + 6 pfizer 
+            + 6 novartis 
+            + 6 novavax 
+            + 6 merck 
+            + 6 glaxosmithkline 
+            + 6 eli-lilly 
+      + 3 mental-object 
+    + 2 physical vars: {location}
+      + 3 aggregate 
+        + 4 bio-aggregate 
+          + 5 pair-with-protein vars: {left, right}
+          + 5 bio-pair vars: {left, right}
+            + 6 amino-acid-pair vars: {left, right}
+            + 6 protein-pair vars: {left, right}
+            + 6 no-space-pair vars: {left, right}
+      + 3 feature 
+      + 3 physical-object 
+        + 4 cell-entity vars: {with-protein}
+          + 5 cell-type vars: {associated-disease, mutation}
+            + 6 induced-pluripotent-stem-cell 
+            + 6 mensc 
+            + 6 keratin 
+          + 5 cell-line 
+        + 4 bio-entity vars: {produced-by}
+          + 5 bond 
+          + 5 binder 
+          + 5 lysate 
+          + 5 population vars: {element}
+          + 5 phenotype 
+          + 5 bio-patient 
+          + 5 paradox 
+          + 5 open-reading-frame 
+          + 5 frame 
+          + 5 surface 
+          + 5 bio-preparation 
+            + 6 slice 
+          + 5 bio-reagent 
+            + 6 gel 
+          + 5 bio-agent vars: {causes}
+            + 6 neurotoxin 
+            + 6 carcinogen 
+          + 5 bio-chemical-entity vars: {in-equilibrium-with}
+            + 6 substrate vars: {enzyme}
+            + 6 ligand 
+            + 6 chemical-product 
+            + 6 regulator vars: {object}
+              + 7 positive-regulator 
+            + 6 bio-complex vars: {component, componentstoichiometry}
+              + 7 calcium-complex 
+                + 8 calcium-calmodulin-complex 
+              + 7 multimer 
+                + 8 homomultimer 
+                + 8 heteromultimer 
+              + 7 tetramer 
+                + 8 homotetramer 
+              + 7 trimer 
+                + 8 homotriamer 
+              + 7 dimer 
+                + 8 homo/heterodimer 
+                + 8 homodimer 
+                + 8 heterodimer 
+              + 7 monomer 
+              + 7 tricomplex 
+            + 6 mutant vars: {basis}
+            + 6 molecule vars: {molecule-type}
+              + 7 32p 
+              + 7 mehg 
+              + 7 o2˙- 
+              + 7 acid 
+              + 7 mitogen 
+              + 7 derivative 
+              + 7 anchor 
+              + 7 agonist 
+              + 7 activator vars: {activated}
+              + 7 amino-acid vars: {three-letter-code, one-letter-code}
+                + 8 phosphorylated-amino-acid vars: {modified-amino-acid}
+              + 7 calcium 
+              + 7 protein-state vars: {protein, post-translational-mod}
+              + 7 peptide vars: {residue}
+                + 8 ap 
+                + 8 d-peptide 
+                + 8 bradykinin 
+                + 8 protein vars: {species, mutation, complex, functionally-related-to, site, variant-number, equilibrium-state, state, in-pathway, in-family, context}
+                  + 9 fragment vars: {whole, measure}
+                  + 9 target-protein vars: {treatment}
+                  + 9 polyprotein 
+                  + 9 growth-factor 
+                  + 9 nonintegrin 
+                  + 9 tumor-suppressor-gene 
+                  + 9 anti-oncogene 
+                  + 9 transporter 
+                  + 9 coactivator 
+                  + 9 scaffold 
+                  + 9 receptor-protein 
+                  + 9 receptor 
+                    + 10 innate-immunity-receptor 
+                    + 10 cytokine-receptor 
+                  + 9 effector vars: {for-process}
+                  + 9 antibody vars: {antigen}
+                  + 9 point-mutated-protein 
+                  + 9 protein-family vars: {type, family-members, count}
+                    + 10 subfamily 
+                    + 10 human-protein-family 
+                  + 9 transcription-factor vars: {controlled-gene}
+                  + 9 co-chaperone vars: {protein}
+                  + 9 chaperone vars: {protein}
+                  + 9 enzyme vars: {enzyme, reaction, enzyme-activity}
+                    + 10 glucosyltransferase 
+                    + 10 nuclease 
+                    + 10 hydrogenase 
+                    + 10 aminopeptidase 
+                    + 10 phospholipase 
+                    + 10 isozyme 
+                    + 10 deubiquitinase 
+                    + 10 oxidase 
+                    + 10 esterase 
+                    + 10 polymerase 
+                    + 10 ubiquitinase 
+                    + 10 ligase 
+                    + 10 isomerase 
+                    + 10 gtpase 
+                    + 10 exchange-factor vars: {nucleotide, enzyme}
+                      + 11 nucleotide-exchange-factor 
+                    + 10 deubiquitylase 
+                    + 10 methyltransferase-enzyme 
+                      + 11 dna-methyltransferase 
+                        + 12 m5c 
+                        + 12 m4c 
+                        + 12 m6a 
+                    + 10 post-translational-enzyme vars: {residue}
+                      + 11 phosphatase 
+                      + 11 ubiquitylase 
+                      + 11 kinase 
+                        + 12 receptor-protein-tyrosine-kinase 
+                  + 9 slashed-protein-collection 
+                  + 9 variant vars: {basis}
+                    + 10 single-nucleotide-polymorphism 
+                    + 10 isoform 
+                    + 10 analog 
+                    + 10 allele 
+                    + 10 homolog 
+                    + 10 example 
+                    + 10 bio-state vars: {stateful-item}
+              + 7 small-molecule vars: {entity-reference}
+                + 8 orthophosphate 
+                + 8 nucleoside vars: {base}
+                + 8 nucleotide vars: {base}
+                  + 9 (deoxy)uridine-monophosphate 
+                  + 9 (deoxy)cytidine-monophosphate 
+                  + 9 uridine-monophosphate 
+                  + 9 cytidine-monophosphate 
+                  + 9 tmp 
+                  + 9 ump 
+                  + 9 dump 
+                  + 9 dcmp 
+                  + 9 cmp 
+                  + 9 dgmp 
+                  + 9 udp 
+                  + 9 dudp 
+                  + 9 cdp 
+                  + 9 dcdp 
+                  + 9 dadp 
+                  + 9 datp 
+                  + 9 damp 
+                  + 9 dgdp 
+                  + 9 dgtp 
+                + 8 nucleobase 
+              + 7 polysaccharide 
+                + 8 dextran 
+              + 7 lipid 
+                + 8 phospholipid 
+                  + 9 lpa 
+              + 7 rna 
+                + 8 sirna 
+                  + 9 sarsi-11 
+                  + 9 sarsi-10 
+                  + 9 sarsi-9 
+                  + 9 sarsi-8 
+                  + 9 sarsi-7 
+                  + 9 sarsi-6 
+                  + 9 sarsi-5 
+                  + 9 sarsi-4 
+                  + 9 sarsi-3 
+                  + 9 sarsi-2 
+                  + 9 sarsi-1 
+                + 8 vrna 
+                + 8 sarna 
+                + 8 ce-rna 
+                + 8 micro-rna 
+                  + 9 mir-26a1 
+                  + 9 mir-26a2 
+                  + 9 mir-26a 
+              + 7 drug vars: {disease, treatment, target}
+                + 8 therapeutics 
+                + 8 inhibitor 
+                  + 9 negative-regulator 
+                  + 9 suppressor 
+                  + 9 repressor 
+                + 8 vaccine vars: {disease, treatment, target}
+              + 7 toxin 
+                + 8 cardiotoxin 
+                + 8 cytotoxin 
+              + 7 component vars: {whole}
+            + 6 substance 
+              + 7 air 
+            + 6 ion vars: {molecule}
+              + 7 calcium-ion vars: {molecule}
+            + 6 rna-region 
+              + 7 utr 
+                + 8 5′-utr 
+                + 8 3′-utr 
+            + 6 dna-motif 
+              + 7 dna-response-element 
+                + 8 anti-oxidant-response-element 
+              + 7 promoter 
+            + 6 dna 
+              + 7 intron 
+              + 7 gene vars: {expresses, in-family, in-pathway}
+                + 8 exon 
+                + 8 oncogene 
+                  + 9 proto-oncogene 
+          + 5 plasmid 
+            + 6 pgpt-1 
+            + 6 pegfp-n1 
+            + 6 pgl3b 
+            + 6 pcep 
+            + 6 pcep-erk2 
+            + 6 pcmv-erk2-ha 
+            + 6 gst-med1-craf-bxb 
+            + 6 gst-pimt-n 
+            + 6 3xppre-luc 
+            + 6 pcmv-pimt-flag 
+            + 6 pcdna3.1-pimt-n 
+            + 6 pcdna3.1-pimt 
+            + 6 pcmx-med1 
+            + 6 pcdna3.1-med1 
+            + 6 pcdna3.1-pparγ 
+          + 5 bio-grouping vars: {group-members, label}
+        + 4 object 
+          + 5 artifact vars: {made-by}
+            + 6 motor-vehicle vars: {made-by}
+            + 6 structure 
+          + 5 rectangular-solid vars: {part-type}
+          + 5 object-face 
+        + 4 physical-agent 
+          + 5 pathogen vars: {name, pathogen-type}
+            + 6 avian-flu vars: {h-number, n-number}
+            + 6 pathogen-type vars: {name}
+              + 7 virus  **  already diplayed #<ref-category VIRUS>
+          + 5 person vars: {name, age, position, nationality}
+            + 6 role-based-person vars: {name}
+              + 7 title vars: {name}
+                + 8 head-of vars: {company}
+                + 8 chief-of vars: {company}
+                + 8 plays-role-for vars: {role, for}
+                + 8 age+title vars: {title, age}
+                + 8 abbreviated-title vars: {abbreviation, full-form}
+                + 8 qualified-title vars: {title, qualifier}
+                + 8 modified-title vars: {base-title, modifier, locale, area-of-responsibility, time}
+                + 8 generic-title 
+            + 6 title-based-person vars: {role}
+            + 6 person-type 
+              + 7 human  **  already diplayed #<ref-category HUMAN>
+              + 7 people 
+              + 7 woman 
+              + 7 man 
+              + 7 boy 
+              + 7 girl 
+              + 7 family-member 
+                + 8 uncle 
+                + 8 aunt 
+                + 8 sibling 
+                + 8 brother 
+                + 8 sister 
+                + 8 daughter 
+                + 8 son 
+                + 8 parent 
+                + 8 mother 
+                + 8 father 
+                + 8 child 
+          + 5 interlocutor 
+          + 5 maker-of-artifacts 
+            + 6 car-manufacturer vars: {product}
+    + 2 region 
+      + 3 time 
+        + 4 p.i 
+        + 4 the-next-day 
+        + 4 end-date vars: {thing-ended, date}
+        + 4 fiscal-quarter vars: {year, position-in-year, end-date, company}
+        + 4 calculated-time vars: {name}
+          + 5 proxal-moment vars: {unit}
+            + 6 distal-moment 
+          + 5 calculated-day vars: {name, calculator}
+        + 4 prep-time vars: {prep, time}
+        + 4 age-ago vars: {age-ago}
+        + 4 relative-time vars: {relativizer, reference-time}
+        + 4 relative-time-adverb vars: {name}
+        + 4 season-year vars: {season, year}
+        + 4 season vars: {name, abbreviation, position-in-year}
+        + 4 date vars: {day, month, year, weekday}
+        + 4 month-of-the-year vars: {month, year}
+        + 4 day-of-the-month vars: {month, number, day-of-the-week}
+        + 4 timezone vars: {name}
+        + 4 year vars: {year-of-century}
+        + 4 month vars: {name, abbreviation, position-in-year, number-of-days}
+        + 4 weekday vars: {name, abbreviation, position-in-week}
+      + 3 bounded-region vars: {interior, boundary, containing-region}
+        + 4 interval vars: {begin, end}
+          + 5 time-interval vars: {begin, end}
+            + 6 anchor-amount vars: {sequencer, amount-of-time}
+            + 6 anchor-date vars: {sequencer, date}
+            + 6 time-of-day vars: {name}
+              + 7 meal-time vars: {name}
+            + 6 phase-of-day vars: {name}
+            + 6 closed-interval/end vars: {ends-at, modifier}
+        + 4 geographical-region 
+          + 5 ward 
+          + 5 village 
+          + 5 town 
+          + 5 pond 
+          + 5 park 
+          + 5 parish 
+          + 5 province 
+          + 5 ledge 
+          + 5 lake 
+          + 5 gulley 
+          + 5 forest 
+          + 5 exit 
+          + 5 us-state vars: {name, adjective-form, abbreviations, aliases}
+          + 5 city vars: {name, aliases, country, state}
+          + 5 country vars: {name, adjective-form, aliases}
+        + 4 container vars: {contents}
+          + 5 information-container vars: {contents}
+            + 6 report vars: {theme}
+            + 6 model vars: {modeled-process, modeled-object}
+            + 6 database 
+            + 6 literature 
+      + 3 location 
+        + 4 bio-location 
+          + 5 non-cellular-location 
+            + 6 secretion vars: {organism}
+            + 6 tumor vars: {organism}
+            + 6 tissue vars: {organism}
+              + 7 muscle 
+                + 8 skeletal-muscle 
+              + 7 sac 
+              + 7 vasculature 
+              + 7 acinus 
+              + 7 bio-organ vars: {organism}
+                + 8 inner_cell_mass 
+                + 8 trophectoderm 
+          + 5 cellular-location 
+            + 6 envelope 
+              + 7 enveloped 
+            + 6 stress-granule 
+            + 6 plasma 
+            + 6 cell-adhesive-structure 
+            + 6 juxtamembrane 
+            + 6 trailing-edge 
+            + 6 platelet-dense-granule-lumen 
+            + 6 plasma-membrane 
+            + 6 nucleus 
+            + 6 nucleoplasm 
+            + 6 neuromuscular-junction 
+            + 6 mitochondrial-matrix 
+            + 6 mitochondrial-intermembrane-space 
+            + 6 mitochondrial-inner-membrane 
+            + 6 viral-membrane 
+            + 6 membrane 
+            + 6 membrane-raft 
+            + 6 filopodia 
+            + 6 filopodium 
+            + 6 lamellipodia 
+            + 6 lamellipodium 
+            + 6 intracellular 
+            + 6 integral-to-membrane 
+            + 6 hemidesmosome 
+            + 6 growth-cone 
+            + 6 focal-adhesion 
+            + 6 extracellular-region 
+            + 6 extracellular-matrix 
+            + 6 endosome 
+            + 6 endoplasmic-reticulum-membrane 
+            + 6 early-endosome 
+            + 6 dendritic-spine 
+            + 6 cytosol 
+            + 6 cytoskeleton 
+            + 6 cytoplasmic-vesicle 
+            + 6 cytoplasm 
+            + 6 chloride-channel 
+            + 6 cell-cell-junction 
+            + 6 cell-leading-edge 
+            + 6 basolateral-plasma-membrane 
+            + 6 golgi-apparatus 
+          + 5 molecular-location 
+            + 6 region-of-molecule vars: {bounds}
+              + 7 linker-region 
+            + 6 attr 
+            + 6 attl 
+            + 6 attp 
+            + 6 attb 
+            + 6 surface-area 
+            + 6 site vars: {process, kinase, residue}
+              + 7 docking-site 
+            + 6 residue-on-protein vars: {position}
+              + 7 position 
+            + 6 protein-domain 
+              + 7 hypervariable-region 
+              + 7 catalytic-subunit 
+              + 7 regulatory-subunit 
+              + 7 af-2 
+              + 7 zinc-finger 
+              + 7 ring-finger-domain 
+              + 7 nta-region 
+              + 7 protein-targeting-domain vars: {target}
+              + 7 shuttling-domain 
+              + 7 activation-loop 
+              + 7 molecular-loop 
+              + 7 def-domain 
+              + 7 igc 
+              + 7 pleckstrin-homology-domain 
+              + 7 g5 
+              + 7 g4 
+              + 7 g3 
+              + 7 g2 
+              + 7 g1 
+              + 7 ptb-domain 
+              + 7 sh4 
+              + 7 sh3 
+              + 7 sh2 
+              + 7 brct2 
+              + 7 brct1 
+              + 7 brct 
+              + 7 bc-domain 
+              + 7 binding-domain vars: {bound-item}
+                + 8 dbd 
+                + 8 g-domain 
+                + 8 rbd 
+                  + 9 raf-rbd 
+                + 8 metal-binding-domain 
+              + 7 motif 
+                + 8 s-motif 
+              + 7 t-loop 
+              + 7 protein-terminus 
+                + 8 c-terminal 
+                + 8 n-terminal 
+              + 7 determinant 
+              + 7 hinge 
+              + 7 epitope 
+                + 8 ha.11 
+        + 4 location-description vars: {name}
+          + 5 location-phrase vars: {place}
+        + 4 geographical-area vars: {name, aliases, type, containing-region}
+          + 5 province  **  already diplayed #<ref-category PROVINCE>
+          + 5 sea 
+          + 5 body-of-water 
+            + 6 ocean 
+          + 5 continent 
+        + 4 border vars: {type, region}
+        + 4 border-type vars: {name}
+          + 5 coast vars: {name}
+          + 5 boundary vars: {name}
+        + 4 named-region-type vars: {type, region}
+        + 4 region-type vars: {name}
+        + 4 path-configuration vars: {paths}
+          + 5 fork 
+          + 5 junction 
+        + 4 throughway-exit vars: {throughway}
+        + 4 highway vars: {authority, number}
+        + 4 path vars: {endpoints, start, end} **  already diplayed #<ref-category PATH>
+        + 4 named-location vars: {type, name}
+        + 4 direction vars: {name}
+          + 5 compass-point vars: {name}
+          + 5 relative-direction vars: {ground}
+            + 6 rear 
+            + 6 back 
+            + 6 front 
+            + 6 down 
+            + 6 up 
+            + 6 right 
+            + 6 left 
+        + 4 relative-location vars: {ground}
+          + 5 within 
+          + 5 under 
+          + 5 through 
+          + 5 past 
+          + 5 over 
+          + 5 outside-of 
+          + 5 outside 
+          + 5 onto 
+          + 5 on 
+          + 5 next-to 
+          + 5 nearer-to 
+          + 5 nearer 
+          + 5 near-to 
+          + 5 near 
+          + 5 into 
+          + 5 inside-of 
+          + 5 inside 
+          + 5 in-front-of 
+          + 5 in-between 
+          + 5 in-back-of 
+          + 5 in 
+          + 5 down  **  already diplayed #<ref-category DOWN>
+          + 5 close-to 
+          + 5 beyond 
+          + 5 between 
+          + 5 beside 
+          + 5 beneath 
+          + 5 below 
+          + 5 behind 
+          + 5 atop 
+          + 5 at 
+          + 5 along 
+          + 5 ahead-of 
+          + 5 against 
+          + 5 afore 
+          + 5 across-from 
+          + 5 across 
+          + 5 above 
+          + 5 aboard 
+          + 5 abeam 
+          + 5 abaft 
+          + 5 orientation-dependent-location vars: {ground}
+          + 5 object-dependent-location vars: {ground}
+            + 6 surface  **  already diplayed #<ref-category SURFACE>
+            + 6 middle 
+            + 6 bottom 
+            + 6 multi-dependent-location vars: {qualifier}
+              + 7 edge 
+              + 7 corner 
+              + 7 side 
+              + 7 end 
+              + 7 top-qua-location 
+        + 4 deictic-location vars: {name}
+  + 1 perdurant vars: {participant, time, purpose, reason, circumstance, manner, occurs-at-moment, relative-position}
+    + 2 highlight vars: {theme, agent}
+    + 2 base vars: {cause, object, agent}
+    + 2 list vars: {theme}
+    + 2 bio-rhetorical vars: {ratio-condition, fig, method, context, result, by-means-of, agent}
+      + 3 verify 
+      + 3 validate vars: {to-be}
+      + 3 term 
+      + 3 summarize 
+      + 3 probe 
+      + 3 intrigue 
+      + 3 implicate vars: {process}
+      + 3 challenge 
+      + 3 articulate 
+      + 3 mention 
+      + 3 argument-support vars: {argument}
+      + 3 feature  **  already diplayed #<ref-category FEATURE>
+      + 3 learning 
+        + 4 find-out 
+      + 3 hypothesize 
+      + 3 characterize 
+      + 3 deduce 
+      + 3 certain 
+        + 4 certainty 
+          + 5 unlikely 
+          + 5 likely 
+          + 5 probability 
+          + 5 likelihood 
+          + 5 chance 
+        + 4 uncertain 
+        + 4 sure 
+        + 4 confident 
+      + 3 insight vars: {concept}
+      + 3 fact vars: {info-context}
+      + 3 unexpectedly 
+      + 3 unexpected 
+      + 3 unclear 
+      + 3 possibility 
+      + 3 significance 
+      + 3 of-interest 
+      + 3 importance 
+      + 3 hint 
+      + 3 issue 
+      + 3 understand 
+      + 3 underline 
+      + 3 think 
+      + 3 tend 
+      + 3 suggest vars: {theme}
+      + 3 start 
+      + 3 bio-make-statement 
+      + 3 exhibit vars: {theme, beneficiary}
+      + 3 demonstrate vars: {theme, beneficiary}
+      + 3 show vars: {theme, beneficiary}
+        + 4 reveal 
+      + 3 see 
+      + 3 read 
+      + 3 bio-question 
+      + 3 put-forward 
+      + 3 propose vars: {to-be}
+      + 3 prove 
+      + 3 predict 
+      + 3 posit 
+      + 3 observe vars: {observation, focused-on, method, ingredient-condition}
+      + 3 mean 
+      + 3 know vars: {topic, theme}
+      + 3 inform 
+      + 3 indicate vars: {indication}
+      + 3 illustrate 
+      + 3 explanation 
+      + 3 expect 
+      + 3 examine vars: {presence-of}
+      + 3 establish vars: {to-be}
+      + 3 elucidate 
+      + 3 display 
+      + 3 determine 
+      + 3 describe 
+      + 3 note 
+      + 3 demonstrate vars: {theme, beneficiary} **  already diplayed #<ref-category DEMONSTRATE>
+      + 3 convince 
+      + 3 contrast vars: {contrasted-with}
+      + 3 consider vars: {theme}
+      + 3 confirm 
+      + 3 bio-concern 
+      + 3 call 
+      + 3 attribute/verb vars: {cause}
+      + 3 assumption 
+      + 3 assume 
+    + 2 be vars: {subject, predicate}
+      + 3 remain vars: {participant}
+      + 3 stay 
+      + 3 seem vars: {theme}
+      + 3 become 
+    + 2 process 
+      + 3 undo 
+      + 3 paradigm vars: {basis}
+      + 3 match vars: {item, patient, theme}
+      + 3 disease-process 
+        + 4 metastasis vars: {cancer}
+      + 3 purposive-process vars: {result-or-purpose}
+        + 4 data-method 
+          + 5 stat-test vars: {p-value, data-set}
+            + 6 correlation vars: {ind-var, dep-var, r-measure, df}
+              + 7 spearman-correlation vars: {ind-var, dep-var, rho-measure}
+              + 7 pearson-correlation vars: {ind-var, dep-var, r-measure}
+            + 6 regression vars: {ind-var, dep-var, r2-measure, df}
+              + 7 linear-regression vars: {dep-var}
+                + 8 multiple-linear-regression 
+                + 8 simple-linear-regression 
+              + 7 logistic-regression vars: {dep-var}
+            + 6 stat-comparison-test vars: {ind-var}
+              + 7 f-test vars: {ind-var, dep-var, f-measure, df, effect-size}
+                + 8 manova 
+                + 8 ranova 
+                + 8 anova 
+              + 7 t-test vars: {dep-var, t-measure, df, effect-size}
+              + 7 chi-squared-test vars: {dep-var, chi-squared, df, effect-size}
+        + 4 medical-treatment vars: {disease, medical-treatment}
+          + 5 therapeutic-strategy 
+          + 5 organ-transplant 
+          + 5 chemotherapy 
+          + 5 therapy 
+        + 4 bio-method vars: {object, instrument, agent}
+          + 5 compare vars: {comparator, by}
+          + 5 microarrray 
+          + 5 spectrochip 
+          + 5 spectrodesigner 
+          + 5 strategy vars: {goal}
+          + 5 modeling 
+          + 5 mode 
+          + 5 method 
+          + 5 control 
+          + 5 baseline 
+          + 5 approach 
+          + 5 subject vars: {treatment}
+          + 5 screen 
+          + 5 isolate vars: {background}
+          + 5 distinguish 
+          + 5 investigate 
+          + 5 clustering 
+            + 6 hierarchical-clustering-analysis 
+          + 5 ranova  **  already diplayed #<ref-category RANOVA>
+          + 5 rct 
+          + 5 knockout 
+          + 5 work 
+          + 5 way vars: {process, object}
+          + 5 nquery 
+          + 5 mirvana 
+          + 5 minimacs 
+          + 5 ivtl 
+          + 5 itaqtm 
+          + 5 iselect 
+          + 5 iproof 
+          + 5 iprep 
+          + 5 ibio 
+          + 5 ampliseqrna 
+          + 5 worldpop 
+          + 5 worldclim 
+          + 5 whatsapp 
+          + 5 westpico 
+          + 5 wechat 
+          + 5 virusseeker 
+          + 5 vetscan 
+          + 5 vetpen 
+          + 5 unifrac 
+          + 5 uvitec 
+          + 5 twinhelix 
+          + 5 truseq 
+          + 5 transgen 
+          + 5 transgen  **  already diplayed #<ref-category TRANSGEN>
+          + 5 templiphi 
+          + 5 simrel 
+          + 5 simplotß 
+          + 5 sigmaplot 
+          + 5 shinegene 
+          + 5 sequencher 
+          + 5 seqbuilder 
+          + 5 sciencedirect 
+          + 5 rnaaemia 
+          + 5 quickalign 
+          + 5 quickalign  **  already diplayed #<ref-category QUICKALIGN>
+          + 5 qconcat 
+          + 5 promega 
+          + 5 proteon 
+          + 5 promocell 
+          + 5 prozinc 
+          + 5 proclin 
+          + 5 primerexpress 
+          + 5 portacount 
+          + 5 polyfect 
+          + 5 phosphoflow 
+          + 5 phosstop 
+          + 5 petcare 
+          + 5 petplan 
+          + 5 parafit 
+          + 5 pacbio 
+          + 5 pocovidscreen 
+          + 5 optipro 
+          + 5 optimem 
+          + 5 opticlust 
+          + 5 opteia 
+          + 5 nucleoprepii 
+          + 5 nucblue 
+          + 5 novaseq 
+          + 5 novablot 
+          + 5 nextstrain 
+          + 5 netpicorna 
+          + 5 nanoluc 
+          + 5 mitap 
+          + 5 miniseq 
+          + 5 minion 
+          + 5 maxquant 
+          + 5 longamp 
+          + 5 lofreq 
+          + 5 kwikpen 
+          + 5 isoplane 
+          + 5 invivogen 
+          + 5 invivogen  **  already diplayed #<ref-category INVIVOGEN>
+          + 5 immuoresearch 
+          + 5 immsim 
+          + 5 imagenet 
+          + 5 isbiotech 
+          + 5 hotstartaq 
+          + 5 github 
+          + 5 genesnap 
+          + 5 genequant 
+          + 5 genmark 
+          + 5 genbody 
+          + 5 gelcode 
+          + 5 flutrackers 
+          + 5 flexpen 
+          + 5 fibercell 
+          + 5 firepol 
+          + 5 europabio 
+          + 5 endnote 
+          + 5 dexcom 
+          + 5 deepfam 
+          + 5 dapmap 
+          + 5 degseq 
+          + 5 cyquant 
+          + 5 curveexpert 
+          + 5 cliquesnv 
+          + 5 chiplc 
+          + 5 cellprofiler 
+          + 5 ctscan 
+          + 5 biofire 
+          + 5 biospin 
+          + 5 biomax 
+          + 5 bioid 
+          + 5 biofire  **  already diplayed #<ref-category BIOFIRE>
+          + 5 biofx 
+          + 5 biocaster 
+          + 5 bacrep 
+          + 5 arrayscan 
+          + 5 arcmap 
+          + 5 apoptag 
+          + 5 ampseq 
+          + 5 acroprep 
+          + 5 accessquick 
+          + 5 biotorrents 
+          + 5 tbdev 
+          + 5 virochip 
+          + 5 two-dimensional-isoelectric-focussing 
+          + 5 spectrometry 
+          + 5 sds-page 
+          + 5 rnai 
+          + 5 qct 
+            + 6 pqct 
+          + 5 dust 
+          + 5 cigar 
+          + 5 beagle 
+          + 5 dreg 
+          + 5 epcr 
+          + 5 pcr 
+            + 6 mpcr 
+            + 6 qrt/pcr 
+            + 6 rt-pcr 
+          + 5 panel vars: {component, object}
+          + 5 npcr 
+          + 5 nmr 
+          + 5 mutagenesis 
+            + 6 mutagenic-approaches 
+          + 5 means vars: {process, object}
+          + 5 msa 
+          + 5 pme 
+          + 5 clx 
+          + 5 ip-ms 
+          + 5 lcms 
+          + 5 mass-spectrometry 
+          + 5 liquid-chromatography 
+          + 5 isoelectric-focussing 
+          + 5 fret 
+          + 5 scx 
+          + 5 hplc 
+          + 5 gel-electrophoresis 
+          + 5 forster-resonance-energy-transfer 
+          + 5 fluorescence-microscopy 
+          + 5 ffs 
+          + 5 fluorescence-correlation-spectroscopy-measurements 
+          + 5 fluorescence-correlation-spectroscopy 
+          + 5 fluorescence 
+          + 5 denaturing-gel-electrophoresis 
+          + 5 bifc 
+          + 5 immunofluorescence 
+          + 5 sequential-immunoblotting 
+          + 5 plate 
+          + 5 well 
+          + 5 array 
+          + 5 microarray 
+          + 5 microimaging 
+          + 5 microscope 
+            + 6 lsm 
+          + 5 microscopy 
+            + 6 cryoem 
+          + 5 spectroscopy 
+          + 5 uncapping 
+          + 5 stripping 
+          + 5 processing vars: {object}
+          + 5 pipetting 
+          + 5 blotting 
+          + 5 whole-cell-extract 
+          + 5 thresholding 
+          + 5 positioning 
+          + 5 bio-observation vars: {observed, object}
+            + 6 band 
+          + 5 mutation-profiling 
+          + 5 copy-number-analysis 
+          + 5 incubation 
+          + 5 vector 
+          + 5 ipegal 
+          + 5 silac-labeling 
+          + 5 bio-section 
+          + 5 purify vars: {bio}
+          + 5 trap 
+          + 5 transfect vars: {genetic-material}
+          + 5 transfer 
+          + 5 tag vars: {molecular-location}
+          + 5 starve vars: {nutrient}
+          + 5 bio-sequence vars: {method}
+          + 5 replate 
+          + 5 label 
+            + 6 variable/term 
+          + 5 lyse 
+          + 5 immortalize vars: {object}
+          + 5 bio-fraction vars: {basis}
+          + 5 elute vars: {source}
+          + 5 dissect 
+          + 5 digest 
+          + 5 clone 
+          + 5 culture 
+          + 5 precipitate vars: {co-precipitant}
+          + 5 assess 
+          + 5 bio-utilize vars: {used-to, disease, object, agent, theme}
+          + 5 bio-use vars: {used-to, purpose, object, agent, theme}
+          + 5 treatment vars: {treatment, disease, modifier, object}
+          + 5 test vars: {object, presence-of}
+          + 5 study-bio-method 
+          + 5 select vars: {study}
+          + 5 sample 
+          + 5 remove vars: {source}
+          + 5 query vars: {against, object}
+          + 5 preparation 
+          + 5 place vars: {site}
+          + 5 run vars: {beneficiary, using, method}
+          + 5 bio-poison 
+          + 5 perform vars: {beneficiary, using, method}
+          + 5 obtain vars: {source, method}
+          + 5 melt 
+          + 5 bio-mask 
+          + 5 interrogate 
+          + 5 improve 
+          + 5 identify vars: {to-be, manner}
+          + 5 bio-grow 
+          + 5 grow 
+          + 5 fragment-action 
+          + 5 bio-fit 
+          + 5 eliminate 
+          + 5 cull 
+          + 5 construct 
+          + 5 bio-apply 
+          + 5 analyze 
+          + 5 clinical-trial 
+          + 5 correlation vars: {ind-var, dep-var, r-measure, df} **  already diplayed #<ref-category CORRELATION>
+          + 5 measure vars: {method, measured-item}
+            + 6 assay 
+          + 5 immune-method vars: {antibody, tested-for, origin}
+            + 6 immunoprecipitate vars: {origin}
+            + 6 immunoblot vars: {object, tested-for}
+            + 6 coimmunoprecipitate vars: {co-precipitant}
+            + 6 detect 
+          + 5 medical-method 
+      + 3 bio-process vars: {by-means-of, using, manner, without-using, without-means-of, as-comp, target, participant}
+        + 4 revert vars: {state, scalar, object, agent}
+        + 4 cycle vars: {from, to, path, treatment}
+        + 4 co-operate vars: {co-participant, participant}
+        + 4 bio-functionality vars: {by-means-of, using, manner, without-using, without-means-of, as-comp, target}
+        + 4 pathwaystep vars: {pathway, process, nextstep, stepprocess}
+        + 4 finding 
+        + 4 bio-find vars: {object}
+        + 4 signal-propagation vars: {direction}
+        + 4 mobility vars: {motile}
+        + 4 hc-ppi 
+        + 4 ppi 
+        + 4 outcome vars: {process}
+        + 4 manner 
+        + 4 fate 
+        + 4 dna-binding 
+        + 4 complementation vars: {complement}
+        + 4 cascade 
+        + 4 conformational-change vars: {structure}
+        + 4 cellular-process vars: {participant}
+          + 5 survival 
+          + 5 senescence 
+          + 5 neurite-outgrowth 
+          + 5 motility 
+          + 5 differentiation 
+          + 5 cell-growth vars: {participant}
+          + 5 growth 
+          + 5 autophagy 
+          + 5 anchorage vars: {anchor, anchored}
+          + 5 transformation vars: {initial, final}
+          + 5 protein-synthesis 
+          + 5 cell-cycle-progression 
+          + 5 proliferation 
+          + 5 division 
+          + 5 killing 
+          + 5 viral-egress 
+            + 6 viral-budding 
+            + 6 exocytosis 
+          + 5 death 
+            + 6 necrosis vars: {necrotized}
+            + 6 programmed-cell-death 
+              + 7 apoptosis 
+                + 8 pro-apoptotic 
+          + 5 axon-guidance vars: {initial, final}
+          + 5 adhesion 
+          + 5 cell-cell-communications 
+          + 5 cell-cell-contact 
+          + 5 emt 
+          + 5 signal vars: {agent, object}
+            + 6 export-signal 
+            + 6 import-signal 
+        + 4 response vars: {beneficiary, cause, drug}
+        + 4 bio-event vars: {process}
+        + 4 bio-interaction 
+          + 5 bio-conversion 
+            + 6 biochemical-reaction 
+        + 4 molecular-function 
+          + 5 oligomerize vars: {monomer, domain}
+            + 6 dimerize 
+              + 7 homo/heterodimerize 
+              + 7 homodimerize 
+              + 7 heterodimerize 
+            + 6 polymerize 
+            + 6 multimerize 
+              + 7 homomultimerize 
+              + 7 heteromultimerize 
+          + 5 binding vars: {binder, bindee, binding-set, direct-bindee, site, domain, cell-location, complex}
+            + 6 assemble vars: {binder, bindee, result}
+        + 4 bio-movement vars: {moving-object, co-object, origin, destination, cellular-location}
+          + 5 bio-exchange vars: {state-before, state-after, participant}
+            + 6 nucleotide-exchange 
+              + 7 guanyl-nucleotide-exchange 
+              + 7 gdp-to-gtp-exchange 
+          + 5 bio-transport vars: {object}
+            + 6 export vars: {agent, object}
+            + 6 redistribute vars: {agent, object}
+            + 6 mobilize vars: {agent, object}
+            + 6 import vars: {agent, object}
+            + 6 translocation 
+              + 7 entry 
+              + 7 relocate 
+            + 6 recruit vars: {destination, object}
+            + 6 propagate vars: {object, origin, destination}
+          + 5 bio-self-movement 
+            + 6 co-migrate 
+            + 6 migration 
+            + 6 localization vars: {moving-object}
+            + 6 accumulation vars: {amount, origin}
+            + 6 culminate 
+            + 6 originate 
+        + 4 caused-bio-process vars: {cause, object, participant, agent}
+          + 5 truncate vars: {truncates-to}
+          + 5 transduce vars: {into}
+          + 5 transcribe vars: {bio, agent}
+          + 5 transactivation 
+          + 5 retention 
+          + 5 molecule-release vars: {from, bio}
+          + 5 internalize 
+          + 5 reconstitute vars: {amount, in}
+          + 5 cross-link 
+          + 5 link vars: {linked-processes, process, co-process, linked-process}
+          + 5 ligate vars: {agent, substrate}
+          + 5 gene-code vars: {location, from, protein, agent}
+          + 5 gene-transcript-express vars: {location, from, agent, object, using}
+            + 6 gene-transcript-co-express vars: {from, other-protein}
+            + 6 gene-transcript-under-express vars: {location, from, agent}
+            + 6 gene-transcript-over-express vars: {location, from, agent}
+              + 7 gene-transcript-co-over-express vars: {location, from, agent}
+          + 5 encode 
+          + 5 dissociate vars: {into, site}
+          + 5 displace vars: {source-location}
+          + 5 deplete vars: {bio}
+          + 5 conserve vars: {bio, at}
+          + 5 bio-open 
+          + 5 acquire vars: {method}
+          + 5 bio-switch 
+          + 5 derive 
+          + 5 cancer-transform vars: {object}
+          + 5 mutation vars: {object, agent}
+            + 6 gene-delete 
+            + 6 point-mutation 
+          + 5 chemical-cleavage 
+          + 5 transduction 
+          + 5 regeneration 
+          + 5 detoxification 
+          + 5 chemosensitization 
+          + 5 generate vars: {bio}
+          + 5 set-value vars: {value}
+          + 5 return vars: {state, scalar}
+          + 5 protect vars: {protects-against, agent, object}
+          + 5 bio-insert vars: {between, after}
+          + 5 frees vars: {free-of}
+          + 5 bio-form vars: {object}
+          + 5 development vars: {treatment, disease}
+          + 5 damage vars: {object}
+          + 5 create vars: {source}
+          + 5 addition vars: {added}
+          + 5 molecule-load 
+          + 5 chemical-reaction vars: {co-reactant, produces}
+            + 6 hydrolyze 
+          + 5 caused-biochemical-process vars: {process-for}
+            + 6 post-translational-modification vars: {site, agent, object}
+              + 7 monoubiquitination 
+              + 7 de-ubiquitination 
+              + 7 ubiquitination 
+                + 8 poly-ubiquitination 
+                + 8 auto-ubiquitinate 
+              + 7 double-phosphorylate 
+              + 7 unphosphorylate 
+              + 7 diphosphorylate 
+              + 7 dephosphorylate 
+              + 7 desumoylation 
+              + 7 sumoylation 
+              + 7 ribosylation 
+                + 8 poly-adenylation 
+                + 8 adp-ribosylation 
+                  + 9 poly-adp-ribosylation 
+                  + 9 mono-adp-ribosylation 
+              + 7 hypo-methylation vars: {substrate}
+              + 7 hyper-methylation vars: {substrate}
+              + 7 de-methylation vars: {substrate}
+              + 7 methylation vars: {substrate}
+              + 7 hydroxylation 
+              + 7 de-glycosylation 
+              + 7 glycosylation 
+                + 8 fucosylation 
+              + 7 oxidation 
+              + 7 succinylation 
+              + 7 sulfation 
+              + 7 mannosylation 
+              + 7 esterification 
+              + 7 formylation 
+              + 7 glutathionylation 
+              + 7 deamination 
+              + 7 carboxylation 
+              + 7 alkylation 
+              + 7 amidation 
+              + 7 biotinylation 
+              + 7 deneddylation 
+              + 7 neddylation 
+              + 7 s-nitrosylation 
+              + 7 nitrosylation 
+              + 7 delipidation 
+                + 8 depalmitoylation 
+              + 7 lipidation 
+                + 8 prenylation 
+                  + 9 geranyl-geranylation 
+                  + 9 farnesylation 
+                  + 9 isoprenylation 
+                + 8 palmitoylation 
+                + 8 myristoylation 
+              + 7 de-acylation 
+              + 7 acylation 
+              + 7 hypo-acetylation 
+              + 7 hyper-acetylation 
+              + 7 de-acetylation 
+              + 7 acetylation 
+              + 7 phosphorylation-modification 
+                + 8 hypophosphorylate 
+                + 8 hyperphosphorylate 
+                + 8 transphosphorylate 
+                + 8 auto-phosphorylate 
+                  + 9 trans-auto-phosphorylate 
+                  + 9 cis-auto-phosphorylate 
+                + 8 phosphorylate 
+          + 5 process-control-process vars: {affected-process, object}
+            + 6 translate vars: {initial, translates-to}
+            + 6 confound 
+            + 6 require vars: {requirement, purpose}
+            + 6 bio-control vars: {multiplier, info-context}
+              + 7 target vars: {destination}
+              + 7 stabilize vars: {process}
+              + 7 inter-regulate vars: {theme}
+              + 7 regulate vars: {theme}
+              + 7 modulate vars: {theme}
+              + 7 mediate vars: {process}
+              + 7 maintain vars: {state}
+              + 7 dysregulate 
+              + 7 operate 
+              + 7 affect vars: {causing}
+              + 7 prolong 
+              + 7 preserve 
+              + 7 modify vars: {site}
+              + 7 influence 
+              + 7 effect 
+              + 7 direct-control 
+              + 7 delay 
+              + 7 confer vars: {to, bio}
+              + 7 change vars: {scale, original, resulting}
+                + 8 conversion-change 
+              + 7 alter 
+              + 7 positive-bio-control 
+                + 8 yield 
+                + 8 upregulate 
+                + 8 bio-trigger 
+                + 8 stimulate 
+                + 8 bio-reactivate 
+                + 8 potentiate 
+                + 8 induce vars: {response}
+                + 8 favor 
+                + 8 facilitate 
+                + 8 bio-amplify 
+                + 8 bio-enhance 
+                + 8 bio-promote 
+                + 8 drive vars: {object}
+                + 8 bio-activate 
+                  + 9 prime 
+                  + 9 auto-activate 
+                  + 9 bio-hyperactivate 
+                + 8 accelerate vars: {object}
+                + 8 favor  **  already diplayed #<ref-category FAVOR>
+                + 8 bio-advance 
+                + 8 augment 
+                + 8 make-double vars: {theme, level, object}
+                + 8 increase vars: {level, object}
+                + 8 gain 
+                + 8 strengthen 
+                + 8 raise vars: {object, method, bio}
+                + 8 lead vars: {agent, theme}
+                + 8 initiate 
+                + 8 bio-produce 
+                + 8 engender 
+                + 8 enable vars: {theme}
+                + 8 elicit 
+                + 8 elevate 
+                + 8 bio-drive 
+                + 8 contribute vars: {contribution}
+                + 8 cause 
+                + 8 allow vars: {process, agent}
+              + 7 negative-bio-control vars: {inhibited-process}
+                + 8 suppress 
+                + 8 relieve 
+                + 8 reduce vars: {bio}
+                + 8 knockdown 
+                + 8 knock-out 
+                + 8 dampen 
+                + 8 impair vars: {bio}
+                + 8 terminate 
+                + 8 repress 
+                + 8 downregulate 
+                + 8 degrade 
+                + 8 bio-inactivate 
+                + 8 bio-deactivate 
+                + 8 attenuate 
+                + 8 abolish 
+                + 8 impede vars: {process}
+                + 8 abrogate vars: {object}
+                + 8 disfavor 
+                + 8 vanish vars: {theme, level}
+                + 8 decrease vars: {theme, level}
+                  + 9 taper-off 
+                  + 9 drop 
+                + 8 prevent 
+                + 8 lose vars: {object}
+                + 8 lower vars: {object}
+                + 8 limit 
+                + 8 interfere 
+                + 8 neutralize 
+                + 8 inhibit 
+                + 8 disrupt 
+                + 8 diminish vars: {object}
+                + 8 compromise 
+                + 8 block 
+                + 8 block  **  already diplayed #<ref-category BLOCK>
+                + 8 arrest 
+            + 6 protein-verb-premod vars: {protein-agent}
+        + 4 other-bio-process 
+          + 5 undergo vars: {process}
+          + 5 bio-transition vars: {bio, source, destination}
+          + 5 escape vars: {process}
+          + 5 bio-associate vars: {object, objects, site, using, by-means-of}
+          + 5 compensate vars: {alternate}
+          + 5 participate 
+          + 5 compose vars: {agent, whole, parts}
+          + 5 stimulus 
+          + 5 interact vars: {interactor}
+            + 6 inhibitory-interaction 
+          + 5 bio-act vars: {co-agent, acted-on, process, functionality, bio, agent}
+            + 6 bio-function 
+            + 6 serve 
+            + 6 cooperate 
+          + 5 named-bio-process 
+            + 6 tumor-formation 
+          + 5 bio-activity vars: {theme, process}
+            + 6 catalytic-activity 
+              + 7 enzyme-activity 
+                + 8 kinase-activity 
+            + 6 catalysis vars: {controltype, catalyst, theme}
+      + 3 rotate 
+      + 3 roll 
+      + 3 put-something-somewhere 
+      + 3 push-together vars: {items, agent, theme}
+      + 3 push vars: {agent, theme}
+      + 3 pull vars: {agent, theme}
+      + 3 hold-something vars: {patient}
+      + 3 work-on 
+      + 3 reverse vars: {patient, co-patient}
+      + 3 invert vars: {instrument}
+      + 3 insert vars: {theme, goal}
+      + 3 delete vars: {theme}
+      + 3 tell vars: {beneficiary}
+      + 3 sell 
+      + 3 report vars: {theme} **  already diplayed #<ref-category REPORT>
+      + 3 play 
+        + 4 play-a-role-in vars: {activity, patient}
+      + 3 make-up vars: {patient}
+      + 3 make vars: {patient, result}
+      + 3 look-up 
+      + 3 know vars: {topic, theme} **  already diplayed #<ref-category KNOW>
+      + 3 give vars: {theme}
+      + 3 find vars: {patient}
+      + 3 fail vars: {theme}
+      + 3 contribute vars: {contribution} **  already diplayed #<ref-category CONTRIBUTE>
+      + 3 carry-out vars: {patient}
+      + 3 build vars: {artifact, agent}
+      + 3 ask 
+      + 3 answer vars: {theme}
+      + 3 contract-disease vars: {who, pathogen, source}
+      + 3 catch-disease vars: {who, pathogen, source}
+      + 3 contract 
+      + 3 someone-reports vars: {reporter}
+      + 3 report-verb vars: {name}
+      + 3 do vars: {predicate}
+      + 3 make-artifacts vars: {procedure, product, type-of-product}
+      + 3 transition 
+        + 4 changed-in-direction vars: {direction}
+        + 4 change-by-amount vars: {amount, direction}
+        + 4 change-in-amount-noun vars: {name, direction}
+        + 4 change-in-amount-verb vars: {name, direction}
+          + 5 change-in-amount-verb/down 
+          + 5 change-in-amount-verb/up 
+        + 4 achievement 
+          + 5 add-to 
+          + 5 kill vars: {who, by-whom}
+            + 6 assassinate vars: {who, by-whom}
+          + 5 name-something vars: {attribute}
+            + 6 called-something 
+        + 4 accomplishment 
+          + 5 get vars: {actor, patient}
+          + 5 die vars: {who, of-what}
+          + 5 move vars: {from-location, to-location, via-path, for-distance, in-direction, when-done, landmark, theme}
+            + 6 leave vars: {object, origin, destination}
+            + 6 move-something-somewhere vars: {agent, to-location}
+            + 6 move-to vars: {agent, theme, goal, extent}
+            + 6 change-to vars: {agent}
+            + 6 lower-note vars: {agent, theme, goal}
+            + 6 raise-note vars: {agent, theme, goal}
+            + 6 transpose vars: {agent, theme, extent}
+    + 2 event-relation vars: {relation, event, subordinated-event}
+    + 2 state 
+      + 3 switch-state vars: {name}
+      + 3 bio-predication vars: {as-comp, certainty, participant}
+        + 4 relapse 
+        + 4 in-the-database 
+        + 4 in-the-literature 
+        + 4 scalar-variation 
+          + 5 sustained vars: {theme, level, above-level}
+        + 4 health 
+        + 4 well-being 
+        + 4 sequential-adj 
+        + 4 reliable 
+        + 4 fail-proof 
+        + 4 measurable 
+        + 4 long-term 
+        + 4 spatial 
+        + 4 novel 
+        + 4 least 
+        + 4 bio-initial 
+        + 4 further 
+        + 4 full 
+        + 4 forward 
+        + 4 direct 
+        + 4 exclusive 
+        + 4 early 
+        + 4 deadliest 
+        + 4 dead 
+        + 4 current 
+        + 4 compelling 
+        + 4 closed 
+        + 4 close 
+        + 4 double 
+        + 4 single 
+        + 4 high-throughput 
+        + 4 high-activity 
+        + 4 low-enough vars: {result-or-purpose}
+        + 4 high-enough vars: {result-or-purpose}
+        + 4 same 
+        + 4 rapid 
+        + 4 great 
+        + 4 best 
+        + 4 lesser 
+        + 4 cell-cell 
+        + 4 positive-sense 
+        + 4 negative-sense 
+        + 4 antisense 
+        + 4 wild-type 
+        + 4 unmodified 
+        + 4 unknown 
+        + 4 trans 
+        + 4 synthetic 
+        + 4 supplementary 
+        + 4 sufficient vars: {theme, sufficient-for}
+        + 4 sterile 
+        + 4 stable 
+        + 4 speckled 
+        + 4 short-lived 
+        + 4 rich 
+        + 4 restricted-substrate 
+        + 4 responsible vars: {theme, responsible-for}
+        + 4 recombinant 
+        + 4 real-time 
+        + 4 rate-limiting 
+        + 4 putative 
+        + 4 prevalent 
+        + 4 preset 
+        + 4 present vars: {in-molecule}
+        + 4 polyclonal 
+        + 4 physiological 
+        + 4 pharmacological 
+        + 4 parallel 
+        + 4 oncogenic 
+        + 4 native 
+        + 4 naked 
+        + 4 mutual 
+        + 4 mutagenic 
+        + 4 molecular 
+        + 4 living 
+        + 4 least-selective 
+        + 4 kinetic 
+        + 4 kinase-dead 
+        + 4 intriguing 
+        + 4 integrative 
+        + 4 inducible 
+        + 4 housekeeping 
+        + 4 genetic 
+        + 4 general 
+        + 4 nucleotide-free 
+        + 4 following-adj 
+        + 4 enzymatic 
+        + 4 endogenous 
+        + 4 efficacy 
+        + 4 ectopic 
+        + 4 diffuse 
+        + 4 de-novo 
+        + 4 constitutive 
+        + 4 combinatorial 
+        + 4 cognate 
+        + 4 pre-clinical 
+        + 4 clinical 
+        + 4 class-ii 
+        + 4 class-i 
+        + 4 chemical 
+        + 4 candidate 
+        + 4 biophysical 
+        + 4 bandee 
+        + 4 background 
+        + 4 anticancer 
+        + 4 additive 
+        + 4 dimensional 
+        + 4 phospho-specific 
+        + 4 resting 
+        + 4 scaffolding 
+        + 4 serrated 
+        + 4 obligatory 
+        + 4 inhibitory 
+        + 4 hydrophobic 
+        + 4 linear 
+        + 4 lethal 
+        + 4 intramolecular 
+        + 4 intermolecular 
+        + 4 nonsignaling 
+        + 4 familial 
+        + 4 standard 
+        + 4 single-stranded 
+        + 4 double-stranded 
+        + 4 conventional 
+        + 4 asymmetric 
+        + 4 apparent 
+        + 4 banded 
+        + 4 allosteric 
+        + 4 adaptor 
+        + 4 alkaline 
+        + 4 acidic 
+        + 4 dual-specificity 
+        + 4 unbound 
+        + 4 unperturbed 
+        + 4 deoxy 
+        + 4 nonmigrating 
+        + 4 noncoding 
+        + 4 nondenaturing 
+        + 4 nontargeting 
+        + 4 nonreducing 
+        + 4 abundant 
+        + 4 in-excess 
+        + 4 -like 
+        + 4 dose-dependent 
+        + 4 encapsulated 
+        + 4 -like  **  already diplayed #<ref-category -LIKE>
+        + 4 succeed 
+        + 4 persist 
+        + 4 occur 
+        + 4 lower-adj 
+        + 4 exist vars: {measurement, theme}
+        + 4 bio-cyclic 
+        + 4 molecule-state 
+          + 5 transition-state-intermediate 
+          + 5 inactive vars: {molecule}
+          + 5 active vars: {activated}
+          + 5 bio-conformation vars: {subject}
+        + 4 bio-relation vars: {theme, patient}
+          + 5 underly 
+          + 5 resist 
+          + 5 impact 
+          + 5 advance 
+          + 5 surface-line 
+          + 5 fill 
+          + 5 bio-range vars: {low-value, high-value}
+          + 5 work-verb 
+          + 5 pathway-direction vars: {relative-to, pathway, participant}
+            + 6 upstream 
+            + 6 downstream 
+          + 5 reach vars: {participant, theme}
+          + 5 useful vars: {purpose}
+          + 5 unresponsive vars: {treatment}
+          + 5 unable vars: {theme}
+          + 5 suitable 
+          + 5 specific vars: {situation, beneficiary}
+          + 5 sensitive 
+          + 5 selective 
+          + 5 responsive 
+          + 5 strong 
+          + 5 relative vars: {participant}
+          + 5 refractory 
+          + 5 potent 
+          + 5 necessary vars: {condition, necessary-to}
+          + 5 insensitive 
+          + 5 ineffective vars: {against}
+          + 5 effective 
+          + 5 deficient 
+          + 5 defect 
+          + 5 current  **  already diplayed #<ref-category CURRENT>
+          + 5 affinity vars: {object}
+          + 5 coincident 
+          + 5 open 
+          + 5 similar 
+            + 6 related 
+          + 5 lack 
+          + 5 independent 
+          + 5 identical 
+          + 5 consistent 
+          + 5 different 
+          + 5 prior vars: {prior-event}
+          + 5 false 
+          + 5 true 
+          + 5 value-is-negative 
+          + 5 positive 
+          + 5 mutual-exclusivity vars: {alternative}
+          + 5 exclusivity vars: {alternative}
+          + 5 critical 
+          + 5 in-common 
+          + 5 common 
+          + 5 ability vars: {ability}
+            + 6 capability vars: {theme}
+          + 5 also-known-as 
+          + 5 prerequisite 
+          + 5 equivalent 
+          + 5 result vars: {results-in, participant}
+          + 5 represent vars: {visual-presentation}
+          + 5 rely vars: {theme, purpose}
+          + 5 provide vars: {participant, theme}
+          + 5 presentation 
+          + 5 overlap 
+          + 5 need vars: {needed-for}
+          + 5 lacking 
+          + 5 keep 
+          + 5 involve vars: {object, theme, context}
+          + 5 incorporate 
+          + 5 include 
+          + 5 free vars: {free-of}
+          + 5 fall 
+          + 5 dominate 
+          + 5 depend 
+          + 5 correspond vars: {property}
+          + 5 contain 
+          + 5 constitute 
+          + 5 stoichiometry vars: {physicalentity, stoichiometriccoefficient}
+          + 5 equilibrium vars: {with-species}
+          + 5 aspectual-relation 
+            + 6 fail vars: {theme} **  already diplayed #<ref-category FAIL>
+            + 6 continue vars: {process, agent}
+          + 5 bio-event-relation vars: {participant, theme}
+            + 6 precede 
+            + 6 follow 
+        + 4 bio-quality 
+          + 5 behavior 
+          + 5 consequence 
+          + 5 role vars: {process}
+          + 5 knockout-pattern vars: {gene-or-protein}
+            + 6 +/+ 
+            + 6 -/+ 
+            + 6 +/- 
+            + 6 -/- 
+        + 4 of-participant-bio-predication 
+      + 3 appear 
+      + 3 seem vars: {theme} **  already diplayed #<ref-category SEEM>
+      + 3 want 
+      + 3 like 
+      + 3 intend 
+      + 3 imply 
+      + 3 expect  **  already diplayed #<ref-category EXPECT>
+      + 3 comply 
+      + 3 believe 
+      + 3 disease-incidence vars: {disease, pathogen, location, time}
+        + 4 cases-pathogen 
+        + 4 distributed-disease-incidence 
+          + 5 pandemic 
+          + 5 epidemic 
+          + 5 outbreak-of-disease 
+            + 6 outbreak-pathogen vars: {pathogen, outbreak}
+      + 3 in-predicate vars: {head, who, of-what, np-item}
+        + 4 in-lieu 
+        + 4 in-place 
+        + 4 in-the-field-of 
+        + 4 in-control 
+        + 4 in-command 
+        + 4 in-charge 
+      + 3 modality vars: {name}
+        + 4 would 
+        + 4 will 
+        + 4 should 
+        + 4 shall 
+        + 4 must 
+        + 4 might 
+        + 4 may 
+        + 4 could 
+        + 4 can 
+      + 3 have vars: {possessor, thing-possessed}
+      + 3 relationship vars: {agent, patient}
+      + 3 predication vars: {predicate}
+        + 4 transient vars: {theme}
+        + 4 unchanged vars: {theme}
+        + 4 persistent vars: {theme}
+        + 4 noisy vars: {theme}
+        + 4 low vars: {theme}
+        + 4 high vars: {theme}
+        + 4 quantified vars: {quantifier, body}
+        + 4 copular-predication vars: {item, value, predicate}
+          + 5 copular-predication-of-pp vars: {prep, pobj}
+        + 4 there-exists vars: {predicate, value}
+        + 4 upon-condition vars: {condition}
+        + 4 has-attribute vars: {item, attribute, value}
+          + 5 has-synonym 
+          + 5 has-symbol 
+          + 5 has-name 
+          + 5 comparative-predication 
+  + 1 notational-extension 
+    + 2 adds-relation 
+      + 3 with-point-mutation vars: {new-amino-acid, original-amino-acid, position}
+      + 3 with-specified-amino-acid vars: {amino-acid}
+      + 3 with-measurement vars: {at-measurement, extent}
+      + 3 in-ras2-model vars: {ras2-model}
+      + 3 reactome-category vars: {displayname, reactome-id}
+      + 3 has-age vars: {age}
+      + 3 approximate vars: {qualifier}
+      + 3 with-quantifier vars: {quantifier}
+      + 3 generalized-possession vars: {possessor, possessed}
+      + 3 has-an-orientation vars: {orientation}
+      + 3 shared-comparative-and-superlative vars: {direction, reference-set}
+      + 3 temporally-localized vars: {certainty, following, preceding, during, after, before, timeperiod}
+      + 3 takes-tense-aspect-modal vars: {modal, present, past, progressive, perfect}
+      + 3 takes-neg vars: {negation}
+      + 3 indexical vars: {extension}
+  + 1 abstract 
+    + 2 stat-measure vars: {stat, value}
+      + 3 f-stat-measure vars: {stat}
+      + 3 t-stat-measure vars: {stat}
+      + 3 p-measure vars: {stat}
+    + 2 statistic vars: {name}
+      + 3 f-statistic 
+      + 3 t-statistic 
+      + 3 p-statistic 
+    + 2 stat-var 
+      + 3 categorical-stat-var 
+        + 4 binary-stat-var 
+      + 3 ordinal-stat-var 
+      + 3 continuous-stat-var 
+    + 2 comlex-derived 
+    + 2 document-part vars: {topic}
+      + 3 diagram 
+      + 3 star 
+      + 3 arrow 
+      + 3 article-table vars: {label}
+        + 4 table 
+      + 3 article-figure vars: {label}
+      + 3 article-figure vars: {label} **  already diplayed #<ref-category ARTICLE-FIGURE>
+      + 3 article-sentence 
+      + 3 article-paragraph 
+      + 3 published-article 
+      + 3 article-table vars: {label} **  already diplayed #<ref-category ARTICLE-TABLE>
+      + 3 bib-reference 
+        + 4 xref 
+        + 4 et-al., 
+        + 4 et-al. 
+    + 2 detail 
+    + 2 bar 
+    + 2 linguistic 
+      + 3 block-bad-stemming 
+        + 4 ups 
+        + 4 downs 
+        + 4 cans 
+        + 4 backs 
+        + 4 asides 
+    + 2 let vars: {theme, agent}
+    + 2 biopax-entry vars: {datasource, xref}
+    + 2 bio-abstract 
+      + 3 partner 
+      + 3 mortality 
+      + 3 visual-representation 
+    + 2 bio-complement vars: {statement}
+      + 3 bio-ifcomp 
+      + 3 bio-whethercomp 
+      + 3 bio-howcomp 
+      + 3 bio-thatcomp 
+        + 4 evidence vars: {fact}
+          + 5 observation 
+          + 5 study-data 
+          + 5 experiment-data 
+    + 2 blocked-category 
+    + 2 amount vars: {measurement, stuff, alternative-amount, time-period}
+      + 3 money vars: {number, currency}
+      + 3 amount-old vars: {amount, perspective}
+      + 3 amount-of-time vars: {units, quantity}
+        + 4 period vars: {context, state}
+          + 5 period-of-time 
+        + 4 fraction-of-amount-of-time vars: {selector, portion}
+      + 3 amount-at-time vars: {amount, time}
+      + 3 vague-amount vars: {name}
+    + 2 measurement vars: {units, quantity} **  already diplayed #<ref-category MEASUREMENT>
+    + 2 unit-of-measure vars: {name}
+      + 3 currency vars: {denomination, country}
+      + 3 time-unit vars: {name}
+      + 3 fractional-term 
+        + 4 half vars: {name}
+        + 4 quarter vars: {name}
+      + 3 unit-of-rate-of-change vars: {distance-measure, time-measure, name}
+    + 2 number-sequence vars: {value}
+    + 2 takes-numerical-value vars: {value}
+    + 2 number vars: {value}
+      + 3 fraction vars: {numerator, denominator}
+      + 3 post-ordinal vars: {number, word, roman-numeral}
+      + 3 ordinal vars: {number, word, roman-numeral}
+      + 3 range vars: {from, to}
+      + 3 number-range vars: {value, range}
+      + 3 hyphenated-number vars: {left, right}
+      + 3 multiplier 
+        + 4 order-of-magnitude 
+        + 4 n-fold vars: {number}
+    + 2 sequence vars: {item, items, type, number}
+      + 3 slashed-sequence 
+      + 3 slashed-pair vars: {left, right}
+      + 3 word-colon-word vars: {left, right}
+      + 3 number-colon-number vars: {left, right}
+      + 3 sequence-of-numbers vars: {numbers}
+      + 3 sequential vars: {sequence, position, previous, next}
+        + 4 cyclic vars: {cycle-length}
+      + 3 subsequence vars: {reference-sequence, index}
+        + 4 sequence-selector vars: {ordering}
+          + 5 sequencer-number 
+          + 5 ordinal-number 
+          + 5 ordering-number 
+          + 5 number-ordering 
+          + 5 ordinal-ordering 
+        + 4 subseq-both-ends vars: {end-index}
+        + 4 subseq-after 
+        + 4 subseq-up-to 
+    + 2 collection vars: {items, type, number}
+      + 3 hyphenated-triple vars: {left, middle, right}
+      + 3 qualifying-pair vars: {head, qualifier}
+      + 3 hyphenated-pair vars: {left, right}
+    + 2 designator 
+      + 3 class-of-numbers 
+        + 4 number-product 
+        + 4 ones-number 
+        + 4 teens-number 
+        + 4 tens-number 
+      + 3 label  **  already diplayed #<ref-category LABEL>
+      + 3 named-type vars: {type-of}
+        + 4 car-type 
+      + 3 index 
+        + 4 assession-number vars: {date, index-number}
+        + 4 temporal-index 
+          + 5 am-pm 
+            + 6 post-meridian 
+            + 6 ante-meridian 
+        + 4 illions-distribution vars: {number, illion, value}
+        + 4 url-initial-separator vars: {string}
+          + 5 // 
+        + 4 url-address vars: {string}
+          + 5 doi.org 
+        + 4 url-prefix vars: {string}
+          + 5 doi:// 
+          + 5 doi: 
+          + 5 https: 
+          + 5 https:// 
+          + 5 http: 
+          + 5 http:// 
+        + 4 url vars: {string}
+        + 4 part-of-a-sequence vars: {position, sequence}
+        + 4 position-in-a-sequence vars: {number, item, sequence}
+    + 2 has-uid vars: {uid}
+    + 2 linguistic  **  already diplayed #<ref-category LINGUISTIC>
+    + 2 relation vars: {adverb}
+      + 3 has-rate-of-change vars: {rate-of-change}
+      + 3 has-amount-as-level vars: {amount-as-level}
+      + 3 has-length vars: {length}
+      + 3 has-width vars: {width}
+      + 3 has-height vars: {height}
+      + 3 has-size vars: {size}
+      + 3 has-color vars: {color}
+      + 3 subordinate-conjunction vars: {word}
+        + 4 whether 
+        + 4 when 
+        + 4 whatever 
+        + 4 whilst 
+        + 4 while 
+        + 4 whereas 
+        + 4 until-now 
+        + 4 unless 
+        + 4 until 
+        + 4 to-this-end 
+        + 4 thus 
+        + 4 thereby 
+        + 4 till 
+        + 4 though 
+        + 4 therefore 
+        + 4 than 
+        + 4 such-that 
+        + 4 so 
+        + 4 since 
+        + 4 rather-than 
+        + 4 prior-to 
+        + 4 otherwise 
+        + 4 once 
+        + 4 on-the-grounds-that 
+        + 4 on-grounds-that 
+        + 4 nevertheless 
+        + 4 moreover 
+        + 4 lest 
+        + 4 inasmuch-as 
+        + 4 instead 
+        + 4 i.e. 
+        + 4 if 
+        + 4 however 
+        + 4 hence 
+        + 4 furthermore 
+        + 4 for-example 
+        + 4 except-that 
+        + 4 except 
+        + 4 even-if 
+        + 4 even 
+        + 4 e.g. 
+        + 4 by-contrast 
+        + 4 but-rather 
+        + 4 but 
+        + 4 besides 
+        + 4 because 
+        + 4 as-though 
+        + 4 as-a-consequence 
+        + 4 as-soon-as 
+        + 4 as-if 
+        + 4 as-far-as 
+        + 4 as-a-result 
+        + 4 as-expected 
+        + 4 as 
+        + 4 although 
+        + 4 albeit 
+        + 4 according-as 
+        + 4 then 
+        + 4 if  **  already diplayed #<ref-category IF>
+        + 4 neither 
+      + 3 conjunction vars: {word}
+        + 4 nor 
+        + 4 as-well-as 
+        + 4 instead-of 
+        + 4 and/or 
+        + 4 or 
+        + 4 and 
+      + 3 modifies vars: {modifier, modified}
+        + 4 associated-with-country vars: {country, item}
+          + 5 nationality vars: {country, person}
+          + 5 located-in vars: {country, region}
+      + 3 predicate 
+        + 4 quantifier vars: {word}
+          + 5 quantity vars: {name}
+            + 6 bulk 
+            + 6 plurality 
+            + 6 minority 
+            + 6 majority 
+            + 6 unlimited 
+            + 6 multiple 
+          + 5 none 
+          + 5 not 
+          + 5 no 
+          + 5 various 
+          + 5 such-a 
+          + 5 such 
+          + 5 some 
+          + 5 several 
+          + 5 others 
+          + 5 a-number 
+          + 5 numerous 
+          + 5 neither  **  already diplayed #<ref-category NEITHER>
+          + 5 every 
+          + 5 enough 
+          + 5 either 
+          + 5 each 
+          + 5 both 
+          + 5 another 
+          + 5 any 
+          + 5 all 
+          + 5 additional 
+        + 4 lambda-expression 
+        + 4 quality-value-predicate vars: {attribute, value}
+          + 5 qualified-attribute vars: {attribute, comparative}
+        + 4 quality-predicate vars: {attribute, item}
+        + 4 modifier 
+          + 5 ordinary 
+          + 5 exceptional 
+          + 5 tumorigenic 
+          + 5 transmembrane 
+          + 5 tractable 
+          + 5 therapeutic 
+          + 5 telomeric 
+          + 5 stromal 
+          + 5 somatic 
+          + 5 replicative 
+          + 5 renal 
+          + 5 proteolytic 
+          + 5 proliferative 
+          + 5 proinflammatory 
+          + 5 proapoptotic 
+          + 5 proangiogenic 
+          + 5 preneoplastic 
+          + 5 premalignant 
+          + 5 pituitary 
+          + 5 physiologic 
+          + 5 peritumoral 
+          + 5 pericellular 
+          + 5 nonmutational 
+          + 5 nonclonal 
+          + 5 neoplastic 
+          + 5 necrotic 
+          + 5 multicellular 
+          + 5 mitogenic 
+          + 5 mitochondrial 
+          + 5 metastatic 
+          + 5 metabolic 
+          + 5 medical 
+          + 5 intratumoral 
+          + 5 intracellular  **  already diplayed #<ref-category INTRACELLULAR>
+          + 5 immunosuppressive 
+          + 5 immune 
+          + 5 homeostatic 
+          + 5 histopathological 
+          + 5 heterotypic 
+          + 5 hematopoietic 
+          + 5 genomic 
+          + 5 extracellular 
+          + 5 epithelial 
+          + 5 epigenetic 
+          + 5 epidermal 
+          + 5 endothelial 
+          + 5 embryonic 
+          + 5 non-conserved 
+          + 5 conserved 
+          + 5 chromosomal 
+          + 5 catalytic 
+          + 5 cancerous 
+          + 5 bioactive 
+          + 5 over-arching 
+          + 5 on-line 
+          + 5 in-line 
+          + 5 wrong 
+          + 5 widespread 
+          + 5 vigorous 
+          + 5 viable 
+          + 5 versatile 
+          + 5 vast 
+          + 5 useful vars: {purpose} **  already diplayed #<ref-category USEFUL>
+          + 5 useable 
+          + 5 upper 
+          + 5 unstable 
+          + 5 unresolved 
+          + 5 unexpected  **  already diplayed #<ref-category UNEXPECTED>
+          + 5 undirected 
+          + 5 uncontrolled 
+          + 5 unbalanced 
+          + 5 unanticipated 
+          + 5 transitory 
+          + 5 transitive 
+          + 5 transformative 
+          + 5 systematic 
+          + 5 susceptible 
+          + 5 surgical 
+          + 5 supportive 
+          + 5 sufficient vars: {theme, sufficient-for} **  already diplayed #<ref-category SUFFICIENT>
+          + 5 successive 
+          + 5 successful 
+          + 5 substantial 
+          + 5 suboptimal 
+          + 5 subcritical 
+          + 5 structural 
+          + 5 stable  **  already diplayed #<ref-category STABLE>
+          + 5 spontaneous 
+          + 5 specific vars: {situation, beneficiary} **  already diplayed #<ref-category SPECIFIC>
+          + 5 solid 
+          + 5 simple 
+          + 5 similar  **  already diplayed #<ref-category SIMILAR>
+          + 5 silent 
+          + 5 significant 
+          + 5 senescent 
+          + 5 selective  **  already diplayed #<ref-category SELECTIVE>
+          + 5 reversible 
+          + 5 remarkable 
+          + 5 related  **  already diplayed #<ref-category RELATED>
+          + 5 regulatory 
+          + 5 regular 
+          + 5 redundant 
+          + 5 reciprocal 
+          + 5 recessive 
+          + 5 receptive 
+          + 5 recent 
+          + 5 reactive 
+          + 5 raw 
+          + 5 rare 
+          + 5 rapid  **  already diplayed #<ref-category RAPID>
+          + 5 random 
+          + 5 quiescent 
+          + 5 prototypical 
+          + 5 protective 
+          + 5 prospective 
+          + 5 proper 
+          + 5 prominent 
+          + 5 professional 
+          + 5 primary 
+          + 5 prevalent  **  already diplayed #<ref-category PREVALENT>
+          + 5 preeminent 
+          + 5 powerful 
+          + 5 potent  **  already diplayed #<ref-category POTENT>
+          + 5 poor 
+          + 5 persistent vars: {theme} **  already diplayed #<ref-category PERSISTENT>
+          + 5 perpendicular 
+          + 5 permissive 
+          + 5 passive 
+          + 5 particular 
+          + 5 paradoxical 
+          + 5 own 
+          + 5 overt 
+          + 5 outer 
+          + 5 other 
+          + 5 orthogonal 
+          + 5 original 
+          + 5 organismic 
+          + 5 ongoing 
+          + 5 obscure 
+          + 5 null 
+          + 5 notable 
+          + 5 normal 
+          + 5 nominal 
+          + 5 new 
+          + 5 neighboring 
+          + 5 necessary vars: {condition, necessary-to} **  already diplayed #<ref-category NECESSARY>
+          + 5 nearby 
+          + 5 natural 
+          + 5 national 
+          + 5 nascent 
+          + 5 multistep 
+          + 5 morphological 
+          + 5 mechanistic 
+          + 5 maximal 
+          + 5 malignant 
+          + 5 major 
+          + 5 logical 
+          + 5 local 
+          + 5 lineal 
+          + 5 latent 
+          + 5 known 
+          + 5 key 
+          + 5 karyotypic 
+          + 5 irreversible 
+          + 5 irreparable 
+          + 5 invisible 
+          + 5 intrinsic 
+          + 5 interconnected 
+          + 5 integral 
+          + 5 intact 
+          + 5 insular 
+          + 5 insufficient 
+          + 5 instrumental 
+          + 5 innocuous 
+          + 5 inner 
+          + 5 innate 
+          + 5 informative 
+          + 5 inflammatory 
+          + 5 individual 
+          + 5 incomplete 
+          + 5 incipient 
+          + 5 inappropriate 
+          + 5 inadequate 
+          + 5 inactivated 
+          + 5 impressive 
+          + 5 important 
+          + 5 implicit 
+          + 5 ill 
+          + 5 hypoxic 
+          + 5 hyperresponsive 
+          + 5 hyperactive 
+          + 5 hybrid 
+          + 5 heritable 
+          + 5 heavy 
+          + 5 harmful 
+          + 5 gross 
+          + 5 gradual 
+          + 5 good 
+          + 5 given 
+          + 5 genuine 
+          + 5 fundamental 
+          + 5 functional 
+          + 5 full-blown 
+          + 5 frequent 
+          + 5 free vars: {free-of} **  already diplayed #<ref-category FREE>
+          + 5 foreign 
+          + 5 feasible 
+          + 5 fascinating 
+          + 5 familiar 
+          + 5 extrinsic 
+          + 5 extreme 
+          + 5 extraordinary 
+          + 5 extensive 
+          + 5 experimental 
+          + 5 excessive 
+          + 5 eventual 
+          + 5 evasive 
+          + 5 environmental 
+          + 5 entire 
+          + 5 elaborate 
+          + 5 efficient 
+          + 5 economical 
+          + 5 dysfunctional 
+          + 5 dynamic 
+          + 5 druggable 
+          + 5 dormant 
+          + 5 dominant 
+          + 5 diverse 
+          + 5 distinctive 
+          + 5 distinct 
+          + 5 distant 
+          + 5 discrete 
+          + 5 direct  **  already diplayed #<ref-category DIRECT>
+          + 5 difficult 
+          + 5 differential 
+          + 5 different  **  already diplayed #<ref-category DIFFERENT>
+          + 5 dichotomous 
+          + 5 detailed 
+          + 5 derivative  **  already diplayed #<ref-category DERIVATIVE>
+          + 5 demonstrable 
+          + 5 deleterious 
+          + 5 defective 
+          + 5 decisive 
+          + 5 cytotoxic 
+          + 5 crucial 
+          + 5 critical  **  already diplayed #<ref-category CRITICAL>
+          + 5 counterintuitive 
+          + 5 continuous 
+          + 5 continual 
+          + 5 constitutive  **  already diplayed #<ref-category CONSTITUTIVE>
+          + 5 consistent  **  already diplayed #<ref-category CONSISTENT>
+          + 5 confluent 
+          + 5 conceptual 
+          + 5 complex 
+          + 5 complete 
+          + 5 complementary 
+          + 5 clonal 
+          + 5 clear 
+          + 5 circumstantial 
+          + 5 chronic 
+          + 5 chimeric 
+          + 5 central 
+          + 5 cellular 
+          + 5 causal 
+          + 5 capable 
+          + 5 canonical 
+          + 5 broad 
+          + 5 bona-fide 
+          + 5 beneficial 
+          + 5 basal 
+          + 5 avian 
+          + 5 autocrine 
+          + 5 appropriate 
+          + 5 apoptotic 
+          + 5 antitumoral 
+          + 5 antiapoptotic 
+          + 5 anomalous 
+          + 5 ancillary 
+          + 5 analogous 
+          + 5 anaerobic 
+          + 5 alternative 
+          + 5 aerobic 
+          + 5 advantageous 
+          + 5 adjacent 
+          + 5 adhesive 
+          + 5 adaptive 
+          + 5 active vars: {activated} **  already diplayed #<ref-category ACTIVE>
+          + 5 accurate 
+          + 5 abundant  **  already diplayed #<ref-category ABUNDANT>
+          + 5 abnormal 
+          + 5 able 
+          + 5 aberrant 
+          + 5 novel  **  already diplayed #<ref-category NOVEL>
+          + 5 aforementioned 
+          + 5 severe 
+          + 5 operational 
+          + 5 obvious 
+          + 5 unlikely  **  already diplayed #<ref-category UNLIKELY>
+          + 5 likely  **  already diplayed #<ref-category LIKELY>
+          + 5 possible 
+          + 5 title-status vars: {name}
+          + 5 title-modifier vars: {name}
+          + 5 fiscal 
+          + 5 spatio-temporal 
+          + 5 sequencer vars: {word, relation}
+            + 6 during 
+            + 6 before 
+            + 6 after 
+            + 6 following-sequence 
+            + 6 subsequent-sequence 
+            + 6 latter-sequence 
+            + 6 former-sequence 
+            + 6 next-sequence 
+            + 6 previous-sequence 
+            + 6 last-sequence 
+          + 5 approximator vars: {name}
+            + 6 only 
+            + 6 mostly 
+            + 6 hardly 
+            + 6 fairly 
+            + 6 somewhat 
+            + 6 roughly 
+            + 6 precisely 
+            + 6 nearly 
+            + 6 more-than 
+            + 6 just 
+            + 6 exactly 
+            + 6 barely 
+            + 6 at-most 
+            + 6 at-least 
+            + 6 approximately 
+            + 6 around 
+            + 6 almost 
+            + 6 or-less 
+            + 6 or-fewer 
+            + 6 or-more 
+          + 5 attribute-value vars: {attribute}
+            + 6 qualitative-age 
+            + 6 scalar-quantifier 
+              + 7 much 
+              + 7 many 
+              + 7 a-little 
+              + 7 few 
+              + 7 comparative-scalar-quantifier 
+                + 8 more 
+                + 8 less 
+                + 8 fewer 
+                + 8 superlative-scalar-quantifier 
+                  + 9 most 
+                  + 9 least  **  already diplayed #<ref-category LEAST>
+                  + 9 fewest 
+            + 6 rate-of-change-value 
+              + 7 slow 
+                + 8 slowest 
+                + 8 slower 
+              + 7 fast 
+                + 8 fastest 
+                + 8 faster 
+            + 6 amount-as-level-value 
+            + 6 length-value 
+              + 7 long 
+                + 8 longest 
+                + 8 longer 
+            + 6 width-value 
+              + 7 wide 
+                + 8 widest 
+                + 8 wider 
+              + 7 narrow 
+                + 8 narrowest 
+                + 8 narrower 
+            + 6 height-value 
+              + 7 tall 
+                + 8 tallest 
+                + 8 taller 
+              + 7 short 
+                + 8 shortest 
+                + 8 shorter 
+            + 6 size-value 
+              + 7 small 
+                + 8 smallest 
+                + 8 smaller 
+              + 7 large 
+                + 8 largest 
+                + 8 larger 
+              + 7 little 
+                + 8 littlest 
+                + 8 littler 
+              + 7 big 
+                + 8 biggest 
+                + 8 bigger 
+            + 6 color-value 
+              + 7 violet 
+                + 8 violettest 
+                + 8 violetter 
+              + 7 yellow 
+                + 8 yellowest 
+                + 8 yellower 
+              + 7 red 
+                + 8 reddest 
+                + 8 redder 
+              + 7 purple 
+                + 8 purplest 
+                + 8 purpler 
+              + 7 pink 
+                + 8 pinkest 
+                + 8 pinker 
+              + 7 orange 
+                + 8 orangest 
+                + 8 oranger 
+              + 7 green 
+                + 8 greennest 
+                + 8 greenner 
+              + 7 brown 
+                + 8 brownest 
+                + 8 browner 
+              + 7 blue 
+                + 8 bluest 
+                + 8 bluer 
+              + 7 white 
+                + 8 whitest 
+                + 8 whiter 
+              + 7 black 
+                + 8 blackest 
+                + 8 blacker 
+            + 6 superlative-modifier 
+            + 6 comparative-modifier 
+            + 6 superlative 
+            + 6 comparative 
+              + 7 quantified-comparative vars: {quantifier, comparative}
+          + 5 adverbial 
+            + 6 surprisingly 
+            + 6 notably 
+            + 6 mechanistically 
+            + 6 sterically 
+            + 6 mitotically 
+            + 6 metabolically 
+            + 6 homeostatically 
+            + 6 enzymatically 
+            + 6 endosymbiotically 
+            + 6 chemically 
+            + 6 biologically 
+            + 6 biochemically 
+            + 6 further  **  already diplayed #<ref-category FURTHER>
+            + 6 readily 
+            + 6 namely 
+            + 6 in-part 
+            + 6 finally 
+            + 6 next 
+            + 6 uniquely 
+            + 6 primarily 
+            + 6 even  **  already diplayed #<ref-category EVEN>
+            + 6 a-bit-more 
+            + 6 barely  **  already diplayed #<ref-category BARELY>
+            + 6 so  **  already diplayed #<ref-category SO>
+            + 6 ectopically 
+            + 6 constitutively 
+            + 6 at-baseline 
+            + 6 whatsoever 
+            + 6 widely 
+            + 6 well  **  already diplayed #<ref-category WELL>
+            + 6 weakly 
+            + 6 visually 
+            + 6 variously 
+            + 6 unsurprisingly 
+            + 6 unrealistically 
+            + 6 unnaturally 
+            + 6 unintentionally 
+            + 6 uniformly 
+            + 6 ungainly 
+            + 6 typically 
+            + 6 transitively 
+            + 6 transiently 
+            + 6 transcriptionally 
+            + 6 traditionally 
+            + 6 topically 
+            + 6 together 
+            + 6 tightly 
+            + 6 thus-far 
+            + 6 thoroughly 
+            + 6 thinly 
+            + 6 thermodynamically 
+            + 6 theoretically 
+            + 6 terminally 
+            + 6 temporarily 
+            + 6 temporally 
+            + 6 technologically 
+            + 6 technically 
+            + 6 synthetically 
+            + 6 symptomatically 
+            + 6 symbiotically 
+            + 6 swiftly 
+            + 6 superfluously 
+            + 6 surprisingly  **  already diplayed #<ref-category SURPRISINGLY>
+            + 6 surely 
+            + 6 sufficiently 
+            + 6 suddenly 
+            + 6 successfully 
+            + 6 subtly 
+            + 6 substantially 
+            + 6 structurally 
+            + 6 stochastically 
+            + 6 steadily 
+            + 6 statistically 
+            + 6 starkly 
+            + 6 stably 
+            + 6 spontaneously 
+            + 6 specifically 
+            + 6 specially 
+            + 6 spatially 
+            + 6 somehow 
+            + 6 solely 
+            + 6 socially 
+            + 6 so-far 
+            + 6 slowly 
+            + 6 slightly 
+            + 6 singly 
+            + 6 simultaneously 
+            + 6 simply 
+            + 6 similarly 
+            + 6 shortly 
+            + 6 sexually 
+            + 6 seriously 
+            + 6 selectively 
+            + 6 seemingly 
+            + 6 scientifically 
+            + 6 schematically 
+            + 6 safely 
+            + 6 sadly 
+            + 6 routinely 
+            + 6 robustly 
+            + 6 rhythmically 
+            + 6 reversibly 
+            + 6 respectively 
+            + 6 reproductively 
+            + 6 remarkably 
+            + 6 reliably 
+            + 6 relatively 
+            + 6 regularly 
+            + 6 regionally 
+            + 6 redundantly 
+            + 6 reciprocally 
+            + 6 reasonably 
+            + 6 realistically 
+            + 6 readily  **  already diplayed #<ref-category READILY>
+            + 6 rather 
+            + 6 rapidly 
+            + 6 randomly 
+            + 6 radially 
+            + 6 quietly 
+            + 6 quiescently 
+            + 6 quickly 
+            + 6 questionably 
+            + 6 quantitatively 
+            + 6 qualitatively 
+            + 6 purposefully 
+            + 6 purely 
+            + 6 publicly 
+            + 6 properly 
+            + 6 progressively 
+            + 6 privately 
+            + 6 presumably 
+            + 6 prematurely 
+            + 6 preferentially 
+            + 6 predominantly 
+            + 6 predictably 
+            + 6 precipitously 
+            + 6 practically 
+            + 6 powerfully 
+            + 6 potently 
+            + 6 popularly 
+            + 6 poorly 
+            + 6 please 
+            + 6 physiologically 
+            + 6 physically 
+            + 6 perversely 
+            + 6 pervasively 
+            + 6 persistently 
+            + 6 permanently 
+            + 6 perfectly 
+            + 6 passively 
+            + 6 partly 
+            + 6 particularly 
+            + 6 partially 
+            + 6 paradoxically 
+            + 6 painstakingly 
+            + 6 painfully 
+            + 6 ostensibly 
+            + 6 osmotically 
+            + 6 originally 
+            + 6 organically 
+            + 6 openly 
+            + 6 oddly 
+            + 6 occasionally 
+            + 6 noticeably 
+            + 6 notably  **  already diplayed #<ref-category NOTABLY>
+            + 6 normally 
+            + 6 noninvasively 
+            + 6 nominally 
+            + 6 newly 
+            + 6 necessarily 
+            + 6 naturally 
+            + 6 natively 
+            + 6 nationally 
+            + 6 mutually 
+            + 6 morphologically 
+            + 6 morbidly 
+            + 6 modestly 
+            + 6 minimally 
+            + 6 mildly 
+            + 6 metaphorically 
+            + 6 medically 
+            + 6 measurably 
+            + 6 maximally 
+            + 6 mathematically 
+            + 6 logically 
+            + 6 locally 
+            + 6 literally 
+            + 6 linearly 
+            + 6 lightly 
+            + 6 legally 
+            + 6 largely 
+            + 6 kinetically 
+            + 6 jointly 
+            + 6 irreparably 
+            + 6 ionically 
+            + 6 invasively 
+            + 6 invariably 
+            + 6 intrinsically 
+            + 6 intimately 
+            + 6 internally 
+            + 6 interestingly 
+            + 6 intentionally 
+            + 6 intensely 
+            + 6 integrally 
+            + 6 insufficiently 
+            + 6 innately 
+            + 6 inherently 
+            + 6 infrequently 
+            + 6 informally 
+            + 6 inexpensively 
+            + 6 inevitably 
+            + 6 industrially 
+            + 6 indoors 
+            + 6 individually 
+            + 6 indirectly 
+            + 6 independently 
+            + 6 indeed 
+            + 6 incrementally 
+            + 6 increasingly 
+            + 6 incorrectly 
+            + 6 incompletely 
+            + 6 incidentally 
+            + 6 inadvertently 
+            + 6 inaccurately 
+            + 6 in-turn 
+            + 6 in-one-way-or-another 
+            + 6 in-large-part 
+            + 6 in-general 
+            + 6 in-fact 
+            + 6 in-stark-contrast 
+            + 6 in-contrast 
+            + 6 in-concert 
+            + 6 importantly 
+            + 6 implicitly 
+            + 6 illustratively 
+            + 6 identifiably 
+            + 6 ideally 
+            + 6 hypothetically 
+            + 6 hugely 
+            + 6 hitherto 
+            + 6 historically 
+            + 6 highly 
+            + 6 heavily 
+            + 6 heartedly 
+            + 6 greatly 
+            + 6 graphically 
+            + 6 gradually 
+            + 6 globally 
+            + 6 geologically 
+            + 6 geographically 
+            + 6 genuinely 
+            + 6 gently 
+            + 6 genetically 
+            + 6 generically 
+            + 6 generally 
+            + 6 fundamentally 
+            + 6 functionally 
+            + 6 frustratingly 
+            + 6 freely 
+            + 6 frankly 
+            + 6 fortunately 
+            + 6 formally 
+            + 6 forcefully 
+            + 6 for-instance 
+            + 6 firmly 
+            + 6 finely 
+            + 6 figuratively 
+            + 6 federally 
+            + 6 famously 
+            + 6 familiarly 
+            + 6 externally 
+            + 6 experimentally 
+            + 6 exclusively 
+            + 6 evolutionarily 
+            + 6 evocatively 
+            + 6 evidently 
+            + 6 evenly 
+            + 6 ethically 
+            + 6 essentially 
+            + 6 erroneously 
+            + 6 equivalently 
+            + 6 equally 
+            + 6 enzymatically  **  already diplayed #<ref-category ENZYMATICALLY>
+            + 6 environmentally 
+            + 6 entirely 
+            + 6 energetically 
+            + 6 electrically 
+            + 6 efficiently 
+            + 6 effectively 
+            + 6 easily 
+            + 6 e.-g. 
+            + 6 dynamically 
+            + 6 distributionally 
+            + 6 discretely 
+            + 6 discreetly 
+            + 6 directly 
+            + 6 differently 
+            + 6 developmentally 
+            + 6 densely 
+            + 6 demonstrably 
+            + 6 deeply 
+            + 6 dangerously 
+            + 6 cytologically 
+            + 6 currently 
+            + 6 crucially 
+            + 6 critically 
+            + 6 covalently 
+            + 6 correspondingly 
+            + 6 cooperatively 
+            + 6 convincingly 
+            + 6 conversely 
+            + 6 conventionally 
+            + 6 continuously 
+            + 6 consistently 
+            + 6 considerably 
+            + 6 consequently 
+            + 6 confidently 
+            + 6 conditionally 
+            + 6 concordantly 
+            + 6 concomitantly 
+            + 6 conclusively 
+            + 6 conceptually 
+            + 6 computationally 
+            + 6 comprehensively 
+            + 6 completely 
+            + 6 comparatively 
+            + 6 compactly 
+            + 6 commonly 
+            + 6 commercially 
+            + 6 colloquially 
+            + 6 collectively 
+            + 6 coherently 
+            + 6 closely 
+            + 6 clonally 
+            + 6 clinically 
+            + 6 clearly 
+            + 6 circularly 
+            + 6 chronologically 
+            + 6 cheaply 
+            + 6 characteristically 
+            + 6 certainly 
+            + 6 centrally 
+            + 6 causally 
+            + 6 categorically 
+            + 6 casually 
+            + 6 carefully 
+            + 6 by-necessity 
+            + 6 broadly 
+            + 6 briefly 
+            + 6 bilaterally 
+            + 6 beautifully 
+            + 6 basically 
+            + 6 badly 
+            + 6 at-once 
+            + 6 asymmetrically 
+            + 6 asexually 
+            + 6 arguably 
+            + 6 architecturally 
+            + 6 arbitrarily 
+            + 6 aptly 
+            + 6 appropriately 
+            + 6 apparently 
+            + 6 analytically 
+            + 6 anatomically 
+            + 6 amply 
+            + 6 alternatively 
+            + 6 alone 
+            + 6 all-the-way 
+            + 6 alarmingly 
+            + 6 agriculturally 
+            + 6 again 
+            + 6 admittedly 
+            + 6 admirably 
+            + 6 adequately 
+            + 6 additionally 
+            + 6 actually 
+            + 6 actively 
+            + 6 accurately 
+            + 6 accordingly 
+            + 6 perpendicularly 
+            + 6 orthogonally 
+            + 6 laterally 
+            + 6 diagonally 
+            + 6 later 
+            + 6 earlier 
+            + 6 sooner 
+            + 6 also 
+            + 6 ultimately 
+            + 6 subsequently 
+            + 6 initially 
+            + 6 first 
+            + 6 finally  **  already diplayed #<ref-category FINALLY>
+            + 6 eventually 
+            + 6 potentially 
+            + 6 definitely 
+            + 6 probably 
+            + 6 as-well 
+            + 6 no-longer 
+            + 6 frequency-of-event vars: {name}
+              + 7 yearly 
+              + 7 usually 
+              + 7 seldom 
+              + 7 rarely 
+              + 7 often 
+              + 7 never 
+              + 7 monthly 
+              + 7 indefinitely 
+              + 7 hourly 
+              + 7 frequently 
+              + 7 forever 
+              + 7 ever 
+              + 7 daily 
+              + 7 constantly 
+              + 7 chronically 
+              + 7 always 
+            + 6 intensifier 
+              + 7 pretty 
+              + 7 very 
+              + 7 wonderfully 
+              + 7 vaguely 
+              + 7 unusually 
+              + 7 unmistakably 
+              + 7 unfortunately 
+              + 7 unexpectedly  **  already diplayed #<ref-category UNEXPECTEDLY>
+              + 7 undoubtedly 
+              + 7 understandably 
+              + 7 undeniably 
+              + 7 uncharacteristically 
+              + 7 truly 
+              + 7 tremendously 
+              + 7 totally 
+              + 7 strongly 
+              + 7 strikingly 
+              + 7 strictly 
+              + 7 straightforwardly 
+              + 7 sparsely 
+              + 7 sparingly 
+              + 7 significantly 
+              + 7 sharply 
+              + 7 really 
+              + 7 radically 
+              + 7 quite 
+              + 7 too 
+              + 7 nicely 
+              + 7 moderately 
+              + 7 merely 
+              + 7 meaningfully 
+              + 7 markedly 
+              + 7 marginally 
+              + 7 mainly 
+              + 7 loosely 
+              + 7 immensely 
+              + 7 fully 
+              + 7 extremely 
+              + 7 extraordinarily 
+              + 7 extensively 
+              + 7 excessively 
+              + 7 especially 
+              + 7 drastically 
+              + 7 dramatically 
+              + 7 astoundingly 
+              + 7 amazingly 
+              + 7 acutely 
+              + 7 absolutely 
+              + 7 abnormally 
+      + 3 partonomic vars: {parts, part-type, has-part, part-of}
+      + 3 dependent-substrate vars: {dependent, substrate}
+        + 4 exit-on-throughway vars: {exit, throughway}
+    + 2 abstract-region 
+  + 1 quality 
+    + 2 attribute vars: {var}
+      + 3 variable/attribute 
+      + 3 location-of 
+      + 3 dimension 
+        + 4 two-dimensional 
+        + 4 three-dimensional 
+      + 3 orientation 
+      + 3 symbol 
+      + 3 name 
+        + 4 denomination/money vars: {name, symbol}
+          + 5 fractional-denomination/money vars: {reference-denomination, fraction}
+        + 4 person-name vars: {sequence, last-name}
+          + 5 person-name/first-last vars: {first-name, standard-prefix, version}
+        + 4 name-of-location vars: {sequence, type}
+        + 4 initial vars: {word}
+        + 4 name-component 
+          + 5 part-of-a-person-name 
+            + 6 person-version vars: {name}
+            + 6 person-prefix vars: {name}
+        + 4 name-word vars: {name, name-of}
+        + 4 greek-letter vars: {letter}
+        + 4 single-capitalized-letter vars: {letter}
+        + 4 uncategorized-name vars: {name/s}
+          + 5 spelled-name vars: {name/s}
+      + 3 can-change-location vars: {former-location, present-location}
+      + 3 scalar-attribute vars: {comparative, superlative}
+        + 4 age vars: {age}
+        + 4 rate-of-change 
+        + 4 amount-as-level 
+        + 4 length 
+          + 5 bio-length 
+        + 4 width 
+        + 4 height 
+        + 4 size 
+        + 4 color 
+        + 4 comparative-modification 
+    + 2 qualifiable vars: {qualifier}
+    + 2 scalar 
+      + 3 bio-scalar vars: {measured-item, participant}
+        + 4 process-rate vars: {components, process}
+          + 5 catalysis-rate 
+          + 5 dissociation-rate 
+          + 5 binding-rate 
+        + 4 bio-concentration 
+        + 4 peak 
+        + 4 frequency 
+        + 4 bio-amount 
+        + 4 sensitivity vars: {cause}
+        + 4 insensitivity vars: {cause}
+        + 4 duration vars: {theme}
+        + 4 threshold 
+        + 4 level vars: {measured-item}
+        + 4 time-course 
+        + 4 scale 
+        + 4 proportion 
+        + 4 mass 
+        + 4 extent 
+        + 4 dynamics 
+        + 4 bio-strength 
