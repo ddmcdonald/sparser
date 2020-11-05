@@ -3,7 +3,7 @@
 ;;;
 ;;;      File: embedded-da
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  October 2020
+;;;  Version:  November 2020
 
 ;; Initiated 10/26/20. To organize appling DA rules during the
 ;; initial sweeps. 
@@ -27,26 +27,26 @@ facility changes the 'ecology' of writing the various flavors
 of pattern rules, so it's location in the sequence may need
 to be adjusted.
 
-Right now the pool of DA rules is not divided according to when we
-want them to run. That has not proven to be a problem so far
-since the "classic" DA rules are written over larger-scale edges
-and the rules this level targets are over single word edge
-and even words (just punctuation so far).  If it turns out to
-be an issue we have to set up separate hashtables for use by
-trie-for-1st-item and provide a little notation to distinguish them.
-One example of this is the its-a-number da rule that's triggered
-when the treetop is a number
+However, we don't want the rules we write for this 'embedded'
+version run in the same text contexts as the regular ones do.
+To keep the embedded rule-executing code from inadvertantly
+applying to a 'conventional' da pattern, they are indexed
+against different trie objects (see analyzers/da/trie-object.lisp)
+so they go into different hash tables.
 
+To accomplish this, we no longer access the table global directly
+but only via a function (da-trie). The function consults
+the parameter parameter *make-early-da-rule* and returns the
+appropriate pre-built trie object.
 
+We use a special defining form to make these rules which takes
+care of setting up the needed dynamic binding. 
 
-;; Define a new trie on a new constant
-da-trie-data => analyzers/da/trie-object
+        define-early-pattern-rule
 
-;; be able to swap the indexing to ues that alternative
-index-trie-by-1st-item => ../index
-
-;; notice the this is a rule for the embedded case
-
+This choice of name emphasizes that we're not looking at debris
+left over after parsing, but at multi-term patterns acting just
+like any other rule.
 |#
 
 (in-package :sparser)
