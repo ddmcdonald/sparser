@@ -55,6 +55,20 @@ is easiest with a cs rule.  |#
      :form (category-named 'np)
      :referent i)))
 
+(defun make-relational-number (relation number)
+  (etypecase relation
+    (cons (let ((rname (pname (car relation))))
+            (cond ((equal rname "=")
+                   number)
+                  ((equal rname ">")
+                   ;; add new number type
+                   number)
+                  ((equal rname "<")
+                   ;; add new number type
+                   number))))
+    (edge (cond ((member (edge-cat-name relation) '(BE OF))
+                 number)))))
+
 
 ;;;---------------
 ;;;  "8 million"

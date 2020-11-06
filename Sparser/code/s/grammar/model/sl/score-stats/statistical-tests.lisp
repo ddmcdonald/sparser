@@ -41,13 +41,13 @@
                          (df stat-measure)
                          (effect-size effect-size-measure) ;; optional d = 
                          )
-                 :realization (:noun ("t-test" "ttest"))
+                 :realization (:noun ("chi-squared test"))
                  )
 
 (define-category t-test :specializes stat-comparison-test ;; add parametric somehow?
                  :binds (
                          (dep-var continuous-stat-var)
-                         (t-measure t-stat-measure) ;; t=num
+                         (t-measure stat-measure) ;; t=num
                          (df stat-measure) ;; optional -- may be in parens t(df) = val
                          (effect-size effect-size-measure) ;; optional d = 
                          )
@@ -55,7 +55,7 @@
                  )
 ;; subtypes of t-test: paired, one-sample, independent/unpaired 
 
-(define-category t-statistic :specializes statistic
+#|(define-category t-statistic :specializes statistic
                  ;; maybe add binds df?
                  :realization (:noun ("t" "tdiff"))
                  )
@@ -64,17 +64,17 @@
                  :binds ((stat  t-statistic))
                  ;; maybe deal with df here for cases where it's in t(df) = value
                  )
-
+|#
 (define-category f-test :specializes stat-comparison-test ;; add parametric somehow?
                  :binds ((ind-var ) ;; 1 or more categorical stats
                          (dep-var continuous-stat-var)
-                         (f-measure f-stat-measure) ;; F=num
+                         (f-measure stat-measure) ;; F=num
                          (df stat-measure) ;; optional -- may be in parens F(df,df) = val
                          (effect-size effect-size-measure) ;; optional d = 
                          )
                  :realization (:noun ("F-test" "Ftest"))
                  )
-
+#|
 (define-category f-statistic :specializes statistic
                  ;; maybe add binds df?
                  :realization (:noun "F"))
@@ -83,7 +83,7 @@
                  :binds ((stat  f-statistic))
                  ;; maybe deal with df here for cases where it's in t(df) = value
                  )
-
+|#
 (define-category ANOVA :specializes f-test ;; add parametric somehow?
                  :realization (:noun ("ANOVA" "Analysis of Variance"))
                  )

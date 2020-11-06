@@ -11,96 +11,114 @@
 
 (in-package :sparser)
 
-(define-category statistic :specializes abstract
-                 :instantiates self
-  :binds ((name :primitive word))
-  :realization (:noun name))
-
 (define-category stat-measure :specializes abstract
-                 :instantiates self
-                 :binds ((stat statistic)
+                 :binds (
                          (value (:or quantity number hyphenated-number)) ;; range for confidence intervals (also (x,y) for confidence 
                          ;; also ns value for p 
                          ;(described-value )
                          ;; maybe add some attribute that deals with equals vs. upper-bound so we can do p-values where this slot tells you whether it was p = 0.04 vs. p < 0.05, also sometimes for non-significant Fs, people say F(df,df) < 1
                          )
-  :realization () ;; this is where we need to deal with the rule for dealing with 
   )
 
-(define-category p-statistic :specializes statistic
-                 :realization (:noun ("p" "p-value")))
+(define-category one-df-stat-measure :specializes stat-measure
+                 :binds ((df  number)) ;; t or chi-squared
+  )
+
+(define-category two-df-stat-measure :specializes stat-measure
+                 :binds ((df1  number) ;; F measures
+                         (df2 number))
+  )
+
+;; rule-label-categories
+(define-category no-df-statistic :specializes abstract)
+(define-category one-df-statistic :specializes abstract)
+(define-category two-df-statistic :specializes abstract)
 
 ;; "p< 0.001"
-(define-early-pattern-rule p-less-than
-    :pattern (p-statistic "<" number)
-    :action (:function make-stat-measure first second third))
+(define-early-pattern-rule no-df-less-than
+    :pattern (no-df-statistic "<" number)
+    :action (:function make-no-df-stat-measure first second third))
 
-(define-early-pattern-rule p-greater-than
-    :pattern (p-statistic ">" number)
-    :action (:function make-stat-measure first second third))
+(define-early-pattern-rule no-df-greater-than
+    :pattern (no-df-statistic ">" number)
+    :action (:function make-no-df-stat-measure first second third))
 
-(defun make-stat-measure (statistic relation value)
+(define-early-pattern-rule no-df-equals
+    :pattern (no-df-statistic "=" number)
+    :action (:function make-no-df-stat-measure first second third))
+
+(define-early-pattern-rule no-df-be
+    :pattern (no-df-statistic be number) ;; e.g., "the mean was 10"
+    :action (:function make-no-df-stat-measure first second third))
+
+(define-early-pattern-rule no-df-of
+    :pattern (no-df-statistic of number) ;; e.g., "an n of 10"
+    :action (:function make-no-df-stat-measure first second third))
+
+;; add "value of" and "statistic is"
+;; early rule for p is ns
+
+(defun make-no-df-stat-measure (statistic relation value)
   (push-debug `(,statistic ,relation ,value))
   ;;/// need to extend model to take the relation into account
   ;;  Subcategorizing the measure would work.
   ;;  Value of the relation decides among them
-  (let ((r (define-or-find-individual 'stat-measure
-               :stat (edge-referent statistic)
-               :value (edge-referent value))))
-    (make-edge-spec
-     :category category::stat-measure
-     :form category::np
-     :referent r)))
+  (make-edge-spec
+   :category (itype-of (edge-referent statistic))
+   :form category::np
+   :referent (bind-dli-variable
+              'value (make-relational-number relation (edge-referent value))
+              (edge-referent statistic))))
+
+;; add patterns and functions for one-df and two-df measures, but might be tricky since they're more than triples
 
 
+(defmacro def-stat-measure (base-name &key stat-names spec-stat (dfs 0))
+  (define-statistical-measure base-name :stat-names stat-names :spec-stat spec-stat
+                              :dfs dfs))
 
-(define-category p-measure :specializes stat-measure
-                 :binds ((stat  p-statistic)
-                         )
-                 :realization (:noun ("ns" "NS")) ;; this is for cases where they don't say "p = x" but just say "ns" without any mention of p
-                 )
-
-(defmacro def-stat-measure (base-name &key stat-names spec-stat)
-  (define-statistical-measure base-name :stat-names stat-names :spec-stat spec-stat))
-
-(defun define-statistical-measure (base-name &key stat-names spec-stat)
-  (let ((stat-name (intern (string-upcase
-                            (format nil "~a-statistic" base-name))
-                           (find-package :sparser)))
-        (measure-name (intern (string-upcase
+(defun define-statistical-measure (base-name &key stat-names spec-stat (dfs 0))
+  (let ((measure-name (intern (string-upcase
                                (format nil "~a-stat-measure" base-name))
                               (find-package :sparser)))
-        (stat-parent (if spec-stat
-                         (intern (string-upcase
-                                  (format nil "~a-statistic" spec-stat))
-                                 (find-package :sparser))
-                         'statistic))
         (measure-parent (if spec-stat
-                         (intern (string-upcase
-                                  (format nil "~a-stat-measure" spec-stat))
-                                 (find-package :sparser))
-                         'stat-measure)))
-    `(progn
-              (define-category ,stat-name
-                :specializes ,stat-parent
-                :realization (:noun ,stat-names))
-              (define-category ,measure-name
-                :specializes ,measure-parent
-                :binds ((stat ,stat-name))))))
+                            (intern (string-upcase
+                                     (format nil "~a-stat-measure" spec-stat))
+                                    (find-package :sparser))
+                            (case dfs
+                              (0 'stat-measure)
+                              (1 'one-df-stat-measure)
+                              (2 'two-df-stat-measure))))
+        (rule-label (case dfs
+                      (0 'no-df-statistic)
+                      (1 'one-df-statistic)
+                      (2 'two-df-statistic)))
+                       )
+    `(define-category ,measure-name
+                  :specializes ,measure-parent
+                  :rule-label ,rule-label
+                  :realization (:noun ,stat-names))))
 
 
 ;; descriptive stats
 (def-stat-measure "descriptive" :stat-names ("descriptive statistic"))
 (def-stat-measure "sample-size" :stat-names ("sample-size" "sample size" "n" "N") :spec-stat "descriptive") 
-(def-stat-measure "mean" :stat-names ("mean" "M" "m" "average" "avg" "μ") :spec-stat "descriptive") 
+(def-stat-measure "mean" :stat-names ("mean" "M" "m" "average" "avg" "mu" "μ") :spec-stat "descriptive") 
 (def-stat-measure "median" :stat-names ("median" "mdn") :spec-stat "descriptive") 
 (def-stat-measure "standard-deviation" :stat-names ("standard-deviation" "standard deviation" "SD" "stdev" "st-dev" "S.D." "Std. Dev.") :spec-stat "descriptive") 
 (def-stat-measure "standard-error" :stat-names ("standard-error" "standard error" "SE" "S.E.") :spec-stat "descriptive")
 
-(def-stat-measure "degrees-of-freedom" :stat-names ("degrees-of-freedom" "degrees of freedom" "df" "d.f." "DF")) 
+
+(def-stat-measure "degrees-of-freedom" :stat-names ("degrees-of-freedom" "degrees of freedom" "df" "d.f." "DF"))
+(def-stat-measure "p" :stat-names ("p" "p-value"))
 (def-stat-measure "p-rep" :stat-names ("p-rep" "prep" "probability of replicability")) 
 (def-stat-measure "alpha" :stat-names ("alpha" "ɑ")) 
 (def-stat-measure "z-score" :stat-names ("z-score" "z"))
+
+;; comparison stats
+(def-stat-measure "chi-squared" :stat-names ("chi-squared" "χ2" "χ-2" "chi squared" "chi2" "chi-2" "χ 2" "chi square"):dfs 1)
+(def-stat-measure "t" :stat-names ("t" "tdiff") :dfs 1)
+(def-stat-measure "F" :stat-names ("F") :dfs 2)
 
 ;; correlations
 (def-stat-measure "correlation-coefficient" :stat-names ("correlation-coefficient" "correlation coefficient")) 
@@ -109,7 +127,6 @@
 
 (def-stat-measure "R-squared" :stat-names ("R-squared" "r-squared" "R squared" "r squared" "R2" "r2" "r-2" "𝑅̅2"))
 (def-stat-measure "beta" :stat-names ("beta" "β" "B" "b")) 
-(def-stat-measure "chi-squared" :stat-names ("chi-squared" "χ2" "χ-2" "chi squared" "chi2" "chi-2" "χ 2")) 
 (def-stat-measure "Hazard-Ratio" :stat-names ("Hazard-Ratio" "Hazard Ratio" "HR")) 
 (def-stat-measure "odds-ratio" :stat-names ("odds-ratio" "odd's ratio" "odds ratio" "OR")) 
 
