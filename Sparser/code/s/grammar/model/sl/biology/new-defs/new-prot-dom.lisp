@@ -70,7 +70,7 @@
 (def-indiv-with-id protein-domain "MutH" "XFAM:PF02976.13" :name "MutH") 
 (def-indiv-with-id protein-domain "Mule" "XFAM:PF10551.7" :name "MULE" :maintain-case t)
 (def-indiv-with-id protein-domain "Mtr2" "XFAM:PF10429.7" :name "mtr2") 
-(def-indiv-with-id protein-domain "Mental" "XFAM:PF10457.7" :name "MENTAL" :maintain-case t)
+;(def-indiv-with-id protein-domain "Mental" "XFAM:PF10457.7" :name "MENTAL" :maintain-case t)
 (def-indiv-with-id protein-domain "Mch" "XFAM:PF02289.14" :name "MCH") 
 (def-indiv-with-id protein-domain "Math" "XFAM:PF00917.24" :name "MATH" :maintain-case t)
 (def-indiv-with-id protein-domain "Macro" "XFAM:PF01661.19" :name "macro") 
