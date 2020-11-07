@@ -243,6 +243,7 @@
 
   (:method ((word word))
     (find-or-make-number (word-pname word)))
+  
   (:method ((pname string))
     (let ((lisp-number (read-from-string pname)))
       (assert (numberp lisp-number) ()

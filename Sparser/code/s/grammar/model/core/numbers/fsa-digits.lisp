@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "fsa digits"
 ;;;   Module:  "grammar;model:core:numbers:"
-;;;  Version:  May 2020
+;;;  Version:  November 2020
 
 ;; 5.0 (10/5 v2.3) rephrased the scan step to get subtler steps
 ;; 5.1 (9/14/93) updated the scanning calls, finished 9/16
@@ -145,6 +145,15 @@ the fsa would be identified at the word level rather than the category level.
    something other than a number such as a serial number or
    raw web address")
 
+(defvar *period-at-front-of-digit-sequence* nil
+  "For cases like '.3204' where the whole thing is after the
+   period")
+
+(defvar *hyphen-before-digit-sequence* nil
+  "Marks that we have a negative number. There are 'hyphens' at
+   many code points in Unicode, so this single marker may get
+   more complex")
+
 (defvar *too-few-digits-to-be-number* nil
   "Flag that indicates that we're not parsing a conventional
    multi-segment number but something else")
@@ -153,17 +162,17 @@ the fsa would be identified at the word level rather than the category level.
 
 (defvar *interpretation-of-digit-sequence* :number)
 
-(defparameter *length-of-digit-array* 50)
+(defun initialize-state-for-digit-fsa ()
+  (setq *period-within-digit-sequence* nil
+        *multiple-periods-within-digit-sequence* nil
+        *period-at-front-of-digit-sequence* nil
+        *hyphen-before-digit-sequence* nil
+        *too-few-digits-to-be-number* nil
+        *pending-final-hyphen* nil
+        *interpretation-of-digit-sequence* :number)
+  (zero-the-digits-array))
 
-(defparameter *digit-position-array* (make-array *length-of-digit-array*)
-  "This is where we store successive elements of the number as it's scanned")
-
-(defun zero-the-digits-array ()
-  (dotimes (i (length *digit-position-array*))
-    (setf (elt *digit-position-array* i)
-          nil)
-    *digit-position-array* ))
-
+  
 (defun record-period-in-digit-sequence ()
   (cond
     ((null *period-within-digit-sequence*)
@@ -171,6 +180,16 @@ the fsa would be identified at the word level rather than the category level.
     (t ;; already saw at least one
      (setq *multiple-periods-within-digit-sequence* t))))
 
+
+(defparameter *length-of-digit-array* 50)
+
+(defparameter *digit-position-array* (make-array *length-of-digit-array*)
+  "This is where we store successive elements of the number as it's scanned")
+
+(defun zero-the-digits-array ()
+  (dotimes (i (length *digit-position-array*))
+    (setf (elt *digit-position-array* i) nil)
+    *digit-position-array* ))
 
 
 ;;;--------
@@ -183,13 +202,7 @@ the fsa would be identified at the word level rather than the category level.
   (declare (special *interpretation-of-digit-sequence* category::number
                     category::hyphenated-number))
   
-  ;; initialization of flags
-  (setq *period-within-digit-sequence* nil
-        *multiple-periods-within-digit-sequence* nil
-        *too-few-digits-to-be-number* nil
-        *pending-final-hyphen* nil
-        *interpretation-of-digit-sequence* :number)
-  (zero-the-digits-array)
+  (initialize-state-for-digit-fsa)
   (tr :digit-fsa-scanned (edge-left-daughter treetop) 'digit-fsa)
 
   ;; store the first segment, the one we were called with
@@ -236,6 +249,7 @@ the fsa would be identified at the word level rather than the category level.
                             :form category::number
                             :referent  i
                             :rule 'digit-fsa))))
+      
       ;; These two drop the middle words on the floor ("-", "through")
       ;; They're not plausible :constituent in the edges because there
       ;; aren't edge over them, though that could be accommodated.
@@ -265,17 +279,20 @@ the fsa would be identified at the word level rather than the category level.
 
   
 
-
-
+;;;----------------------------------
+;;; functions for the recursive walk
+;;;----------------------------------
 
 (defun expect-digit-delimiter-as-next-treetop (next-cell
                                                array
                                                last-treetop)
 
   ;; Called from Digit-fsa and recursively as the number is extended.
-  ;;   If we see either any of the characters that extend digit sequences
+  ;;   If we see any of the characters that can extend digit sequences
   ;; then we continue, otherwise we declare the digit-sequence finished
-  ;; and return.
+  ;; and return the position we reached ('next-position') and the
+  ;; number of array cells we filled.
+
   (declare (special *interpretation-of-digit-sequence*
                     *the-punctuation-hyphen*
                     *the-punctuation-period*
@@ -313,6 +330,10 @@ the fsa would be identified at the word level rather than the category level.
               ((eq word-at-next-position (word-named "through"))
                (setq *interpretation-of-digit-sequence* :through-range)
                (continue-digit-sequence-after ))
+
+              ((eq word-at-next-position *end-of-source*)
+               (values next-position
+                       next-cell))
               
               (t (tr :digit-fsa-returning :unanticipated-character
                      'expect-digit-delimiter-as-next-treetop)
@@ -345,7 +366,7 @@ right multiplications done when we ultimately compute the total number.
     We pass along the array just because that lets us access it as 
 a local. The 'next-cell' is where we put the digit-seq. word that we
 scan (assuming we accept it as continuing the ongoing sequence), and
-the 'position-of-the-delimiter'is the one just before the delimiting
+the 'position-of-the-delimiter' is the one just before the delimiting
 punctuation. 
 
     The acquisition of the next digit sequence is via the edge that
@@ -376,7 +397,7 @@ unknown---in any event, we're taking the first edge that is installed.
       (if (eq :digits (pos-capitalization next-position))
         ;; Check whether we have the basis of a number,
         ;; i.e. three digits in this sequence that we just scanned.
-        ;; If it's not three then we're lookin at some other
+        ;; If it's not three then we're looking at some other
         ;; sort of numerical object and shunt the processing
         ;; to close-out-number-sequence to get to the end
         (let ((digit-word (pos-terminal next-position)))
@@ -453,7 +474,7 @@ unknown---in any event, we're taking the first edge that is installed.
                   (or (includes-edge-with-label category::digit-sequence edges)
                       (else
                        (push-debug `(,edges ,next-position))
-                       (error "No obvious digit edge amoung~%~a" edges))))))
+                       (error "No obvious digit edge among~%~a" edges))))))
           (when (null edges) 
             (error "continue-digit-sequence-after-period got null edges"))
           (when (> next-cell 4)
@@ -606,7 +627,8 @@ unknown---in any event, we're taking the first edge that is installed.
   ;; and then does the rest of the edge-initiated events (completion
   ;; and assessment) and returns the ending position.
 
-  (declare (special *the-punctuation-period*))
+  (declare (special *the-punctuation-period*
+                    *the-punctuation-hyphen*))
   
   ;; Check for a leading period (indicating that we've got a decimal
   ;; value rather than one that starts as a regular (>1) number)
@@ -619,7 +641,16 @@ unknown---in any event, we're taking the first edge that is installed.
               (eq (edge-category 
                    (ev-top-node (pos-ends-here starting-position)))
                  *the-punctuation-period*)) ;; literal edge
-      (setq *period-within-digit-sequence* t)
+      (setq *period-at-front-of-digit-sequence* t)
+      (setq starting-position (chart-position-before starting-position))))
+
+  (when (and (null (pos-preceding-whitespace starting-position))
+             (eq (pos-terminal (chart-position-before starting-position))
+                 *the-punctuation-hyphen*)) ; n.b. could be a different character
+    ;; But there has to be whitespace to the left of the hyphen
+    ;; if it's to be interpreted as a minus sign.
+    (when (pos-preceding-whitespace (chart-position-before starting-position))
+      (setq *hyphen-before-digit-sequence* t)
       (setq starting-position (chart-position-before starting-position))))
 
   (multiple-value-bind (edge *daughter-number-edges*)
@@ -716,17 +747,23 @@ unknown---in any event, we're taking the first edge that is installed.
 
 (defun compute-number-value-from-digits-array (number-of-segments
                                                digits-array)
-  (let ((net-number 0))
-    (when *period-within-digit-sequence*
-      (setq net-number (compute-decimal-value
-                        (aref digits-array 
-                              (1- number-of-segments))))
-      (decf number-of-segments))
-
-    (multiply-through-positions 0
-                                (1- number-of-segments)
-                                digits-array
-                                net-number)))
+  "Returns the Lisp number constructed from the individual digit values
+   of the edges in the digits array with the values of the state variables"
+  (declare (special *period-at-front-of-digit-sequence*))
+  (cond
+    (*period-at-front-of-digit-sequence* ; ".005"
+     (unless (= 1 number-of-segments) (break "Expected just one digit edge"))
+     (construct-decimal-value (aref digits-array 0)))
+    (t
+     (let ((net-number 0))
+       (when *period-within-digit-sequence*
+         (setq net-number (compute-decimal-value
+                           (aref digits-array (1- number-of-segments))))
+         (decf number-of-segments))
+       (multiply-through-positions 0
+                                   (1- number-of-segments)
+                                   digits-array
+                                   net-number)))))
 
 ;; Original scheme worked on "4 billion" ".4 billion"
 ;; but not on "0.4 billion" or "5.4 billion"
@@ -756,7 +793,15 @@ unknown---in any event, we're taking the first edge that is installed.
         (illion (find-individual 'multiplier :name name-of-illion)))
     (set-illion-distribution number value illion)))
 
-  
+
+(defun construct-decimal-value (digit-edge)
+  "We extract the pname of the word in the digit-sequence edge,
+   append a period to its front, and return the numerical value
+   of that string"
+  (let* ((digits-word (edge-left-daughter digit-edge))
+         (digits (pname digits-word))
+         (decimal-digits (string-append "." digits)))
+    (read-from-string decimal-digits)))
 
 
 
