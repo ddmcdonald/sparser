@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; Copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
-;;; copyright (c) 2013-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "period-hook"
 ;;;    Module:  drivers/chart/psp  ;;"grammar;rules:DM&P:"
-;;;   version:  November 2018
+;;;   version:  November 2020
 
 ;; initiated 5/26/10. Picked up working on it 7/10. 9/17/13 Actually
 ;; hooked it into creating sentences. 2/10/14 Added period-hook-off.
@@ -170,14 +170,20 @@
    terminal (word) that comes just after the period.
    Look for evidence that this instance of a
    period marks the end of a sentence. 
-     Returns nil if this is not the end of the ongoing sentence."
+     Returns nil if this is -not- the end of the 
+   ongoing sentence."
   (unless (pos-terminal position-after)
     (scan-next-position))
-  (or (eq (pos-terminal position-after) *end-of-source*)
-      (and (pnf-is-not-running)
-           (eq (pos-capitalization position-after)
-               :all-caps))
-      (period-marks-sentence-end?/look-deeper position-after)))
+  (cond
+    ((eq (pos-terminal position-after) *end-of-source*) t)
+    ((and (pnf-is-not-running)
+          (eq (pos-capitalization position-after) :all-caps))
+     t)
+    ((and (eq (pos-capitalization position-after) :digits) ; ".005"
+          (null (pos-preceding-whitespace position-after)))
+     nil)
+    (t
+      (period-marks-sentence-end?/look-deeper position-after))))
 
 
 ;; (trace-eos-lookahead)
