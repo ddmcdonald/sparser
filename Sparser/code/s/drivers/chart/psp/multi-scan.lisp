@@ -56,8 +56,8 @@
    as needed for strings or reuses previously constructed sentences when reading
    from a document.  
       Loop stops at *end-of-source* and returns the position reached and the
-   current sentence. N.b. does not use the period-hook, though uses its 'is-a-sentence'
-   checks.
+   current sentence. N.b. does not use the period-hook, though does use its
+   'is-a-sentence' checks.
       When the token machinery is interpreting newlines as an orthographic
    indication of a paragraph, then the newline word will be being introduced
    into the chart and is interpreted here as a termination condition.
