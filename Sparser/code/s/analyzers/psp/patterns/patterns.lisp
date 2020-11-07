@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "patterns"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  November 2019
+;;;  version:  November 2020
 
 ;; initiated 12/4/14 breaking out the patterns from uniform-scan1.
 ;; 2/2/2015 added initial patterns for colons, such as the ratio 1:500
@@ -101,7 +101,8 @@
    If we return nil, we'll fall back just calling reify-ns-name-and-make-edge
    which, by definition, can't give us better information about what
    we've found."
-  ;;(push-debug `(,pattern ,edges ,start-pos ,end-pos ,words)) ;; for the new cases
+  ;;(push-debug `(,pattern ,start-pos ,end-pos)) ;; for the new cases
+  ;;(break "ns pattern: ~a" pattern)
   (flet ((look-before-punting ()
            ;; Often in an or -- so either breaks or returns nil
            (when *work-on-ns-patterns*
@@ -160,6 +161,14 @@
              (look-before-punting)
              (reify-ns-name-and-make-edge start-pos end-pos)))
 
+        ((or (equal pattern '(:open-angle-bracket :single-digit))
+             (equal pattern '(:close-angle-bracket :single-digit))
+             (equal pattern '(:equal-sign :single-digit))
+             (equal pattern '(:open-angle-bracket :digits))
+             (equal pattern '(:close-angle-bracket :digits))
+             (equal pattern '(:equal-sign :digits)))
+         (throw :punt-on-nospace-without-resolution nil))
+        
         (*work-on-ns-patterns*
          (break "New simple pattern to resolve: ~a" pattern))
         
