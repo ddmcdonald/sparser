@@ -649,7 +649,8 @@ unknown---in any event, we're taking the first edge that is installed.
                  *the-punctuation-hyphen*)) ; n.b. could be a different character
     ;; But there has to be whitespace to the left of the hyphen
     ;; if it's to be interpreted as a minus sign.
-    (when (pos-preceding-whitespace (chart-position-before starting-position))
+    (when (pos-preceding-whitespace
+           (chart-position-before starting-position))
       (setq *hyphen-before-digit-sequence* t)
       (setq starting-position (chart-position-before starting-position))))
 
@@ -744,27 +745,23 @@ unknown---in any event, we're taking the first edge that is installed.
     daughter-rnodes ))
 
 
-
 (defun compute-number-value-from-digits-array (number-of-segments
                                                digits-array)
   "Returns the Lisp number constructed from the individual digit values
    of the edges in the digits array with the values of the state variables"
-  (declare (special *period-at-front-of-digit-sequence*))
+  (declare (special *period-at-front-of-digit-sequence*
+                    *hyphen-before-digit-sequence*))
   (cond
     (*period-at-front-of-digit-sequence* ; ".005"
      (unless (= 1 number-of-segments) (break "Expected just one digit edge"))
      (construct-decimal-value (aref digits-array 0)))
+    (*hyphen-before-digit-sequence*
+     (construct-negative-number number-of-segments digits-array))
     (t
-     (let ((net-number 0))
-       (when *period-within-digit-sequence*
-         (setq net-number (compute-decimal-value
-                           (aref digits-array (1- number-of-segments))))
-         (decf number-of-segments))
-       (multiply-through-positions 0
-                                   (1- number-of-segments)
-                                   digits-array
-                                   net-number)))))
+     (construct-number-from-digits-array number-of-segments digits-array))))
 
+
+     
 ;; Original scheme worked on "4 billion" ".4 billion"
 ;; but not on "0.4 billion" or "5.4 billion"
 ;; Ah -- and with "4 billion" the illion is not in the digits array
@@ -803,7 +800,23 @@ unknown---in any event, we're taking the first edge that is installed.
          (decimal-digits (string-append "." digits)))
     (read-from-string decimal-digits)))
 
+(defun construct-negative-number (number-of-segments digits-array)
+  (let* ((base (construct-number-from-digits-array number-of-segments digits-array))
+         (base-string (format nil "~a" base))
+         (negative-string (string-append "-" base-string)))
+    (read-from-string negative-string)))
 
+
+(defun construct-number-from-digits-array (number-of-segments digits-array)
+  (let ((net-number 0))
+    (when *period-within-digit-sequence*
+      (setq net-number (compute-decimal-value
+                        (aref digits-array (1- number-of-segments))))
+      (decf number-of-segments))
+    (multiply-through-positions 0
+                                (1- number-of-segments)
+                                digits-array
+                                net-number)))
 
 (defun multiply-through-positions (index
                                    cell
