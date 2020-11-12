@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2000,2014-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2000,2014-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "measurements"
 ;;;   module:  "model;core:amounts:"
-;;;  Version:  January 2015
+;;;  Version:  November 2020
 
 ;; original version initiated 10/2/91
 ;; completely made over 9/18/93 in new semantics.  10/24/93 gave it rdata
@@ -24,6 +24,7 @@
 (define-category  measurement  ;; "10 yards"
   :specializes abstract
   :instantiates self
+  :lemma (:common-noun "measurement")
   :binds ((units . unit-of-measure)
           (quantity  :or quantity number))
   :realization (:tree-family  quantity+kind
@@ -55,6 +56,41 @@ and the word can stand by itself "that distance"
   :binds ((name :primitive word))
   :specializes measurement)
 
+
+;;;----------------------------
+;;; imported from bio;taxonomy
+;;;----------------------------
+
+(define-category ratio
+  :specializes measurement
+  :binds ((measured hyphenated-triple)
+	  (ratio (:or ratio number-colon-number))
+	  (divisor #|biological|#))
+  :realization
+     (:noun "ratio"
+      :m measured
+      :of ratio
+      :to divisor))
+
+(define-category value :specializes measurement
+   :realization (:noun "value")) ;; for "a high value"
+
+
+;; more suspect imports -- have to generalize bio-method
+
+(define-category measure
+  :specializes process
+  :mixins (measuring-verb with-instrument)
+  :realization 
+    (:verb "measure"
+     :with instrument))
+     
+(define-category correlate
+  :specializes measure
+  :realization (:verb "correlate")
+  :documentation "The result of correlating something (does it
+    have to be more than one thing?) is a 'corelation',
+    which would be a process-result relationship")
 
 
 
