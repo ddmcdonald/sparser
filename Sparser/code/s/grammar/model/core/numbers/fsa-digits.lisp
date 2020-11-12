@@ -810,7 +810,7 @@ unknown---in any event, we're taking the first edge that is installed.
 (defun construct-number-from-digits-array (number-of-segments digits-array)
   (let ((net-number 0))
     (when *period-within-digit-sequence*
-      (setq net-number (compute-decimal-value
+      (setq net-number (construct-decimal-value
                         (aref digits-array (1- number-of-segments))))
       (decf number-of-segments))
     (multiply-through-positions 0
