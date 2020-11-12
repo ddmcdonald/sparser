@@ -909,6 +909,9 @@
        (not (itypep item 'ordinal ))))
 
 
+
+(defparameter *trivial-test-for-biological* nil)
+
 (defun satisfies-subcat-restriction? (item pat-or-v/r)
   "Does the individual 'item' satisfy the type restriction specified in this
    subcat pattern. There are some general cases (e.g. pronouns) where we ignore
@@ -939,6 +942,9 @@
              ;; different with it.
              (cond
                ((itypep item category)) ;; handles conjunctions
+               ((and (eq (cat-name category) 'biological)
+                     *trivial-test-for-biological*)
+                t)
                (t (eq category override-category)))))
       (cond
         ((or (pronominal-or-deictic? item)
