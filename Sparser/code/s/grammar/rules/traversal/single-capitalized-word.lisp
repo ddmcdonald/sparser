@@ -54,23 +54,8 @@
 
 
 
-
-
 ;;--- Routine to rework edge over ordinary word that in this context
 ;;    should be taken as a what we're targeting
-
-;;/// Move somewhere that this can be found
-(defun subvert-edge (edge category &key form referent)
-  ;; The caller has a good reason to flush the content of this edge
-  ;; and replace it with new content, and is in a context where the
-  ;; usual move of respanning would lead to more complications
-  ;; than committing this ugly hack.
-  (setf (edge-category edge) category)
-  (when form
-    (setf (edge-form edge) form))
-  (when referent
-    (set-edge-referent edge referent))
-  edge)
 
 (defun convert-ordinary-word-edge-to-proper-name (edge)
   ;; See note in do-paired-punctuation-interior

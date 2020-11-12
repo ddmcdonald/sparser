@@ -72,6 +72,20 @@
     :number-fsa :long-span :literal-in-a-rule))
 
 
+(defun subvert-edge (edge category &key form referent)
+  "The caller has a good reason to flush the content of this edge
+   and replace it with new content, and is in a context where the
+   usual move of respanning would lead to more complications
+   than committing this ugly hack."
+  ;; used in convert-ordinary-word-edge-to-proper-name
+  ;; /// workout implication for mentions, if any given the use-case
+  (setf (edge-category edge) category)
+  (when form
+    (setf (edge-form edge) form))
+  (when referent
+    (set-edge-referent edge referent))
+  edge)
+
 ;;;-------------------------------------------------------
 ;;; single code locus for setting the referent of an edge
 ;;;-------------------------------------------------------
@@ -623,6 +637,10 @@ code is make-edge-over-abbreviation and its feeders. |#
       (list (ev-top-node (pos-starts-here start-pos)))
       (check-for-all-being-number-edges list-of-edges))))
 
+
+;;;---------------------------
+;;; special purpose functions
+;;;---------------------------
 
 (defun check-for-all-being-number-edges (list-of-edges)
   (let ((all-numbers? t)  representative-edge  )
