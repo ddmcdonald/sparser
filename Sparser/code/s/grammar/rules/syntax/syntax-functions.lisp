@@ -154,6 +154,9 @@ like prepositional-phase (see syntax/syntactic-classes.lisp) |#
     nil 'top)
 
 
+(define-lambda-variable 'adjunctive-modifier
+    nil 'top)
+
 ;;;-----------------------------
 ;;; enabling k-methods (or not)
 ;;;-----------------------------
