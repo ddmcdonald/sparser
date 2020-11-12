@@ -44,10 +44,11 @@
 ;;;----------
 
 (defun string/title (title)
- (let ((w/pw (value-of 'name title)))
+  (let ((w/pw (value-of 'name title)))
     (etypecase w/pw
       (word (word-pname w/pw))
-      (polyword (pw-pname w/pw)))))
+      (polyword (pw-pname w/pw))
+      (null ""))))
 
 (defun string/title-modifier (title)
   (string/title title))
