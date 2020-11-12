@@ -4,15 +4,15 @@
 
 ;; tests
 
-(def-indiv-with-id bio-method "t-test" "NCIT:C53231" :name "t-test")
-(def-indiv-with-id bio-method "ttest" "NCIT:C53231" :name "t-test") 
+;(def-indiv-with-id bio-method "t-test" "NCIT:C53231" :name "t-test")
+;(def-indiv-with-id bio-method "ttest" "NCIT:C53231" :name "t-test") 
 
-(def-indiv-with-id bio-method "ANOVA" "NCIT:C53241" :name "Analysis of Variance")
-(noun "rANOVA" :super bio-method) 
+;(def-indiv-with-id bio-method "ANOVA" "NCIT:C53241" :name "Analysis of Variance")
+;(noun "rANOVA" :super bio-method) 
 
-(def-indiv-with-id bio-method "F-test" "NCIT:C53234" :name "F-test") 
+;(def-indiv-with-id bio-method "F-test" "NCIT:C53234" :name "F-test") 
 
-(def-indiv-with-id bio-method "regression" "NCIT:C53237" :name "regression method")
+;(def-indiv-with-id bio-method "regression" "NCIT:C53237" :name "regression method")
 
 ;; statistical values to define:
 ;; t, p, R2 (or other variations of R-squared), r, F, confidence interval (CI, 95%CI) (UCI = upper confidence interval, LCI = lower confidence interval), beta ("indirect effect standardized beta" but maybe that should be broken down) also b, n, df, SD/stdev/etc, SE, M (mean), (Mage = mean age), Cronbach \u03b1 or Cronbach alpha or Cronbach's alpha, d (Cohen's d) (effect size), OR (odd's ratio), HR (hazard ratio), c-statistic
@@ -93,7 +93,7 @@
 
 (def-indiv-with-id bio-method "Gaussian" "NCIT:C53215" :name "normal distribution") 
 (def-indiv-with-id bio-measurement "eigenvalue" "NCIT:C61068" :name "eigenvalue")
-(def-indiv-with-id bio-measurement "median" "NCIT:C28007" :name "median") 
+;(def-indiv-with-id bio-measurement "median" "NCIT:C28007" :name "median") 
 (def-indiv-with-id bio-measurement "variance" "NCIT:C48918" :name "variance") 
 (def-indiv-with-id bio-measurement "dispersion" "NCIT:C53321" :name "statistical dispersion")
 (def-indiv-with-id bio-measurement "maxima" "NCIT:C82868" :name "maximum value derivation technique") 
