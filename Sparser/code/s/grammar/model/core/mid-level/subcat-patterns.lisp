@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2017-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2017-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "subcat-patterns"
 ;;;   Module:  "model;core:mid-level::"
-;;;  version:  February 2019
+;;;  version:  November 2020
 
 (in-package :sparser)
 
@@ -103,7 +103,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
      :mumble ((s-v-io-do :s agent :do theme :io beneficiary)
      	      (S-V-DO-ToIO  :s agent :do theme :io beneficiary))))
 
-;
+
 (define-mixin-category attributing-verb
   :specializes subcategorization-pattern
   :instantiates nil
@@ -118,11 +118,29 @@ subcategorization-pattern is a daughter of linguistic, abstract
      :mumble (svo-adj :s actor :o patient :adj attribute)))
 
 
+(define-mixin-category measuring-verb
+  :specializes subcategorization-pattern
+  :instantiates nil
+  :documentation " 'He measured her height'
+                   'her height is 4'10'
+    Levin #54: measure, read, register, total, ,weigh
+ With variants cost, sleep, price where the common element
+ is that we're describing the value of an attribute of something"
+  :mixins (with-actor with-patient with-attribute with-result)
+  :restrict ((actor endurant)
+             (patient physical)
+             (attribute attribute)
+             (result attribute-value))
+  :realization
+    (:s actor
+     :o patient
+     :a attribute
+     :o result))
+
+
 ;; Have we ever had indirect objects? Using 'o' is just
 ;; a standin since it won't do "give him the ball" unless
 ;; it falls out from the times and the grammar doesn't notice.
-
-
 (define-mixin-category control-verb
   ;; https://en.wikipedia.org/wiki/Control_(linguistics)
   :specializes subcategorization-pattern
