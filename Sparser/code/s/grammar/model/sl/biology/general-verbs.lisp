@@ -1409,7 +1409,7 @@
   (:verb ("think" :past-tense "thought") :etf (svo-passive)))
 
 (define-category treatment :specializes bio-method
-  :restrict ((object (:or species cell-entity))) ;; the variable "disease" specializes "object" and has special prepositions
+  :restrict ((object (:or organism cell-entity))) ;; the variable "disease" specializes "object" and has special prepositions
   :binds ((treatment biological)
 	  (disease disease)
           (modifier (:or bio-predication modifier)))
