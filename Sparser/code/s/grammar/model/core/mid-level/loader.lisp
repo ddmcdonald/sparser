@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "model;core:mid-level:"
-;;;  version:  March 2020
+;;;  version:  November 2020
 
 ;; Initiated 12/3/15
 
@@ -26,6 +26,8 @@
 #+ignore(gload "mid-level;verbs")
 
 (gload "mid-level;things")
+(gload "mid-level;organisms")
+(gload "mid-level;groups")
 
 (gload "mid-level;cars")
 (gload "mid-level;internet")

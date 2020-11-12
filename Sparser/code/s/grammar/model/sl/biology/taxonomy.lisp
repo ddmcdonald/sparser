@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2014-2017 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2014-2020 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "taxonomy"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: June 2017
+;;; version: November 2020
 
 ;; Lifted from mechanics 9/8/14. Tweaks through 10/29/14.
 ;; 11/9/14 Bunch of reworking on bio taxonomy, still a work in progress, 
@@ -45,6 +45,11 @@
 ;; 9/22/15 More colapsing of cases,
 
 (in-package :sparser)
+
+;; Other candidates to lifting higher in the taxonomy
+;;  bio-movement
+;;  mechanism
+;;  with-measurement
 
 ;;;------------------------
 ;;; non-referential things
@@ -264,19 +269,7 @@
   :mixins (bio-quality has-uid)
   :documentation "Provides a generalization over biological and measurement")
 
-(define-category value :specializes measurement
-   :realization (:noun "value")) ;; for "a high value"
-
-(define-category ratio  :specializes measurement
- :binds ((measured hyphenated-triple)
-	 (ratio (:or ratio number-colon-number))
-	 (divisor biological))
-   :realization
-     (:noun "ratio"
-      :m measured
-      :of ratio
-      :to divisor))
-
+;; ratio and value moved to amounts;measurements
 
 ;;;------------
 ;;; bio-entity
@@ -291,19 +284,6 @@
   :realization (:common-noun name
                 :from produced-by))
 
-;; collections
-(define-category bio-grouping
-  :specializes bio-entity
-  :binds ((group-members bio-entity)
-          (label label)) ;; "group 2B CoVs"
-  :realization (:noun "group" :of group-members))
-
-(def-synonym bio-grouping (:noun "set"))
-(def-synonym bio-grouping (:noun "subset"))
-(def-synonym bio-grouping (:noun "collection"))
-(def-synonym bio-grouping (:noun "family"))
-(def-synonym bio-grouping (:noun "superfamily"))
-(def-synonym bio-grouping (:noun "cluster"))
 
 
 
@@ -504,7 +484,7 @@
   :restrict ((agent
               (:or
                bio-chemical-entity
-               bio-grouping ;; a group/set/subset...
+               group ;; a group/set/subset...
                cell-entity
                organism ;; "these animals showed..."
                these
@@ -546,27 +526,6 @@
      :for context
      :for result))
 
-
-
-
-(define-category evidence :specializes bio-thatcomp
-  :binds ((fact biological))
-  :realization
-    (:noun "evidence"
-           :for fact
-           :of fact))
-
-(define-category experiment-data :specializes evidence
-  :realization
-     (:noun "experiment"))
-
-(define-category study-data :specializes evidence
-  :realization
-     (:noun ("study" :plural "studies")))
-
-(define-category observation :specializes evidence
-  :realization
-     (:noun "observation"))
 
 
 
@@ -700,31 +659,6 @@
           :via antibody
           :for tested-for))
 
-(define-category measure :specializes bio-method
-                 :mixins (has-uid)
-  :binds ((method bio-method)
-          (measured-item (:or bio-entity bio-process)))
-  :realization 
-    (:verb "measure"
-     :etf (svo-passive)
-     :noun "measurement" ;; unclear how this relates to the
-                         ;; measurement and bio-measurement categories
-     :m measured-item
-     :of :object
-     :by method
-     :with method))
-
-(define-category correlation :specializes bio-method
-  :binds ((method bio-method)
-          (measured-item (:or bio-entity bio-process)))
-  :realization 
-    (:verb "correlate"
-     :etf (svo-passive)
-     :noun "correlation"
-     :m measured-item
-     :of :object
-     :by method
-     :with method))
 
 (define-category clinical-trial :specializes bio-method
   :realization
@@ -748,7 +682,8 @@
   :mixins (has-UID biological)
   :documentation "as in  'constitute, contains etc"               
   :binds ((theme (:or biological predication abstract))
-          (patient (:or biological predication abstract))) ;; this probably belongs higher
+          (patient (:or biological predication abstract)))
+  ;; this probably belongs higher
   :realization
     (:for timeperiod
       :o patient
@@ -760,7 +695,7 @@
              (theme perdurant))
   :realization
     (:s participant
-        :o theme))
+     :o theme))
 
 (define-category aspectual-relation :specializes bio-relation
   :mixins (control-verb-intrans))
@@ -852,68 +787,15 @@
 
 
 
-(define-category component
-  :specializes molecule
-  :documentation "using molecule here as a standin for a better
-    taxonomic treatment. The biologists often talk of a 'fraction'
-    as a separated-out portion of a solution. We need some 
-    more general way of talking about this"
-  :binds ((whole (:or bio-complex bio-process)))
-  :realization
-    (:noun "component"
-     :of whole
-     :in whole))
 
-(def-synonym component 
-  (:noun "part"))
-
-(def-synonym component
-  (:noun "fraction")) 
-
-
-
-(define-category medical-treatment :specializes purposive-process
-  :binds ((disease disease)
-          (medical-treatment medical-treatment))
-  :mixins (biological)
-  :realization
-    (:noun "medical treatment"
-     :m disease
-     :for disease
-     :for medical-treatment ))
-
-(noun "therapy" :super medical-treatment)
-(noun "chemotherapy" :super medical-treatment)
-(noun "organ transplant" :super medical-treatment)
-(noun "therapeutic strategy" :super medical-treatment)
+(define-category bio-component
+  :specializes component
+  :restrict ((whole (:or bio-complex bio-process))))
 
 
 (noun "toxin" :super molecule)
 (noun "cytotoxin" :super toxin)
 (noun "cardiotoxin" :super toxin)
-
-(define-category drug :specializes molecule
-                 :binds ((disease disease)
-                         (treatment treatment)
-                         (target (:or protein process)))
-  :realization
-     (:noun "drug"
-            :for disease
-            :for treatment
-            :for target))
-(def-synonym drug (:noun ("therapeutic agent" "pharmaceutical")))
-
-;; actually, vaccines are multi-component, not a single molecule
-(define-category vaccine :specializes drug
-                 :binds ((disease disease)
-                         (treatment treatment)
-                         (target (:or protein process)))
-  :realization
-     (:noun "vaccine"
-            :for disease
-            :m disease
-            :for treatment
-            :for target))
 
 
 (define-category rna :specializes molecule
@@ -1098,72 +980,6 @@
   :realization
     (:noun "system"))
 
-
-
-(define-category disease-process :specializes process
-  :mixins (biological has-uid))
-
-(define-category metastasis :specializes disease-process
-                 :binds ((cancer cancer))
-                 :bindings (uid "MESH:D009362")
-  :realization
-    (:noun ("metastasis" :plural "metastases")
-     :verb "metastasize"
-     :etf (sv)
-     :s cancer))
-
-(define-category medical-condition  :specializes bio-context
-  :mixins (has-uid)
-  :binds ((organ bio-organ))
-  :instantiates self
-  :index (:permanent :key name)
-  :realization
-    (:common-noun name
-     :noun "medical condition"
-     :m organ
-     :of organ
-     :in organ))
-
-(noun "abnormality" :super medical-condition)
-(noun "disorder" :super medical-condition)
-(noun "symptom" :super medical-condition)
-
-(define-category disease  :specializes medical-condition
-  :mixins (has-uid)
-  :binds ((organ bio-organ))
-  :instantiates self
-  :index (:permanent :key name)
-  :realization
-    (:common-noun name
-     :noun "disease"
-     :m organ
-     :of organ
-     :in organ))
-(def-synonym disease (:noun "illness"))
-
-(define-category cancer  :specializes disease
-  :instantiates self
-  :index (:permanent :key name)
-  :lemma (:common-noun  "cancer")
-  :realization (:common-noun name))
-
-(define-category melanoma  :specializes cancer
-  :instantiates self
-  :index (:permanent :key name)
-  :lemma (:common-noun "melanoma")
-  :realization (:common-noun name))
-
-
-(define-category injury  :specializes medical-condition
-  :mixins (has-uid)
-  :binds ((organ bio-organ))
-  :instantiates self
-  :index (:permanent :key name)
-  :realization
-    (:common-noun name
-     :noun "injury"
-     :m organ
-     :to organ))
 
 
 (define-category molecular-location  :specializes bio-location
@@ -1482,63 +1298,6 @@
   (:noun "cell"
          :m associated-disease
          :with mutation))
-
-
-
-(define-category organism ;; used in biopax
- :specializes endurant
- :mixins (has-uid biological)
- :bindings (uid "NCIT:C14250")
- :instantiates self  
- :index (:permanent :key name)
- :lemma (:common-noun ("organism" "taxon")) ;; ncit considers taxon a synonym, and it's not exactly wrong
- :realization
-   (:common-noun name))
-
-(define-category animal ;; changed to not be a synonym of organism
-                        ;; since not all organisms are animals
-    :specializes organism
-  :instantiates self 
-  :index (:permanent :key name)
-  :lemma (:common-noun "animal")
-  :realization (:common-noun name))
-
-(def-synonym animal (:noun "metazoa" :adj "metazoan"))
-
-(define-category species :specializes organism
-  :instantiates self 
-  :index (:permanent :key name)
-  :lemma (:common-noun "species")
-  :realization (:common-noun name))
-
-(define-category strain :specializes organism ;; biological variant - may want to change how this is implemented 
-  :instantiates self 
-  :index (:permanent :key name)
-  :bindings (uid "NCIT:C14419")
-  :lemma (:common-noun "strain")
-  :realization (:common-noun name))
-
-(define-category infectious-agent :specializes organism
-                 ;; are VIRUSes ORGANISMs? --YES!! according to NCIT
-                 ;;These organisms lack independent metabolism, and  must infect the cells of other organisms to reproduce. 
-  )
-
-(define-category virus :specializes infectious-agent
-  :instantiates self 
-  :index (:permanent :key name)
-  :lemma (:common-noun "virus" :adjective "viral")
-  :realization
-    (:common-noun name ))
-
-(def-synonym virus (:noun "virion"))
-
-(define-category bacterium :specializes infectious-agent
-  :instantiates self 
-  :index (:permanent :key name)
-  :lemma (:common-noun ("bacterium" :plural "bacteria"))
-  :realization
-    (:common-noun name))
-
 
 
 

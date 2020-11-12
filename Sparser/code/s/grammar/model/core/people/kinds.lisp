@@ -28,12 +28,14 @@
   :instantiates person
   :specializes person-type
   :rule-label person
+  :bindings (uid "NCIT:C14366")
   :realization (:common-noun ("man" :plural "men")))
 
 (define-category  woman
   :instantiates person
   :specializes person-type
   :rule-label person
+  :bindings (uid "NCITC14284")
   :realization (:common-noun ("woman" :plural "women")))
 
 (define-category  people ;; don't clash with the 'person' category
@@ -49,7 +51,6 @@
   :rule-label person
   :realization (:common-noun "human"))
 
-; male female ???
 
 
 ;;--- Relational terms
@@ -113,7 +114,7 @@
   :realization (:common-noun "brother"))
 ;; want to count "brethren" as a plural?
 
-;; make 'brother' 'sister' a 'type' of sibling?
+;; make 'brother' and 'sister' a 'type' of sibling?
 (define-category  sibling
   :instantiates person
   :specializes family-member

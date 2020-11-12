@@ -29,6 +29,7 @@
 (define-category  person
   :instantiates self
   :specializes physical-agent ;;named-object
+  :mixins (has-uid)
   :binds ((name . person-name)
           (age . age)
           (position . (:or title position-at-co))
@@ -63,7 +64,8 @@
  the name, and need to carry over the attributes that
  have acrused to the type, qua hook, and put them on 
  the person instance.
-   The define person types are in the people/kinds file.
+
+ The defined person types and family members are in people/kinds.lisp.
 |#
 (define-category person-type
   :instantiates person

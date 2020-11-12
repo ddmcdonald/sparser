@@ -57,6 +57,9 @@ warning:
  in sentence "Proteins were expressed and purified from E. coli as described
                     previously xref ."
 
+"eating and drinking is pleasant"
+"we were eating and drinking"
+
 We really need to develop a different target for conjunctions
 that can have the right syntactic reflexes (e.g. promoting the
 labeling on the conjoined children to the parent object)
@@ -80,6 +83,16 @@ and not entangle the simple notion of a collection. |#
   :documentation "A sequence is a collection where the order matters.
  You can't have partial information about a sequence, and I'm 
  not even sure that you can extend them without creating a new object.")
+
+
+;;--- predicates
+
+(defun collection-p (item)
+  (itypep item category::collection))
+
+(defun sequence-p (item)
+  (itypep item category::sequence))
+
 
 
 ;;--- initially motivated by music

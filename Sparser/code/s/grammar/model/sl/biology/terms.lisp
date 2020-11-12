@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2014-2017 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2014-2020 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "terms"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: January 2017
+;;; version: November 2020
 
 ;; Initiated 7/23/14 by lifting proteins from NFkappaB experiment.
 ;; Moved proteins out to their own file 9/8/14
@@ -41,11 +41,6 @@
 ;;from pathway comments
 
 (adj "open" :super bio-relation)
-(define-category member :specializes biological ;; NOT SURE WHAT TO DO HERE
- :binds ((set biological))
- :realization
- (:noun "member"
-        :of set))
 
 
 
@@ -128,8 +123,6 @@
 
 
 
-
-
 ;; new nouns and verbs used in Ras model comments
 
 (define-category coincident 
@@ -140,14 +133,7 @@
 
 
 
-
 ;;(noun "king" :super abstract) ;; actually an author's name, but treated as a verb because of morphology
-
-
-
-
-
-
 
 
 
@@ -159,8 +145,8 @@
 ;;(define-protein "KBTBD7 E3 RING" ("KBTBD7 E3 RING" )) ;; this isn't a protein but part of a complex "the CUL3:KBTBD7 E3 RING ligase complex" (CUL3 is an E3 RING ligase)
 
 
-;; strange words used in 493 articles -- leads to incorrect stemming in COMLEX lookups
-
+;; strange words used in 493 articles -- leads to incorrect stemming
+;; in COMLEX lookups
 
 
 

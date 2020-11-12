@@ -29,6 +29,8 @@
 (gload "bio;overrides") ;; before any verbs
 
 (gload "bio;taxonomy")
+(gload "disease;medical-taxonomy")
+
 (gload "bio;cellular-locations")
 (gload "bio;new-defs;new-cell-loc")
 (gload "bio;non-cellular-locations") ;; needs to be before protein families so human is defined
@@ -90,6 +92,7 @@
 (gload "bio;amino-acids")
 (gload "bio;terms-to-move")
 (gload "bio;terms")
+
 (gload "bio;drugs") ;; needed by verbs
 (gload "bio;new-defs;new-drugs")
 

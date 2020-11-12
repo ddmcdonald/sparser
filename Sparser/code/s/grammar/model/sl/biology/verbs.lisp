@@ -464,7 +464,7 @@
            (object
             (:or
              bio-chemical-entity
-             bio-grouping ;; a group/set/subset...
+             group ;; a group/set/subset...
              cell-entity
              organism ;; "these animals showed..."
              these

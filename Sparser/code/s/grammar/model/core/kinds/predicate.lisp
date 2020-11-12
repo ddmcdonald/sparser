@@ -43,9 +43,16 @@
    'part-of' is the inverse from a particular to its 
       whole.")
 
+(define-category part-of-a-whole
+  :specializes relation
+  :binds ((whole))
+  :documentation "This identifies/names the relation that
+ some 'part' of holds towards some bigger thing that contains it:
+ 'member' is a natural specialization. Specializations will
+ refine what sort of whole is involved (a bucket, a country)
+ and what sorts of things constitute a part. ")
 
 (define-category predicate
-  :instantiates nil
   :specializes relation
   :documentation "A predicate attributes or predicates
  some property to something. Depending of what sort of

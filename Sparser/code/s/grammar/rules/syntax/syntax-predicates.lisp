@@ -264,13 +264,7 @@
 
 
 
-(defun collection-p (item)
-  (declare (special category::collection))
-  (itypep item category::collection))
 
-(defun sequence-p (item)
-  (declare (special category::sequence))
-  (itypep item category::sequence))
 
 (defun collection-or-sequence-p (item)
   ;; there are times when it's useful to group these

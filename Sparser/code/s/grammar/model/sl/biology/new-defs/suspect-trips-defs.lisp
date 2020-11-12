@@ -1,7 +1,7 @@
 (in-package :sparser)
-(def-indiv-with-id cancer "IIIa" "NCIT:C88137" :name "stage IIIA uveal melanoma AJCC v7") 
+#|(def-indiv-with-id cancer "IIIa" "NCIT:C88137" :name "stage IIIA uveal melanoma AJCC v7") 
 (def-indiv-with-id cancer "IIIc" "NCIT:C88139" :name "stage IIIC uveal melanoma AJCC v7") 
-(def-indiv-with-id cancer "IIa" "NCIT:C88135" :name "stage IIA uveal melanoma AJCC v7") 
+(def-indiv-with-id cancer "IIa" "NCIT:C88135" :name "stage IIA uveal melanoma AJCC v7") |#
 
 
 (def-indiv-with-id substance "QuickExtract" "NCIT:C82948" :name "extract") 
@@ -496,7 +496,7 @@
 (def-indiv-with-id molecule "AAGCGAAACTGGCGGAAACC" "CHEBI:76381" :name "dG10") 
 (def-indiv-with-id molecule "AACUUAACAA" "CHEBI:85393" :name "5'-AUGUAGAUUA-3'") 
 (def-indiv-with-id molecule "AAACGCUUCGUAUCCUCCUUUGAGG" "CHEBI:84480" :name "5'-CGAAAGUCCGAUCGGCGUAAUGUCA-3' RNA fragment") 
-
+#|
 (def-indiv-with-id drug "wtOspA" "NCIT:C875" :name "thiotepa" :no-plural t) 
 (def-indiv-with-id drug "vanHAX" "MESH:C487937" :name "Mana-Hox" :no-plural t) 
 (def-indiv-with-id drug "rDCs" "NCIT:C1462" :name "radicicol" :no-plural t) 
@@ -935,7 +935,7 @@
 (def-indiv-with-id drug "BACI" "MESH:C543522" :name "2-benzylidene-3-(cyclohexylamino)-2,3-dihydro-1H-inden-1-one" :no-plural t) 
 (def-indiv-with-id drug "ATTEMP" "MESH:C015527" :name "tempamine" :no-plural t) 
 (def-indiv-with-id drug "ARLEQUIN" "CHEBI:8777" :name "ranitidine hydrochloride" :no-plural t)
-
+|#
 (def-indiv-with-id cellular-process "ExGen" "GO:0042638" :name "exogen")
 
 
@@ -1266,7 +1266,7 @@
 (def-indiv-with-id bio-complex "RJC" "GO:0035145" :name "exon-exon junction complex") 
 (def-indiv-with-id bio-complex "DDDDK" "GO:0031431" :name "Dbf4-dependent protein kinase complex") 
 (def-indiv-with-id bio-complex "AHNRC" "GO:0034751" :name "aryl hydrocarbon receptor complex")
-
+#|
 (def-indiv-with-id cancer "uMT" "NCIT:C6481" :name "inflammatory myofibroblastic tumor") 
 (def-indiv-with-id cancer "PBLs" "NCIT:C7224" :name "plasmablastic lymphoma") 
 (def-indiv-with-id cancer "HygroPalm" "NCIT:C3724" :name "cystic hygroma") 
@@ -1284,7 +1284,7 @@
 (def-indiv-with-id cancer "JMOL" "NCIT:C9233" :name "juvenile myelomonocytic leukemia") 
 (def-indiv-with-id cancer "HLCV" "NCIT:C7401" :name "hairy cell leukemia variant") 
 (def-indiv-with-id cancer "GTY" "NCIT:C4699" :name "gestational trophoblastic tumor")
-
+|#
 
 (def-indiv-with-id bacterium "Streptoccocus" "NCIT:C76383" :name "streptococcus") 
 (def-indiv-with-id bacterium "Staphyloccocus" "NCIT:C62583" :name "staphylococcus") 
@@ -1304,7 +1304,7 @@
 (def-indiv-with-id bacterium "Enhydrobacter" "NCIT:C76310" :name "enterobacter") 
 (def-indiv-with-id bacterium "Chlamyophila" "NCIT:C86254" :name "chlamydophila") 
 (def-indiv-with-id bacterium "megasoftware" "NCIT:C86895" :name "megasphaera")
-
+#|
 (def-indiv-with-id disease "rNSs" "EFO:1001838" :name "renal nutcracker syndrome") 
 (def-indiv-with-id disease "pHCMV" "EFO:0001062" :name "cytomegalovirus infection") 
 (def-indiv-with-id disease "msFc" "EFO:1001897" :name "Morvan syndrome") 
@@ -1366,3 +1366,4 @@
 (def-indiv-with-id disease "COLDDAY" "EFO:0000341" :name "chronic obstructive pulmonary disease") 
 (def-indiv-with-id disease "AICU" "EFO:1001871" :name "acquired cold urticaria") 
 (def-indiv-with-id disease "AAHL" "EFO:0007132" :name "acute hemorrhagic leukoencephalitis") 
+|#

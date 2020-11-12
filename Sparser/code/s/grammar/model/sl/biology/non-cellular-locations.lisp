@@ -1,12 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2017 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2017-2020 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "non-cellular-locations"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: May 2017
+;;; version: November 2020
 
 ;; Broken out from terms 5/8/17
-;; contains organs, tissues, tumors, secretions, and organisms/species
+;; contains organs, tissues, tumors, secretions
 
 (in-package :sparser)
 
@@ -109,50 +109,3 @@ made def-indiv-with-id
      :in organism
      :of organism))
 
-;;;-------------
-;;; organisms
-;;;-------------
-
-(define-category mammal :specializes animal
-  :mixins (has-UID)
-  :instantiates self
-  :index (:permanent :key name)
-  :realization
-    (:noun "mammal"
-     :adj "mammalian"))
-
-(noun "dam" :super mammal) ; dam is the female parent, generally for rodents -- this is to replace an erroneous protein definition of "dams"
-(noun "female" :super animal) 
-(noun "male" :super animal) 
-
-;;;-------------------
-;;; organisms with IDs
-;;;-------------------
-(def-indiv-with-id organism "bat" "TI:9397" :name "chiroptera")
-(def-indiv-with-id organism "Caenorhabditis elegans" "TI:6239" :synonyms ("C. elegans")) 
-(def-indiv-with-id organism "drosophila" "NCIT:C14202" :synonyms ("fruit fly")) 
-;(def-indiv-with-id organism "mouse" "NCIT:C14238" :plural "mice" :synonyms ("mus") :adj "murine")
-(def-indiv-with-id organism "rat" "NCIT:C14266" :synonyms ("rattus"))
-(def-indiv-with-id organism "goat" "NCIT:C14210")
-(def-indiv-with-id organism "xenopus" "NCIT:C14285") 
-(def-indiv-with-id organism "zebrafish" "NCIT:C14287") 
-
-(define-category mouse :specializes species
-                 :mixins (has-UID mammal) ;; not sure if mixins is the right thing?
-                   :instantiates self
-                   :index (:permanent :key name)
-                   :bindings (uid "NCIT:C14225")
-                   :realization (:noun ("mouse" :plural "mice")
-                                       :adj "murine"))
-(def-synonym mouse (:noun "mus"))
-(noun "Ad5-hDPP4" :super mouse) ;;no uid
-
-(def-indiv-with-id species "Saccharomyces cerevisiae" "NCIT:C14271" :synonyms ("saccharomyces" "yeast" "S. cerevisiae"))
-(define-category human :specializes species
-                 :mixins (has-UID mammal) ;; not sure if mixins is the right thing?
-                   :instantiates self
-                   :index (:permanent :key name)
-                   :bindings (uid "NCIT:C14225")
-                   :realization (:noun ("human" "homo sapiens"))) ;;possibly add "person" and "people"
-(def-indiv-with-id human "man" "NCIT:C14366" :name "man" :plural "men")
-(def-indiv-with-id human "woman" "NCITC14284" :name "woman" :plural "women")

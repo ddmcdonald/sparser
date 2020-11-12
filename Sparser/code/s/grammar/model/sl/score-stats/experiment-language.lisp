@@ -9,8 +9,6 @@
 ;; that are used in writing about conducting and evaluating
 ;; experiments
 
-(in-package :sparser)
-
 
 #|
 (p/s "Participants were 57 female and 28 male persons, most of whom were students at the Heinrich-Heine-Universität Düsseldorf.")
@@ -59,4 +57,37 @@ was exceptional or ordinary.")
 [We ][began ]with [16,805 women ][who ][were ][age ]18 to [40 years ]when [first observed ]in [the survey], [lived ]in [a couple household], and [were followed ]from [the first time they ][began ][working]  |#
 
     
+
+
+(define-category evidence
+  :specializes information
+  :binds ((fact #|biological|#))
+  :documentation "Evidence provides support for a proposition
+    or conjecture. Calling it just 'information' is to miss
+    some potentially quite interesting intermediate categories.
+    But we can come back to it"
+  :realization
+    ;; takes a statement, has a :thatcomp realization
+    (:noun "evidence"
+           :for fact
+           :of fact))
+
+(define-category observation :specializes evidence
+  :realization (:noun "observation"))
+
+
+
+;; These are activities that accumulate evidence
+;; to test hypotheses and draw conclusions
+
+;; They are much more specific that perdurant
+;; but this is a rush job -- give them both
+;; a supercategory where we spell all that out
+
+(define-category experiment :specializes perdurant
+  :realization (:noun "experiment"))
+
+(define-category study :specializes perdurant
+  :realization  (:noun ("study" :plural "studies")))
+
 

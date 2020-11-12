@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "loader"
 ;;;    Module:   "sl;disease:"
-;;;   version:   May 2020
+;;;   version:   November 2020
 
 ;; initiated 12/27/07. Started expanding 5/6/13 with [named-entities],
 ;; [h-n-scanner]
@@ -27,7 +27,7 @@
 
 (defun disease-loaded-after-bio ()
   (gload "disease;misc-covid")
-
+;;  (gload "disease;medical-taxonomy")
   ;; moved from bio;new-defs;new-diseases
   ;; partially supercede the covid-19 and misc-covid files, but not
   ;; removing those until we have more discussions integrating viruses
