@@ -40,35 +40,58 @@ is easiest with a cs rule.  |#
                        range right-edge)))
 
 
-(define-early-pattern-rule numberical-range
+(define-early-pattern-rule numerical-range
     :pattern ( number "to" number )
     :action (:function make-numerical-range first third))
 
-(defun make-numerical-range (from-edge to-edge)
+(defun make-numerical-range (from-edge to-edge &key (includes-low t) (includes-high t))
   (let* ((from (edge-referent from-edge))
          (to (edge-referent to-edge))
+         (from-val (value-of 'value from))
+         (to-val (value-of 'value to))
+         (low (if (<= from-val to-val)
+                  from
+                  to))
+         (high (if (equal low from)
+                   to
+                   from))
          (i (define-or-find-individual 'range
-                :from from
-                :to to)))
+                :low low
+                :includes-low includes-low
+                :high high
+                :includes-high includes-high
+                )))
     (make-edge-spec
-     :category (category-named 'number)
+     :category (category-named 'number) ;; changed from number too be more specific
      :form (category-named 'np)
      :referent i)))
 
 (defun make-relational-number (relation number)
   (etypecase relation
     (cons (let ((rname (pname (car relation))))
-            (cond ((equal rname "=")
+            (cond ((member rname '("=" "COLON" ":") :test #'equal)
                    number)
                   ((equal rname ">")
-                   ;; add new number type
-                   number)
+                   (define-or-find-individual 'range
+                       :low (edge-referent number)
+                       :includes-low nil
+                       ))
                   ((equal rname "<")
-                   ;; add new number type
-                   number))))
-    (edge (cond ((member (edge-cat-name relation) '(BE OF))
+                   (define-or-find-individual 'range
+                       :high (edge-referent number)
+                       :includes-high nil
+                       )
+                   ))))
+    (edge (cond ((or (member (edge-cat-name relation) '(BE OF))
+                     (equal (edge-category relation) word::colon))
                  number)))))
 
+;; make new single-bounded range with limit and relation -- make numerical relation
+;; what about -5 < r < 5 "less-than-or-equal-to" 0-5
+
+;; CI  # 95% CI 0.69-1.87
+;; # 95% CI [0.08, 0.10]
+;; go with hyphenated then if we know it's range, convert it
 
 ;;;---------------
 ;;;  "8 million"

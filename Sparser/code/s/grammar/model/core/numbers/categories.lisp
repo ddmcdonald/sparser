@@ -70,11 +70,14 @@
 
 (define-category range
   :specializes number
-  :binds ((from number)
-          (to number))
-  :index (:sequential-keys from to)
+  :binds ((low number)
+          (high number)
+          (includes-low)
+          (includes-high)
+          )
+  :index (:sequential-keys low high includes-low includes-high)
   :documentation "This is the interpretation for constructions
  like 'read chapters 3 through 5'. This is -not- (yet) the
  relationship of 'ranging from'. That verb could be defined
- on this catategory, but would be good to see what that comes to
+ on this category, but would be good to see what that comes to
  in practice.")
