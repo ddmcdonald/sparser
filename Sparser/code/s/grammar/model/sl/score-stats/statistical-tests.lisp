@@ -91,7 +91,8 @@
     :specializes f-test
     :realization
     (:noun ("rANOVA" "repeated measures ANOVA" "repeated measures
-                 Analysis of Variance")) )
+                 Analysis of Variance" "repeated-measures ANOVA"
+                 "repeated-measures Analysis of Variance")) )
 ;; also one-way ANOVA, etc
 
 (define-category MANOVA :specializes f-test ;; add parametric somehow?

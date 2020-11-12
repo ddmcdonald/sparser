@@ -62,7 +62,7 @@ is easiest with a cs rule.  |#
                 :includes-high includes-high
                 )))
     (make-edge-spec
-     :category (category-named 'number) ;; changed from number too be more specific
+     :category (category-named 'range) ;; changed from number too be more specific
      :form (category-named 'np)
      :referent i)))
 
