@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "prescan"
 ;;;   Module:  "analyzers;char-level:"   ("character level processing")
-;;;  Version:   May 2020
+;;;  Version:   November 2020
 
 ;; Initiated 4/16/19 -- Before doing any analysis, sweep through the input
 ;; text at the character level to normalize newlines (paragraphs), convert
@@ -73,6 +73,8 @@ scan-name-position -> add-terminal-to-chart
  and normalizing it, e.g., multiple newlines are reduced to just one,
  leading spaces are removed, quotation marks and punctuation are flipped,
  html character-coding escape strings decoded, ..."
+
+  (declare (special *paragraphs-from-orthography*))
   
   (multiple-value-bind (source sink) (character-buffer-being-used)
     (let* ((index-into-source 0)
@@ -148,10 +150,12 @@ scan-name-position -> add-terminal-to-chart
 
             (#\^B
              (unless (eql (schar sink (1- index-into-sink)) #\newline)
-               ;; needs to be a final newline to trigger the operations
-               ;; that tie off the last paragraph
-               (setf (schar sink index-into-sink) #\newline)
-               (incf index-into-sink))
+               (when *paragraphs-from-orthography*
+                 ;; To fit the assumptions in new-orth-paragraph about how to
+                 ;; determine the bounds of the the paragraph it creates,
+                 ;; we have to ensure than the buffer ends with a newline character
+                 (setf (schar sink index-into-sink) #\newline)
+                 (incf index-into-sink)))
              (setf (schar sink index-into-sink) char)
              (setq source-exhausted t)) ;; :end-of-source
 

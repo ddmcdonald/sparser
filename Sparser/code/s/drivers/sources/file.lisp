@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "file"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:   July 2020
+;;;  Version:   November 2020
 
 ;; initiated 2/91, added Analyze-text-from-file/at-filepos 12/14/94
 ;; 2/15/13 Folded in initializations from do-document-as-stream-of-files,
@@ -59,14 +59,15 @@
 
     (establish-character-source/file pathname :ext-format ext-format )
 
-    (when prescan-buffer?
-      (scan-and-swap-character-buffer :echo echo))
-
     (let ((*paragraphs-from-orthography* make-orthographic-paragraphs)
           (*tts-after-each-section* (unless quiet traces-on))
           (*trap-error-skip-sentence* ignore-errors?))
       (declare (special *paragraphs-from-orthography* *tts-after-each-section*
                         *trap-error-skip-sentence*))
+
+      (when prescan-buffer?
+        (scan-and-swap-character-buffer :echo echo))
+      
       (if quiet
         (with-total-quiet (analysis-core))
         (analysis-core)))
