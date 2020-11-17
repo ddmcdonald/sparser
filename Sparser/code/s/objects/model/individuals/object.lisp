@@ -88,7 +88,7 @@
              (eq (caar i) :head)
              (consp (second i))
              (eq (car (second  i)) :subtype))
-        ;; we don't handle plurals in the noew SUBTYPE form for types
+        ;; we don't handle plurals in the new SUBTYPE form for types
         ;; e.g. the 1970s
         (then
           (unless *subcat-test*
@@ -156,13 +156,12 @@ grammar/model/core/names/fsa/subseq-ref.lisp:  (unless (itype name 'uncategorize
     ((symbolp i)
      (let ((cat (category-named i)))
        (if (null cat)
-           (warn "no category named ~s~%" i)
-           (itypep cat c/s))))
+         (warn "no category named ~s~%" i)
+         (itypep cat c/s))))
     ((consp c/s)
      (case (car c/s)
        (:or (loop for c in (cdr c/s) thereis (itypep i c)))
-       (:primitive ;; happens in
-        ;; (COMPATIBLE-WITH-SPECIFIED-PART-TYPE #<gene-transcript-over-express 152934> #<artifact 152933>)
+       (:primitive ;; list, number, ...
         (typep i (second c/s)))
        (t
          (error "Bad super-type ~s in itype-p for ~s" c/s i))))
@@ -172,10 +171,7 @@ grammar/model/core/names/fsa/subseq-ref.lisp:  (unless (itype name 'uncategorize
         (indiv-typep i c/s))
        (category
         (when (category-named c/s)
-          (not (null (memq (category-named c/s) (super-categories-of i)))))
-        #+ignore
-        (category-inherits-type? i (or (category-named c/s)
-                                       (return-from itypep nil))))
+          (not (null (memq (category-named c/s) (super-categories-of i))))))
        (word
         (report-bad-itype-of i 'itypep)
         nil)
