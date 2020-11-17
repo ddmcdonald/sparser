@@ -18,10 +18,10 @@
   :specializes collection
   :binds ((group-members)
           (label label)) ;; "group 2B CoVs"
-  :realization (:noun "group" :of group-members))
+  :realization (:noun "group"
+                :of group-members))
 
 (def-synonym group (:noun "set"))
-(def-synonym group (:noun "subset"))
 
 (def-synonym group (:noun "family"))
 (def-synonym group (:noun "superfamily"))
@@ -46,8 +46,8 @@
      :of whole
      :in whole))
 
-(def-synonym component 
-  (:noun "part"))
+(def-synonym component (:noun "part"))
 
-(def-synonym component
-  (:noun "fraction")) 
+(def-synonym component (:noun "fraction"))
+
+(def-synonym component (:noun "subset"))
