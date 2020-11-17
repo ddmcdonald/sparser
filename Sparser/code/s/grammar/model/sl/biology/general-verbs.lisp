@@ -850,11 +850,9 @@
   :restrict ((object bio-process))
   :realization
   (:verb ("lower" :past-tense "lowered" :past-participle "lowered" :present-participle "lowering")
-         :etf (svo-passive)))
-
-(define-category lower-adj :specializes bio-predication
-  :realization
-  (:adj "lower"))
+         ;; :etf (svo-passive) ;; wants a "theme" variable
+         ))
+;; "lower" is a amount attribute
 
 
 (define-category lose :specializes negative-bio-control
