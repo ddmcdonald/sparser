@@ -272,15 +272,27 @@ subcategorization-pattern is a daughter of linguistic, abstract
      :mumble (svscomp :s experiencer :c theme))) ;; I know that roses are red
 
 
+(define-mixin-category takes-of
+  :specializes subcategorization-pattern
+  :mixins (with-theme)
+  :documentation "There is a very wide array of of-construction
+ patterns (Quirk et al. 17.38), from partives ('a cup of water')
+ to gentives ('the population of a city', 'the city's population'),
+ to this is weak choice of variables"
+  :realization (:of theme))
+
 
 (define-mixin-category nominal-attribute
   :specializes subcategorization-pattern
   :mixins (with-theme)
-  :restrict ((theme endurant))
+  :restrict ((theme (:or endurant perdurant)))
   :documentation "This mixin is for the attribute,
     which is being attributed of the theme"
-  :realization (:of theme)) ;; and possessive
-
+  :realization
+    (:of theme ;; and possessive
+     :s-comp theme
+     :thatcomp theme
+     :mumble (adj-that-comp :c theme)))
 
 (define-mixin-category ask/tell
   :specializes subcategorization-pattern
@@ -303,8 +315,6 @@ subcategorization-pattern is a daughter of linguistic, abstract
                          (svo :s agent :o beneficiary)
                          (svoscomp :s agent  :o beneficiary :c theme))))
 
-
-;; Was in blocks/subcat-patterns.lisp
 ;;
 (define-mixin-category with-specified-location
   :specializes subcategorization-pattern
