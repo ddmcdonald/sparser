@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:collections:"
-;;;  version:  March 2020
+;;;  version:  November 2020
 
 ;; initiated 6/7/93 v2.3, added Sequence 6/9.
 ;; 6/13/95 added searching routine: collection-of-type/dh
@@ -24,7 +24,6 @@
 (define-category  collection
   :instantiates self
   :specializes abstract
-  :mixins (takes-tense-aspect-modal) ;; and takes-adverb ?
   :lemma (:common-noun "collection")
   :index (:permanent
           :special-case :find find/collection
@@ -44,35 +43,29 @@
     The type of a conjunction is the type of its items, though
     in practice it is just the type of the first item.")
 
-#| N.b. Including the mixin (takes-tense-aspect-modal
-has the effect of making a conjunction almost a perdurant in terms
-of the variables it provided for composition. That requirement is
-
-a conceptual bug, but given that clause conjunctions are presently
-modeled as collections it's a requirement if we don't want to be
-bombared with warnings, e.g.
-
-warning:
-   no variable named past on #<collection #<gene-transcript-express 86609> #<purify 85065> 112298> of category nil
- in sentence "Proteins were expressed and purified from E. coli as described
-                    previously xref ."
-
-"eating and drinking is pleasant"
-"we were eating and drinking"
-
-We really need to develop a different target for conjunctions
-that can have the right syntactic reflexes (e.g. promoting the
-labeling on the conjoined children to the parent object)
-and not entangle the simple notion of a collection. |#
-
 
 ;;;-----------------
 ;;; specializations
 ;;;-----------------
 
+(define-category collection-taking-tense
+  :specializes collection
+  :mixins (takes-tense-aspect-modal) ;; and takes-adverb ?
+  :documentation "This version of collection is intended for
+ when we are conjoining verbs: ('eating and drinking is pleasant',
+ 'we were eating and drinking'). There is tense/aspect information
+ on the verbs and there would be clause-level adjuncts, and they have to
+ have landing sites, which is what takes-tense-aspect-modal provides")
+
+;; Example of what motivates this
+;; warning:
+;;    no variable named past on #<collection #<gene-transcript-express 86609> #<purify 85065> 112298> of category nil
+;;  in sentence "Proteins were expressed and purified from E. coli as described
+;;                     previously xref ."
+
 (define-category  sequence
   :instantiates self
-  :specializes abstract  ;;collection -- waiting for conjunction that's not
+  :specializes collection
   ;; also a tensed clause
   :lemma (:common-noun "sequence")
   :index (:permanent :key items)
@@ -95,7 +88,7 @@ and not entangle the simple notion of a collection. |#
 
 
 
-;;--- initially motivated by music
+;;--- specializations initially motivated by music
 
 (define-category subsequence
   :instantiates self
