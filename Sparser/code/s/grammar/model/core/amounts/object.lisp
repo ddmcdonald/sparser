@@ -24,14 +24,15 @@
 (define-category amount
   :specializes abstract ;; delimits a region in a quantity space
   :instantiates self
+  :index (:temporary :sequential-keys stuff measurement)
   :binds ((measurement . measurement)
           (stuff)
 
           ;; adjuncts that can be expected
           (alternative-amount)
           (time-period))
-
-  :index (:temporary :sequential-keys stuff measurement))
+   :realization (:noun "amount"
+                 :of stuff))
 
 
 
@@ -47,6 +48,7 @@
   :index (:permanent :key name)
   :realization (:common-noun name))
 
-;;(define-individual 'vague-amount :name "amount")
-;;(define-individual 'vague-amount :name "number")causes problems with R3 biology
+
+;;(define-individual 'vague-amount :name "number")
+;;   causes problems with R3 biology
 ;;(define-individual 'vague-amount :name "quantity")
