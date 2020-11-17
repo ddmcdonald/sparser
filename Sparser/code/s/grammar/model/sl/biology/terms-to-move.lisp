@@ -10,15 +10,14 @@ to be moved to more general places and be modified to no longer
 be biology specific, since they aren't. |#
 
 
-(define-adverb "so")
-(define-adverb "barely")
+
+
 (define-adverb "a bit more")
 (define-adverb "even")
 (define-adverb "primarily") ;; keyword: ENDS-IN-LY
-(define-adverb "uniquely")
 
-(define-adverb "next")
-(define-adverb "finally")
+
+
 (define-adverb "in part")
 (define-adverb "namely")
 
@@ -37,11 +36,7 @@ be biology specific, since they aren't. |#
 
 (noun "surface" :super bio-entity)
 
-#|
-(find-or-make-individual 'qualitative-rate :name "slow")
-(define-category fast :specializes bio-predication
-   :realization
-   (:adjective "fast"))  |#
+
 
 (adj "lesser" :super bio-predication)
 
@@ -65,35 +60,8 @@ be biology specific, since they aren't. |#
 
 (noun ("period of time" :plural "periods of time") :super period)
 
-#| Definitions supplanted by general vocabulary from
-  location module or attributes
 
-(define-category orientation :specializes relation)
-(define-category orientation-top :specializes orientation
-  :realization
-  (:noun "top"))
-(define-category orientation-bottom :specializes orientation
-  :realization
-  (:noun "bottom"))
-(define-category orientation-left :specializes orientation
-  :realization
-  (:noun "left"))
-(define-category orientation-right :specializes orientation
-  :realization
-  (:noun "right"))
-
-;; (adj "wide" :super bio-predication)
-;; (adj "long" :super bio-predication)
-
-
-;; perhaps these should inherit from bio-predication or something
-;;  like that, but they need to have :theme slot, not :participant
-
-|#
-;; high & low could be replaced by the general definitions
-;;  on the attribute height, but it would be better
-;;  to see if (in the dynamic-model texts) they could be
-;;  coerced to states in place (which is what bio-predication does)
+#| keeping for reference
 (define-category high :specializes predication
   :binds ((theme (:or scalar measurement biological)))
   :realization
@@ -104,7 +72,7 @@ be biology specific, since they aren't. |#
   :binds ((theme (:or scalar measurement biological)))
   :realization
   (:adj "low"
-        :s theme))
+        :s theme))  |#
 
 (define-category noisy :specializes predication
   :binds ((theme (:or scalar measurement biological)))
@@ -128,12 +96,6 @@ be biology specific, since they aren't. |#
    (:adj "transient"
          :s theme))
 
-;; should be bio-level, because it restricts the argument
-;;  but I don't want to impact parsing and Spire
- ;;levels of incorporated 32P (January sentence 34)
-(define-category level :specializes bio-scalar
- :restrict ((measured-item (:or bio-chemical-entity bio-process)))
- :realization (:noun "level"))
                   
 
                   
