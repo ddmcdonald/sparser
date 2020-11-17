@@ -488,7 +488,7 @@
            (:verb "base" ;; keyword: ENDS-IN-ED
                   :s agent
                   :o object      
-                  :noun "basis"
+                  :noun ("base" "basis")
                   :etf (svo-passive)
                   :on cause
                   :upon cause))
