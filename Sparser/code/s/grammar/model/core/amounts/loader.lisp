@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2000,2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2000,2016-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "loader"
 ;;;   module:  "model;core:amounts:"
-;;;  Version:  May 2016
+;;;  Version:  November 2020
 
 ;; 9/18/93 v2.3 redid everything to put in new semantics
 ;; 0.1 (10/27/94) reordered the files to get referential categories before they're used
@@ -14,10 +14,10 @@
 
 (in-package :sparser)
 
+(gload "amounts;object")
 (gload "amounts;unit of measure")
 (gload "amounts;quantities")
 (gload "amounts;measurements")
-(gload "amounts;object")
 (gload "amounts;amount-change verbs")
 (gload "amounts;amount-chg relation")
 
