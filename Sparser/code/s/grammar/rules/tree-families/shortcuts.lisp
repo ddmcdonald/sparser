@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "shortcuts"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  April 2020
+;;;  version:  November 2020
 
 
 ;; Started 4/3/09. Modeled on [model;core:kinds:object] Modified
@@ -411,7 +411,8 @@ see if there are issues"
 one trieo of exceptions (in bio;harvar-terms) they all only supply
 the supercategory to use. This means that the original code here
 can be replace with a call to define-adjective, ensuring that there
-is a uniform treatment.|#
+is a uniform treatment.|# ;; but have to get the load-order right
+;; since define-adverb, define-adjective are loaded relatively late
 (defmacro adj (name
                &key adj
                  super specializes
@@ -480,6 +481,70 @@ is a uniform treatment.|#
     (when obo-id
       (setq category (bind-dli-variable 'uid obo-id category)))
     (dolist (string (when (consp adj)(cdr adj)))
+      (let ((rule-form `(def-cfr/expr ',(cat-name category) '(,string)
+			  ;; can we guess it's a common noun for form?
+			  :referent ,category)))
+	(eval rule-form)))
+    category))
+
+(defmacro adv (name
+               &key adv
+                 super specializes
+                 form mixins instantiates
+                 binds realization
+                 restrict rule-label 
+		 obo-id
+                 documentation)
+  (cond
+    ((and super specializes)
+     (lsp-break "defining adverb with both :super ~s  and :specialize ~s"
+		super specializes))
+    (t (setq super (or super specializes))))
+  (typecase name
+    (string ;; name is taken from the string
+     (unless adv ;; is there a good reason for them to be different?
+       (setq adv name))
+     (setq name (name-to-use-for-category name)))
+    (symbol 
+     (unless adv
+       (error "You have to specify the word for the noun (:adj)")))
+    (otherwise
+     (error "Bad type for 'name'. It should be a string or a symbol")))
+
+  `(adv/expr ',name
+        :adv ',adv
+        :super ',super ;; :specializes ',specializes
+        :binds ',binds :realization ',realization
+        :instantiates ',instantiates :mixins',mixins
+        :restrict ',restrict :rule-label ',rule-label
+        :obo-id ,obo-id))
+
+(defun adv/expr (name
+                 &key adv
+		   super specializes 
+		   binds realization
+		   instantiates mixins
+		   restrict rule-label obo-id)
+  (declare (ignore rule-label instantiates))
+  (unless (or super specializes)
+    (setq specializes (super-category-for-POS :modifier)))
+  (when binds
+    (unless realization
+      (error "Variables were specified (:binds) but not a realization")))
+  (let* ((form
+	  `(define-category ,name
+	       :specializes ,super
+	       :binds ,binds
+	       :restrict ,restrict
+	       :mixins ,mixins
+	       :realization
+	       ,(if adv `(:adverb ,(if (consp adv) (car adv) adv)
+			  ,.realization)
+		    realization)))
+	 (category (eval form)))
+    (when obo-id
+      (setq category (bind-dli-variable 'uid obo-id category)))
+    (dolist (string (when (consp adv)(cdr adv)))
       (let ((rule-form `(def-cfr/expr ',(cat-name category) '(,string)
 			  ;; can we guess it's a common noun for form?
 			  :referent ,category)))
