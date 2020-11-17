@@ -72,8 +72,19 @@ and the word can stand by itself "that distance"
       :of ratio
       :to divisor))
 
-(define-category value :specializes measurement
-   :realization (:noun "value")) ;; for "a high value"
+(define-category value
+  :specializes measurement
+  :realization (:noun "value")) ;; for "a high value"
+
+(define-category level
+  :specializes amount
+  :realization (:noun "level"))
+#| ;; should be bio-level, because it restricts the argument
+;;  but I don't want to impact parsing and Spire
+ ;;levels of incorporated 32P (January sentence 34)
+(define-category level :specializes bio-scalar
+ :restrict ((measured-item (:or bio-chemical-entity bio-process)))
+ :realization (:noun "level")) |#
 
 
 ;; more suspect imports -- have to generalize bio-method
