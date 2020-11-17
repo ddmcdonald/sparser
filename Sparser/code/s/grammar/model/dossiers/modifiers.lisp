@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "modifiers"
 ;;;    Module:   "model;dossiers:"
-;;;   Version:   April 2020
+;;;   Version:   November 2020
 
 ;; Created 1/4/13 to group together comparatives, approximators, etc in
 ;; one place so they're easier to keep track of. (1/9/13) Moved in all
@@ -36,6 +36,15 @@
 ;; at the discourse level, but we can cross that bridge later.
 
 
+;;---- "so"
+;; Also used anaphorically "and so did Harry"
+;; as an agreement "I think so"
+;;/// and a zillion other readings
+(define-adverb "so")
+
+;; Is defined as a subordinate conjunctino too in
+;; words/conjunctions.lisp
+
 
 ;;;----------------
 ;;; Approximations
@@ -51,7 +60,6 @@
 ;;  and they terminate whatever is ongoing
 
 ;; what to do about stacks e.g. "just barely"
-
 
 ;; not sure if this is appropriate, but we are getting bad parses for "one or more proteins"
 (define-approximator/determiner "or more")
@@ -71,7 +79,7 @@
 (define-approximator/determiner "barely")
 (define-approximator/determiner "exactly") ;; not just a determiner..
 (define-approximator/determiner "just")
-(define-approximator/determiner "more than")
+(define-approximator/determiner "more than") ;;????????????
 (define-approximator/determiner "nearly") ;; could also be approx/adverbial. what to do for this type of "generic" modifier that can go before preps, adjs too?
 (define-approximator/determiner "precisely") ;;
 (define-approximator/determiner "roughly")
@@ -113,9 +121,7 @@
 (define-function-word "in order to" :brackets '(].phrase .[phrase))
 (define-function-word "so that" :brackets '(].phrase .[phrase))
 
-
 ;;--- "dis-enablement" ??
-
 (define-adverb "no longer")
 
 ;; Added in 8/2013
@@ -215,21 +221,6 @@
   :super-category 'intensifier
   :tree-families '(pre-adj-adverb pre-adv-adverb))
 
-
-
-
-
-;;;---------- likelihood
-
-(adj/adv "possible" "possibly" :super-category 'modifier)
-
-(unless (current-script :biology)
-  (define-adjective "likely") ; could be either adj or adv -- this conflicts with adverb use in biology
-  (define-adjective "unlikely")) 
-
-(define-adverb "probably")
-(define-adverb "definitely") 
-(define-adverb "potentially")
 
 
 ;;;---------------------------
@@ -700,6 +691,7 @@
 (define-adverb "ungainly")
 (define-adverb "uniformly")
 (define-adverb "unintentionally")
+(define-adverb "uniquely")
 (define-adverb "unnaturally")
 (define-adverb "unrealistically")
 (define-adverb "unsurprisingly")
