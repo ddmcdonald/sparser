@@ -65,6 +65,7 @@ scan-name-position -> add-terminal-to-chart
 
 ;;--- driver
 
+(defparameter *post-hyphen-chars* nil)
 (defun scan-and-swap-character-buffer (&key (echo nil))
   "Character-level preprocessor -- Called by one of the text staging
  functions (analyze-text-from-file or analyze-text-from-string) when
@@ -110,7 +111,14 @@ scan-name-position -> add-terminal-to-chart
             (#\^D ;; :end-of-buffer
              (push-debug `(,source ,sink))
              (error "Prescan walked off the end of the buffer"))
-
+            (#\-
+             (cond ((and (> index-into-source 0)
+                         (alphabetic-char? (elt source (1- index-into-source)))
+                         (eql (elt source (1+ index-into-source)) #\space))
+                    ;;(pushnew (elt source (1+ index-into-source)) *post-hyphen-chars* :test #'equalp)
+                    (incf index-into-source 2))
+                   (t (push-char char))))
+                        
             (#\^A
              (unless (= index-into-source 0)
                (error "Encountered source-start character (\#^A) at ~
