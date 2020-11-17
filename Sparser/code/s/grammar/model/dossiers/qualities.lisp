@@ -42,8 +42,8 @@ indigo and gray.Mar 28, 2017
 (define-height "short" :dir :-)
 (define-height "tall" :dir :+)
 
-;;(define-height "high" :dir :+) ;; not quite the same thing
-;;(define-height "low" :dir :-)
+(define-amount-as-level "high" :dir :+) ;; not quite the same thing
+(define-amount-as-level "low" :dir :-)
 ;;  separable task of coersing to a state
 
 ;;--- width
@@ -62,6 +62,9 @@ indigo and gray.Mar 28, 2017
 ;; quality
 (define-comparative "better") ;; good, well
 (define-comparative "worse") ;; bad
+
+;; good best better
+;; great greater greatest
 
 ------- "more"
  more broadly
