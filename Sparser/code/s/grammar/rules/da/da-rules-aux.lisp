@@ -244,7 +244,12 @@
 (defun clause-target? (edge)
    (member (form-cat-name edge) '(thatcomp s)))
 
+(defun verb-target? (edge)
+  (member (form-cat-name edge) '(s vg vg+ing vg+ed lambda-form)))
 
+(defun takes-adjunct-target? (edge)
+  (or (np-target? edge) (verb-target? edge)))
+  
 
 (defun adverb-at? (position)
   (loop for e in (all-edges-on (pos-starts-here position))

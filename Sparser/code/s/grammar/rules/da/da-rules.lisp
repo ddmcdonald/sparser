@@ -1483,66 +1483,114 @@
 
 
 
+
+#+ignore ;; needs to be folded into the rule above
+(define-debris-analysis-rule adjunctive-pp-on-np
+  :pattern (np pp)
+  :action (:function add-adjunctive-pp first second))
+
 (define-debris-analysis-rule np-conj-pp
     ;; for the case where the rightmost NP in a conjunction can
     ;; take a PP, but was conjoined early
     :pattern (np pp)
     :action (:function np-conj-pp first second))
 
+(defparameter *adjunctive-attachments* nil)
+(defparameter *do-adjunctive-attachments* nil)
+
+(defun add-adjunctive-pp (head-edge pp-edge)
+  (when
+      *do-adjunctive-attachments*
+    (let* ((prep-word (identify-preposition pp-edge))
+           (*pobj-edge* (edge-right-daughter pp-edge))
+           (pobj-referent (identify-pobj pp-edge))
+           (edge-taking-adjunct (find-target-satisfying (right-fringe-of head-edge) #'takes-adjunct-target?)))
+      (push (list (list
+                   (intern (string-upcase (pname prep-word)) :sp)
+                   (cat-name (itype-of (edge-referent edge-taking-adjunct)))
+                   (cat-name (itype-of pobj-referent))
+                   (cat-name (edge-form edge-taking-adjunct)))
+                  (format nil "~a ~a"
+                          (retrieve-surface-string (edge-referent head-edge))
+                          (retrieve-surface-string (edge-referent pp-edge)))
+                  (edge-referent head-edge)
+                  pobj-referent)
+            *adjunctive-attachments*)
+      (make-edge-spec
+       :category (edge-category edge-taking-adjunct)
+       :form (edge-form edge-taking-adjunct)
+       :target edge-taking-adjunct
+       :direction :right
+       :referent (bind-dli-variable 'adjunctive-modifier
+                                    pobj-referent
+                                    (edge-referent edge-taking-adjunct)
+                                    )))))
+
+
 (define-debris-analysis-rule s-with-np-conj-pp
     :pattern (s pp)
     :action (:function np-conj-pp first second))
 
+#+ignore ;; needs to be folded into the rule above
+(define-debris-analysis-rule adjunctive-pp-on-s
+  :pattern (np pp)
+  :action (:function add-adjunctive-pp first second))
+
+(define-debris-analysis-rule adjunctive-pp-on-transitive-clause-without-object
+  :pattern (transitive-clause-without-object pp)
+  :action (:function add-adjunctive-pp first second))
 
 (defun np-conj-pp (np-containing-edge pp-edge)
   (let* ((prep (identify-preposition pp-edge))
          (*pobj-edge* (edge-right-daughter pp-edge))
          (pobj-referent (when (edge-p *pobj-edge*) (edge-referent *pobj-edge*))))
-    (if (itypep (edge-category pp-edge) 'but-not)
-        (make-edge-spec
-         :category (itype-of (edge-referent np-containing-edge))
-         :form category::np
-         :referent (bind-dli-variable 'excluding pobj-referent (edge-referent np-containing-edge))
-         :target np-containing-edge
-         :direction :right)
-        (let ((np-conj-edge
-               (find-target-satisfying
-                (right-fringe-of np-containing-edge)
-                #'np-conjunction-edge?)))
-          (when (and np-conj-edge
-                     (not (eq np-conj-edge
-                              (edge-left-daughter np-containing-edge)))
-                     (not (eq np-conj-edge np-containing-edge)))
+    (cond ((itypep (edge-category pp-edge) 'but-not)
+           (make-edge-spec
+            :category (itype-of (edge-referent np-containing-edge))
+            :form category::np
+            :referent (bind-dli-variable 'excluding pobj-referent
+                                         (edge-referent np-containing-edge))
+            :target np-containing-edge
+            :direction :right))
+          ((let ((np-conj-edge
+                  (find-target-satisfying
+                   (right-fringe-of np-containing-edge)
+                   #'np-conjunction-edge?)))
+             (when (and np-conj-edge
+                        (not (eq np-conj-edge
+                                 (edge-left-daughter np-containing-edge)))
+                        (not (eq np-conj-edge np-containing-edge)))
 
-            (let* ((np-ref (edge-referent np-conj-edge))
-                   (label (identify-preposition pp-edge))
-                   (last-np
-                    (and np-ref
-                         (value-of 'items np-ref)
-                         (car (last (value-of 'items np-ref)))))
-                   (var-to-bind
-                    (when last-np
-                      (find-subcat-var pobj-referent label last-np)))
-                   (target
-                    (when var-to-bind
-                      (cond
-                        ((and (edge-p (edge-right-daughter np-conj-edge))
-                              (eq (edge-referent (edge-right-daughter np-conj-edge))
-                                  last-np))
-                         (edge-right-daughter np-conj-edge))
-                        ((and (edge-constituents np-conj-edge)
-                              (edge-p (car (last (edge-constituents np-conj-edge))))
-                              (eq (edge-referent (car (last (edge-constituents np-conj-edge))))
-                                  last-np))
-                         (car (last (edge-constituents np-conj-edge))))))))
-              (when (and var-to-bind target)
-                (make-edge-spec
-                 :category (itype-of last-np)
-                 :form category::np
-                 :referent (bind-dli-variable var-to-bind pobj-referent last-np)
-                 :target target
-                 :direction :right
-                 ))))))))
+               (let* ((np-ref (edge-referent np-conj-edge))
+                      (label (identify-preposition pp-edge))
+                      (last-np
+                       (and np-ref
+                            (value-of 'items np-ref)
+                            (car (last (value-of 'items np-ref)))))
+                      (var-to-bind
+                       (when last-np
+                         (find-subcat-var pobj-referent label last-np)))
+                      (target
+                       (when var-to-bind
+                         (cond
+                           ((and (edge-p (edge-right-daughter np-conj-edge))
+                                 (eq (edge-referent (edge-right-daughter np-conj-edge))
+                                     last-np))
+                            (edge-right-daughter np-conj-edge))
+                           ((and (edge-constituents np-conj-edge)
+                                 (edge-p (car (last (edge-constituents np-conj-edge))))
+                                 (eq (edge-referent (car (last (edge-constituents np-conj-edge))))
+                                     last-np))
+                            (car (last (edge-constituents np-conj-edge))))))))
+                 (when (and var-to-bind target)
+                   (make-edge-spec
+                    :category (itype-of last-np)
+                    :form category::np
+                    :referent (bind-dli-variable var-to-bind pobj-referent last-np)
+                    :target target
+                    :direction :right
+                    ))))))
+          (t (add-adjunctive-pp np-containing-edge pp-edge)))))
 
 
 
@@ -2265,3 +2313,9 @@ assumed. |#
      :category (edge-category demonstrative)
      :form category::pronoun
      :referent (edge-referent demonstrative))))
+
+
+
+
+
+
