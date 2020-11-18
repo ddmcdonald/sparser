@@ -13,15 +13,29 @@
 ;; The goal is to avoid duplicate effort and to make it easy to notice
 ;; and commonalities. To that end each issue is "owned" by a specific person
 
-['main purpose'  David
-Mark 11/18/20 11:22 -- What leads Sparser to get/not get the major clauses, even if not the connectives? In this case, it appears
-all I get is shards. I was hoping to find "the main purpose of the present series of experiments was ..."
-
-Below I see "the main purpose" by itself, and I dont know how I'd connect it to the (BE (Predicate (test..)))
-
+[Missing parts in: 
 "Although the main purpose of the present series of experiments was to test whether source memory is improved for individuals with a history
 of cheating relative to individuals encountered in other situations, there was one additional consideration for the first three experiments reported
-here." ]
+here."
+
+- There isn't a definition for "relative to"
+-- The lemmatizer for "encountered" (which was unknown) messes up.
+-- consideration takes "for"
+-- we don't appreciate that "reported" is a reduced relative
+
+e103  COPULAR-PREDICATION 1 "Although the main purpose of the present series of experiments was to test whether source memory is improved for individuals " 21
+e91   WITH          21 "with a history
+of cheating " 26
+e38   RELATIVE      26 "relative " 27
+e88   TO            27 "to individuals " 29
+e42   ENCOUNTERE    29 "encountered " 30
+e87   IN            30 "in other situations" 33
+e47                 "COMMA"
+e104  THERE-EXISTS  34 "there was one additional consideration " 39
+e86   FOR           39 "for the first three experiments " 44
+e85   REPORT-VERB   44 "reported here" 46
+
+ ]
 
 
 [unknown attributes/suffixes
@@ -34,14 +48,6 @@ Files:
 *suffix-pos-table* => chart/words/lookup/morphology
 assign-morph-brackets-to-unknown-word => rules/syntax/affix-rules
 setup-common-noun => rules/brackets/assignments  ]
-
-
-["rate", "ask"
-Mark 11/18/20 1:00  Need a verb form of "rate" as in produce a rating.
-
-Also better treatment of "asked to <do>"
-
-(p/s-all "They were asked to rate the attractiveness of 36 facial photographs that were presented in random order during the exposition phase.")  ]
 
 
 ["conduct"
@@ -65,3 +71,16 @@ Mark 11/18/20 1:19  Treatment of "better for .. than for ..  and probably some o
 Sentence: "First, we tested the central hypothesis that source memory is better for faces encountered in a cheating context than for faces associated
 with a context of trustworthiness. "  ]
 
+
+================== done ==================
+
+["rate", "ask"
+Mark 11/18/20 1:00  Need a verb form of "rate" as in produce a rating.
+
+Also better treatment of "asked to <do>"
+
+(p/s-all "They were asked to rate the attractiveness of 36 facial photographs that were presented in random order during the exposition phase.")  ]
+
+['main purpose'  David
+Mark 11/18/20 11:22 -- What leads Sparser to get/not get the major clauses, even if not the connectives? In this case, it appears
+all I get is shards. I was hoping to find "the main purpose of the present series of experiments was ..."
