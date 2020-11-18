@@ -314,6 +314,14 @@ come
    (:mumble ("propose" svscomp :o statement))
    (:tree-family ))) |#
 
+(define-category rate ;; "rate my ride"
+  :specializes process ; 'assessment' ?
+  :mixins (action-verb)
+  :restrict ((patient endurant))
+  :realization (:verb "rate")
+  :documentation "The noun reading of 'rate' as the measurement of
+    the change in some value over time is in amounts;measurements.lisp")
+
 (define-category report
   :specializes process
   :mixins (scomp-verb)
