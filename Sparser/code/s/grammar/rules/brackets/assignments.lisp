@@ -213,7 +213,8 @@
     (let* ((category
             (define-category/expr category-name
                                     `(:specializes ,super-category
-                                      :instantiates :self)))
+                                      :instantiates :self
+                                      :mixins (comlex-noun))))
            (rs (rule-set-for word))
            (rules (apply #'make-rules-for-head
                          :common-noun word category category

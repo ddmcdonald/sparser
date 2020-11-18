@@ -51,6 +51,17 @@ subcategorization-pattern is a daughter of linguistic, abstract
      :o patient
      :mumble (svo :s actor :o patient)))
 
+(define-mixin-category comlex-noun
+  :specializes subcategorization-pattern
+  :instantiates nil
+  :documentation "Designed for use by setup-common-noun which is
+ used to provide a category for otherwise unknown nouns
+ that are introduced by the Comlex machinery."
+  :mixins (with-theme)
+  :restrict ((theme (:or endurant perdurant)))
+  :realization
+    (:of theme))
+
 (define-mixin-category action-verb
   :specializes subcategorization-pattern
   :instantiates nil
@@ -315,7 +326,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
                          (svo :s agent :o beneficiary)
                          (svoscomp :s agent  :o beneficiary :c theme))))
 
-;;
+
 (define-mixin-category with-specified-location
   :specializes subcategorization-pattern
   :binds ((supported-by physical)
