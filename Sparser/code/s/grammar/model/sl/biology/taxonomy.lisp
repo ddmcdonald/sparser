@@ -412,7 +412,7 @@
                      bio-process bio-mechanism bio-method)))
     :binds ((cause ;; semantically like agent, but want to tighten the restriction on premodifiers used as agents
              ;; we had gotten "an equivalent activation" which treated "equivalent" as an agent
-             (:or process-rate
+             (:or rate ; n.b. this is the rate in amounts/measurements.lisp
                   bio-relation ;; The ability of oncogenic RAS to ... allows the cell to have a
                   measurement 
                   bio-scalar ;; "these data raised the possibility..."
