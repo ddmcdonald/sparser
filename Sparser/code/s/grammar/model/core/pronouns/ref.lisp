@@ -42,6 +42,11 @@
 ;;; doing pronouns in-line
 ;;;------------------------
 
+#| Deferencing pronouns in-line is to do them as soon as there
+enough information to establish their context
+
+|#
+
 (defparameter *try-incrementally-resolve-pronouns* nil
   "Controls how we get here in the layout sweep")
 

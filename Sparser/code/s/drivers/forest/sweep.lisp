@@ -201,7 +201,7 @@
 ;;--- NP handler
 
 (defvar nps-seen nil
-  "Initialized in clear-sweep-sentence-tt-state-vars, contains the edge
+  "Initialized in clear-s  weep-sentence-tt-state-vars, contains the edge
    for each np (each type of form listed in the sweep leading to
    the catalog NP call, particularly pronouns) along with the set of
    properties we can deduce about them.")
@@ -240,7 +240,7 @@
         ;; whole sentence is done and condition-anaphor-edge runs to
         ;; record whatevern information the grammar can give us for v/r,
         ;; the we just push the pronoun.
-        ;; If we going to do it now, then we can either wait until
+        ;;   If we going to do it now, then we can either wait until
         ;; all of the features of this sentence have been determined,
         ;; in which case we 'enqueue' the pronoun and a trap will find it.
         ;; That might provide a better picture of the sentence layout.
