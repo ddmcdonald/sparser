@@ -46,38 +46,38 @@
          (end-pos (ends-at-pos sentence))
          (rightmost-pos start-pos)
          (tt-count 0)
-	 treetops
+         treetops
          raw-entities  raw-relations  tt-contents
          treetop  referent  pos-after )
 
     ;; loop modeled on sweep-sentence-treetops
     (loop
        (multiple-value-setq (treetop pos-after) ;; multiple?
-	 (next-treetop/rightward rightmost-pos))
+         (next-treetop/rightward rightmost-pos))
       
        (incf tt-count)
        (push treetop treetops)
 
        (when (edge-p treetop)
-	 (setq referent (edge-referent treetop))
+         (setq referent (edge-referent treetop))
 
-	 (when referent
-	   (initalize-model-collection)
-	   (setq tt-contents (collect-model referent))
+         (when referent
+           (initalize-model-collection)
+           (setq tt-contents (collect-model referent))
 
-	   (loop for item in tt-contents
-	      do (cond
-		   ((or (subject-variable item)
-			(individual-p item))
-		    (push item raw-relations))
-		   (t
-		    (pushnew item raw-entities))))))
+           (loop for item in tt-contents
+              do (cond
+                   ((or (subject-variable item)
+                        (individual-p item))
+                    (push item raw-relations))
+                   (t
+                    (pushnew item raw-entities))))))
 
        (when (eq pos-after end-pos)
-	 (return))
+         (return))
        (when (position-precedes end-pos pos-after)
-	 ;; we overshot somehow
-	 (return))
+         ;; we overshot somehow
+         (return))
        (setq rightmost-pos pos-after))
 
     ;; (push-debug `(,raw-entities ,raw-relations))
@@ -90,7 +90,7 @@
       (values relations
               entities
               tt-count
-	      (reverse treetops)))))
+              (reverse treetops)))))
 
 ;;;---------------------------
 ;;; Helper code for the cards
@@ -117,7 +117,7 @@
 ;; Set this variable to collect information about realizations of
 ;; biochemical-entities in text...
 (defparameter *bce-ht* nil)  ;;(make-hash-table :size 10000)
-  	
+        
 
 (defparameter *save-surface-text-as-variable* t)
 (defparameter *save-surface-text-classes*
@@ -781,7 +781,7 @@ in cwc-integ/spire/interface/sparser.lisp
          (value-of 'items i)
          (or (value-of 'value i)
              (indiv-or-type i))))
-   	
+        
     ((and (eq script :biology)
           (itypep i category::protein-family) ;; get rid of bio-family -- misnamed...
           (not (collection-p i)))
@@ -1257,7 +1257,25 @@ in cwc-integ/spire/interface/sparser.lisp
   (sentence-mention-sexprs (sentence)))
 
 
+(defun mention-sexpr (m)
+  (krisp->sexpr (base-description m)))
+
 (defmethod sentence-mention-sexprs ((s sentence))  
      (loop for m in (sort (copy-list (sentence-mentions s)) #'contains-mention?)
-           collect
-             (krisp->sexpr (base-description m))))
+           collect (mention-sexpr m)))
+
+(defmethod top-mentions ((s sentence))
+  (let* ((all-mentions (sentence-mentions s)))
+    (remove-if #'(lambda (m)
+                   (some #'(lambda (m1)
+                             (and (not (eq m m1))
+                                  (contains-mention? m1 m)))
+                         all-mentions))
+               all-mentions)))
+
+(defmethod top-mention-sexprs ((s sentence))
+  (mapcar #'mention-sexpr (top-mentions s)))
+
+(defmethod top-mention-sexprs ((str string))
+  (safe-parse str)
+  (top-mention-sexprs (sentence)))
