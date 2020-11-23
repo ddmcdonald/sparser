@@ -63,7 +63,9 @@ Sentence: "Partial η2 is reported as a measure of the size of an effect."
 (p/s-all "We report that faces are ugly.") -- doesnt get the roles at all.
 ((#<interlocutor "person-and-machine" 213> (NAME "person-and-machine"))
 (#<report 106317> (PRESENT #<ref-category PRESENT>))
-(#<face-perdurant 106321> (THAT-REL T) (PRESENT #<ref-category PRESENT>)) (#<ugly "ugly" 106320> (NAME "ugly")))  \
+(#<face-perdurant 106321> (THAT-REL T) (PRESENT #<ref-category PRESENT>)) (#<ugly "ugly" 106320> (NAME "ugly")))
+   
+]
 
 
 ["better for .. than "  David
