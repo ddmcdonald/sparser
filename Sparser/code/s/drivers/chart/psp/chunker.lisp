@@ -589,8 +589,10 @@
    (sentence-initial? e)
    (between-wh-and-modal e edges-before)
    (and (not (or (some-edge-satisfying? edges-before #'np-end-edge)
-                 (some-edge-satisfying? edges-before #'singular-det)
-                 ;; "that 
+                 ;; if there is a singular-det then it is less likely that this is a plural noun
+                 ;;  but "that" is both a relative pronoun and a singular det, so we ignore evidence from "that"
+                 ;;  e.g. "we reported that faces are ugly" -- where "faces" is taken as a plural noun
+                 (some-edge-satisfying? edges-before #'singular-non-that-det )
                  (and (not (preceding-determiner? e))
                       (some-edge-satisfying? edges-before #'preceding-that-or-whether?))))
         (or
@@ -640,6 +642,9 @@
 
 (defun singular-det (e)
   (member (edge-cat-name e) '(a that this)))
+
+(defun singular-non-that-det (e)
+    (member (edge-cat-name e) '(a this)))
 
 (defun preceding-that-or-whether? (e)
   (some-edge-satisfying?
