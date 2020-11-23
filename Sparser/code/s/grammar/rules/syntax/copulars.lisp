@@ -185,11 +185,12 @@ machinery. |#
 
 (defun make-copular-pp (be-ref pp)
   (declare (special category::copular-predication-of-pp *left-edge-into-reference*))
-  (when (not (eq 'np (edge-form-name (left-edge-for-referent))))
-    ;; block "the existence of ..." but accept "what pathes exist between ..."
-    #+ignore(and
+  (when (and
+         (not (eq 'np (edge-form-name (left-edge-for-referent))))
+         ;; block "the existence of ..." but accept "what pathes exist between ..."
+         ;;#+ignore(and
          be-ref
-         ;;(null (value-of 'predicate be-ref))
+         (null (value-of 'predicate be-ref))
          ;; we changed the variable to be predicate so as to
          ;; block "to be a required step in the process of EGFR transactivation"
          ;; If this is not already a copular predicate ("is a drug")     
@@ -202,22 +203,22 @@ machinery. |#
     (let* ((prep (value-of 'prep pp))
            (pobj (value-of 'pobj pp)))
       (cond
-       (*subcat-test*
-        ;; when we have clausal "to-pp" like
-        ;; "to enhance craf activation" it's a purpose clause,
-        ;; not a copular PP
-        (and prep pobj))
-       (t
-        (when (eq (edge-form (left-edge-for-referent)) category::infinitive)
-          ;; "to be dominant" is not a pp, but is a to-comp
-          ;; have to over-ride default category of the vp
-          (revise-parent-edge :category category::copular-predicate
-                              :form category::to-comp))
-        (make-simple-individual
-         category::copular-predication-of-pp
-         `((predicate ,be-ref)
-           (prep ,prep)
-           (pobj ,pobj))))))))
+        (*subcat-test*
+         ;; when we have clausal "to-pp" like
+         ;; "to enhance craf activation" it's a purpose clause,
+         ;; not a copular PP
+         (and prep pobj))
+        (t
+         (when (eq (edge-form (left-edge-for-referent)) category::infinitive)
+           ;; "to be dominant" is not a pp, but is a to-comp
+           ;; have to over-ride default category of the vp
+           (revise-parent-edge :category category::copular-predicate
+                               :form category::to-comp))
+         (make-simple-individual
+          category::copular-predication-of-pp
+          `((predicate ,be-ref)
+            (prep ,prep)
+            (pobj ,pobj))))))))
 
 
 
