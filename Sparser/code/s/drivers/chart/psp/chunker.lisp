@@ -220,6 +220,7 @@
 (defvar *chunks* nil)
 
 ;; (trace-chunker)
+;; (setq *step-chunker* t)
 
 (defun find-chunks (&optional (sentence (sentence)))
   "Entry point to running the chunker that allows it to be run
@@ -232,7 +233,7 @@
   successive chunks and accumulating them on *chunks*. Loops over
   successive positions but uses their starting edge vectors as its
   real loop variable. delimit-next-chunk does the real work."
-  (declare (special *trace-chunker*))
+  (declare (special *trace-chunker* *step-chunker*))
   (setq *next-chunk* nil)
   (setq *chunks* nil)
   (let ( forms  ev)
@@ -242,9 +243,12 @@
 
       ;; set up the next call to delimit-next-chunk
       (setq ev (pos-starts-here pos))
-      (setq forms (starting-forms ev *chunk-forms*))
       (when *trace-chunker* ;; tree of remaining part of chart
-        (terpri)(tts t pos))
+        (terpri)(tts t pos)
+        (when *step-chunker*
+          (push-debug `(,ev ,pos ,end))
+          (break "Chunker: ~a" ev)))
+      (setq forms (starting-forms ev *chunk-forms*))
 
       (cond
         (forms ;; at least one of the edges can start a chunk

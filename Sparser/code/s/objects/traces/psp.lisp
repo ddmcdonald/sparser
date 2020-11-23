@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2010-2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2010-2020  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "psp"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  March 2017
+;;;  Version:  November 2020
 
 ;; 1.0 (10/5/92 v2.3) added trace routines
 ;; 1.1 (4/23/93) added still more to go with the revised protocol
@@ -40,6 +40,18 @@
 (defparameter *trace-chunker* nil)
 (defun trace-chunker () (setq *trace-chunker* t))
 (defun untrace-chunker () (setq *trace-chunker* nil))
+
+(defvar *step-chunker* nil
+  "Controls break at start of find-chunks/bounded")
+
+(defparameter *delimit-next-chunk-trace* nil)
+(defun trace-delimit-chunk ()
+  (setq *delimit-next-chunk-trace* t))
+(defun untrace-delimit-chunk ()
+  (setq *delimit-next-chunk-trace* nil))
+
+
+
 
 (defun trace-network ()
   (setq *trace-network* t))
@@ -1628,12 +1640,7 @@
     (trace-msg "None of the edges is compatible (~a)"
                (ev-position ev))))
 
-
-(defparameter *delimit-next-chunk-trace* nil)
-(defun trace-delimit-chunk ()
-  (setq *delimit-next-chunk-trace* t))
-(defun untrace-delimit-chunk ()
-  (setq *delimit-next-chunk-trace* nil))
+;;--- delimiting detail in chunking
 
 (deftrace :dlc-before-loop (previous global)
   (when *delimit-next-chunk-trace*
