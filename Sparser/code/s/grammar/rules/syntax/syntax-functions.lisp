@@ -1108,7 +1108,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
         (t (break "check-passive-and-add-tense/aspect -- no category to check passive verb on ~s"
                       vg))))
 
-;;/// who calls this?
+;; Invoked as the referent of three form rules about "become" in syntatic-rules.
+;; Never called directly anywhere. s
 (defun check-passive-and-add-tense/aspect (aux vg)
   (declare (special category::vg))
   (let* ((be-edge (left-edge-for-referent))
