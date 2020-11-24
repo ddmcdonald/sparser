@@ -42,8 +42,9 @@
                   :specializes report-verb
                   :mixins (say-verb)
                   :realization (:verb ,(if (listp string/list)
-                                        (car string/list)
-                                        string/list) ))))
+                                        string/list
+                                        (car string/list)) ))))
+    (push-debug `(,form)) (break "~a" string/list)
     (eval form)))
   
 
