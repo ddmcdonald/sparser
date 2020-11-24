@@ -322,11 +322,6 @@ come
   :documentation "The noun reading of 'rate' as the measurement of
     the change in some value over time is in amounts;measurements.lisp")
 
-(define-category report
-  :specializes process
-  :mixins (scomp-verb)
-  :restrict ((theme (:or perdurant endurant)))
-  :realization (:verb "report"))
 
 (define-category sell
   :specializes process

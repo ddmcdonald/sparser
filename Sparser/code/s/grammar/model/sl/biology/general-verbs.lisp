@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2017 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2020 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "general-verbs"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: March 2017
+;;; version: November 2020
 
 ;; Lifted out of verbs.lisp 2/23/17. These verbs are either
 ;; quite general (applicable to many domains), or are needed
@@ -1143,17 +1143,6 @@
 	   :etf (svo-passive) 
            :from source))
 
-#| moved to dossiers
-(delete-verb-cfr (resolve "report"))
-(delete-verb-cfr (resolve "reported"))
-(delete-verb-cfr (resolve "reporting"))
-
-(define-category report :specializes bio-rhetorical
-    :mixins (bio-thatcomp)
-    :realization
-    (:verb ("report" :past-tense "reported")
-           :noun "report"
-	   :etf (svo-passive)))  |#
 
 ;;TO-DO -- fix this one
 (define-category represent :specializes bio-relation

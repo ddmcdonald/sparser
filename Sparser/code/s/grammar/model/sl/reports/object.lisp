@@ -20,7 +20,7 @@
 ;;;----------------------------
 
 (define-category report-verb
-  :specializes process
+  :specializes process ;;/// communicate
   :instantiates self
   :binds ((name . (:primitive (:or word polyword))))
   :index (:permanent :key name))
@@ -32,22 +32,20 @@
   "Makes the morphological base rules for the verb. They rewrite
    as the category 'report-verb', which feeds into the rules
    created for the category 'someone-reports'"
-  ;;/// should we go the class and instance route for these?
-  ;;   Comes down to whether we expect to do any reasoning with them
-  ;;   and would want to refer to them specificially in a method.
-  ;;   For now they're all individuals
   ;; (define-report-verb "report")
   ;; (define-report-verb '("say" :past-tense "said"))
-  (let* ((category (category-named 'report-verb))
-         (word/spec
-          (etypecase string/list
-            (string (resolve-string-to-word/make string/list))
-            (list (deref-rdata-word string/list category))))
-         (word (if (listp string/list)
-                 (car string/list)
-                 string/list))
-         (obj (define-individual 'report-verb :name word)))
-    (make-rules-for-head :verb word/spec category obj)))
+  (let* ((head-string (etypecase string/list
+                        (string string/list)
+                        (list (car string/list))))         
+         (category-name (name-to-use-for-category head-string))
+         (form `(define-category ,category-name
+                  :specializes report-verb
+                  :mixins (say-verb)
+                  :realization (:verb ,(if (listp string/list)
+                                        (car string/list)
+                                        string/list) ))))
+    (eval form)))
+  
 
 
 ;;;------------------
