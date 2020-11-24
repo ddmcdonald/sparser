@@ -501,7 +501,8 @@
                bio-predication ;; the success of raf and mek inhibitors
                measurement     ;; these data
                document-part ;; subsumes article-figure
-
+               physical-agent
+               social-agent
                )))
   :binds ((ratio-condition ratio)
 	  (fig article-figure)

@@ -144,6 +144,12 @@
      :noun "blockage"))
 
 
+(define-category calculate :specializes bio-method
+  :mixins (bio-whethercomp bio-ifcomp)
+  :realization 
+  (:verb "calculate" :noun "calculation"
+         :etf (svo-passive)))
+
 (define-category call :specializes bio-rhetorical
   :realization (:verb "call" :etf (svo)))
 
@@ -189,6 +195,17 @@
     :realization
     (:verb "concern" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)))
+
+(define-category conduct :specializes bio-method
+    :binds ((beneficiary biological)
+            (using biological)
+            (method bio-method))
+    :realization
+    (:verb "conduct" ;; keyword: ENDS-IN-ED 
+	   :etf (svo-passive)
+           :by method
+           :on beneficiary
+           :with using))
 
 (define-category confirm :specializes bio-rhetorical
     :mixins (bio-thatcomp)
