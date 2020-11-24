@@ -41,10 +41,8 @@
          (form `(define-category ,category-name
                   :specializes report-verb
                   :mixins (say-verb)
-                  :realization (:verb ,(if (listp string/list)
-                                        string/list
-                                        (car string/list)) ))))
-    (push-debug `(,form)) (break "~a" string/list)
+                  :realization (:verb ,string/list)) ))
+    ;;(push-debug `(,form)) (break "~a" string/list)
     (eval form)))
   
 
