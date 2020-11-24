@@ -56,18 +56,6 @@ Mark 11/18/20 1:07 We should be able to nail this, I should think.  Actor of con
 Sentence: "All power calculations were conducted using G•Power (Faul, Erdfelder, Lang, & Buchner, 2007). "  ]
 
 
-["report"  David
-Mark 11/18/20 1:12  I think the same issue with "is reported", "was reported", "we report that".  Subject is the info object.
-Sentence: "Partial η2 is reported as a measure of the size of an effect."
-
-(p/s-all "We report that faces are ugly.") -- doesnt get the roles at all.
-((#<interlocutor "person-and-machine" 213> (NAME "person-and-machine"))
-(#<report 106317> (PRESENT #<ref-category PRESENT>))
-(#<face-perdurant 106321> (THAT-REL T) (PRESENT #<ref-category PRESENT>)) (#<ugly "ugly" 106320> (NAME "ugly")))
-   
-]
-
-
 ["better for .. than "  David
 Mark 11/18/20 1:19  Treatment of "better for .. than for ..  and probably some other variations.
 Sentence: "First, we tested the central hypothesis that source memory is better for faces encountered in a cheating context than for faces associated
@@ -86,3 +74,29 @@ Also better treatment of "asked to <do>"
 ['main purpose'  David
 Mark 11/18/20 11:22 -- What leads Sparser to get/not get the major clauses, even if not the connectives? In this case, it appears
 all I get is shards. I was hoping to find "the main purpose of the present series of experiments was ..."
+
+
+["report"  David
+Mark 11/18/20 1:12  I think the same issue with "is reported", "was reported", "we report that".  Subject is the info object.
+Sentence: "Partial η2 is reported as a measure of the size of an effect."
+
+(p/s-all "We report that faces are ugly.") -- doesnt get the roles at all.
+((#<interlocutor "person-and-machine" 213> (NAME "person-and-machine"))
+(#<report 106317> (PRESENT #<ref-category PRESENT>))
+(#<face-perdurant 106321> (THAT-REL T) (PRESENT #<ref-category PRESENT>)) (#<ugly "ugly" 106320> (NAME "ugly")))
+
+sp> (p/s "We report that faces are ugly.")  ;; Done 11/23/20
+[We ][report ]that [faces ][are ][ugly]
+                    source-start
+e12   REPORT        1 "We report that faces are ugly" 7
+                    period
+                    end-of-source
+(#<report 105566>
+ (agent (#<interlocutor "person-and-machine" 213> (name "person-and-machine")))
+ (theme
+  (#<ugly "ugly" 105564>
+   (theme
+    (#<bio-organ plural face 105559> (uid "UBERON:0001456") (name "face")))
+   (name "ugly")))
+ (present #<ref-category PRESENT>))
+]
