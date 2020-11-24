@@ -36,6 +36,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
   :instantiates nil
   :mixins (with-patient)
   :realization (:s patient :mumble (sv :s patient)))
++
 
 (define-mixin-category comlex-verb
   :specializes subcategorization-pattern
@@ -114,6 +115,24 @@ subcategorization-pattern is a daughter of linguistic, abstract
      :mumble ((s-v-io-do :s agent :do theme :io beneficiary)
      	      (S-V-DO-ToIO  :s agent :do theme :io beneficiary))))
 
+
+(define-mixin-category say-verb ;; "remarked to Mark that ..."
+  :specializes subcategorization-pattern
+  :instantiates nil
+  :mixins (with-agent with-beneficiary with-theme)
+  :restrict ((agent (:or physical-agent social-agent))
+             (beneficiary)
+             (theme))
+  :documentation "Levin 37.7. There is (optionally) someone
+ who is being addressed ('said to the assembly that ...')
+ the beneficiary And something being communicated to them
+ (the 'theme')."
+  :realization
+    (:s agent
+     :to beneficiary
+     :o theme ; 'said a few things to her sister'
+     :thatcomp theme
+     :whethercomp theme))
 
 (define-mixin-category attributing-verb
   :specializes subcategorization-pattern
