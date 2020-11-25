@@ -113,8 +113,6 @@ be biology specific, since they aren't. |#
 
 ;;---- near-term candidates for replacing with attribute-based interpretation
 
-(adj "best" :super bio-predication) ;;/// superlative of "better"
-(adj "great" :super bio-predication) ;;/// base of greater, greatest
 
 (adj "rapid" :super bio-predication)
 (adj "same" :super bio-predication)

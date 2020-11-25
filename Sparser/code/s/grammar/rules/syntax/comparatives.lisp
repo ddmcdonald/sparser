@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "comparatives"
 ;;;    Module:   "grammar;rules:syntax:"
-;;;   Version:   March 2020
+;;;   Version:   November 2020
 
 ;; initiated 7/29/94. 10/24/94 added defdata
 ;; 7/20/14 Added a lemma for "comparative"
@@ -77,6 +77,11 @@ abstract > abstract-region >
 
         (set-direction direction-flag base-adj er-category est-category)
 
+        ;; more cross references?
+        (setf (get-tag :comparative base-adj) er-category)
+        (setf (get-tag :superlative base-adj) est-category)
+
+        ;; n.b. nobody presently is gathering up these values
         (values er-category er-indiv er-rule
                 est-category est-indiv est-rule)))))
 
@@ -131,7 +136,7 @@ abstract > abstract-region >
 ;;; base categories
 ;;;-----------------
 
-;; comparative is defined in categories.lisp as a form category,
+;; 'comparative' is defined in categories.lisp as a form category,
 ;; which happens to make it a referential-category.
 ;;/// Consider having define-mixin-category rework the object to fit
 
@@ -257,6 +262,10 @@ is seen.  |#
   comparative with an an adjective.")
 
 
+;; 11/24/20 'many more' is handled by a syntactic rule
+;; #<PSR-1450 comparative → {quantifier comparative}>
+;; that calls the syntax function quantify-comparative
+;;
 (define-category quantified-comparative ;; "many more"
   :specializes comparative
   :binds ((quantifier quantifier)
@@ -336,8 +345,9 @@ is seen.  |#
       comparative)))
 
 
-;;;
-;;; for the':adjective head specifier or from complex
+;;;---------------------------------------------------
+;;; for the :adjective head specifier or from Comlex
+;;;---------------------------------------------------
 
 #| These two function compensate for not having comparative
 or superlative realization options. The categories we instantiate

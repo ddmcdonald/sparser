@@ -58,14 +58,14 @@ indigo and gray.Mar 28, 2017
 (define-rate-of-change "fast" :dir :+)
 (define-rate-of-change "slow" :dir :-)
 
+;;--- quality (called goodness to avoid clash)
+(define-goodness "good" :dir :+  :er "better" :est "best")
+(define-goodness "great" :dir :+ :er "greater" :est "greatest") ; default more doubles the 't'
+(define-goodness "bad" :dir :- :er "worse" :est "worst")
+
+(def-synonym good (:adj "well")) ; doubling the adj field with "good" would be more to the point
+
 #|
-;; quality
-(define-comparative "better") ;; good, well
-(define-comparative "worse") ;; bad
-
-;; good best better
-;; great greater greatest
-
 ------- "more"
  more broadly
 a more definitive analysis of
@@ -80,5 +80,4 @@ may be somewhat more resistant to
  than either drug alone, ...)
 were more common in
 was suppressed more effectively by
-
 |#

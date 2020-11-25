@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2017-2020 David D. McDonald  -- all rights reserved
 ;;; This file is part of the SIFT-Brandeis CwC project
 ;;;
 ;;;     File:  "attributes"
 ;;;   Module:  "grammar/core/mid-level/
-;;;  version:  October 2017
+;;;  version:  November 2020
 
 ;; Initiated 1/11/17 to collect all the attributes together
 
@@ -51,3 +51,8 @@
 (define-attribute rate-of-change) ;; fast, slow
 ;; vs 'rate' as defined in amounts/measurements.lisp
 
+(define-attribute goodness) ;; better, worst
+;; would be 'quality' except that's taken by the upper model
+;;//// the attributes are nouns -- morphology makes a hash of a word
+;; that ends in 'ness': :inflection-of-noun #<word "goodnesses">
+;;                      :noun-inflections (#<word "goodnesses">)
