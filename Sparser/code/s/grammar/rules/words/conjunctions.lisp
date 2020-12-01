@@ -129,6 +129,7 @@ syntactic properties of three types.
           "because"
           "besides"
           "but"
+          "but also"
           "but rather"
 	  "by contrast"
           ;;"consequently" -- to handle "and consequently activated RAS" preventing "activated" from being an ng-start?
@@ -153,6 +154,7 @@ syntactic properties of three types.
           "lest"
           "moreover"
           "nevertheless"
+          "not only" ;; frequently goes with 'but also'
           "on grounds that"
           "on the grounds that"
           "once"
