@@ -112,11 +112,13 @@
            (unknown-word/s-arc
             (when *word-tt*
               (or (= 1 (arc-number-of-words arc))
-                  (then (break "multiple unknown words")
-                        nil))))
+                  (then
+                    (break "stub: arch for multiple unknown words")
+                    nil))))
 
            (gap-arc
-            (break "gap arc"))
+            (push-debug `(,arc ,tt))
+            (break "stub: gap arc encountered"))
 
            (otherwise
             (push-debug `(,arc ,tt))

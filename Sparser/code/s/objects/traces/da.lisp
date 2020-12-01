@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "DA"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  October 2020
+;;;  Version:  December 2020
 
 ;; initiated 5/5/95.  Elaborated ..5/19. 11/3/11 added missing trace.
 
@@ -150,13 +150,29 @@
                         (vertex "continuing vertex")
                         (start-vertex "start vertex")))))
 
+(deftrace :da-best-so-far (vertex)
+  ;; called from mark-best-so-far
+  (when *trace-DA*
+    (trace-msg "[DA] ~a is an end vertex" vertex)))
+
+(deftrace :remaining-matches (remaining-arcs tt)
+  ;; called from setup-return-point
+  (when *trace-DA*
+    (trace-msg "[DA] ~a other arcs match ~a"
+               (length remaining-arcs) tt)))
+
+(deftrace :backing-up-to (arc)
+  ;; called from  backup-to-any-pending-arc-set
+  (when *trace-DA*
+    (trace-msg "[DA] backing up to matching arc ~a" arc)))
+
+
+
 
 (deftrace :da-pattern-matched (rule)
   ;; called from Accept-pattern
   (when (or *trace-DA* *trace-embedded-da*)
     (trace-msg "[DA] matched the pattern of ~A" rule)))
-
-
 
 (deftrace :arc-matches-tt? (arc tt)
   ;; called from Arc-matches-tt?
@@ -178,7 +194,9 @@
     (trace-msg "[DA]       They don't match")))
 
 
-;;----- action application
+;;;--------------------
+;;; action application
+;;;--------------------
 
 (deftrace :da-executing-action (rule)
   (when *da-execution*

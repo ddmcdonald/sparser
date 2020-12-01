@@ -58,8 +58,7 @@ Sentence: "All power calculations were conducted using G•Power (Faul, Erdfelde
 
 ["better for .. than "  David
 Mark 11/18/20 1:19  Treatment of "better for .. than for ..  and probably some other variations.
-Sentence: "First, we tested the central hypothesis that source memory is better for faces encountered in a cheating context than for faces associated
-with a context of trustworthiness. "  ]
+Sentence: "First, we tested the central hypothesis that source memory is better for faces encountered in a cheating context than for faces associate with a context of trustworthiness. "  ]
 
 
 ================== done ==================
