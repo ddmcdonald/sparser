@@ -13,6 +13,7 @@
 (gload "mid-level;attributes") ;; used in object
 
 (gload "mid-level;ontology") ;; includes object as used in blocks world
+(gload "mid-level;events")
 
 #+mumble(gload "mid-level;interlocutor")
 

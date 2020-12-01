@@ -84,10 +84,12 @@ was exceptional or ordinary.")
 ;; but this is a rush job -- give them both
 ;; a supercategory where we spell all that out
 
-(define-category experiment :specializes perdurant
+(define-category experiment
+  :specializes activity-with-a-purpose
   :realization (:noun "experiment"))
 
-(define-category study :specializes perdurant
+(define-category study
+  :specializes activity-with-a-purpose
   :realization  (:noun ("study" :plural "studies")))
 
 
