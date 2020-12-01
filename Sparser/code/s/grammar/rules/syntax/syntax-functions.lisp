@@ -1705,37 +1705,6 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
 
 
 
-(defparameter *domain-adjunctive-pp-tests* (make-hash-table :test #'equal)
-  "Hash table keyed on prepositions, with values being triples of
-   POBJ-type, NP-head-type and construction-function this might want
-   to be done by k-methods -- DAVID -- let's review this The current
-  implementation is a standin")
-
-(defun add-domain-adjunctive-pp-rule (prep pobj-type np-head-type interpretation-function)
-  (push (list pobj-type np-head-type interpretation-function)
-        (gethash (pname prep) *domain-adjunctive-pp-tests*)))
-
-(defun is-domain-adjunctive-pp? (np pp-edge)
-  "Test for PPs like 'in the literature' which may be used as
-   modifiers for certain classes of general (mid-level model) NPs, 
-   but are domain specific -- e.g. 'the relations in the literature'"
-  (loop for triple in
-          (let ((prep (identify-preposition pp-edge)))
-            (when (category-p prep)
-                (gethash (pname prep) *domain-adjunctive-pp-tests*)))
-     when (and (itypep (identify-pobj pp-edge) (car triple))
-               (itypep np (second triple)))
-     collect (third triple)))
-
-(defun maybe-add-domain-adjunctive-predicate-to-phrase (np pp-edge)
-  (let ((domain-adjunct-functions (is-domain-adjunctive-pp? np pp-edge))
-        result)
-    (loop for fn in domain-adjunct-functions
-       when (setq result (funcall fn np pp-edge))
-       do (return result))))
-
-
-
 (defun interpret-pp-as-head-of-np (np pp)
   (let* ((pp-edge (right-edge-for-referent))
          (prep-word (identify-preposition pp-edge))
