@@ -483,6 +483,7 @@
            with-measurement bio-howcomp)
   :restrict ((agent
               (:or
+               physical-agent social-agent ; "participants could read
                bio-chemical-entity
                group ;; a group/set/subset...
                cell-entity
