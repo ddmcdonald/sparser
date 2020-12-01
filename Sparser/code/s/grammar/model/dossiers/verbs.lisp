@@ -147,7 +147,9 @@ come
 (define-category carry-out
   :specializes process
   :mixins ( action-verb )
-  :restrict ((patient perdurant))
+  :restrict ((actor (:or physical-agent social-agent
+                         activity-with-a-purpose))             
+             (patient perdurant))
   :realization (:verb ("carry" :prep "out")))
 
 (define-category comply
