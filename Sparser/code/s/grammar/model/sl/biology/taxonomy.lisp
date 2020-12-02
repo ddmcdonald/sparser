@@ -545,7 +545,7 @@
           (origin cellular-location)
           (destination cellular-location))
   :realization 
-    (::at origin
+    (:at origin
      :into destination
      :to destination
      :onto destination
@@ -561,8 +561,8 @@
      :of moving-object))
 
 (define-category bio-transport :specializes bio-movement
-                 :mixins (caused-bio-process)
-                 :bindings (uid "GO:0006810")
+  :mixins (caused-bio-process)
+  :bindings (uid "GO:0006810")
   :restrict ((object bio-entity))               
   :realization 
     (;;:verb "transport" 
@@ -585,9 +585,9 @@
 
 
 
+
 (define-category molecular-function  :specializes bio-process
   :bindings (uid "GO:0005488"))
-
 
 
 (delete-noun-cfr (resolve "reaction"))
