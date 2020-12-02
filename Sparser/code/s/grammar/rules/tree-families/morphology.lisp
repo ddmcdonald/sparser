@@ -1047,9 +1047,15 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
         ((string-equal lastchar "y")
          (string-append (subseq pname 0 (- (length pname) 1)) "ies"))
         (t (string-append pname "s")))))
+  
   (:method ((w word))
-    (let ((plural-pname (plural-version (word-pname w))))
-      (define-word/expr plural-pname)))
+    (let* ((plural-pname (plural-version (word-pname w)))
+           (plural (define-word/expr plural-pname)))
+      (when (word-p plural) ;; "μ"+ s" -> a polyword
+        (unless (word-morphology plural)
+          (setf (word-morphology plural) :ends-in-s)))
+      plural))
+
   (:method ((pw polyword))
     (plural-version/pw pw)))
 
