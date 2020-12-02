@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-1995,2012-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1995,2012-2020 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "single quote"
 ;;;   Module:  "grammar;rules:FSAs:"
-;;;  Version:  February 2019
+;;;  Version:  December2020
 
 ;; initiated 4/23/91 v1.8.4, tweeked 4/24,25, Comment added 1/3/92
 ;; 1.0 (11/24/92 v2.3) Flushed the old use of fake names as referents
@@ -133,7 +133,6 @@
               next-position )))))))
 
 
-
 (defun mark-possessive-on-prior-word (pos-before pos-after word)
   ;; there is an appostrophe at this chart position, and we've just
   ;; determined that the word before it ended in 's', making it a
@@ -151,6 +150,7 @@
           :ending-position pos-after )))
     (tr :s-on-prior-word-apostrophe-afterwards edge word)
     pos-after ))
+
 
 (deftrace :s-on-prior-word-apostrophe-afterwards (edge word)
   (when *trace-fsas*
