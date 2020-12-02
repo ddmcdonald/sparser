@@ -1358,7 +1358,8 @@
  (:verb ("studyxxx" :past-tense "studied" :present-participle "studying")
   :etf (svo-passive)))
 
-(def-synonym study-bio-method (:noun "study" :of :object))
+;; Use the version in experiment-languages
+;;(def-synonym study-bio-method (:noun "study" :of :object))
 
 
 (define-category succeed :specializes bio-predication
