@@ -1,0 +1,52 @@
+
+
+
+(define-category move
+  :specializes accomplishment
+  ;; realization -- "move" and "movement"
+  :mixins (with-theme)
+  :restrict ((theme endurant))  ;;can-change-location))
+  :binds ((from-location location) ;; source - the theme's former location
+          (to-location location) ;; goal - its new location
+
+          ;; moved here from define-movement-verb
+          ;; Note that some of these restrictions don't exist
+          ;; at the timw this is executed so they will star out
+          ;; as simple categories and get expanded once
+          ;; their actual definitions are reached
+          (via-path . path)
+          (for-distance . measurement) ;; distance?
+          (in-direction . direction)
+          (when-done . time)
+          (landmark . location)))
+
+
+
+
+(define-category bio-movement
+  :specializes bio-process
+  :documentation "like translocation, entry and 'binding to membrane'"
+  ;; :mixins (move) this creates an inconsistent taxonomy -- WH -- TO-DO
+  :restrict ((cellular-location over-ridden)) ;; really? ddm 2/3/17
+  :binds ((moving-object (:or bio-entity bio-chemical-entity))
+          (co-object (:or bio-entity bio-chemical-entity))
+          (origin cellular-location)
+          (destination cellular-location))
+  :realization 
+    (:at origin
+     :into destination
+     :to destination
+     :onto destination
+     :from origin
+     :m destination
+     :m moving-object
+     :with co-object))
+
+
+(define-category bio-transport :specializes bio-movement
+  :mixins (caused-bio-process)
+  :bindings (uid "GO:0006810")
+  :restrict ((object bio-entity))               
+  :realization 
+    (;;:verb "transport" 
+     :noun "transport"))
