@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "lookup"
 ;;;   Module:  "analysers/tokenizer/"
-;;;  Version:  September 2020
+;;;  Version:  December 2020
 
 ;;  1.1 (v1.6 12/14/90) Cleans up the mess in Lookup as part of doing :ignore
 ;;      unknown words.
@@ -30,10 +30,55 @@
 
 ;; (trace-morphology)
 
+(defparameter *trap-errors-inside-find-word* t
+  "Controls whether or not use wrap the body of the find-word function
+ inside an error handler. An error at any point from the initial
+ handling of the word as a token through to constructing categories
+ and realizations for the words that are unknown will be caught by
+ the handler, which then returns a nonesense word to go into the chart.")
+
 (defun find-word (char-type)
   "Called from finish-token to find or make the word that corresponds
    to the sequence of characters we just delimited and is resident in
    the lookup buffer right now."
+  (if *trap-errors-inside-find-word*
+    (handler-case
+        (body-of-find-word char-type)
+      (error (e) (resolve/make "UnknownWord")))
+    ;; let the error surface so we can debug it.
+    (body-of-find-word char-type)))
+
+(defun body-of-find-word (char-type)
+  (let ((symbol (lookup-word-symbol))) ;; pull it from the buffer
+    (if symbol
+      (if (boundp symbol)
+        (let ((word (symbol-value symbol)))
+          (cond
+            ((not (word-p word))
+             ;; this should not occur
+             (error "The symbol '~a' in package ~a~
+                   ~%was returned from the tokenizer's lookup buffer~
+                   ~%but is a ~a rather than a word."
+                    symbol (symbol-package symbol)
+                    (type-of word)))
+            (*edge-for-unknown-words*
+             ;; mostly concerned with portions of polywords
+             (really-known-word? word char-type))
+            (t
+             ;; We're not making edges over unknown words
+             word)))
+
+        ;; Symbol exists but isn't bound
+        (else
+          (tr :fw-symbol-unbound symbol)
+          (establish-unknown-word char-type)))
+
+      ;; There's no symbol
+      (else
+        (tr :fw-no-symbol)
+        (establish-unknown-word char-type)))))
+
+#+ignore ;; original
   (handler-case
       (let ((symbol (lookup-word-symbol))) ;; pull it from the buffer
         (if symbol
@@ -64,7 +109,8 @@
             (tr :fw-no-symbol)
             (establish-unknown-word char-type))))
    
-    (error (e) (resolve/make "UnknownWord"))))
+    (error (e) (resolve/make "UnknownWord")))
+
 
 
 (defun really-known-word? (word &optional char-type)
@@ -148,14 +194,14 @@
                      (else
                        (tr :fw-variant-no-associated-category)
                        nil)))
-                      (else
-                        (tr :fw-no-rule-set/variant-wrong-cap
-                            word word-with-rs *capitalization-of-current-token*)
-                        nil)))
-                   (t
-                    (tr :fw-no-rule-set/no-variant-with-rs
-                        word variants)
-                    nil))))
+                 (else
+                   (tr :fw-no-rule-set/variant-wrong-cap
+                       word word-with-rs *capitalization-of-current-token*)
+                   nil)))
+              (t
+               (tr :fw-no-rule-set/no-variant-with-rs
+                   word variants)
+               nil))))
          (t
           (tr :fw-no-rule-set/no-variants word)
           nil))))))
