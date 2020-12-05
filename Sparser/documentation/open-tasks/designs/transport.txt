@@ -1,5 +1,31 @@
 
+-*-org-*-
+#+DATE: 12/3/20
 
+* The problem
+
+We want to consolidate disparate definitions of a word which have the same meaning, but for some applications require different information or different value restrictions.
+
+(If the spelling form had genuinely different meanings, such as "bank" than this would be reflected in by introducing multiple edges: one per meaning which would originate in different categories.)
+
+* The proposal
+
+Broadly speaking, we should try to move to a policy were words that can be used in different domains with the same core meaning are loaded early and carry the realization and subcategorization specification, with value restrictions stated in very general terms. 
+
+There will always be domain specific readings for many verbs. These specific categories will have domain-specific value restrictions, and may have established facts associated with them (e.g. their id in the GO ontology).
+
+It makes sense to view the domain-specific categories as specializations of the general verb categories (actually any relational head taking specified arguments, but the biggest need presently is for verbs). But rather than do this in the way we have been, where the realization is on the specific category, we want to do this dynamically.
+
+The realization will always be stated on the general category. A static annotation will link that category to the possible domain-specific categories. At some point in the course of an analysis, after the core constituents of the verb have been parsed and associated with it, we examine the types of these constituents and compare them to the value restrictions on the domain-specific categories. If there is a match, we take the individual that has been instantiated for the general category and manipulate it so that it has the type and other specific properties of the domain-specific category
+
+Practically speaking, this means defining the categories for the general verbs in model/dossiers/verbs.lisp and trying to use already define subcategorization pattern mixins for the bulk of their specification (model/core/mid-level/subcat-patterns.lisp). These use the ECI set of thematic roles to establish the variables the verbs will bind (model/core/kinds/roles.lisp). Both roles and subcat mixins should be extended and tweaked as needed.
+
+How we define, track, and implement the associations between general and specific categories is a bit of magic that we have to create. The starting point is removing the bio-specific realizations (e.g. in model/sl/biology/general-verbs.lisp) in favor of more abstract definitions in the verb dossier. 
+
+
+** Case in point: "move" and its family of lemmas.
+
++ This is the definition in core/kinds/movement.lisp. It is associated with a mixin for a standard implicature (though that aspect of it isn't operational) about things that can change location.
 
 (define-category move
   :specializes accomplishment
@@ -8,12 +34,6 @@
   :restrict ((theme endurant))  ;;can-change-location))
   :binds ((from-location location) ;; source - the theme's former location
           (to-location location) ;; goal - its new location
-
-          ;; moved here from define-movement-verb
-          ;; Note that some of these restrictions don't exist
-          ;; at the timw this is executed so they will star out
-          ;; as simple categories and get expanded once
-          ;; their actual definitions are reached
           (via-path . path)
           (for-distance . measurement) ;; distance?
           (in-direction . direction)
@@ -21,12 +41,12 @@
           (landmark . location)))
 
 
-
++ This is the class of movement verbs as defined for biology (in biology/taxonomy.lisp)
 
 (define-category bio-movement
   :specializes bio-process
   :documentation "like translocation, entry and 'binding to membrane'"
-  ;; :mixins (move) this creates an inconsistent taxonomy -- WH -- TO-DO
+  ;; :mixins (move) this creates an inconsistent taxonomy
   :restrict ((cellular-location over-ridden)) ;; really? ddm 2/3/17
   :binds ((moving-object (:or bio-entity bio-chemical-entity))
           (co-object (:or bio-entity bio-chemical-entity))
@@ -42,6 +62,8 @@
      :m moving-object
      :with co-object))
 
+
++ This is an example, in that file of the domain-specific instance (with its GO id) that we would want to arrive at given an instance of the general category for 'transport' but where we observe that its arguments are itypep cellular-location or bio-chemical-entity
 
 (define-category bio-transport :specializes bio-movement
   :mixins (caused-bio-process)
