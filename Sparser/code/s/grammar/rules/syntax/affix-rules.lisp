@@ -108,7 +108,7 @@
               (if *edge-for-unknown-words*
                 (or (when *block-verbification* (block-verbified-nouns lemma))
                     (else (setup-verb lemma)
-                          (sanity-check-word-formation word lemma :ed)))         
+                          (sanity-check-word-formation word lemma :ed)))
                 (assign-brackets-as-a-main-verb lemma))))
 
            (:ends-in-ing

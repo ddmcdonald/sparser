@@ -262,10 +262,10 @@
         (let ((category
                (define-category/expr category-name
                    `(:specializes ,super-category
-                     :instantiates :self
                      :mixins (comlex-verb)
                      :realization (:verb ,word ;;///analyze special-cases
-                                   :etf svo) ))))
+                                  ;; :etf (svo)
+                                         )))))
           ;; Adds the rules to the category itself
           (apply #'define-main-verb (cat-symbol category)
                  :infinitive (word-pname word)
