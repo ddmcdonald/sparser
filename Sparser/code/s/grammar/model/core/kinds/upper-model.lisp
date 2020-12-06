@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "upper-model"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  March 2020
+;;;  version:  December 2020
 
 #| Defines the set of 'expressive categories' (see Meteer 1992) that we're
    experimenting with as the top tier of our domain model.  This sort of thing
@@ -51,7 +51,7 @@
           
           (modifier) ;; supplies a property. May be adverbial
           
-          (qualifier) ;; a modifier that changes somethings type: 'toy gun'
+          (qualifier) ;; a modifier that changes something's type: 'toy gun'
           
           (negation) ;; applies to both endurants and perdurants
           ;;/// but c.f. negative on tense/modal -- needs coordination
@@ -72,6 +72,26 @@
 (defparameter *top-of-category-tree* (category-named 'top))
 
 
+;;;------------------------------------------------
+;;;----------- parent of most mixins --------------
+;;;------------------------------------------------
+
+(define-category notational-extension
+  :instantiates nil
+  :specializes top
+  :documentation "Covering term for notions that are really
+ outside the taxonomy, principally mixins that add relations
+ but are (typically) not themselves types that are intended
+ to play a role in inference.")
+
+(define-category adds-relation
+  :instantiates nil
+  :specializes notational-extension
+  :documentation "Specifically designed to be the super catagory
+ of mixins that simply add another variable to the category
+ they're mixed into.")
+
+
 ;;;-----------------------------------------------------------------
 ;;;     'real' categories -- the effective top of the hierarchy
 ;;;-----------------------------------------------------------------
@@ -81,7 +101,6 @@
 ;;   kinds/space.lisp (though that needs to be integrated better with
 ;;     rest of the location)
 ;;   kinds/time.lisp
-
 
 (define-category  quality
   :instantiates nil
@@ -143,7 +162,6 @@
 
 
 
-
 ; We need an unmarked, equally weighted 'relation' for what holds
 ; among things like the members of a collection or between categories
 ; taken generically. Don't want to assume a standard arity 
@@ -165,6 +183,11 @@
  Welty's distinctions in their 'A Formal Ontology of Properties' paper
  from 2000.")
 
+
+
+;;;------------------------------------------
+;;; linguistic stuff (vs. stuff in a domain)
+;;;------------------------------------------
 
 (define-category linguistic
   :instantiates nil
@@ -202,14 +225,14 @@
   :instantiates nil
   :specializes linguistic
   :documentation
-  "The role of these mixin categories is to enforce the use of
- a uniform, only-defined-once set of categories, and to provide the
+  "The role of these mixin categories is to promote the use of
+ a uniform, only-defined-once set of variables, and to provide the
  basic subcategorization information for how those variables are
  realized.")
 
 (define-category thematic-role
   :instantiates nil
-  :specializes linguistic
+  :specializes adds-relation
   :documentation
   "A way to group all the role mixins in roles.lisp and thereby
  make the sub/super organization of the ontology as a whole more
@@ -218,13 +241,14 @@
  general inferences from the use of one role vs. another but we
  haven't worked that out yet.")
 
+
 ;;;---------------------------------------
 ;;; names -- simple and root of real ones
 ;;;---------------------------------------
 
 (define-mixin-category has-UID
   :instantiates nil
-  :specializes abstract 
+  :specializes adds-relation 
   :binds ((uid))
   :documentation "UID is a field in many TRIPS objects")
 
@@ -259,35 +283,12 @@
 ;;;--------- subcategories of quality -------------
 ;;;------------------------------------------------
 
-
 (define-category scalar
   :instantiates nil
   :specializes quality
   :documentation "'scalar' per se is a meta-property. 
  It is a quality of some other category and says about it 
  that it can take on different values along some dimention")
-
-
-;;;------------------------------------------------
-;;;----------- parent of most mixins --------------
-;;;------------------------------------------------
-
-(define-category notational-extension
-  :instantiates nil
-  :specializes top
-  :documentation "Covering term for notions that are really
- outside the taxonomy, principally mixins that add relations
- but are (typically) not themselves types that are intended
- to play a role in inference.")
-
-(define-category adds-relation
-  :instantiates nil
-  :specializes notational-extension
-  :documentation "Specifically designed to be the super catagory
- of mixins that simply add another variable to the category
- they're mixed into.")
-
-
 
 (define-mixin-category qualifiable
   :instantiates nil
