@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2013-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2013-2020 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  May 2016
+;;;  Version:  May 2020
 
 ;; 2.0  (7/16/92 v2.3) bumped [percentages] to 1 to install new regime
 ;;      7/19 bumped nearly everything else to make it over to new categories
@@ -27,6 +27,7 @@
 (gload "numbers;object") 
 (gload "numbers;categories")
 (gload "numbers;form")
+(gload "numbers;fsa-aux")
 (gload "numbers;fsa digits")
 (gload "numbers;fsa words")
 (gload "numbers;ordinals")
