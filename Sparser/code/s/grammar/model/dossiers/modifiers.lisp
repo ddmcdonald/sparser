@@ -236,7 +236,7 @@
 (define-position-in-process "initially")
 (define-position-in-process "subsequently")
 (define-position-in-process "ultimately")
-
+(define-position-in-process "next") ;; We next considered ...
 
 
 
