@@ -897,8 +897,12 @@ than a bare "to".  |#
            t)
           ((and (eq ecn 'that)
                 (edge-p (edge-just-to-left-of e))
-                (takes-thatcomp?
-                 (edge-referent (edge-just-to-left-of e))))
+                (loop for ee in (edges-before e)
+                        thereis
+                        (takes-thatcomp? (edge-referent ee)))
+                ;; was (edge-referent (edge-just-to-left-of ))
+                ;;  but that is confused by the fact that "likely" is both an ADVERB and ADJ
+                )
            nil)
           ((verb-premod-sequence? (edge-just-to-right-of e))
            nil)
