@@ -447,7 +447,7 @@ come
 (define-category invert
   :specializes process
   :mixins (simple-action with-instrument)
-  :binds ((instrument on))
+  ;;:binds ((instrument on)) -- mistaken? on is the preposition, not the V/R
   :realization (:verb "invert"
                 :etf svol
                 :s agent
