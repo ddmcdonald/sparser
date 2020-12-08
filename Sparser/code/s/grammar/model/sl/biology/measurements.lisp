@@ -10,18 +10,19 @@
 (in-package :sparser)
 
 ;;;----------------------------------
-;;; measurement terms and bio-scalars
+;;; measurement terms
 ;;;----------------------------------
+
 
 (define-category assay :specializes measure
   :realization
   (:noun "assay"))
 
-(define-category data :specializes measurement
+(define-category data :specializes information
 		 :realization
 		 (:noun ("datum" :plural "data")))
 
-(define-category dataset :specializes measurement
+(define-category dataset :specializes information
 		 :realization
 		 (:noun ("dataset" :plural "datasets")))
 
@@ -33,12 +34,13 @@
 
 (noun "throughput" :super measurement)
 
-(noun "dynamics" :super bio-scalar)
-(noun "extent" :super bio-scalar) 
-(noun "mass" :super bio-scalar)
-(noun "proportion" :super bio-scalar)
-(noun "scale" :super bio-scalar)     
-;; (noun "concentration" :super bio-scalar) ;; now in harvard-terms
+
+(noun "extent" :super bio-scalar-attribute) 
+(noun "mass" :super bio-scalar-attribute)
+(noun "scale" :super bio-scalar-attribute)     
+
+(noun "dynamics" :super bio-scalar-attribute) ;;possibly just attribute
+(noun "proportion" :super bio-scalar-attribute) ;;possibly just attribute
 
 (noun "TopoPSA" :super bio-measurement)
 (def-synonym TopoPSA (:noun ("Topological Polar Surface Area" "topological polar surface area")))
