@@ -9,7 +9,6 @@
 
 (in-package :sparser)
 
-(unless (current-script :biology)
-  (define-report-verb "announce")  
-  (define-report-verb "report")  
-  (define-report-verb '("say" :past-tense "said")))
+(define-report-verb "announce")  
+(define-report-verb "report")  
+(define-report-verb '("say" :past-tense "said"))
