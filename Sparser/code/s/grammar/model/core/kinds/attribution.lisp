@@ -63,7 +63,11 @@ a 'subject', e.g. "southern Chinese girls are never tall"
  for recording ancilary information that helps in parsing,
  notably the variable."
   :specializes quality
-  :binds ((var :primitive lambda-variable)))
+  :mixins (temporally-localized)
+  :binds ((var :primitive lambda-variable)
+          (owner))
+  :realization
+  (:of owner))
 
 (define-category scalar-attribute
   :specializes attribute
@@ -93,9 +97,8 @@ be added to attribute so it knows how to handle the individuals.
  We record the attribute as part of this class to make
  it easier for the parser to do the right thing if all you have
  is the word, as in 'red block'."
-  :specializes modifier ;;abstract-region
+  :specializes abstract-region ;; more like point in the region
   :instantiates :self
-  :mixins (abstract-region)  ;; more like point in the region
   :binds ((attribute :primitive category))
   :index (:permanent :key name))
 
