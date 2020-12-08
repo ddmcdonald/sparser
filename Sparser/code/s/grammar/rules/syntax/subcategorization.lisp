@@ -839,7 +839,7 @@
           (variable-to-bind
            (collect-subcat-statistics head subcat-label variable-to-bind item)
            (setq head (individual-for-ref head))
-           (when (is-pronoun? item)
+           (when (maybe-anaphoric? item) ;; was is-pronoun?
              (unless (is-wh-pronoun? item)
                (tr :conditioning-anaphor-edge item variable-to-bind head)
                (setq item
@@ -847,6 +847,10 @@
                       head item subcat-label variable-to-bind))))
            (setq head (bind-variable variable-to-bind item head))
            head)))))
+
+(defun maybe-anaphoric? (item)
+  (or (is-pronoun? item)
+      (itypep item 'part-of-a-whole)))
 
 
 (defun assimilate-subcat-to-collection (head subcat-label item
@@ -888,7 +892,9 @@
       (itypep item category::these)
       (itypep item category::those)
       ;;(itypep item category::numerated-anaphor) for "the seven" in DM&P
-      (itypep item category::quantifier)) ;; as in "the other",
+      (itypep item category::quantifier) ;; as in "the other",
+      (itypep item 'part-of-a-whole)
+      )
      t)
     ((itypep item category::pronoun) ;; of any sort
      t)
@@ -1250,6 +1256,7 @@
 (defun variable-from-pats (item head label pats subcat-patterns)
   (declare (special category::number))
   (when (and (not (itypep item 'pronoun))
+             (not (itypep item 'part-of-a-whole)) ;; "a subset"
              (not (itypep item 'requires-context));; new, for "those", "these"
              (loop for pat in pats
                    thereis
