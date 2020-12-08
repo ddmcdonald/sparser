@@ -22,7 +22,7 @@
 ;; 4/10/16 moved new-words to R3.
 
 (in-package :sparser)
-
+(gload "score-stats;loader")
 (gload "bio;allowable-protein-heads")
 (gload "bio;mechanics")
 
