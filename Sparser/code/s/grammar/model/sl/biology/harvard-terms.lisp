@@ -14,7 +14,9 @@
 ;;;   scalars, et al.
 ;;;---------------------
 
-(define-category bio-amount :specializes bio-scalar
+
+
+(define-category bio-amount :specializes bio-scalar-attribute
   :realization
   (:noun "amount"))
 #| and so are active in catalytic amounts.
@@ -27,21 +29,21 @@ increasing amounts of recombinant XRCC1.
 |#
 
 
-(define-category frequency :specializes bio-scalar
+(define-category frequency :specializes bio-scalar-attribute
   :realization
   (:noun "frequency"))
 
-(define-category peak
-  :specializes bio-scalar
+(define-category peak :specializes bio-scalar-attribute
+  :restrict ((owner (:or biological scalar-attribute)))
   :realization (:noun "peak"
-                :in measured-item) ;; "a peak in the measured amount ..."
+                :in owner ;;measured-item
+                      ) ;; "a peak in the measured amount ..."
   :documentation "The preposition 'in' does the same work as 'of'
     in other kinds of amounts / quantities of stuff. In biology
     it seems most appropriate when we are describing locations
     in graphs, e.g. 'dip' ")
 
-(define-category bio-concentration
-  :specializes bio-scalar
+(define-category bio-concentration :specializes bio-scalar-attribute
   :realization
     (:noun "concentration"))
 
@@ -112,7 +114,7 @@ by which this occurs.") |#
 (define-category decrease
   :specializes negative-bio-control
   :binds ((theme biological)
-          (level measurement))
+          (level (:or measurement amount)))
   :realization
   (:verb "decrease" 
    :etf (svo-passive)
@@ -140,7 +142,7 @@ by which this occurs.") |#
 (define-category vanish
   :specializes negative-bio-control
   :binds ((theme biological)
-          (level measurement))
+          (level (:or measurement amount bio-process)))
   :realization
   (:verb "vanish" 
    :etf (sv)
@@ -154,10 +156,7 @@ by which this occurs.") |#
 ;; added 'level' 5/31/19 ddm
 (define-category increase
   :specializes positive-bio-control
-  :binds ((level measurement))
-  :restrict ((object (:or ;;bio-chemical-entity
-                      bio-entity ;; allows for "population"
-                      bio-scalar)))
+  :binds ((level (:or measurement amount scalar-attribute)))
   :realization
     (:verb ("increase" :third-singular "increases"  :past-tense "increased"
             :present-participle "increasing")
@@ -165,7 +164,6 @@ by which this occurs.") |#
      :for object
      :in object
      :in affected-process
-     :of object
      :oc level
      :optional-object t))
 ;; DAVID -- why can't I put this in the previous definition -- the NOUN form gets clobbered
@@ -174,13 +172,12 @@ by which this occurs.") |#
 
 
 
-;;--- bio-scalar
+;;--- bio-scalar -- now scalar-attribute
 
 ;; (p/s "Decrease the binding rate of NRAS and BRAF.")
 (delete-noun-cfr (resolve "rate")) ;;/// override it
 
-(define-category process-rate
- :specializes bio-scalar
+(define-category process-rate :specializes bio-scalar-attribute
  :binds ((components biological)
          (process bio-process))
  :realization 
@@ -211,10 +208,12 @@ have with phosphorylated as a preposed modifier.) |#
 ;; e.g. displayed sustained ERK phosphorylation
 (define-category sustained
    :specializes scalar-variation
-   :binds ((theme (:or process bio-scalar
+   :binds ((theme (:or process scalar-attribute ;; amount measurement
                        bio-chemical-entity)) ;; see note
-           (level bio-scalar)
-           (above-level bio-scalar))
+                                             (level (:or scalar-attribute ;;amount measurement
+                                                         bio-process))
+                                             (above-level (:or scalar-attribute ;;amount measurement
+                                                               )))
    :realization
       (:verb "sustain"
        :etf (svo-passive)
@@ -239,9 +238,11 @@ have with phosphorylated as a preposed modifier.) |#
 
 (define-category make-double
   :specializes positive-bio-control
-  :restrict ((object (:or biological bio-scalar)))
+  :restrict ((object (:or biological scalar-attribute ;; amount measurement
+                          )))
   :binds ((theme biological)
-          (level (:or measurement bio-scalar)))
+          (level (:or  bio-process scalar-attribute ;; amount measurement
+                       )))
   :realization
         (:verb "double" 
          :etf (svo-passive)
@@ -265,27 +266,12 @@ have with phosphorylated as a preposed modifier.) |#
 
 (define-category reach
   :specializes bio-relation
-  :restrict ((participant (:or bio-scalar measurement biological))
-             (theme (:or bio-scalar measurement biological)))
+  :restrict ((participant (:or  biological scalar-attribute ;; amount measurement
+                                ))
+             (theme (:or  biological scalar-attribute ;; amount measurement
+                          )))
   :realization
       (:verb "reach"
        :etf (svo)))
-
-
-;;--- bio-event-relation
-
-(define-category follow
-  :specializes bio-event-relation
-  :realization
-     (:verb ("follow" :past-tense "followed" :present-participle "followingxx"
-            ;; this is intended to suppress definitions of "followed" and "follows"
-                      :third-singular "follows")
-      :etf (svo-passive)))
-
-
-(define-category precede
-  :specializes bio-event-relation
-  :realization
-    (:verb "precede" :etf (svo-passive)))
 
 
