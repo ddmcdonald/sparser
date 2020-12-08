@@ -133,11 +133,14 @@
 (define-category event-relation
   :specializes perdurant
   :binds ((relation)
-          (event)
-          (subordinated-event))
+          (event perdurant)
+          (subordinated-event perdurant))
   :documentation "This picks up phrases like 'Thus MEK phosphorylates ERK...'
     though the head decides what to do with it based on the
-    composition. Same design as pps.")
+    composition. Same design as pps."
+  :realization
+  (:s event
+      :o subordinated-event))
 
 (define-category process
   :specializes perdurant
