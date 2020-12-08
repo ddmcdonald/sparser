@@ -1,4 +1,4 @@
-;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
+ ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1993-1999,2012-2020  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
@@ -25,9 +25,9 @@
 
 #|  This algorithm is based on the one developed by Longuet-Higgins |#
 
-;;;-------------------
-;;; state information
-;;;-------------------
+;;;------------
+;;; parameters
+;;;------------
 
 (defparameter *keep-number-sequence-raw* nil
   "Set when there is a reason to spell out the number
@@ -36,72 +36,51 @@
 (defparameter *debug-numbers* nil
   "Protect things that are in progress from bad interactions")
 
-;;;-------
-;;; trace
-;;;-------
+;;;-------------------
+;;; state information
+;;;-------------------
 
-(defparameter *trace-number-word-fsa* nil)
-(defun trace-number-words ()
-  (setq *trace-number-word-fsa* t))
-(defun untrace-number-words ()
-  (setq *trace-number-word-fsa* nil))
+(defvar *accumulated-number-word-phrases* nil
+  "The sequence of number words can be interrupted by anticipated punctuation
+   such as a comma or the word 'and'. This breaks the number inforation into segments
+   that have to be independently computed and then joined to compute the full number.")
 
-(deftrace :nw-starting-with (e)
-  (when *trace-number-word-fsa*
-    (trace-msg "[number-words] triggered by ~a" e)))
+(defvar *num-word-start-position* nil
+  "Records the chart position at which the number-word-fsa was initiated")
 
-(deftrace :nw-fsa-hit-a-comma (pos)
-  (when *trace-number-word-fsa*
-    (trace-msg "[number-words] encountered a comma at p~a"
-               (pos-token-index pos))))
+(defun initialize-number-word-fsa ()
+  (setq *accumulated-number-word-phrases* nil
+        *num-word-start-position* nil
+        ))
 
-(deftrace :nw-terminating-at (pos)
-  (when *trace-number-word-fsa*
-    (trace-msg "[number-words] terminating at p~a"
-               (pos-token-index pos))))
-
-(deftrace :nw-installing-edge (word cfr)
-  (when *trace-number-word-fsa*
-    (trace-msg "[number-words] installing edge over ~s using ~a"
-               (pname word) cfr)))
-
-(deftrace :nw-not-number-word (word)
-  (when *trace-number-word-fsa*
-    (trace-msg "[number-words] ~s does not have an number word rule"
-               (pname word))))
-
-(deftrace :nw-ended-with (preceding-num-edge)
-  (when *trace-number-word-fsa*
-    (trace-msg "[number-words] Calulating value. ~a preceded the number words"
-               (if (null preceding-num-edge)
-                 "nothing"
-                 (format nil "~a" preceding-num-edge)))))
-
-(deftrace :nw-compute-value (edges)
-  (when *trace-number-word-fsa*
-    (trace-msg "[number-words] compute value over ~a edges" (length edges))))
-
-(deftrace :nw-number-number-word (integer mult-value)
-  (when *trace-number-word-fsa*
-    (trace-msg "[number-words] multiplying ~a * ~a" integer mult-value)))
-
-(deftrace :nw-made-edge (edge value)
-  (when *trace-number-word-fsa*
-    (trace-msg "[number-words] Made edge e~a over ~a"
-               (edge-position-in-resource-array edge) value)))
 
 ;;;--------
 ;;; driver
 ;;;--------
 
 (defun number-word-fsa (triggering-edge starting-position)
-  "The extend of the word sequence is established by scan-for-more-number-words
-   which traverses the state space. Most of this function is getting the
+  "The extent of the word sequence is established by scan-for-more-number-words
+   which traverses the state space. Most of this function is devoted to getting the
    referent computed and producting the spanning edge"
   (declare (special category::multiplier category::number
                     *keep-number-sequence-raw*))
+  (initialize-number-word-fsa)
+  (setq *num-word-start-position* starting-position)
   (tr :nw-starting-with triggering-edge)
+
   (let ((end-of-number-word-sequence ;; position just after the sequence
+         (scan-for-more-number-words
+          (chart-position-after starting-position))))
+
+    (package-number-edges starting-position end-of-number-word-sequence)
+
+    ;; return position sequence ends at
+    end-of-number-word-sequence))
+
+
+(defun package-number-edges (starting-position end-of-number-word-sequence)
+  
+  (let (#+ignore(end-of-number-word-sequence ;; position just after the sequence
          (scan-for-more-number-words
           (chart-position-after starting-position)))
         (prior-number-edge
@@ -110,42 +89,40 @@
 
     (if (eq end-of-number-word-sequence
             (chart-position-after starting-position)) ; one word long
-      (if prior-number-edge ; "10 million"
-        ;; a frequent enough case that it's worth looking for right
-        ;; here. Also lets us get around the fact that if we waited
-        ;; the number-word's original category would have been respanned
+      (let ((single-edge (edge-between starting-position end-of-number-word-sequence)))
+        (if prior-number-edge ; "10 million"
+          ;; a frequent enough case that it's worth looking for right
+          ;; here. Also lets us get around the fact that if we waited
+          ;; the number-word's original category would have been respanned
           ;; as a number and the pattern would be lost.
-        (when (eq (edge-category triggering-edge)
-                  category::multiplier)
-          ;;/// compare: "11 two-component systems". Suspenders to go with
-          ;; this belt for that case would be to notice the no-space hyphen.
-          (let ((rule (multiply-labels category::number category::multiplier)))
-            (unless rule
-              (error "Unexpected situation: no definition for number -> ~
+          (when (eq (edge-category single-edge)
+                    category::multiplier)
+            ;;/// compare: "11 two-component systems". Suspenders to go with
+            ;; this belt for that case would be to notice the no-space hyphen.
+            (let ((rule (multiply-labels category::number category::multiplier)))
+              (unless rule
+                (error "Unexpected situation: no definition for number -> ~
                       number multiplier"))
-            (make-completed-binary-edge 
-             prior-number-edge triggering-edge rule)
-            ;; return position sequence ends at
-            end-of-number-word-sequence))
- 
-        ;; no prior number, but just one edge
-        (else
-	  (if *keep-number-sequence-raw*
-	    (assemble-raw-number-sequence
-	     starting-position end-of-number-word-sequence prior-number-edge)
-	    (else
-	      ;; respan this singleton (e.g. "forty") as a number
-	      ;; and return
-	      (make-completed-unary-edge
-	       (edge-starts-at triggering-edge)  ;; starting vector
-	       (edge-ends-at triggering-edge)    ;; ending vector
-	       :number-word-fsa
-	       triggering-edge                   ;; daughter
-	       category::number                  ;; the edge's label
-	       category::number                  ;; its form
-	       (edge-referent triggering-edge))  ;; its referent
-
-	      (chart-position-after starting-position)))))
+              (make-completed-binary-edge 
+               prior-number-edge single-edge rule)))
+          
+          ;; no prior number, but just one edge
+          (else
+            (if *keep-number-sequence-raw*
+              (assemble-raw-number-sequence
+               starting-position end-of-number-word-sequence prior-number-edge)
+              (else
+                ;; respan this singleton (e.g. "forty") as a number
+                ;; and return
+                (make-completed-unary-edge
+                 (edge-starts-at single-edge)  ;; starting vector
+                 (edge-ends-at single-edge)    ;; ending vector
+                 :number-word-fsa
+                 single-edge                   ;; daughter
+                 category::number              ;; the edge's label
+                 category::number              ;; its form
+                 (edge-referent single-edge))  ;; its referent
+                )))))
 
       ;; multiple edges
       (else
@@ -155,8 +132,7 @@
 	  (else
 	    (parse-number-sequence starting-position
 				   end-of-number-word-sequence
-				   prior-number-edge)
-	    end-of-number-word-sequence ))))))
+				   prior-number-edge)))))))
 
 
 
@@ -165,69 +141,172 @@
 ;;; scan to collect all the number words
 ;;;--------------------------------------
 
-(defun scan-for-more-number-words (starting-position)
+(defun scan-for-more-number-words (current-position)
   ;; first call is from Number-word-fsa, so we can make good assumptions
-  ;; about the status of the starting position, but we'll check to
-  ;; make sure
-  (unless (pos-assessed? starting-position)
+  ;; about the status of the position we just moved to ('current-position)
+  (unless (pos-assessed? current-position)
     (scan-next-position))
-  
-  (if (eq :punctuation (pos-capitalization starting-position))
-    (let ((punct (pos-terminal starting-position)))
-      (cond
-        ((eq punct *the-punctuation-hyphen*)
-         ;; (break "hyphen") -- should look ahead, interacts with make-hyphenated-number
-         (tr :nw-terminating-at starting-position)
-         starting-position)
-        ((eq punct *the-punctuation-comma*)
-         ;; (break "comma") -- ditto ///also look for "and"
-         (tr :nw-terminating-at starting-position)
-         starting-position)
-        ((eq punct *end-of-source*)
-         (tr :nw-terminating-at starting-position)
-         starting-position)
-        (t
-         (when *debug-numbers*
-           (push-debug `(,punct))
-           (break "look at punct: ~a" punct))
-         (tr :nw-terminating-at starting-position)
-         starting-position)))
+
+  (let* ((next-word (pos-terminal current-position))
+         (punct (when (eq :punctuation (pos-capitalization current-position))
+                  next-word))
+         (rs (word-rules next-word))
+         (singles (when rs (rs-single-term-rewrites rs)))
+         (cfr (when singles (look-for-number-rule-in-list-of-cfrs singles)))
+         (next-position (chart-position-after current-position)))
+    (tr :nw-scanned next-word)
+
+    (cond
+      ((eq punct *end-of-source*)
+       (tr :nw-terminating-at current-position)
+       current-position)
+
+      (cfr
+       ;; Because this fsa is invoked from terminal-edges-sweep there
+       ;; are not already edges over the words. We're looking for a number
+       ;; at this position but we1 have to make the edge ourselves         
+       (tr :nw-installing-edge next-word cfr)
+       (install-preterminal-edge cfr next-word current-position next-position)
+       (scan-for-more-number-words next-position))
+
+      (t
+       ;; not a number word, but could be standard intra-number phrase
+       ;; punctuation
+       (let* ((pos-after-next (chart-position-after next-position))
+              (word-after-next (pos-terminal next-position)))
+         (cond
+           ((eq next-word (word-named "and"))
+            (tr :nw-fsa-hit-and current-position)
+            (if (next-word-is-a-number-word? current-position)
+              (scan-for-number-after-and current-position next-position)
+              (else (tr :nw-not-number-word next-word)
+                    (tr :nw-terminating-at current-position)
+                    current-position)))
+
+           ((eq punct *the-punctuation-comma*) ;; semantically equivalent of 'and'
+            (if (next-word-is-a-number-word? current-position)
+              (scan-for-number-after-and current-position next-position)
+              (else (tr :nw-not-number-word next-word)
+                    (tr :nw-terminating-at current-position)
+                    current-position)))
+      
+           ((eq punct *the-punctuation-hyphen*)
+            (if (next-word-is-a-number-word? current-position)
+              (compose-number-around-hyphen next-position)
+              (else (tr :nw-not-number-word next-word)
+                    (tr :nw-terminating-at current-position)
+                    current-position)))
+           
+           (t
+            ;; otherwise return this position as where the sequence of
+            ;; number words ends
+            (tr :nw-not-number-word next-word)
+            (tr :nw-terminating-at current-position)
+            current-position )))))))
+
+(defun compose-number-around-hyphen (next-position)
+  "Expect the hyphen to separate just two number words. Semantically they
+   should be added. The number could extend beyond, so need to reinsert into
+   the FSA at places were we might continue but remember that we need to
+   roll up the terms we've already accumulated.
+   'next-position' is just after the hyphen and contains a number-word.
+   We know that the position before the hyphen also has a NW."
+  (declare (special *num-word-start-position*
+                    *accumulated-number-word-phrases*))
+  (let* ((hyphen-pos (chart-position-before next-position))
+         (pos-before (chart-position-before hyphen-pos))
+         (next-edge (edge-between next-position (chart-position-after next-position)))
+         (prior-edge (edge-between pos-before hyphen-pos)))
+    ;; could there ever be a multi-position edge to our left?
+    ;; could the prior-numer ever be a mulitplier like 'thousand'?
+    (let* ((value (two-edge-number prior-edge next-edge))
+           (edge (make-chart-edge
+                  :left-edge prior-edge :right-edge next-edge
+                  :category category::number ;???? more specific?
+                  :form category::number
+                  :referent value
+                  :rule 'compose-number-around-hyphen)))
+      (tr :nw-made-edge edge value)
+      ;; should we look further to our right, or assume someone else will?
+
+      ;; stash the edge in case there's a pending collector to our left
+      (push edge *accumulated-number-word-phrases*)
+      
+      ;; This assumes we're returning to number-word-fsa
+      (pos-edge-ends-at edge))))
 
 
-      ;; (tr :nw-fsa-hit-a-comma starting-position)
-      ;; (case (pos-terminal starting-position)
-      ;;   ;;///  (word::comma  -- follow on here needs to be written
-      ;;   ;;        (look-for-number-words-beyond-comma starting-position))
-      ;;   (otherwise
-      ;;    ;; punt and asume we're done
-      ;;    (tr :nw-terminating-at starting-position)
-      ;;    starting-position ))
+(defun scan-for-number-after-and (current-pos next-pos)
+  "The number we've been accumulating ends at the 'and' (current-pos)
+   while 'next-pos' has the first word of the next number on it.
+   We package up the nw that's accumulated and stash it,
+   then we record our new start and keep the fsa going.
+   When it returns here we'll -add- the value of accumulated edge
+   and the returning edge and span them."
+  (declare (special *num-word-start-position*
+                    *accumulated-number-word-phrases*))
+  (let ((prior-edge (package-number-edges *num-word-start-position* current-pos)))
+    (push prior-edge *accumulated-number-word-phrases*)
 
-    ;; Because this fsa is invoked from terminal-edges-sweep there
-    ;; are not already edges over the words. We're looking for a number
-    ;; at this position but we have to make the edge ourselves
-    (let* ((next-word (pos-terminal starting-position))
-           (rs (word-rules next-word))
-           (singles (when rs (rs-single-term-rewrites rs))))
-      (if singles
-        (let ((cfr (look-for-number-rule-in-list-of-cfrs singles))
-              (next-position (chart-position-after starting-position)))
-          (if cfr
-            (then
-              (tr :nw-installing-edge next-word cfr)
-              (install-preterminal-edge cfr next-word
-                                        starting-position next-position)
-              (scan-for-more-number-words next-position))
-            (else
-              (tr :nw-not-number-word next-word)
-              (tr :nw-terminating-at starting-position)
-              starting-position )))
+    (setq *num-word-start-position* next-pos) ;/// use a new variable?
+    (let ((pos-reached ;; the furthest position reached by this scan
+           (scan-for-more-number-words next-pos))
+          (reached-by-pending (when *accumulated-number-word-phrases*
+                                (pos-edge-ends-at (first *accumulated-number-word-phrases*)))))
+      (if (eq pos-reached reached-by-pending)
+        (then ;; we're done (?)
+          (cond
+            ((= 2 (length *accumulated-number-word-phrases*)) ; easy case
+             (let* ((i (add-together-pending-numbers))
+                    (right (first *accumulated-number-word-phrases*))
+                    (left (second *accumulated-number-word-phrases*))
+                    (edge (make-chart-edge
+                           :left-edge left :right-edge right
+                           :category category::number
+                           :form category::number
+                           :referent i
+                           :rule 'scan-for-number-after-and)))
+               pos-reached))
+            (t (break "more than 2 edges past the 'and'"))))
+        (else ;; have to handle some overhang
+          ;;?? Make an edge over the overhang, add it to all we've collected
+          (break "and -- overhang?"))))))
 
-        ;; otherwise return this position as where the sequence of
-        ;; number words ends
-        (else
-          (tr :nw-terminating-at starting-position)
-          starting-position )))))
+
+(defun add-together-pending-numbers ()
+  "Return the number that is the value of the some of each edge"
+  (declare (special *accumulated-number-word-phrases*))
+  (let* ((numbers
+          (loop for edge in *accumulated-number-word-phrases*
+             collect (number-value edge)))
+         (value (apply #'+ numbers)))
+    (find-or-make-number value)))
+           
+
+
+(defgeneric next-word-is-a-number-word? (current-position)
+  (:documentation "Subroutine of scan-for-more-number-words that handles common
+    situation where we've looked at the word that is the terminal at current-position 
+    and will vary our behavior depending on whether the word that follow it is a number word. 
+    The wrinkle is that this is called from within a word-fsa so we have deal with creating edges.")
+  (:method ((current position))
+    (let ((word (pos-terminal current))
+          (next-pos (chart-position-after current)))
+      (scan-and-do-edges current word next-pos) ;; put an edge over the current word
+      (let ((next-word (pos-terminal next-pos)))
+        (let ((edges ;; put an edge over the word after that
+               (scan-and-do-edges next-pos next-word (chart-position-after next-pos))))
+          (when edges
+            (some #'numeric-label edges)))))))
+
+(defun scan-and-do-edges (pos-before word pos-after)
+  "Similar to just-do-terminal-edges but called out of sequence since
+   we're in the scope of a word-triggered fsa here. But we don't have
+   and edge(s) over the words we encounter unless we put them in
+   ourself. Returns a list of the edges it creates."
+  (unless (has-been-status? :preterminals-installed pos-before) ;;/// change so can run twice
+    (install-terminal-edges word pos-before pos-after)))
+          
 
 
 (defun look-for-number-rule-in-list-of-cfrs (cfrs)
@@ -285,16 +364,17 @@
   "The scan has laid-down number edges to record every number
    word it encountered. Here we apply assimilate them into
    an edge with a representation of the numberic value they
-   correspond to."
+   correspond to. We're called in the final clause of number-word-fsa"
   (let ((edges (treetops-between start-pos end-pos)))
     (tr :nw-compute-value edges)
     (cond
       ((and prior-number-edge ;; e.g. "10 million"
             (= 1 (length edges)))
        (let* ((number (find-or-make-number
-                      (number-times-number-word prior-number-edge (car edges))))
+                       (number-times-number-word prior-number-edge (car edges))))
               (edge (make-chart-edge
                      :left-edge prior-number-edge :right-edge (car edges)
+                     :category category::number ;???? more specific?
                      :form category::number
                      :referent number
                      :rule-name 'parse-number-sequence)))
@@ -304,7 +384,6 @@
       ((> (length edges) 1)
        (multiple-value-bind (value edge)
            (compute-word-based-number edges)
-         (unless edge (break "check threading -- no edge"))
          (tr :nw-made-edge edge value)
          edge))
 
@@ -333,6 +412,19 @@
           (warn "Unhandled number pattern: ~a ~a" number-edge number-word-edge))
         0))))
 
+    
+(defparameter product+ones
+  (def-cfr number (number-product ones-number)))
+(defparameter product+tens
+  (def-cfr number (number-product tens-number)))
+              
+
+(defparameter tens+ones
+  (def-cfr number (tens-number ones-number)))
+(defparameter ones*multiplier
+  (def-cfr number-product (ones-number multiplier)))
+(defparameter teens*multiplier
+  (def-cfr number (teens-number multiplier)))
 
 
 (defun compute-word-based-number (edges)
@@ -346,11 +438,13 @@
       (2 (two-edge-number (car edges) (cadr edges)))
       (3 (three-edge-number edges))
       (otherwise
-       (when *debug-numbers*
-         (break "compute number: ~a" labels))))))
+       (push-debug `(,edges))
+       (error "no algorithm to compute the value of ~a number edges:~%~a"
+              (length edges) labels)))))
 
 (defgeneric two-edge-number (e1 e2)
   (:method ((e1 edge) (e2 edge))
+    (declare (special tens+ones ones*multiplier teens*multiplier))
     (let* ((labels (loop for e in (list e1 e2) collect (numeric-label e))))
       (cond
         ((equal labels '(:tens :ones)) ; "twenty three"
@@ -388,6 +482,7 @@
            (break "next two-edge case: ~a" labels)))))))
 
 
+
 (defgeneric three-edge-number (edges)
   (:method ((edges list))
     (let ((e1 (first edges))
@@ -421,53 +516,6 @@
                         :rule (eval rule-name))))
             (values number
                     edge)))))))
-
-
-    
-(defparameter product+ones
-  (def-cfr number (number-product ones-number)))
-(defparameter product+tens
-  (def-cfr number (number-product tens-number)))
-              
-
-(defparameter tens+ones
-  (def-cfr number (tens-number ones-number)))
-(defparameter ones*multiplier
-  (def-cfr number-product (ones-number multiplier)))
-(defparameter teens*multiplier
-  (def-cfr number (teens-number multiplier)))
-
-#| 
- (p "One hundred sixteen") ; note initial word capitalized -- value is 100
-
-"two hundred"
-
-"twenty three"
-"Twenty-three"
-
-"Six-hundred twenty-four" 
-
-"Four hundred thirty"
-"One hundred forty one"
-"One hundred thirty three"
-
-"one hundred million"
-
-"Twenty thousand two hundred and one (20,201)"
-
-|#
-
-
-  #+ignore
-  (let* ((categories (mapcar #'edge-category edges))
-         (numbers (mapcar #'edge-referent edges))
-         (integers (loop for number in numbers
-                      collect (integer-for-number number))))
-    ;; Simplifying initial runs by restricting to just two numbers
-    (when (> (length edges) 2)
-      (warn "more than three edges in number word: ~a~%in ~a" edges (current-string)))
-    (let ((value (* (car integers) (cadr integers))))
-      (find-or-make-number value)))
 
 
 
