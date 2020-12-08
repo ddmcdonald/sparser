@@ -100,7 +100,8 @@
                       bio-chemical-entity
                       molecule-state
                       bio-process
-                      bio-method
+                      activity-with-a-purpose ;; generalizes bio-method
+                      information ;; generalizes "evidence" and "observation"
                       mechanism
                       
                            be
@@ -111,7 +112,6 @@
                            bio-relation
                            bio-rhetorical
                            there-exists
-                           event-relation
                            perdurant
                            ;; not sure either of these is needed
                            relation
@@ -209,6 +209,8 @@
      :like like
      :unlike unlike ))
 
+(define-category bio-scalar-attribute :specializes scalar-attribute
+  :mixins (biological))
 
 (define-category bio-abstract :specializes abstract
    :mixins (biological))
@@ -241,6 +243,7 @@
 (define-category bio-quality :specializes bio-predication
   :mixins (biological))
 
+#+ignore
 (define-category bio-scalar
   :specializes scalar
   :mixins (bio-quality)
@@ -260,7 +263,7 @@
 (define-mixin-category with-measurement
   :specializes adds-relation
   :binds ((at-measurement (:or bio-concentration measurement)) 
-          (extent (:or amount measurement bio-scalar)))
+          (extent (:or scalar-attribute  amount measurement)))
   :realization
      (:at at-measurement
       :to extent))
@@ -277,7 +280,7 @@
 
 (define-category bio-entity  :specializes physical-object  ;; sweeps a lot under the rug
   :mixins (has-UID biological)
-  :binds ((produced-by bio-method))
+  :binds ((produced-by activity-with-a-purpose))
   :instantiates :self
   :binds ((long-form :primitive polyword))
   :index (:permanent :key name)
@@ -342,11 +345,15 @@
   :documentation "No content by itself, provides a common parent
     for 'processing', 'ubiquitization', etc. that may be the basis
     of the grammar patterns."
-  :binds ((by-means-of (:or bio-process mechanism bio-method pathway))
+  :binds ((by-means-of (:or bio-process mechanism
+                            activity-with-a-purpose ;;generalizes bio-method
+                            pathway))
           (using protein)
           (manner manner) ;; conflict with "increase" bio-process CHECK THIS WAS  bio-method
           (without-using protein)
-          (without-means-of (:or bio-process mechanism bio-method pathway))
+          (without-means-of (:or bio-process mechanism
+                                 activity-with-a-purpose ;; generalizes bio-method
+                                 pathway))
           (as-comp as-comp)
           (target (:or protein gene)))
   :restrict ((participant  biological))
@@ -409,13 +416,15 @@
                      infectious-agent ;; virus, bacterium
                      medical-condition
                      experimental-condition
-                     bio-process bio-mechanism bio-method)))
+                     bio-process bio-mechanism activity-with-a-purpose
+                     scalar-attribute  ;; controled by the rate of phosphorylation
+                     ))) ;;generalizes bio-method
     :binds ((cause ;; semantically like agent, but want to tighten the restriction on premodifiers used as agents
              ;; we had gotten "an equivalent activation" which treated "equivalent" as an agent
              (:or rate ; n.b. this is the rate in amounts/measurements.lisp
                   bio-relation ;; The ability of oncogenic RAS to ... allows the cell to have a
-                  measurement 
-                  bio-scalar ;; "these data raised the possibility..."
+                  information ;; "these data raised the possibility..."
+                  ;;amount measurement
                   protein-domain ;; not molecular-location -- that allows residues
                   disease ;; to allow for "cancer targets SMAD3"
                   ))
@@ -423,11 +432,13 @@
              (:or bio-entity cell-entity molecular-location
                   artifact ; "create a model"
                   ;;bio-process bio-mechanism
-                  measurement bio-quality disease)))
+                  scalar
+                  bio-quality
+                  disease)))
     :realization
     (:s agent
         :s cause
-        :o object
+        :o :object
         :of :object
         :m agent
         :m object
@@ -435,15 +446,19 @@
 
 
 (define-category process-control-process :specializes caused-bio-process
-  :binds ((affected-process (:or bio-process bio-mechanism bio-method
+  :binds ((affected-process (:or bio-process bio-mechanism activity-with-a-purpose ;; generalizes bio-method
                                  bio-predication bio-relation medical-treatment)))
   :restrict ((object
                (:or bio-entity cell-entity molecular-location
-                    measurement bio-quality disease)))
+                    disease
+                    measurement
+                    scalar-attribute
+                    )))
   :realization
   (:o affected-process
-      :o object
-      :of affected-process))
+   :o object
+   :of affected-process
+   :of object))
 
 (define-category caused-biochemical-process :specializes caused-bio-process
   :binds ((process-for biochemical-process)))
@@ -493,11 +508,12 @@
                bio-chemical-entity
                bio-location ;; "the Y561 site displayed no difference..."
                disease ;; "SARS-CoV-2 infection shows ..."
-               evidence
+               information 
                bio-quality
                bio-rhetorical
                bio-process ;; the B-RAFV600E mutation predicts
-               bio-method ;; high-throughput functional screens may inform
+               activity-with-a-purpose ;; super-category of bio-method -- now includes "study"
+               ;;bio-method ;; high-throughput functional screens may inform
                bio-mechanism    ;; "this pathway describes ..."
                bio-predication ;; the success of raf and mek inhibitors
                measurement     ;; these data
@@ -507,10 +523,10 @@
                )))
   :binds ((ratio-condition ratio)
 	  (fig article-figure)
-	  (method bio-method)
+	  (method activity-with-a-purpose) ;; generalizes bio-method
           (context bio-context)
           (result biological)
-	  (by-means-of (:or bio-process mechanism bio-method)))
+	  (by-means-of (:or bio-process mechanism activity-with-a-purpose)));; generalizes bio-method
   :realization
     (:s agent
      :o statement
@@ -624,7 +640,8 @@
 ;;; bio-method
 ;;;------------
 
-(define-category purposive-process :specializes  process
+
+#+ignore (define-category purposive-process :specializes  process  ;;; replaced by 'activity-with-a-purpose'
   ;; not quite right -- the verb takes an object, but it is the subject that is moved to the to-comp
   ;;  not quite a raising verb, however, since the subject of the main verb has a meaning
   :binds ((result-or-purpose bio-process))
@@ -632,20 +649,19 @@
      (:to-comp result-or-purpose
       :for result-or-purpose))
 
-(define-category bio-method :specializes purposive-process
-  :mixins (has-UID biological with-agent)
-  :documentation "No content by itself, but indicates something that
-    experimental biologist do, and provides a common parent
+(define-category bio-method :specializes directed-activity-with-a-purpose
+  :mixins (has-UID biological purposive-activity-with-instrument)
+  :documentation "Indicates something that experimental biologist do,
+    and restricts the agent and object as a means of recognizing such activities
+    and provides a common parent
     for 'liquid chromatography', etc. that may be the basis
     of the grammar patterns."
-  :restrict ((agent biological))
-  :binds ((object (:or biological measurement bio-scalar))
-          (instrument (:or bio-process bio-method)))
-  :realization
-    (:s agent
-     :o object
-     :by agent
-     :of :object)) ;; for nominal forms
+  :restrict ((agent biological)
+             (object (:or biological scalar-attribute measure ;; assay is a measure ;; amount measurement 
+                          ))
+             (instrument (:or bio-process activity-with-a-purpose))) ;; generalizes bio-method
+  
+  )
 
 (define-category medical-method :specializes bio-method
                  :documentation "No content by itself, but indicates something that
@@ -683,21 +699,14 @@
 (define-category bio-relation :specializes bio-predication
   :mixins (has-UID biological)
   :documentation "as in  'constitute, contains etc"               
-  :binds ((theme (:or biological predication abstract))
-          (patient (:or biological predication abstract)))
+  :binds ((theme (:or biological predication abstract information)) ;; information dominates evidence
+          (patient (:or biological predication abstract information)))
   ;; this probably belongs higher
   :realization
     (:for timeperiod
       :o patient
       :s theme))
  
-
-(define-category bio-event-relation :specializes bio-relation
-  :restrict ((participant perdurant) ;; this captures all of these and more
-             (theme perdurant))
-  :realization
-    (:s participant
-     :o theme))
 
 (define-category aspectual-relation :specializes bio-relation
   :mixins (control-verb-intrans))
@@ -751,7 +760,8 @@
   :binds ((process process)
           (entity bio-entity)
           (relation bio-relation) ;; for "resistance" etc.
-          (quantitative-condition (:or amount measurement bio-scalar)))
+          (quantitative-condition (:or scalar-attribute ;; amount measurement
+                                       )))
   :realization
     (:noun "context"
      ;; "yielded sustained C-RAF(S338) and ERK phosphorylation in the context of drug treatment"
@@ -1174,11 +1184,11 @@
 
 
 #| several transcription factors, including CREB
-                      forkhead transcription factors
-                      transcription factors such as LEF-1 or Tcf4
-                      the STAT1 transcription factor 
-                      (noun "transcription factor" :super protein)
-                      |#
+   forkhead transcription factors
+   transcription factors such as LEF-1 or Tcf4
+   the STAT1 transcription factor 
+   (noun "transcription factor" :super protein)
+|#
 ;already defined below
 ;(noun "phosphatase" :super post-translational-enzyme)
 
@@ -1340,8 +1350,8 @@
   ;; notion before we promote that behavior to the upper str.
   :mixins (sequence bio-entity))
 #| This would be a good level at which to site a method that
-                      meditated whether or not we distributed the components of
-                      the aggregate across the predicate it's in. |#
+meditated whether or not we distributed the components of
+the aggregate across the predicate it's in. |#
 
 (define-category bio-pair :specializes bio-aggregate 
   :binds ((left)
@@ -1376,7 +1386,7 @@
 
 
 
-(define-category bio-strength :specializes bio-scalar
+(define-category bio-strength :specializes bio-scalar-attribute
   :realization
     (:noun "strength"))
 
