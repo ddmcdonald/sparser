@@ -46,7 +46,7 @@ be biology specific, since they aren't. |#
 (noun "the next day" :specializes time)
 (noun "p.i" :specializes time) ;; post-infection!
 
-(define-category time-course :specializes bio-scalar ;;(noun "rate" :super bio-scalar 
+(define-category time-course :specializes bio-scalar-attribute ;; really? maybe just attribute
   :realization 
   (:noun "time course"))
 ;; adapt to go into core/time/amounts.lisp 
@@ -61,7 +61,7 @@ be biology specific, since they aren't. |#
 (noun ("period of time" :plural "periods of time") :super period)
 
 
-#| keeping for reference
+
 (define-category high :specializes predication
   :binds ((theme (:or scalar measurement biological)))
   :realization
@@ -72,7 +72,7 @@ be biology specific, since they aren't. |#
   :binds ((theme (:or scalar measurement biological)))
   :realization
   (:adj "low"
-        :s theme))  |#
+        :s theme)) 
 
 (define-category noisy :specializes predication
   :binds ((theme (:or scalar measurement biological)))
@@ -105,11 +105,6 @@ be biology specific, since they aren't. |#
 ;;--- "lower"  ("raise")
 ;;/// N.b. the adjective variant is commented out in the modifiers dossier
 ;; "(RasGEFs) lower the transition energy for ..."
-
-(define-category bio-length ;;originally (noun "length" :super bio-scalar)
-  :specializes length
-  :mixins (bio-scalar))
-(specialize-referent "length" 'bio-length)
 
 ;;---- near-term candidates for replacing with attribute-based interpretation
 
@@ -232,13 +227,11 @@ be biology specific, since they aren't. |#
   :realization (:to prior-event))
 
 
-;;--- bio-scalar
 
-
-(define-category threshold :specializes bio-scalar
+(define-category threshold :specializes bio-scalar-attribute
   :realization (:noun "threshold"))
 
-(define-category duration :specializes bio-scalar
+(define-category duration :specializes bio-scalar-attribute
   :binds ((theme (:or process bio-method bio-mechanism)))
   :realization
     (:noun "duration"))
