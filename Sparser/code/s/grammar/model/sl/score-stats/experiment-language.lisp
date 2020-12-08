@@ -32,6 +32,7 @@ was exceptional or ordinary.")
   :lemma (:adjective "variable"))
 
 
+#+ignore ;; experimental-condition needs to be filled out!!! Laurel?
 (define-category within-subject
   :specializes experimental-condition ; << need a lighterweigh version
   :lemma (:adjective "within-subject"))
@@ -89,7 +90,8 @@ was exceptional or ordinary.")
   :realization (:noun "experiment"))
 
 (define-category study
-  :specializes activity-with-a-purpose
+  :specializes directed-activity-with-a-purpose
+  :mixins (purposive-activity-with-instrument)
   :realization  (:noun ("study" :plural "studies")))
 
 
