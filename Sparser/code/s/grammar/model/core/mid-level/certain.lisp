@@ -20,9 +20,11 @@
   ;; inherits 'statement' from bio-complement > bio-thancomp
   ;;  > bio-rhetorical. Should we restrict it
   :mixins (qualifiable ;; "quite certain", "entirely certain"
-           nominal-attribute)
+                       nominal-attribute
+                       with-agent) ;; "I am confident ..."
   :realization (:adj "certain"
-                :adverb "certainly"))
+                :adverb "certainly"
+                :s agent))
 
 (adv "certainly" :super certain)
 
@@ -49,6 +51,9 @@
 (noun "probability" :super certainty)
 
 (adj "possible" :super certain)
+(adj "likely" :super certain) ;; this is to handle uses like "it is likely that ..."
+(adj "plausible" :super certain) ;; this is to handle uses like "it is likely that ..."
+
 (adv "possibly" :super certain)
 
 (adv "probably" :super certain)
