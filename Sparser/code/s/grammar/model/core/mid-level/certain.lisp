@@ -21,10 +21,13 @@
   ;;  > bio-rhetorical. Should we restrict it
   :mixins (qualifiable ;; "quite certain", "entirely certain"
                        nominal-attribute
-                       with-agent) ;; "I am confident ..."
+                       with-agent
+                       raising-to-subject) ;; "I am confident ..."
+  :restrict ((agent (:or endurant perdurant abstract)))
   :realization (:adj "certain"
                 :adverb "certainly"
-                :s agent))
+                :s agent
+                :thatcomp theme))
 
 (adv "certainly" :super certain)
 
@@ -51,7 +54,7 @@
 (noun "probability" :super certainty)
 
 (adj "possible" :super certain)
-(adj "likely" :super certain) ;; this is to handle uses like "it is likely that ..."
+(adj likely-adj :super certain :adj "likely")  ;; this is to handle uses like "it is likely that ..."
 (adj "plausible" :super certain) ;; this is to handle uses like "it is likely that ..."
 
 (adv "possibly" :super certain)
@@ -68,22 +71,17 @@
 ;; is likely to be mediated by
 ;; is likely that this possible feedback
 ;; will likely be useful
-(define-category likely
-  :mixins (raising-to-subject)
-  :specializes certainty
+(define-category likely-adj
+  :specializes certain
   :realization
-    (:adj "likely"
-     :adverb "likely" ;;want likely to ambiguously be an adjective or adverb
-     :thatcomp theme))
+    (:adj "likely"))
 ;; bio-relation and bio-rhetorical appear to differ mostly
 ;; on their value restrictions. 
 
 (define-category unlikely
-  :mixins (raising-to-subject) ;; to-comp
-  :specializes certainty
+  :specializes certain
   :realization
-    (:adj "unlikely"
-     :thatcomp theme))
+    (:adj "unlikely"))
 ;; almost never an adverb in our texts
 ;; need a good way to distinguish the cases
 ;; "is likely to ..." vs "is likely due..."
