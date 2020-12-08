@@ -144,6 +144,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
   :realization
     (:s actor
      :o patient
+     :o attribute
      :a attribute
      :mumble (svo-adj :s actor :o patient :adj attribute)))
 
@@ -160,12 +161,12 @@ subcategorization-pattern is a daughter of linguistic, abstract
   :restrict ((actor endurant)
              (patient physical)
              (attribute attribute)
-             (result attribute-value))
+             (result attribute))
   :realization
     (:s actor
      :o patient
-     :a attribute
-     :o result))
+     :o result
+     :a attribute))
 
 
 ;; Have we ever had indirect objects? Using 'o' is just
