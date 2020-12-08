@@ -117,7 +117,7 @@
 
 ;;--- medical treatment
 
-(define-category medical-treatment :specializes purposive-process
+(define-category medical-treatment :specializes  activity-with-a-purpose
   :binds ((disease disease)
           (medical-treatment medical-treatment))
   :mixins (biological)
