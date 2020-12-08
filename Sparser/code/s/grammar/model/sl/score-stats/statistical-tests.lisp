@@ -18,7 +18,7 @@
 ;; Fs(1,75) <1.5, NS
 
 
-(define-category data-method :specializes purposive-process ;; same parent as bio-method
+(define-category data-method :specializes activity-with-a-purpose ;; same parent as bio-method
                  )
 
 (define-category stat-test :specializes data-method
