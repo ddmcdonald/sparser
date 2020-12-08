@@ -301,7 +301,7 @@
       (:adj "insensitive"
              :to theme))
    
-(noun "insensitivity" :super bio-scalar ;; HUH?
+(noun "insensitivity" :super bio-scalar-attribute ;; HUH?
       :binds ((cause biological))
       :realization
       (:noun "insensitivity"
@@ -379,7 +379,7 @@
 
 
 (adj "relative" :super bio-relation
-     :restrict ((participant bio-scalar))
+     :restrict ((participant scalar-attribute))
      :realization
      (:to participant))
 
@@ -407,7 +407,7 @@
       (:adj "sensitive"
              :to theme))
 
-(noun "sensitivity"  :super bio-scalar
+(noun "sensitivity"  :super bio-scalar-attribute
       :binds ((cause biological))
       :realization
       (:noun "sensitivity"
@@ -453,7 +453,7 @@
            :to treatment))
 
 (define-category useful :specializes bio-relation
-     :restrict ((purpose (:or bio-process bio-method)))
+     :restrict ((purpose (:or bio-process bio-method activity-with-a-purpose)))
      :realization
      (:adj "useful"
            :for purpose))
