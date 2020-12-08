@@ -125,14 +125,15 @@
 (noun "control" :super bio-method)
 
 (define-category absence :specializes experimental-condition
-  :binds ((measurement (:or measurement bio-scalar)))
+  :binds ((measurement (:or biological  ;; can be "in the absence of of HRAS V12"
+                scalar-attribute)))
   :realization
   (:noun "absence"
 	 :of measurement))
 (define-category presence :specializes experimental-condition
   :binds ((measurement
            (:or biological ;; can be "in the presence of of HRAS V12"
-                measurement bio-scalar)))
+                scalar-attribute)))
   :realization
   (:noun "presence"
 	 :of measurement))
