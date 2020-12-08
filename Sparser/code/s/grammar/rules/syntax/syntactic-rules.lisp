@@ -608,11 +608,17 @@
               do
                 (eval 
                  `(def-syntax-rule (,(car vv) ,nb)
-                      :head :left-edge
-                      :form ,(second vv)
-                      :referent (:function assimilate-np-to-v-as-object left-edge right-edge)))))
+                    :head :left-edge
+                    ;; NOTE -- when the first NP after a VG is reasonably an indirect object
+                    ;; or the verb takes an :oc (object complement), then the resulting
+                    ;; form is reset to a VG (not a VP) in assimilate-np-to-v-as-object
+                    :form ,(second vv)
+                    :referent (:function assimilate-np-to-v-as-object left-edge right-edge)))))
 
-
+;;; NEED TO DEAL WITH INDIRECT-OBJECTS and OBJECT COMPLEMENTS
+;;; "we gave John a book"
+;;; "he made John a hero"
+;;; "it made John heroic"
 
 ;;;----------------------------------------------------------------
 ;;; PP and CLAUSAL COMPLEMENTS to VGs and VPs (verb-like elements)
