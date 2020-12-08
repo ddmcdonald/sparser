@@ -320,7 +320,8 @@
 
 
 (define-category accumulation :specializes bio-self-movement
-  :binds ((amount bio-scalar))
+  :binds ((amount (:or scalar-attribute ;; amount measurement
+                       )))
   :restrict ((origin blocked-category))               
   :realization
   (:verb "accumulate" :noun "accumulation"
@@ -329,7 +330,7 @@
          :at destination))
  
 (define-category acquire :specializes caused-bio-process ;; for conjunctions, as in "de novo or acquired"
-    :binds ((method bio-method))
+    :binds ((method activity-with-a-purpose))
     :realization
     ( ;;:verb "acquire" ;; keyword: ENDS-IN-ED
      :adj "acquired"
@@ -460,7 +461,8 @@
 ;; DAVID -- not sure about the relation of basis to base
 (define-category base :specializes perdurant ;; DAVID -- need a better parent
    ;;bio-rhetorical -- it doesn't ake a bunch of the modifiers of bio-rhetorical
-   :binds ((cause (:or biological bio-rhetorical measurement bio-scalar))
+  :binds ((cause (:or biological bio-rhetorical scalar-attribute ;; amount measurement
+                      ))
            (object
             (:or
              bio-chemical-entity
@@ -476,7 +478,8 @@
              bio-quality
              bio-rhetorical
              bio-process ;; the B-RAFV600E mutation predicts
-             bio-method ;; high-throughput functional screens may inform
+             ;;bio-method ;; high-throughput functional screens may inform
+             activity-with-a-purpose ;; generalizes bio-method
              bio-mechanism     ;; "this pathway describes ..."
              bio-predication ;; the success of raf and mek inhibitors
              measurement     ;; these data
@@ -1061,7 +1064,7 @@
 
 
 (define-category reconstitute :specializes caused-bio-process
-  :binds ((amount (:or measurement bio-scalar))
+  :binds ((amount (:or scalar-attribute))
           (in (:or measurement biological)))
   :realization
   (:verb "reconstitute" :noun "reconstitution"
@@ -1193,7 +1196,7 @@
 
 (define-category revert :specializes bio-process
  :binds ((state bio-state)
-         (scalar bio-scalar)
+         (scalar (:or scalar-attribute))
          (object biological)
          (agent interlocutor))
  
@@ -1427,7 +1430,7 @@
   :etf (svo))
 
 (define-category undergo :specializes other-bio-process
-  :binds ((process (:or bio-process bio-method)))
+  :binds ((process (:or bio-process  activity-with-a-purpose)))
   :realization 
   (:verb "undergo" 
          :etf (svo)
