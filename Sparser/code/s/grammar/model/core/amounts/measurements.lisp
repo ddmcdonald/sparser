@@ -22,7 +22,7 @@
 ;;;--------
 
 (define-category  measurement  ;; "10 yards"
-  :specializes abstract
+  :specializes attribute-value
   :instantiates self
   :lemma (:common-noun "measurement")
   :binds ((units . unit-of-measure)
@@ -61,23 +61,19 @@ and the word can stand by itself "that distance"
 ;;; imported from bio;taxonomy
 ;;;----------------------------
 
-(define-category ratio
-  :specializes measurement
+(define-category ratio :specializes scalar-attribute
   :binds ((measured hyphenated-triple)
-	  (ratio (:or ratio number-colon-number))
-	  (divisor #|biological|#))
+	  (divisor))
   :realization
      (:noun "ratio"
       :m measured
-      :of ratio
       :to divisor))
 
 (define-category value
   :specializes measurement
   :realization (:noun "value")) ;; for "a high value"
 
-(define-category level
-  :specializes amount
+(define-category level :specializes scalar-attribute
   :realization (:noun "level"))
 #| ;; should be bio-level, because it restricts the argument
 ;;  but I don't want to impact parsing and Spire
@@ -90,11 +86,14 @@ and the word can stand by itself "that distance"
 ;; more suspect imports -- have to generalize bio-method
 
 (define-category measure
-  :specializes process
+  :specializes activity-with-a-purpose
   :mixins (measuring-verb with-instrument)
   :realization 
-    (:verb "measure"
-     :with instrument))
+  (:verb "measure"
+   :noun "measure"
+   :with instrument))
+
+
      
 (define-category correlate
   :specializes measure
