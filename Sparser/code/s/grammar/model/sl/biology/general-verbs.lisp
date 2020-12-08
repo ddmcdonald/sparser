@@ -68,7 +68,7 @@
   :restrict ((agent
               (:or         ;;bio-entity
                bio-chemical-entity ;;molecule bio-complex drug
-               bio-process bio-mechanism bio-method
+               bio-process bio-mechanism activity-with-a-purpose
                )))               
   :binds ((process (:or biological have process)))
   :realization
@@ -163,7 +163,8 @@
 
 
 (define-category change :specializes bio-control
-      :binds ((scale bio-scalar)
+  :binds ((scale (:or scalar-attribute ;;  amount measurement
+                      ))
               (original (:or bio-entity))
               (resulting (:or bio-entity))
               ) 
@@ -199,7 +200,7 @@
 (define-category conduct :specializes bio-method
     :binds ((beneficiary biological)
             (using biological)
-            (method bio-method))
+            (method activity-with-a-purpose))
     :realization
     (:verb "conduct" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
@@ -214,8 +215,8 @@
 	   :noun "confirmation"
 	   :etf (svo-passive)))
 
-(define-category consider :specializes bio-rhetorical
-    :mixins (raising-to-object)
+(define-category consider :specializes directed-activity-with-a-purpose
+    :mixins (bio-rhetorical raising-to-object)
     :restrict ((theme (:or be biological))) ;; could be "the effects..."
     :realization
     (:verb ("consider" :present-participle "considering"
@@ -417,7 +418,7 @@
 ;; DTDA: "What proteins might lead to the development of lung cancer?"
 
 (define-category diminish :specializes negative-bio-control
-  :restrict ((object (:or biological bio-scalar)))
+                          :restrict ((object (:or biological scalar-attribute )))
   :realization
   (:verb ("diminish"  :third-singular "diminishes"  :past-tense "diminished"
           :present-participle "diminishing")
@@ -552,8 +553,8 @@
 
 
 (define-category exist :specializes bio-predication
-  :binds ((measurement (:or measurement bio-scalar))
-          (theme bio-chemical-entity))
+                       :binds ((measurement scalar-attribute )
+                               (theme bio-chemical-entity))
   :realization
   (:verb "exist"
          :noun "existence"
@@ -611,7 +612,8 @@
 (define-category bio-form :specializes caused-bio-process
   :restrict ((object (:or cellular-location ;; such locations are structures that can be formed
                           bio-entity cell-entity molecular-location
-                          measurement bio-scalar disease)))
+                          scalar-attribute
+                          disease)))
   :realization
   (:verb "form"
          ;; "form" has never been seen as a verb in the corpus, but "forms" and "formed"
@@ -812,7 +814,8 @@
 (define-category lead 
   :specializes positive-bio-control
   :mixins (raising-to-object)
-  :restrict ((agent (:or bio-process bio-method bio-mechanism bio-relation
+  :restrict ((agent (:or bio-process activity-with-a-purpose
+                         bio-mechanism bio-relation
                          bio-entity)) ;; "KRAS leads to cancer"
              (theme (:or biological bio-rhetorical)))
   :realization
@@ -923,7 +926,7 @@
     :binds ((observation
              (:or bio-entity molecule-state molecular-location))
             (focused-on biological)
-            (method (:or bio-method result))
+            (method (:or activity-with-a-purpose result)) 
 	    (ingredient-condition bio-entity))
     :realization
     (:verb "observe" ;; keyword: ENDS-IN-ED 
@@ -938,7 +941,7 @@
 
 (define-category obtain :specializes bio-method
     :binds ((source biological)
-            (method bio-method))
+            (method activity-with-a-purpose)) 
     :realization
     (:verb "obtain" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
@@ -968,7 +971,7 @@
 (define-category perform :specializes bio-method
     :binds ((beneficiary biological)
             (using biological)
-            (method bio-method))
+            (method activity-with-a-purpose))
     :realization
     (:verb "perform" ;; keyword: ENDS-IN-ED 
 	   :noun "performance"
@@ -985,7 +988,7 @@
 (define-category run :specializes bio-method
     :binds ((beneficiary biological)
             (using biological)
-            (method bio-method))
+            (method activity-with-a-purpose))
     :realization
     (:verb ("run" :past-tense "ran" :past-participle "run") ;; keyword: ENDS-IN-ED 
 	   :noun "performance"
@@ -1083,7 +1086,7 @@
 ;; TO-DO may want to split rehtorical version and bio-chemical version
 ;; "X provides support for Y" and "X supports process Y"
 (define-category provide :specializes bio-relation
-    :restrict ((participant (:or result biological))
+    :restrict ((participant (:or result biological information))
                (theme (:or insight argument-support biological bio-rhetorical abstract)))
     :realization
     (:verb "provide"
@@ -1119,7 +1122,7 @@
 
 (define-category raise :specializes positive-bio-control
     :binds ((object (:or bio-process bio-abstract  bio-rhetorical antibody)) 
-            (method bio-method)
+            (method (:or activity-with-a-purpose measure)) 
             (bio biological))
     :realization
     (:verb "raise" ;; keyword: ENDS-IN-ED 
@@ -1148,7 +1151,8 @@
         (:verb "rely"
          :etf (sv)
          :on theme
-         :for purpose))
+         :for purpose
+         :to-comp purpose))
 
 
 
@@ -1174,14 +1178,15 @@
   :binds ((requirement (:or biological process)))
   :restrict ((purpose biological))
   :realization
-    (:verb "require"
-	   :noun "requirement"
-	   :etf (svo-passive)
-	   :o requirement
-           :for purpose))
+  (:verb "require"
+   :noun "requirement"
+   :etf (svo-passive)
+   :o requirement
+   :for purpose
+   :to-comp purpose))
 
 (define-category result :specializes bio-relation
-  :binds ((results-in (:or bio-process bio-method bio-predication)))
+  :binds ((results-in (:or bio-process activity-with-a-purpose bio-predication))) 
   :restrict ((participant perdurant))
     :realization
     (:verb ("result" :third-singular "results") ;; block plural form of the verb, because of interaction with noun
@@ -1194,7 +1199,7 @@
 
 (define-category return :specializes caused-bio-process
  :binds ((state bio-state)
-         (scalar bio-scalar))
+         (scalar scalar-attribute))
  :realization
  (:verb "return"
   :etf (sv)
@@ -1215,7 +1220,7 @@
 
 
 (define-category select :specializes bio-method
-    :binds ((study bio-method))
+    :binds ((study activity-with-a-purpose))
     :realization
     (:verb "select" ;; keyword: ENDS-IN-ED 
 	   :noun "selection"
@@ -1257,7 +1262,7 @@
 
 
 (define-category set-value :specializes caused-bio-process
-  :binds ((value (:or number measurement unit-of-measure bio-scalar)))
+                           :binds ((value (:or number unit-of-measure scalar-attribute )))
   :realization
   (:verb "set"
          :etf (svo-passive)
@@ -1442,15 +1447,15 @@
          :etf (svo-passive)))
 
 (define-category bio-use :specializes bio-method
-  :mixins (raising-to-object)
+  :mixins (raising-to-object biological)
   :restrict ((theme
               (:or bio-event bio-predication bio-process
-                   bio-method bio-rhetorical)))
+                   activity-with-a-purpose bio-rhetorical))) 
   :binds ((used-to biological)
           ;;(disease disease)
           (purpose (:or treatment disease))
           (object (:or bio-chemical-entity bio-organ bio-process bio-mechanism
-                       bio-method
+                       activity-with-a-purpose 
                        experimental-condition cell-line
                        measurement ;; "data", "dataset"
                        database
@@ -1466,9 +1471,10 @@
          ))
 
 (define-category bio-utilize :specializes bio-method
-  :mixins (raising-to-object)
+  :mixins (raising-to-object  biological)
   :restrict ((theme
-              (:or bio-event bio-predication bio-process bio-method bio-rhetorical)))
+              (:or bio-event bio-predication bio-process activity-with-a-purpose
+                   bio-rhetorical)))
   :binds ((used-to biological)
           (disease disease)
           (object (:or bio-chemical-entity bio-organ bio-process bio-mechanism))
