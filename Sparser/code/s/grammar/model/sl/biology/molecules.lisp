@@ -151,7 +151,7 @@
 (define-category fragment :specializes protein ;; not sure, but perhaps is always a protein -- can be phospohorylated
       :binds ((whole bio-entity)
               ;; bio-scalar is for "a  fragment of the same mass as ..."
-              (measure (:or measurement bio-scalar)))
+              (measure scalar-attribute))
       :realization
       (:noun "fragment"
              :of whole
