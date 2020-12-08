@@ -34,7 +34,7 @@ increasing amounts of recombinant XRCC1.
   (:noun "frequency"))
 
 (define-category peak :specializes bio-scalar-attribute
-  :restrict ((owner (:or biological scalar-attribute)))
+  :restrict ((owner (:or biological scalar-attribute amount)))
   :realization (:noun "peak"
                 :in owner ;;measured-item
                       ) ;; "a peak in the measured amount ..."
