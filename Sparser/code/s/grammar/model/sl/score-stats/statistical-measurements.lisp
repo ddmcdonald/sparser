@@ -426,7 +426,7 @@
     :action (:function make-interval-stat-measure-low-high first third fifth))
 
 (define-early-pattern-rule interval-bracket-nums-semicolon ;; 95% CI[-.36; -.54]
-    :pattern (interval-statistic "[" number semicolon number "]")
+    :pattern (interval-statistic "[" number ";" number "]")
     :action (:function make-interval-stat-measure-low-high first third fifth))
 
 (define-early-pattern-rule interval-equals-bracket-nums-hyph
