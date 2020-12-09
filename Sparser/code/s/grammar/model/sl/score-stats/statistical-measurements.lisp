@@ -500,8 +500,8 @@
 (def-stat-measure "degrees-of-freedom" :stat-names ("degrees-of-freedom" "degrees of freedom" "df" "d.f." "DF"))
 (def-stat-measure "p" :stat-names ("p" "p-value" "P"))
 (define-category not-sig :specializes p-stat-measure
-                 :bindings (:value "not significant")
-                 :realization (:noun ("not significant" "ns" "NS")))
+  ;; :bindings (:value "not significant") -- string violates v/r on value slot of stat-measure
+  :realization (:noun ("not significant" "ns" "NS")))
 (def-stat-measure "p-rep" :stat-names ("p-rep" "prep" "probability of replicability")) 
 (def-stat-measure "alpha" :stat-names ("alpha" "ɑ")) 
 (def-stat-measure "z-score" :stat-names ("z-score" "z"))
