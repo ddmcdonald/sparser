@@ -48,6 +48,7 @@
                   superlative superlative-adjective superlative-adjp)
    do (def-form-rule/expr `(be ,aa)
          :form 'vp
+         :head :left-edge 
          :referent '(:function make-copular-adjective
                                left-edge right-edge)))
 
