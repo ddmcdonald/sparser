@@ -97,14 +97,23 @@
   "For accumulating the unique set of sentences where the rule
    applies. For the snapshots as of 8/28/16 there were 80.")
 
+(defparameter *construct-copular-scafold* nil
+  "If non-nil, make-copular-adjective will assemble and return
+   a copular-predication individual. Otherwise we are relying on
+   the adjective having a subcategorization for its subject.")
+
 (defun make-copular-adjective (copula adjective)
   "Corresponds to the form rule for be+adjective (or +adjp) which
    composes them to create a VP with consituents for the verb group
    (e.g. 'should be') and the adjective or adjp. 
-   This instantiates a three-place predication: copular-predication,
-   with the item that it will be applied to (presumably the subject)
-   left open."
-  (declare (special category::copular-predicate category::to-comp))
+   If we are making a copular scafold we instantiate a three-place
+   predication: copular-predication with the item that it will be
+   applied to (presumably the subject)left open. Otherwise we make
+   the interpretation be just the adjective on the assumption that it
+   subcategorizes for the subject."
+  ;; This is all sorted out in assimilate-subject
+  (declare (special category::copular-predicate category::to-comp
+                    *construct-copular-scafold*))
   #+ignore(pushnew (current-string)
                    *sentences-going-through-copular-adjective*)
   (cond
@@ -114,13 +123,27 @@
      ;; adjective/adjp). We can't know that at this point, so we just
      ;; trust that it will all work out.
      t)
-    (t 
-       (progn
-         (if (eq (edge-form (left-edge-for-referent)) category::infinitive)
-           ;; "to be dominant" is not a VP, but is a to-comp
-           (revise-parent-edge :form category::to-comp)
-           (revise-parent-edge :form category::vp))
-         (bind-variable 'aux copula adjective)))))
+    (t
+     (if (eq (edge-form (left-edge-for-referent)) category::infinitive)
+       ;; "to be dominant" is not a VP, but is a to-comp
+       (revise-parent-edge :form category::to-comp)
+       (revise-parent-edge :form category::vp))
+     
+     (if *construct-copular-scafold*
+       (let ((i (find-or-make-individual
+                 'copular-predication :predicate copula :value adjective)))
+         ;; Note that edge label deliberately is different.
+         ;; The idea is have edge category labels that distinguish
+         ;; between the vp and the eventual full clause.
+         ;;/// this reads oddly in an analysis, so consider just
+         ;; going with the edge label of the adjp instead
+         (revise-parent-edge :category category::copular-predicate)        
+         i)
+     
+       (else
+         ;; The adjective should subcategorize via :s for the
+         ;; sensible subjects it can compose with.
+         (bind-variable 'aux copula adjective))))))
 
 
 
