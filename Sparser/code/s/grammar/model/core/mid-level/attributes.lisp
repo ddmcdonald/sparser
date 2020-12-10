@@ -48,8 +48,9 @@
 ;; The word "level" is a bio-scalar in bio, and used extensively
 ;; so have to prepare for fanout when naming this 'level'
 
-(define-attribute rate-of-change) ;; fast, slow
-;; vs 'rate' as defined in amounts/measurements.lisp
+(define-attribute rate-of-change ;; fast, slow
+    ;; vs 'rate' as defined in amounts/measurements.lisp
+    :subcat (modifies-scalar))
 
 (define-attribute goodness) ;; better, worst
 ;; would be 'quality' except that's taken by the upper model

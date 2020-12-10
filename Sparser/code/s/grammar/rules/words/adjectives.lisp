@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1995,2014,2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2014,2019-2020  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "adjectives"
 ;;;   Module:  "grammar;rules:words:"
-;;;  version:  November 2019
+;;;  version:  December 2020
 
 ;; initiated in 1/9/95. Redone in terms of fn words 4/12/95,
 ;; Rewritten from scratch 6/4/14. Added the other options 6/9/14
@@ -24,6 +24,7 @@
                         (super-category-for-POS :adjective))
     :rule-label (or rule-label
                     'modifier)
+    :mixins mixin
     :bindings bindings
     :discriminator discriminator
     :tree-families '(prenominal-adjective)

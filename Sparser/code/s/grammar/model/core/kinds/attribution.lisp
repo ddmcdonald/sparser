@@ -1,9 +1,9 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; Package: sparser; -*-
-;;; Copyright (c) 2010-2017 David D. McDonald 
+;;; Copyright (c) 2010-2020 David D. McDonald 
 ;;;
 ;;;            "attribution"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  January 2017
+;;;  version:  December 2020
 
 (in-package :sparser)
 
@@ -165,6 +165,7 @@ be added to attribute so it knows how to handle the individuals.
      &key
        ((:var name-of-variable))
        ((:mixins name-of-mixin-category))
+       ((:subcat name-of-subcategory-mixin))
        ((:word word-that-denotes-attribute))
        ((:a-pos attribute-part-of-speech))
        ((:value-cat name-of-field-category))
@@ -173,7 +174,7 @@ be added to attribute so it knows how to handle the individuals.
        ((:val-rule-label rule-label-for-values)))
        
   "Makes the function and three categories required to define
- an attribute. Constructs names for them based on the symbol that
+ an attribute. Constructs names for these based on the symbol that
  is passed in. Keyword arguments are provided to override the
  defaults."
    (flet ((sintern (&rest strings)
@@ -181,27 +182,35 @@ be added to attribute so it knows how to handle the individuals.
                    (find-package :sparser))))
      (let* ((var-name ;; 'size
              (or name-of-variable attribute-name))
+            
             (mixin-name ;; has-size
              (or name-of-mixin-category
                  (sintern '#:has- var-name)))
+            
             (v/r-category ;; 'size
              ;; must be same as name of attribute class
              attribute-name)
+            
             (attribute-word ;; "size"
              (or word-that-denotes-attribute
                  (resolve/make
                   (string-downcase (symbol-name attribute-name)))))
+            
             (attribute-pos
-             (or attribute-part-of-speech :common-noun))            
+             (or attribute-part-of-speech :common-noun))
+            
             (attibute-field-name ;; size-value
              (or name-of-field-category
                  (sintern var-name '#:-value)))
+            
             (instance-maker
              (or name-of-define-fn
                  (sintern '#:define- var-name)))
+            
             (field-pos
              (or field-part-of-speech
                  :adjective))
+            
             (field-rule-label ;; size
              (or rule-label-for-values
                  attribute-name)))
@@ -220,7 +229,7 @@ be added to attribute so it knows how to handle the individuals.
         a. It provides the variable that will be bound.
         The name of the variable is the same as the
         name of the attribute
-        b. This category is its value restriction. |#
+        b. The category is its value restriction. |#
 
          
          ;; attribute-name: size
@@ -267,6 +276,7 @@ be added to attribute so it knows how to handle the individuals.
              (let ((c
                     (define-adjective string
                         :super-category ',attibute-field-name
+                        :mixin ',name-of-subcategory-mixin
                         :bindings '(attribute ',attribute-name)
                         :rule-label ',attibute-field-name)))
                ;;(make-corresponding-mumble-resource (value-of 'name i) :adjective i)

@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "subcat-patterns"
 ;;;   Module:  "model;core:mid-level::"
-;;;  version:  November 2020
+;;;  version:  December 2020
 
 (in-package :sparser)
 
@@ -15,9 +15,15 @@ into natural classes.
 
 At the same time these provide the standard set of variables
 for the specific verbs, drawing primarily from the ECI set as
-implemented in core/kinds/roles.lisp. That should also encapsulate
-the choice of role since in many cases all that has to be done
-for categories of specific verbs is specify the verb. 
+implemented in core/kinds/roles.lisp. We package these as mixins,
+encapsulating the choice of variables and how the variables
+participate in realizations. 
+
+The goal is to makes these subcat mixins rich enough that all
+we have to do to define the realization of a specific verb is
+to specify the verb and any irregularities it has
+
+
 
 The set of 'families' that can appear in the etf field of
 a simplified realization for a verb are (5/17)
@@ -30,6 +36,10 @@ a simplified realization for a verb are (5/17)
 subcategorization-pattern is a daughter of linguistic, abstract
 
 |#
+
+;;;---------------
+;;; Verb patterns
+;;;---------------
 
 (define-mixin-category basic-intransitive
   :specializes subcategorization-pattern
@@ -230,17 +240,16 @@ subcategorization-pattern is a daughter of linguistic, abstract
   ;;  With experiencer - "It seems to me that/like..."
   :specializes subcategorization-pattern
   :mixins (with-theme with-experiencer with-expletive)
-  :restrict ((expletive pronoun-inanimate) (experiencer (:or pronoun physical-agent)))
+  :restrict ((expletive pronoun-inanimate)
+             (experiencer (:or pronoun physical-agent)))
   :realization (:s expletive
   :to experiencer
   :thatcomp theme
   :s-comp theme
   :mumble ((svscomp :s expletive :c theme)
-  (svpcomp :s expletive :c theme)
-  (svo1o2 :s expletive :o1 experiencer :o2 theme)
-  (svo1o2 :s expletive :o1 experiencer :o2 theme)
-  
-  )))
+           (svpcomp :s expletive :c theme)
+           (svo1o2 :s expletive :o1 experiencer :o2 theme)
+           (svo1o2 :s expletive :o1 experiencer :o2 theme))))
 
 
 (define-mixin-category move-something-verb
@@ -281,7 +290,9 @@ subcategorization-pattern is a daughter of linguistic, abstract
    objects, particularly with 'in', may well want to be a
    separate category.")
 
-(define-mixin-category scomp-verb ;; "Let me know ...", "Make me ..." -- Quirk calls these object + bare-infinitive complements
+(define-mixin-category scomp-verb
+    ;; "Let me know ...", "Make me ..."
+    ;; -- Quirk calls these object + bare-infinitive complements
     :specializes subcategorization-pattern
     :mixins (with-agent with-theme takes-tense-aspect-modal)
     :restrict ((agent (:or physical-agent social-agent))
@@ -302,28 +313,6 @@ subcategorization-pattern is a daughter of linguistic, abstract
     (:s experiencer
      :mumble (svscomp :s experiencer :c theme))) ;; I know that roses are red
 
-
-(define-mixin-category takes-of
-  :specializes subcategorization-pattern
-  :mixins (with-theme)
-  :documentation "There is a very wide array of of-construction
- patterns (Quirk et al. 17.38), from partives ('a cup of water')
- to gentives ('the population of a city', 'the city's population'),
- to this is weak choice of variables"
-  :realization (:of theme))
-
-
-(define-mixin-category nominal-attribute
-  :specializes subcategorization-pattern
-  :mixins (with-theme)
-  :restrict ((theme (:or endurant perdurant)))
-  :documentation "This mixin is for the attribute,
-    which is being attributed of the theme"
-  :realization
-    (:of theme ;; and possessive
-     :s-comp theme
-     :thatcomp theme
-     :mumble (adj-that-comp :c theme)))
 
 (define-mixin-category ask/tell
   :specializes subcategorization-pattern
@@ -347,19 +336,6 @@ subcategorization-pattern is a daughter of linguistic, abstract
                          (svoscomp :s agent  :o beneficiary :c theme))))
 
 
-(define-mixin-category with-specified-location
-  :specializes subcategorization-pattern
-  :binds ((supported-by physical)
-          (next-to physical)
-          (at-relative-location (:or location physical)) ;;relative-position)
-          (goal (:or location physical)))
-  :realization (;; :next\ to next-to ;;moved to regular prep's
-                :on supported-by
-                ;; :on\ top\ of supported-by
-                :at at-relative-location ;; at the end
-                :on at-relative-location ;; on the left
-                :into at-relative-location
-                :to goal))
 
 ;; VerbNet additions
 
@@ -377,7 +353,6 @@ subcategorization-pattern is a daughter of linguistic, abstract
                 :a manner
                 :mumble (SVADV :s patient :a manner)))
 
-;; Still under construction
 
 (define-mixin-category resultative
   :specializes subcategorization-pattern
@@ -403,4 +378,68 @@ subcategorization-pattern is a daughter of linguistic, abstract
                 :from source
                 :to goal
                 :mumble ((svo1o2 :s patient :o1 source :o2 goal)
-                        (svo :s patient :o goal))))
+                         (svo :s patient :o goal))))
+
+
+;;;---------------
+;;; noun patterns
+;;;---------------
+
+(define-mixin-category takes-of
+  :specializes subcategorization-pattern
+  :mixins (with-theme)
+  :documentation "There is a very wide array of of-construction
+ patterns (Quirk et al. 17.38), from partives ('a cup of water')
+ to gentives ('the population of a city', 'the city's population'),
+ to this is weak choice of variables"
+  :realization (:of theme))
+
+(define-mixin-category nominal-attribute
+  :specializes subcategorization-pattern
+  :mixins (with-theme)
+  :restrict ((theme (:or endurant perdurant)))
+  :documentation "This mixin is for the attribute,
+    which is being attributed of the theme"
+  :realization
+    (:of theme ;; and possessive
+     :s-comp theme
+     :thatcomp theme
+     :mumble (adj-that-comp :c theme)))
+
+;;;-------------------------
+;;; patterns for adjectives
+;;;-------------------------
+
+(define-mixin-category modifies-scalar
+  :specializes subcategorization-pattern
+  :mixins (with-theme)
+  :restrict ((theme scalar-attribute))
+  :realization (:s theme)
+  :documentation "Can be added to the definition of adjectives
+    to spell out what class of things they apply to,
+    typically what category of subjects they can be predicated of.")
+
+
+;;;-------------------------------
+;;; patterns for sets of adjuncts
+;;;-------------------------------
+
+(define-mixin-category with-specified-location
+  :specializes subcategorization-pattern
+  :binds ((supported-by physical)
+          (next-to physical)
+          (at-relative-location (:or location physical)) ;;relative-position)
+          (goal (:or location physical)))
+  :realization (;; :next\ to next-to ;;moved to regular prep's
+                :on supported-by
+                ;; :on\ top\ of supported-by
+                :at at-relative-location ;; at the end
+                :on at-relative-location ;; on the left
+                :into at-relative-location
+                :to goal))
+
+
+
+
+
+
