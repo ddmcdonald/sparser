@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "fn word routine"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   November 2019
+;;;   Version:   December 2020
 
 ;; 0.1 (12/17/92 v2.3) redid the routine so it was caps insensitive and handled
 ;;      bracketing.
@@ -244,10 +244,16 @@
             ;; Make realization-data object for the category
             (setup-word-data word (rationalize-pos form) category)
             ;; make the lexicalize phrase
+            ;;///// FIXME the second argument (:common-noun) has to be
+            ;;  based on the form parameter in a mapping something
+            ;;  like the one for brackets at the top. Alternatively
+            ;;  we pass in the form as it, and use the table in
+            ;;  make-resource-for-sparser-word to the mapping
             (make-corresponding-mumble-resource word :common-noun i))
 
           ;; This isn't ready for prime time yet. The function it's
-          ;; calling was never finished and there need to be
+          ;; calling was never finished. We could get much of the same
+          ;; effect by incorporating a tailored subcategorization mixin
           #+ignore(when subcat-info
             ;; Look up the Comlex subcategorization information for
             ;; this word. If there is any, and if it is of the specified
