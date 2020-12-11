@@ -699,8 +699,10 @@
 (define-category bio-relation :specializes bio-predication
   :mixins (has-UID biological)
   :documentation "as in  'constitute, contains etc"               
-  :binds ((theme (:or biological predication abstract information)) ;; information dominates evidence
-          (patient (:or biological predication abstract information)))
+  :binds ((theme (:or biological predication abstract information attribute))
+          ;; information dominates evidence
+          (patient (:or biological predication abstract information
+                        attribute measurement amount)))
   ;; this probably belongs higher
   :realization
     (:for timeperiod
