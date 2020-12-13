@@ -394,7 +394,7 @@ unknown words.|#
   (case source
     (:comlex ;; unpack-primed-word, continue-unpacking-lexical-entry
      (pushnew word *from-comlex*))
-    
+
     (:BigMech-default ;; handle-unknown-word-as-bio-entity
      (pushnew word *from-BigMech-default*))
     

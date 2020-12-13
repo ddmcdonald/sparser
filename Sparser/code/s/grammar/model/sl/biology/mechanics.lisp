@@ -842,7 +842,7 @@ the process.
     (tr :unknown-word-to-bio-entity word)
     ;; This will record it in the list of *newly-found-unknown-words*
     ;; if the *collect-new-words* flag is up.
-    (add-new-word-to-catalog word :BgMech-default)
+    (add-new-word-to-catalog word :BigMech-default)
 
     (let* ((i (find-or-make-individual 'bio-entity :name word))
            (edge (install-preterminal-edge 
