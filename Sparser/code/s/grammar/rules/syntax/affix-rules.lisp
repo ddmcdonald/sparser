@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "affix rules"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  May 2020
+;;;  Version:  December 2020
 
 ;; moved over from preterminals code 5/11/93, v2.3
 ;; 0.1 (3/28/94) changed the 'rule' on these edges from :known-affix to
@@ -63,6 +63,7 @@
   (tr :defining-unknown-word-from-morph word morph-keyword)
 
   (let ((*source-of-unknown-words-definition* :morphology)
+        (entry (gethash (pname word) *primed-words*)) ; Comlex
         (*unknown-word* word))
     (declare (special *source-of-unknown-words-definition* *unknown-word*))
 
@@ -80,7 +81,7 @@
                    (warn "^^^^Refusing to verbify a previously defined noun ~s~%" word)
                    (pushnew (pname word) *verbified-nouns* :test #'equal))))))
   
-      (push-debug `(,word ,morph-keyword)) ;;(break "fix stemming")
+      ;; (push-debug `(,word ,morph-keyword)) (break "fix stemming")
       (add-new-word-to-catalog word morph-keyword)
 
       (setq morph-keyword (no-morph-on-short-words word)) ;; one-syllable
@@ -93,15 +94,24 @@
          ;; we get here on short words where morphologically explict
          ;; cases ('ly') are thrown out. Look for a comlex entry
          ;; then default to noun.
-         (let ((entry (gethash (pname word) *primed-words*)))
-           (if entry
-             (then
-               (tr :make-word/entry entry)
-               (unpack-primed-word word (word-symbol word) entry))
-             (setup-unknown-word-by-default word))))
+         (if entry
+           (then
+             (tr :make-word/entry entry)
+             (unpack-primed-word word (word-symbol word) entry))
+           (setup-unknown-word-by-default word)))
+        
         (keyword
          (case morph-keyword
-           ;;(:ends-in-s) ;; always ambiguous?
+           (:ends-in-s
+            ;; Based on the suffix by itself this is always noun/verb ambiguous
+            ;; so see if Comlex can sort it out.
+            (if entry
+              (then
+                (tr :make-word/entry entry)
+                (unpack-primed-word word (word-symbol word) entry))
+              ;; otherwise default to noun
+              (setup-unknown-word-by-default word)))
+           
            (:ends-in-ed
             (let ((lemma (stem-form word)))
               (tr :defining-lemma-as-given-morph lemma 'verb)
