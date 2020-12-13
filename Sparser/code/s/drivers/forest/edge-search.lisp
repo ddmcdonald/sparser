@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "edge-search"
 ;;;   Module:  "drivers/forest/"
-;;;  version:  AugustApril 2018
+;;;  version:  December 2020
 
 ;; Broken out of analyzers/forest/treetops/ 7/21/16. Has all of the
 ;; code that implements the "whack a rule" search that's driven from
@@ -84,6 +84,7 @@
  one, applies it to create a new edge, and then repeats the process
  again on the revised forest. Terminates when there are no more
  triples to consider."
+  (tr :entering-whack-cycle)
   (let ((*whack-a-rule-sentence* sentence))
     (declare (special *whack-a-rule-sentence*))
     (let ( triple  edge at-least-one-rule)

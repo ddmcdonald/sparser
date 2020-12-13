@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2020 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "island-driving"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  November 2018
+;;;  Version:  December 2020
 
 ;; Initiated 8/30/14. Controls the forest-level parsing under the
 ;; new 'whole sentence at a time, start anywhere' protocol.
@@ -45,6 +45,7 @@
 ;;;-------------
 
 ;; (trace-island-driving)
+;; (trace-parsing-style) -- to see the transitions
 
 (defun island-driven-forest-parse (sentence layout start-pos end-pos)
   "Called from new-forest-driver after it has called 
@@ -69,7 +70,6 @@
         (*edges-from-referent-categories* *island-driven-efrc*))
     (clrhash *executed-triples*)
     (run-island-checks sentence)
-    ;;  (successive-treetops :from start-pos :to end-pos)
     (let ((coverage (coverage-over-region start-pos end-pos)))
       (unless (eq coverage :one-edge-over-entire-segment)
         (tr :island-driver-forest-pass-2)
@@ -85,10 +85,7 @@
   "Makes a couple of layout-mediated special checks before and
    after its main operation of running the whack-a-rule-cycle
    to walk through pairs of constituents."
-
-
-  ;; This hash table must be cleared before we search for any rules over pairs of edges
-  (clrhash *rules-for-pairs*)
+  
   (when (there-are-parentheses?)
     (tr :handle-parentheses)
     (handle-parentheses))
@@ -113,6 +110,8 @@
       (declare (special *allow-form-conjunction-heuristic*))
       (try-spanning-conjunctions :vg)))
 
+  ;; This hash table must be cleared before we search for any rules over pairs of edges
+  (clrhash *rules-for-pairs*)
   (if *whack-a-rule*
     (whack-a-rule-cycle sentence)
     (older-island-driving-rest-of-pass-one))
@@ -144,6 +143,7 @@
       (otherwise
        (break "Unexpected pass-two coverage: ~a" coverage)))))
 
+
 (defparameter *new-pass2* t)
 
 (defun run-island-checks-pass-two (sentence start-pos end-pos)
@@ -163,7 +163,8 @@
   ;; and a walk over the treetops looking for debris patterns,
   ;; but it's tail-recursive and would require considerable reworking
   ;; to use in this multi-pass context.
-  
+
+  (tr :entering-pass-2)
   (let* ((treetops (successive-treetops :from start-pos :to end-pos))
          (number-of-treetops (length treetops)))
     (tr :islands-pass-2 number-of-treetops)
@@ -205,6 +206,7 @@
 
 
 (defun da-rule-cycle (start-pos end-pos treetops &optional once-only?)
+  (tr :entering-da-cycle)
   (let (rule-executed?)
     (loop with result while (setq result (execute-one-da-rule treetops))
        do
@@ -230,6 +232,17 @@
   (let ((da-node (trie-for-1st-item tt)))
     (when da-node
       (standalone-da-execution da-node tt))))
+
+
+(defun da-final-cycle (sentence)
+  "Called from sentence-processing-core"
+  (let* ((start-pos (starts-at-pos sentence))
+         (end-pos (ends-at-pos sentence))
+         (treetops (all-tts start-pos end-pos)))
+    (da-rule-cycle start-pos end-pos treetops t)
+    (unless (eq (coverage-over-region start-pos end-pos)
+                :one-edge-over-entire-segment)
+      (whack-a-rule-cycle sentence))))
 
 
 

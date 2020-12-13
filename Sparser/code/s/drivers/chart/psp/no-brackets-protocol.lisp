@@ -294,13 +294,14 @@
 (defun sentence-processing-core (sentence)
   "Handles all of the processing on a sentence that is done
    after scan-sentences-and-pws-to-eos and scan-terminals-loop
-   have run. They handled all the polywords, filling the chart,
-   introducing edges over the words, and running any word or
-   edge-level fsaa."
+   have run. They handled all the polywords, filled the chart,
+   introduced edges over the words, and ran any word or
+   edge-level fsa's."
   (declare (special *sweep-for-patterns* *do-early-rules-sweep*
                     *grammar-and-model-based-parsing*))
   (setq *sentence-in-core* sentence)
   (possibly-print-sentence)
+  
   (when *grammar-and-model-based-parsing*
     ;; This flag is T by default. It is rebound to nil
     ;; during the epistemic phase of document processing
@@ -333,17 +334,15 @@
       
     (when *island-driving*
       ;; We ran the analysis to completion in the just-above call to
-      ;; new-forest-driver. (We may well have run the early parts of
-      ;; that function though.) 
+      ;; new-forest-driver. (We may well have only run the early parts
+      ;; of that function though.)
+      (tr :returned-from-island-driving)
       (repair-bad-composition sentence)
-      
+      ;; lift-out predicted but smothered complements
       (make-this-a-question-if-appropriate sentence)
-      ;; handle post-modifying subordinate conjunctions
-      ;;  after questions
-      (let* ((start-pos (starts-at-pos sentence))
-             (end-pos (ends-at-pos sentence))
-             (treetops (all-tts start-pos end-pos)))
-        (da-rule-cycle start-pos end-pos treetops t))
+      ;; handle post-modifying subordinate conjunctions after questions
+      (da-final-cycle sentence)
+
 
       (post-analysis-operations sentence)
 

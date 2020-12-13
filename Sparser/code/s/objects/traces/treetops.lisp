@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1990  Content Technologies Inc.
-;;; copyright (c) 1992,2013-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992,2013-2020 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "treetops"
 ;;;   Module:  "objects;traces:"
-;;;  Version:   March 2017
+;;;  Version:   December 2020
 
 ;; Stubbed with parameters 10/1990. Moved in the traces from
 ;; drivers/chart/psp/march-forest 3/8/13. 
@@ -15,9 +15,33 @@
 ;; Adding island-driving traces through 9/18/15
 
 (in-package :sparser)
-(defvar *TRACE-DA-CHECK*)
-(defvar *TRACE-DA*)
 
+
+;;------------ relevant to incremental sweeps operations
+
+(defun trace-island-driving ()
+  (setq *trace-island-driving* t))
+
+(defun untrace-island-driving ()
+  (setq *trace-island-driving* nil))
+
+(defparameter *trace-whack-a-rule* nil)
+(defun trace-whacking ()
+  (setq *trace-whack-a-rule* t))
+(defun untrace-whacking ()
+  (setq *trace-whack-a-rule* nil))
+
+
+(defvar *trace-shifts-in-paring-style* nil
+  "For tracking when we move between, e.g. whack-a-rule and
+   debris analysis. Helps sort out where to make changes")
+(defun trace-parsing-style ()
+  (setq *trace-shifts-in-paring-style* t))
+(defun untrace-parsing-style ()
+  (setq *trace-shifts-in-paring-style* nil))
+
+
+;;---------- relevant to incremental scan operations
 
 (defun trace-forest-level ()
   (setq *trace-forest-level* t))
@@ -47,6 +71,13 @@
 (defun unTrace-forest-edges ()
   (setq *trace-do-edge/forest* nil
         *trace-check-edges* nil))
+
+(defvar *trace-forest-transitions* nil)
+
+(defun trace-forest-transitions ()
+  (setq *trace-forest-transitions* t))
+(defun unTrace-forest-transitions ()
+  (setq *trace-forest-transitions* nil))
 
 
 ;;;-------------------------------------
@@ -256,13 +287,6 @@
 ;;; transitions between stages of the forest level
 ;;;------------------------------------------------
 
-(defvar *trace-forest-transitions* nil)
-
-(defun trace-forest-transitions ()
-  (setq *trace-forest-transitions* t))
-(defun unTrace-forest-transitions ()
-  (setq *trace-forest-transitions* nil))
-
 (deftrace :setup-PPTT (right-pos)
   ;; called from Setup-returns-from-PPTT-&-run
   (when (or *trace-forest-transitions* *trace-network*)
@@ -297,12 +321,9 @@
 
 
 
-
-
 ;;;---------------------
 ;;; network-flow traces
 ;;;---------------------
-
 
 (deftrace :moved-to-forest-level (p)
   (when *trace-network-flow*
@@ -549,25 +570,34 @@
 ;;; "new" forest protocol --  Island Driving
 ;;;------------------------------------------
 
-(defun trace-island-driving ()
-  (setq *trace-island-driving* t))
-
-(defun untrace-island-driving ()
-  (setq *trace-island-driving* nil))
-
-(defparameter *trace-whack-a-rule* nil)
-(defun trace-whacking ()
-  (setq *trace-whack-a-rule* t))
-(defun untrace-whacking ()
-  (setq *trace-whack-a-rule* nil))
-
-
 (deftrace :island-driven-forest-parse (start-pos end-pos)
   ;; called from island-driven-forest-parse
-  (when (or *trace-network-flow* *trace-island-driving*)
+  (when (or *trace-network-flow* *trace-island-driving*
+            *trace-shifts-in-paring-style*)
     (trace-msg "~%~%Doing island-driving between p~a and p~a"
                (pos-token-index start-pos)
                (pos-token-index end-pos))))
+
+(deftrace :entering-whack-cycle ()
+  ;; called at top of whack-a-rule-cycle
+  (when *trace-shifts-in-paring-style*
+    (trace-msg "Beginning whack-a-rule cycle")))
+
+(deftrace :entering-pass-2 ()
+  ;; called at top of run-island-checks-pass-two
+  (when *trace-shifts-in-paring-style*
+    (trace-msg "Beginning second pass")))
+
+(deftrace :entering-da-cycle ()
+  ;; called from da-rule-cycle
+  (when *trace-shifts-in-paring-style*
+    (trace-msg "Doing DA cycle")))
+
+(deftrace :returned-from-island-driving ()
+  ;; called from sentence-processing-core
+  (when *trace-shifts-in-paring-style*
+    (trace-msg "Returned from island-driving")))
+  
 
 (deftrace :island-driver-forest-pass-2 ()
   ;; called from island-driven-forest-parse
