@@ -44,7 +44,7 @@
   (if *trap-errors-inside-find-word*
     (handler-case
         (body-of-find-word char-type)
-      (error (e) (resolve/make "UnknownWord")))
+      (error (e) (resolve/make "ErrorInFindWord")))
     ;; let the error surface so we can debug it.
     (body-of-find-word char-type)))
 
