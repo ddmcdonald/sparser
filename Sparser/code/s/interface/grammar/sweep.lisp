@@ -395,15 +395,15 @@ unknown words.|#
     (:comlex ;; unpack-primed-word, continue-unpacking-lexical-entry
      (pushnew word *from-comlex*))
     
-    (:BgMech-default ;; handle-unknown-word-as-bio-entity
+    (:BigMech-default ;; handle-unknown-word-as-bio-entity
      (pushnew word *from-BigMech-default*))
     
     (:default ;; setup-unknown-word-by-default -- no mophology information
      ;; will be redundantly listed in *from-morphology*
      (pushnew word *from-no-morph-default*))
 
-    ((:ends-in-ed :ends-in-ing :ends-in-ly
-                  :ends-in-er :ends-in-est)
+    ((:ends-in-ed :ends-in-ing :ends-in-ly :ends-in-s
+       #| :ends-in-er :ends-in-est |#)
      ;; in assign-morph-brackets-to-unknown-word
      ;; Those are the explicit keyword cases
      (pushnew word *from-morphology*))
@@ -418,7 +418,7 @@ unknown words.|#
           (pushnew word *from-morphology*)
           (warn "New cons source for ~s - ~a"
                 (word-pname word) source)))
-       (otherise
+       (otherwise
         (warn "Unexpected source type for ~s~%~a  ~a"
               (word-pname word) (type-of source) source))))))
 
