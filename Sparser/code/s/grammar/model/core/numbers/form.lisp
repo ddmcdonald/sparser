@@ -71,13 +71,14 @@
 
 (defgeneric numeric-label (edge)
   (:documentation "Return a keyword for use in word-numbers
-    value computation")
+    value computation. If the input does not correspond to
+    a numeric label we return nil.")
   (:method ((n integer))
     (numeric-label (edge# n)))
   (:method ((e edge))
     (unless (edge-over-number-word? e)
       (error "Not a number-word edge: ~a" e))
-    (ecase (edge-cat-name e)
+    (case (edge-cat-name e)
       (ones-number :ones)
       (teens-number :teens)
       (tens-number :tens)
@@ -88,7 +89,9 @@
        ;; label we want. 
        (unless (eq :single-term (edge-right-daughter e))
          (break "Unexpected daughter for 'number': ~a" e))
-       (numeric-label (edge-left-daughter e))))))
+       (numeric-label (edge-left-daughter e)))
+      (otherwise
+       nil))))
       
 
 ;;;------
