@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "shortcuts"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  November 2020
+;;;  version:  December 2020
 
 
 ;; Started 4/3/09. Modeled on [model;core:kinds:object] Modified
@@ -367,7 +367,7 @@ see if there are issues"
 
 (defun noun/expr (name
                   &key noun
-		    super ;; specializes (use only one keyword)
+		    super ;; specializes
 		    index
 		    binds realization
 		    instantiates mixins 
@@ -407,46 +407,47 @@ see if there are issues"
     category))
 
 
-#| 4/6/20 ddm -- reviewed every instance of the macro, and with
-one trieo of exceptions (in bio;harvar-terms) they all only supply
-the supercategory to use. This means that the original code here
-can be replace with a call to define-adjective, ensuring that there
-is a uniform treatment.|# ;; but have to get the load-order right
-;; since define-adverb, define-adjective are loaded relatively late
-(defmacro adj (name
+
+
+(defmacro adj (string
                &key adj
-                 super specializes
-                 form mixins instantiates
-                 binds realization
-                 restrict rule-label 
-		 obo-id
+                 super specializes ; alternatives
+                 mixins 
+                 binds
+                 realization
+                 ;; restrict -- no counterpart in define-adjective
+                 rule-label
                  documentation)
+  "Feeder to define-adjective, which is a feeder to define-function-term
+   so that we can have uniform definitions and behavior across all our
+   adjectives. This is more restricted than the original 2015 version:
+   The category that's created for the adjective has the same name as
+   the adjective and can't be overridden, and while you can add variables
+   using ':binds' you can't restrict existing categories. To do that use
+   the full define-category form with an :adj in the realization."
   (cond
     ((and super specializes)
      (lsp-break "defining adjective with both :super ~s  and :specialize ~s"
 		super specializes))
     (t (setq super (or super specializes))))
-  (typecase name
-    (string ;; name is taken from the string
-     (unless adj ;; is there a good reason for them to be different?
-       (setq adj name))
-     (setq name (name-to-use-for-category name)))
-    (symbol 
-     (unless adj
-       (error "You have to specify the word for the noun (:adj)")))
-    (otherwise
-     (error "Bad type for 'name'. It should be a string or a symbol")))
 
-;;  `(define-adjective
+  `(define-adjective ,string
+       :super-category ',super
+       :mixin ',mixins
+       :binds ',binds
+       :rule-label ',rule-label
+       :realization ',realization
+       :documentation ,documentation))
 
-  `(adj/expr ',name
+#+ignore  `(adj/expr ',name
         :adj ',adj
         :super ',super ;; :specializes ',specializes
         :binds ',binds :realization ',realization
         :instantiates ',instantiates :mixins',mixins
         :restrict ',restrict :rule-label ',rule-label
-        :obo-id ,obo-id))
+        :obo-id ,obo-id)
 
+#+ignore ;; original -- circa early 2015
 (defun adj/expr (name
                  &key adj
 		   super specializes 
@@ -486,6 +487,7 @@ is a uniform treatment.|# ;; but have to get the load-order right
 			  :referent ,category)))
 	(eval rule-form)))
     category))
+
 
 (defmacro adv (name
                &key adv
