@@ -113,33 +113,35 @@
                              &key  brackets super-category
                                    rule-label discriminator
                                    tree-families subcat-info
-                                   word-variable mixins bindings
-                                   documentation)
+                                   word-variable mixins
+                                   binds bindings
+                                   realization documentation)
   "Does for deliberately defined modifiers the same thing as is done for
    Comlex or morphologically identified nouns or verbs in grammar/rules/
    brackets/assignments.lisp. It creates a new category for this word
    (the string argument), where the name of the category is based on
-   the word plus the optional discriminator' symbol. If that category
+   the word plus the optional 'discriminator' symbol. If that category
    name is the same as one that's already been defined, it will signal
    an error unless the *ignore-redefine-warnings* has been dynamically
    bound to non-nil. 
-     If there are values for the mixins, bindings, documentation, or restrict
-   parameters they are folded into the definition of the category in the normal way.
+     If there are values for the mixins, bindings, documentation, 
+   rule-label, or restrict parameters they are folded into the definition
+   of the category in the normal way.
      To facilitate the possibility of lexically-specific k-methods,
    we also create one individual of this category and make that the
    referent of the unary rule that's created. We pass that individual
    to make-corresponding-mumble-resource to be sure it reverses.
      The supercategory of the to-be-created category can be
    specified by the 'super-category' argument. It defaults to 'adverbial'.
-     The form argument names the category that will be the form on the
+     The 'form' argument names the category that will be the form on the
    unary rule this creates. It also determines the choice of brackets,
    mirroring the choices in the setup code used with Comlex.
-     The tree-family argument should be a list of full ETF names; see example
+     The 'tree-famil'y argument should be a list of full ETF names; see example
    in define-adverb. 
-     Rule-label has the same impact as it does in the definition of an
+     'Rule-labe'l has the same impact as it does in the definition of an
    ordinary category. It determines the label on the generated rules, which
    will otherwise be the generated category.
-     Word-variable is the name of the variable to use to associate
+     'Word-variable' is the name of the variable to use to associate
    the word with the category in its bindings field. It defaults to
    'name', but that default assumes that variable is in fact defined
    on the supercategory. This pattern does not use the 'lemma' to hold
@@ -148,6 +150,7 @@
      For getting subcategorization information from Comlex the :subcat-info
    argument dictates which POS entry to use. Legal values are noun, verb, 
    adjective, and adverb."
+  
   (unless form (setq form 'standalone)) ;; seems safest
   (unless word-variable (setq word-variable 'name))
   (unless brackets
@@ -207,9 +210,10 @@
                   `(:specializes ,super-category
                     :instantiates nil
                     :mixins ,mixins
-                    :bindings ,bindings
+                    :binds ,binds
                     :rule-label ,effective-rule-label
                     :bindings (,word-variable ,word)
+                    :realization ,realization
                     :documentation ,documentation))))
 
         (let* ((word-key (intern (symbol-name word-variable)
@@ -237,7 +241,6 @@
               ;; e.g., sequencer/determiner is responsible for making those 
               ;; form rules and we'd get a clash if we did them here. 
               (apply-function-term-etf category tree-families)))
-
           
           (let ((*head-rules-already-created* t))
             (declare (special *head-rules-already-created*))

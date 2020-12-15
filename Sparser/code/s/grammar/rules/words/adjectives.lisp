@@ -15,8 +15,17 @@
 (defun define-adjective (string
                          &key
                            form super-category
-                           mixin bindings
-                           rule-label discriminator)
+                           mixin
+                           binds
+                           bindings
+                           realization
+                           rule-label
+                           discriminator
+                           documentation)
+  "The work is done by define-function-term, which creates the category
+ for the adjective ('string') and the designated instance individual as
+ the referent of the rewrite rule. See that function for the function
+ of these arguments"
   (unless form
     (setq form 'adjective))
   (define-function-term string form
@@ -25,7 +34,9 @@
     :rule-label (or rule-label
                     'modifier)
     :mixins mixin
-    :bindings bindings
+    :binds binds
+    :realization realization
+    :documentation documentation
     :discriminator discriminator
     :tree-families '(prenominal-adjective)
     :subcat-info 'adjective))
