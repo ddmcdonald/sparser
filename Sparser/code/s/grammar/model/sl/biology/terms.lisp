@@ -166,7 +166,7 @@
 (define-category affinity :specializes bio-relation
      :binds ((object bio-entity))
      :realization
-     (:noun "affinity"
+           (:noun "affinity"
             :for object))
 
 
@@ -185,7 +185,7 @@
                  :binds ((antigen molecule))
                  :bindings (uid "NCIT:C16295")
   :realization
-  (:noun ("antibody" "anti-" "anti" "Ab") ;; often plural "Abs"
+        (:noun ("antibody" "anti-" "anti" "Ab") ;; often plural "Abs"
          :m antigen
          :to antigen
          :against antigen
@@ -211,23 +211,20 @@
 ;;(noun "condition" :super experimental-condition) OBE -- i taxonomy
 
 
-(adj "current" :super bio-relation
-  :realization
-    (:adj "current"))
+(adj "current" :super bio-relation)
 
 
 
 ;; "the DSB repair defect", "a defect in sensitivity to GAP–mediated regulation"
 (noun "defect" :super bio-relation
       :realization 
-      (:NOUN "defect"
-             :m theme
-             :in theme))
+           (:m theme
+            :in theme))
 
 ;; Something is deficient in something else. It needs that
 ;; thing but doesn't have it. Vitamin D, 
 ;; ERK#7 "to be dimerization-deficient in vitro"
-(adj "deficient" :super bio-relation
+(define-category deficient :specializes bio-relation
   :realization
     (:adj "deficient"
      :noun "deficiency"
@@ -236,49 +233,35 @@
 
 (noun "detail" :super abstract)
 
-(adj "fail-proof" :super bio-predication
-     :realization 
-     (:adj "fail-proof"))
+(adj "fail-proof" :super bio-predication)
 
 
-(adj "reliable" :super bio-predication
-     :realization 
-     (:adj "reliable"))
+(adj "reliable" :super bio-predication)
 
 
 
 (adj "effective" :super bio-relation
      :realization 
-     (:adj "effective"
-           :against theme
+          (:against theme
            :in theme
 	   :on theme))
 
 ;; SEQUENTIAL is a key CORE mixin, and does not take an AUX
 
-(adj "sequential-adj" :super bio-predication
-     :realization 
-     (:adj "sequential"))
+(define-category sequential-adj :specializes bio-predication
+  :realization (:adj "sequential"))
 
 
 (define-category fact :specializes bio-rhetorical
       :mixins (bio-thatcomp)
       :binds ((info-context (:or model database)))
       :realization
-      (:noun "fact"
+            (:noun "fact"
              :in info-context))
 
 
 
 
-
-
-
-
-
-
-
-;; keyword: (ive ADJ) 
 
 
 
@@ -291,15 +274,11 @@
 
 (adj "ineffective" :super bio-relation
      :binds ((against biological))
-     :realization 
-     (:adj "ineffective"
-           :against against)) ;; keyword: (ive ADJ) 
+     :realization (:against against))
 
 
 (adj "insensitive" :super bio-relation
-      :realization
-      (:adj "insensitive"
-             :to theme))
+      :realization (:to theme))
    
 (noun "insensitivity" :super bio-scalar-attribute ;; HUH?
       :binds ((cause biological))
@@ -329,11 +308,9 @@
 
 (adj "necessary" :super bio-relation
      :binds ((condition biological)
-             ;;(agent biological)
              (necessary-to biological))
      :realization 
-     (:adj "necessary"
-           :for necessary-to
+          (:for necessary-to
            :to necessary-to
            :to-comp necessary-to))
 
@@ -352,7 +329,9 @@
 (noun "partner" :super bio-abstract)
 
 ;; Overwrites the mixin role 'patient' in core/kinds/roles.lisp
-(noun bio-patient :super bio-entity :noun "patient")
+(define-category  bio-patient
+    :specializes bio-entity
+    :realization (:noun "patient"))
 
 
 
@@ -363,9 +342,7 @@
       (:noun "population"
              :of element))  
 
-(adj "potent" :super bio-relation
-  :realization 
-  (:adj "potent"))
+(adj "potent" :super bio-relation)
 
 
 
@@ -378,10 +355,10 @@
      ;; keyword: (ory ADJ)
 
 
-(adj "relative" :super bio-relation
+(define-category relative :specializes bio-relation
      :restrict ((participant scalar-attribute))
-     :realization
-     (:to participant))
+     :realization (:adj "relative"
+                   :to participant))
 
 (adj "strong" :super bio-relation
   :realization 
@@ -404,8 +381,7 @@
 
 (adj "sensitive" :super bio-relation
       :realization
-      (:adj "sensitive"
-             :to theme))
+      (:to theme))
 
 (noun "sensitivity"  :super bio-scalar-attribute
       :binds ((cause biological))
@@ -419,15 +395,13 @@
 (adj "specific" :super bio-relation
      :binds ((situation biological)(beneficiary biological))
      :realization
-     (:adj "specific"
-           :to situation
+          (:to situation
            :for beneficiary))
 
 
 (adj "suitable" :super bio-relation
      :realization
-     (:adj "suitable"
-           :for theme))
+     (:for theme))
 
 
 
@@ -449,8 +423,7 @@
 (adj "unresponsive" :super bio-relation
      :binds ((treatment (:or bio-process bio-entity)))
      :realization
-     (:adj "unresponsive"
-           :to treatment))
+     (:to treatment))
 
 (define-category useful :specializes bio-relation
      :restrict ((purpose (:or bio-process bio-method activity-with-a-purpose)))
@@ -518,7 +491,6 @@
   (:noun "figure"))
 
 (def-synonym article-figure (:noun "Fig."))
-
 (def-synonym article-figure (:noun "Fig"))
 
 (define-category article-table :specializes document-part

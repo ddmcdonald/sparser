@@ -167,14 +167,13 @@ be biology specific, since they aren't. |#
 
 (adj "common" :super bio-relation
   :realization 
-    (:adj "common"
-     :to patient))
+    (:to patient))
 (adj "in-common" :super bio-relation
   :adj "in common"
   :realization (:to patient))
 ;;/// add "with" adjunct ?
 
-(adj "critical" :super bio-relation
+(define-category critical :specializes bio-relation
   :realization 
     (:adj "critical"
      :adv "critically"
