@@ -306,7 +306,8 @@ be biology specific, since they aren't. |#
 (adj "further" :super bio-predication)
 (define-adverb "further")
 
-(adj bio-initial :adj "initial" :super bio-predication)
+(define-category bio-initial :specializes bio-predication
+   :realization (:adj "initial"))
 ;; Avoid smashing the category 'initial' in core/names/initials.lisp
 ;; Usage in bio appears to be as a sequencer: first vs. subsequent
 

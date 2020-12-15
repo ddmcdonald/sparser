@@ -67,7 +67,8 @@
 ;; will likely be useful
 
 
-(adj likely-adj :super certain :adj "likely")
+(define-category likely-adj :specializes certain
+   :realization (:adj "likely"))
 ;; this is to handle uses like "it is likely that ..."
 
 (define-category unlikely
