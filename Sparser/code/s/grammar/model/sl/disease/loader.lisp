@@ -22,19 +22,24 @@
 (gload "disease;disease-ref")
 ;; (gload "disease;cases") -- subsumed by outbreak
 
-(gload "disease;covid-19")
+(gload "disease;covid-19") ;; <-------- empty this out
 
 
 (defun disease-loaded-after-bio ()
-  (gload "disease;misc-covid")
-;;  (gload "disease;medical-taxonomy")
+  These are loaded after bio because their superclasses are still in
+  biology's taxonomy for now"
+  
+  ;;(gload "disease;medical-taxonomy")
+  ;;   Moved to bio;loader. Still too entangled by the categories it uses
+
+
+  (gload "disease;misc-covid") ;; uses 'disease' from the taxonomy
+
   ;; moved from bio;new-defs;new-diseases
   ;; partially supercede the covid-19 and misc-covid files, but not
   ;; removing those until we have more discussions integrating viruses
   ;; (and bacteria) as organisms w/ pathogens and the resulting
   ;; diseases
-  ;; these are loaded after bio because their superclasses are still in
-  ;; bio;taxonomy for now
   (gload "disease;viruses")
   (gload "disease;bacteria")
   (gload "disease;cancers")

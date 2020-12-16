@@ -312,13 +312,13 @@ omitted and then run (perhaps) after the image has been launched."
   (when *incorporate-generic-lexicon*
     (prime-comlex))
 
+  (gate-grammar *score-stats*
+        (gload "score-stats;loader"))
+
   (let ((*inhibit-construction-of-systematic-semantic-rules* t))
     (declare (special *inhibit-construction-of-systematic-semantic-rules*))
     (gate-grammar *biology*
         (gload "bio;loader")))
-
-  (gate-grammar *score-stats*
-        (gload "score-stats;loader"))
   
   (gate-grammar *disease*
     (disease-loaded-after-bio))

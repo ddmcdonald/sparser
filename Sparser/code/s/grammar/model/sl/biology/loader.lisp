@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2013-2017 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2013-2020 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "loader"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: March 2017
+;;; version: December 2020
 
 ;; Initiated 11/5/13. 3/3/14 Added mechanics and NFkappaB while
 ;; commenting out the original molecules and verbs as OBE and requiring
@@ -22,14 +22,14 @@
 ;; 4/10/16 moved new-words to R3.
 
 (in-package :sparser)
-(gload "score-stats;loader")
+
 (gload "bio;allowable-protein-heads")
 (gload "bio;mechanics")
 
 (gload "bio;overrides") ;; before any verbs
 
 (gload "bio;taxonomy")
-(gload "disease;medical-taxonomy")
+(gload "disease;medical-taxonomy") ;; defines 'drug'
 
 (gload "bio;cellular-locations")
 (gload "bio;new-defs;new-cell-loc")
