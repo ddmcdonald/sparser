@@ -44,7 +44,8 @@
 (define-attribute width)  ;; "narrow"
 (define-attribute length) ;; "long"
 
-(define-attribute amount-as-level) ;; high, low
+(define-attribute amount-as-level ;; high, low
+    :subcat (modifies-scalar))
 ;; The word "level" is a bio-scalar in bio, and used extensively
 ;; so have to prepare for fanout when naming this 'level'
 

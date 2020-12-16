@@ -37,7 +37,7 @@ be biology specific, since they aren't. |#
 (noun "surface" :super bio-entity)
 
 
-
+;;/// move to quantifiers -- lesser/least
 (adj "lesser" :super bio-predication)
 
 
@@ -61,18 +61,9 @@ be biology specific, since they aren't. |#
 (noun ("period of time" :plural "periods of time") :super period)
 
 
-
-(define-category high :specializes predication
-  :binds ((theme (:or scalar measurement biological)))
-  :realization
-  (:adj "high"
-        :s theme))
-
-(define-category low :specializes predication
-  :binds ((theme (:or scalar measurement biological)))
-  :realization
-  (:adj "low"
-        :s theme)) 
+#| high/low replaced with amount-as-level attribute
+ with the modifies-scalar mixin
+ |#
 
 (define-category noisy :specializes predication
   :binds ((theme (:or scalar measurement biological)))
