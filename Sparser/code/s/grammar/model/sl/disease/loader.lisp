@@ -26,8 +26,8 @@
 
 
 (defun disease-loaded-after-bio ()
-  These are loaded after bio because their superclasses are still in
-  biology's taxonomy for now"
+  "These are loaded after bio because their superclasses are still in
+   biology's taxonomy for now"
   
   ;;(gload "disease;medical-taxonomy")
   ;;   Moved to bio;loader. Still too entangled by the categories it uses
