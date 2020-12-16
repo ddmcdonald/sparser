@@ -36,6 +36,20 @@
                           (result-type . :self))))
 
 
+
+;;;----------
+;;; coersion
+;;;----------
+
+(define-mixin-category capable-of-being-measured
+  :specializes adds-relation ;; should be add-property
+  :instantiates nil
+  :documentation "Assigned to categories of stuff that are not amounts
+    but which are conventionally talked about as though they were,
+    such as proteins. E.g 'phosphorylated MAP2K1 is high', is short for
+    'the amount of <protein> is high'. ")
+
+
 ;;;----------------------
 ;;; kinds of measurement
 ;;;----------------------

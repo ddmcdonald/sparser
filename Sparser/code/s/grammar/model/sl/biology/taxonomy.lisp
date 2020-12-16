@@ -279,7 +279,7 @@
 ;;;------------
 
 (define-category bio-entity  :specializes physical-object  ;; sweeps a lot under the rug
-  :mixins (has-UID biological)
+  :mixins (has-UID biological capable-of-being-measured)
   :binds ((produced-by activity-with-a-purpose))
   :instantiates :self
   :binds ((long-form :primitive polyword))

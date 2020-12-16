@@ -413,7 +413,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
 (define-mixin-category modifies-scalar
   :specializes subcategorization-pattern
   :mixins (with-theme)
-  :restrict ((theme scalar-attribute))
+  :restrict ((theme (:or scalar-attribute capable-of-being-measured)))
   :realization (:s theme)
   :documentation "Can be added to the definition of adjectives
     to spell out what class of things they apply to,
