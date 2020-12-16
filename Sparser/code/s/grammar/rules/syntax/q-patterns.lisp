@@ -313,8 +313,8 @@
             (make-edge-over-long-span
              start-pos end-pos
              (edge-category (third edges))
-             :rule 'make-polar-adjective-question-1
-             :form category::vg ;;question
+             :rule 'make-polar-adjective-question
+             :form category::s
              :referent copular-adj)))
          (copular-pred-edge
           (when copular-adj
@@ -333,7 +333,7 @@
                  end-pos
                  (itype-of interp) ;; the category
                  :referent interp
-                 :rule 'make-polar-adjective-question
+                 :rule 'make-polar-adjective-question-2
                  :form category::s))))))
     (make-polar-edge copular-pred-edge)))
 
