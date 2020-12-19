@@ -866,13 +866,16 @@
          :etf (svo-passive)))   
 
 
-(define-category lower :specializes negative-bio-control
+(define-category lower-as-reduce :specializes negative-bio-control
   :restrict ((object bio-process))
   :realization
-  (:verb ("lower" :past-tense "lowered" :past-participle "lowered" :present-participle "lowering")
-         ;; :etf (svo-passive) ;; wants a "theme" variable
-         ))
-;; "lower" is a amount attribute
+      (:verb ("lower" :past-tense "lowered" :past-participle "lowered"
+                      :present-participle "lowering"))
+  :documentation "This is lower as against 'raise' or 'increase'.
+    Note that the word 'lower' is also comparative level attriute value.
+    Different word senses need to originate in different categories.")
+;; "Activation of MEK lowers the phosphorylation of SOS1"
+
 
 
 (define-category lose :specializes negative-bio-control
