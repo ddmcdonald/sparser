@@ -450,8 +450,12 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
   (:method ((s symbol))
     (stem-form (symbol-name s)))
   (:method  ((s string))
-    (let ((word (resolve/make s)))
-      (stem-form word)))
+    (if (> (length s) 100)
+        ;; we got a very long (incorrect) word which caused an break
+        ;; this is a patch to avoid that break
+        s
+        (let ((word (resolve/make s)))
+          (stem-form word))))
 
   (:method ((word word))
     ;; Redundant with stem-form-of-verb but adds more cases and
@@ -465,7 +469,7 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
                    ;; If Comlex says the reduced form is in its ~50k
                    ;; word dictionary then we accept it as the lemma
                    ;; form of the word and store it as the stem
-                   (attested-stem (test-against-comlex putative-stem morphology)))
+                   (attested-stem (when putative-stem (test-against-comlex putative-stem morphology))))
               (let ((stem
                      ;; Some words are not in Comlex, especially in biology,
                      ;; in these cases we'll take the stem that we construct.
@@ -510,10 +514,10 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
          (form-stem/strip-ed word))
         ((string= suffix "ing")
          (form-stem/strip-ing word))
-        
-         ((push-debug `(,word ,morphology))
-         (break "Unexpected morphology keyword ~a~%on ~a"
-               morphology word)))))
+        (t (push-debug `(,word ,morphology))
+           (warn "Unexpected morphology keyword ~a~%on ~a"
+                 morphology word)
+           word))))
     (otherwise
      (push-debug `(,word ,morphology))
      (error "Unexpected type of morph keyword: ~a~%~a"
