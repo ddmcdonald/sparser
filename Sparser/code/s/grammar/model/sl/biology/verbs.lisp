@@ -475,7 +475,7 @@
              bio-location ;; "the Y561 site displayed no difference..."
              evidence
              article-figure
-             bio-quality
+             information
              bio-rhetorical
              bio-process ;; the B-RAFV600E mutation predicts
              ;;bio-method ;; high-throughput functional screens may inform
