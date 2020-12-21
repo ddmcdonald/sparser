@@ -50,38 +50,30 @@
   :specializes activity-with-a-purpose
   :binds ((object (:or perdurant endurant abstract))) ;; what activity is directed at
   :realization (:o object
-                :of :object) ;; for nominal forms
-  )
+                :of :object)) ;; for nominal forms
+  
 
 (define-category purposive-activity-with-instrument
-  :specializes activity-with-a-purpose ;; RJB -- can't see why this would ever be a "state"
-  :mixins (with-instrument) ;; see below -- only agents can have a purpose
-  :documentation "An activity done with the aim of achieving a particular
- thing (dictionary.cambridge.org). Motivated by 'experiment' and 'study'
- which are elaborate, extended activities that want to test some conjecture.
- Could make the agents, aim, and methods explicit but they can be implicit
- in the meaning of the word --
- the variable resoult-or-purpose only occurs when the subject of the activity-with-a-purpose
- is an agent that can have a purpose -- animal, organizational, social-agent, ..."
+  :specializes activity-with-a-purpose
+  :mixins (with-instrument)
+  :documentation ""
   :binds ((result-or-purpose bio-process))
-  :realization
-  (:with instrument))
+  :realization (:with instrument))
 
 
 ;;;;;;;; EVENT RELATIONS -- sequential and otherwise... NEEDS a bunch more work
 
-(define-category follow
+(define-category event-follows
   :specializes event-relation
   :realization
      (:verb ("follow" :past-tense "followed" :present-participle "followingxx"
             ;; this is intended to suppress definitions of "followed" and "follows"
-                      :third-singular "follows")
-      :etf (svo-passive)))
+                      :third-singular "follows")))
 
 
-(define-category precede
+(define-category event-precedes
   :specializes event-relation
   :realization
-    (:verb "precede" :etf (svo-passive)))
+    (:verb "precede"))
 
 
