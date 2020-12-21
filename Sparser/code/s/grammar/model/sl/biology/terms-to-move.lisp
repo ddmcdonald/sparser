@@ -381,7 +381,7 @@ be biology specific, since they aren't. |#
      :between bounds))
 
 
-(noun "behavior" :super bio-quality)
+(noun "behavior" :super attribute)
 
 (define-category compare :specializes bio-method
   :binds ((comparator biological)
