@@ -168,7 +168,7 @@
          :of basis
          :for basis))
 
-(noun "consequence" :super bio-quality)
+(noun "consequence" :super attribute)
 
 (define-category equivalent :specializes bio-relation
   :realization
