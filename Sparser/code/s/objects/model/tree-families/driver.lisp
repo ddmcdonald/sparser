@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2011-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2020 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  December 2019
+;;;  version:  December 2020
 
 ;; initiated 8/4/92, fleshed out 8/27, elaborated 8/31
 ;; fixed a bug in how lists of rules were accumulated 11/2
@@ -83,6 +83,7 @@
   '(item+idiomatic-head ; "10%"
     quantity+kind ; "10 dollars"
     modifier-creates-definite-individual ; "$10"
+    vp+adjunct ; see define-movement-verb
     )
   "If the head is idiomaticmatic, like '%' or 'percent'
    or 'old' as in '5 years old', you can't predict the

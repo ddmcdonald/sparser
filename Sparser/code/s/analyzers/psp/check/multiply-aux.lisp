@@ -212,17 +212,18 @@
         (memq (cat-name (edge-form edge)) compatible-forms))))
 
 (defun validate-rule-form (rule left-edge right-edge) 
-  ;; only accept rules that are compatible with their context.
+  ;; Only accept rules that are compatible with their context.
   ;;  This check can be turned off for particular ETFs by calling
-  ;;  dont-check-rule-form-for-etf-named with the name of the family.
+  ;;  dont-check-rule-form-for-etf-named with the name of the family
+  ;;  (see list in objects/model/tree-families/driver.lisp)
   ;;  That has the effect of leaving off the rule-forms information
-  ;;  (see instantiate-rule-schema).
+  ;;  that this 'compatibility' check is based on (see instantiate-rule-schema).
   (if (not *check-forms*) ;; controlling switch
     rule
     (let ((rf (rule-forms rule))) ;; recorded at rule-creation time
       (cond
         ((or
-          ;; if this clause returns nil, then we fall through
+          ;; if this 'or' clause returns nil, then we fall through
           ;; to the next clause of this cond and report the problem
          (null rf)
          (and (compatible-form (first rf) left-edge)
