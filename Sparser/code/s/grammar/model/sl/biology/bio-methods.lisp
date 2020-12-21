@@ -524,7 +524,7 @@ One or both of the while type alleles have been replaced
 with something else
 |#
 
-(define-category knockout-pattern :specializes bio-quality
+(define-category knockout-pattern :specializes bio-predication
   :binds ((gene-or-protein (:or gene protein)))
   :realization
   (:m gene-or-protein
@@ -603,7 +603,7 @@ with something else
 (noun "slice" :super bio-preparation) ;; brain slices
 (noun "networking" :super bio-mechanism) ;; unsure of this -- "receptor networking"
 
-(noun "role" :super bio-quality
+(noun "role" :super attribute
       :binds ((process bio-process))
       :realization
       (:in process))
