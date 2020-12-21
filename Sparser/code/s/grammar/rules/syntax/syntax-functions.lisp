@@ -1054,8 +1054,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
      nil)
     (*subcat-test* (and (not (itypep qualifier 'do))
                         ;; don't allow "done" -- no "thus far was done using " but also "done deals"
-                        (subcategorized-variable qualifier :object head)
-                        (valid-method compose  qualifier head)))
+                        (or (subcategorized-variable qualifier :object head)
+                            (valid-method compose  qualifier head))))
     
     (t (or (when (valid-method compose  qualifier head)
              (compose qualifier head))
