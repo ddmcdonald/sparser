@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2011,2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011,2016-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "paths"
 ;;;   Module:  "model;core:places:"
-;;;  version:  March 2016
+;;;  version:  December 2020
 
 ;; initated 7/13/11. Finished effort to reify the types 3/16.
 
@@ -39,6 +39,10 @@
 ;;; highway patterns
 ;;;------------------
 
+(dont-check-rule-form-for-etf-named 'dependent-of)
+(dont-check-rule-form-for-etf-named 'modifier-creates-instance)
+(dont-check-rule-form-for-etf-named 'pair-instantiates-category)
+
 ;; Need "route 66" -- fold in here?
 
 (define-category highway  ;; "MA 102"
@@ -63,8 +67,15 @@
   :instantiates :self
   :rule-label location
   :specializes location ;; object with a location
-  :binds ((throughway . highway))
-  :realization (:common-noun "exit"))
+  :binds ((reference-point . name) ;; "the) Arlington exit"
+          (throughway . highway))
+  :realization (:tree-family modifier-creates-instance
+                :mapping ((property . reference-point)
+                          (head . :self)
+                          (n-bar . :self)
+                          (modifier . reference-point)
+                          (np-head . :self))
+                :common-noun "exit"))
 
 (define-category exit-on-throughway
   :instantiates :self
@@ -76,13 +87,15 @@
                 :mapping ((dependent . exit)
                           (substrate . throughway)
                           (np . :self)
-                         ;; (prep . "of")
-                          (complement . location))))
+                          (prep . "of")
+                          (complement . (location path)))))
 
 
 ;;;--------------------------
 ;;; labeled transparent pp's
 ;;;--------------------------
+
+(dont-check-rule-form-for-etf-named 'transparent-pp)
 
 (define-marker-category on-path
   :realization (:tree-family transparent-pp

@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1995,2016-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2016-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "directional rules"
 ;;;   Module:  "model;core:places:"
-;;;  version:  November 2019
+;;;  version:  December 2020
 
 ;; initiated in 1/9/95
 

@@ -390,7 +390,8 @@ come
   ;; Let bio;verbs avoid hassle of trying to overwite these
   (define-movement-verb "cross")
   (define-movement-verb "drive")
-  (define-movement-verb "follow")
+  (define-movement-verb '("follow" :past-tense "followed") ; suppress doubling of #\w
+                        'follow)
   (define-movement-verb "travel")
   (define-movement-verb "turn"))
 

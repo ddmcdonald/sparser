@@ -1,10 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2011-2012  David D. McDonald  -- all rights reserved
-;;; $Id:$
+;;; copyright (c) 2011-2012,2020  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "configurations"
 ;;;   Module:  "model;core:places:"
-;;;  version:  March 2012
+;;;  version:  December 2020
 
 ;; initated 8/3/11. Tweaked fit into DH 9/12. 3/31/12 fixed obscure rule
 ;; creation by noticing that one of the label assignments was missing in
@@ -20,6 +19,10 @@
 (define-category path-configuration
   :specializes location
   :binds ((paths . collection)))
+
+
+(dont-check-rule-form-for-etf-named 'group-of-type)
+(dont-check-rule-form-for-etf-named 'np-common-noun/defnp)
 
 (define-category junction
   :specializes path-configuration

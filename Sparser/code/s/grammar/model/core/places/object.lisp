@@ -84,6 +84,8 @@
 ;;; labeled transparent pp's
 ;;;--------------------------
 
+(dont-check-rule-form-for-etf-named 'transparent-pp)
+
 (define-marker-category to-location
   :realization (:tree-family transparent-pp
                 :mapping ((pp . to-location)

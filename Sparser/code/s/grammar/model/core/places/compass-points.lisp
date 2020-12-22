@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1995-1999,2011,2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-1999,2011,2016-2020  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "compass points"
 ;;;   Module:  "model;core:places:"
-;;;  version:  December 2016
+;;;  version:  December 2020
 
 ;; initiated in 1/9/95, 2/24 added string printer. 
 ;; 0.1 (11/27/99) reworked them using realizations and implicit indexing. 
@@ -41,15 +41,15 @@
                        :brackets brackets)))
          (i (define-individual 'compass-point :name word))
          (noun-rule (define-cfr category::direction `(,word)
-                      :form category::noun
+                      :form category::common-noun
                       :referent i))
          (abbrev-word (unless ward
                         (define-function-word abbrev 
-                          :form 'noun
+                          :form category::common-noun
                           :brackets brackets)))
          (abbrev-rule (unless ward
                         (define-cfr category::direction `(,abbrev-word)
-                         :form category::noun
+                         :form category::common-noun
                          :referent i)))
          ;; /////////// is this combination worth a tree family?
          ;; // or at least a schema to associate with it?
@@ -65,6 +65,7 @@
     (add-rule noun-rule i)
     (when adj-rule (add-rule adj-rule i))
     (when abbrev-rule (add-rule abbrev-rule i))
+    (when adj-rule (add-rule adj-rule i))
     i))
 
 ;;--- printer

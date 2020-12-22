@@ -31,7 +31,7 @@
        item-of-value ----- "net income of $42 million"
        kind-of-name ------ "Straits of Hormus"
        member-of --------- "first half of 1998", "borough of New York"
- dependent-of
+       dependent-of ------ "the Lee exit of the Massachusetts Turnpike"
 |#
 
 ;;;--------------------------------------------
