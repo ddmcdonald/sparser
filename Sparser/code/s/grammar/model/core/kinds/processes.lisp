@@ -130,17 +130,6 @@
  actually a state. Lambda abstraction would do this nicely, especially
  if we type the abstracted participant.")
 
-(define-category event-relation
-  :specializes perdurant
-  :binds ((relation)
-          (event perdurant)
-          (subordinated-event perdurant))
-  :documentation "This picks up phrases like 'Thus MEK phosphorylates ERK...'
-    though the head decides what to do with it based on the
-    composition. Same design as pps."
-  :realization
-  (:s event
-      :o subordinated-event))
 
 (define-category process
   :specializes perdurant

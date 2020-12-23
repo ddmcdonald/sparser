@@ -63,13 +63,26 @@
 
 ;;;;;;;; EVENT RELATIONS -- sequential and otherwise... NEEDS a bunch more work
 
+
+(define-category event-relation
+  :specializes perdurant
+  :binds ((relation)
+          (event perdurant)
+          (subordinated-event perdurant))
+  :documentation "This picks up phrases like 'Thus MEK phosphorylates ERK...'
+    though the head decides what to do with it based on the
+    composition. Same design as pps."
+  :realization
+     (:s event
+      :o subordinated-event))
+
+
 (define-category event-follows
   :specializes event-relation
   :realization
      (:verb ("follow" :past-tense "followed" :present-participle "followingxx"
             ;; this is intended to suppress definitions of "followed" and "follows"
                       :third-singular "follows")))
-
 
 (define-category event-precedes
   :specializes event-relation
