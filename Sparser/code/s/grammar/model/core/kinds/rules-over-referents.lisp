@@ -67,27 +67,6 @@
 ;;; rules over referents used in Grok and Strider. Need reanalysis
 ;;;----------------------------------------------------------------
 
-;;--- for event
-
-#| The category for event has these variables:
-  time, location, purpose, modifier, participant
-|#
-
-;;//// Add schema -- from vp adjuncts perhaps
-
-(def-cfr event (event time)
-  :form s
-  :referent (:head left-edge
-             :bind (time right-edge)))
-
-(def-cfr event (event location)
-  :form s
-  :referent (:head left-edge
-             :bind (location right-edge)))
-
-
-;;--- subject relative clauses ( rules/syntax/subject-relatives.lisp )
-
 ;;--- for dates
 ;;should we add these patterns to date-pattern in tree-families?
 

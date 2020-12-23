@@ -21,8 +21,6 @@
   (let ((category (category-named name :break-if-none)))
     (setup-category-lemma category word-expr)))
 
-(assign-lemma event (:common-noun "event"))
-(assign-lemma process (:common-noun "process")) ;; used phrasally in prepositions
 (assign-lemma transition (:common-noun "transition"))
 
 (assign-lemma quality (:common-noun "quality"))
