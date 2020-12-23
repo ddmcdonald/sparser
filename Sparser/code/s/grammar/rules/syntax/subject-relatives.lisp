@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993,2013-2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993,2013-2020  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "subject relatives"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  version:  November 2017
+;;;  version:  December 2020
 
 ;; initiated 6/18/93 v2.3
 ;; (8/9/07) Well something else can go in this file, but just now this
@@ -135,8 +135,8 @@
                                         (right-edge (right-edge-for-referent)))
   (declare (special category::have category::subject-relative-clause vp-ref
                     category::wh-question))
-  ;; block "histone 2B ... had high levels ..."
-  (when (or
+ 
+  (when (or ;; block "histone 2B ... had high levels ..."
          (and (eq (edge-category right-edge) category::have)
               (eq (edge-form right-edge) category::VP+ED))
          (and (eq (edge-rule left-edge) 'sdm-span-segment)
@@ -167,18 +167,19 @@
          ((and (not (and (edge-p right-edge)
                          (eq category::subject-relative-clause
                              (edge-form right-edge))))
-               ;; this check is supposed to disambiguate cases where
-               ;;  the context wants a clause, and the vp-ref is
-               ;;  a vg+ing or vp+ing, not an explicit subject-relative-clause
-               ;;  with a "that" or "which"
-               (context-needs-clause? np-ref vp-ref))
+               (context-needs-clause?
+                ;; this check is supposed to disambiguate cases where
+                ;;  the context wants a clause, and the vp-ref is
+                ;;  a vg+ing or vp+ing, not an explicit subject-relative-clause
+                ;;  with a "that" or "which"
+                np-ref vp-ref))
           (when (itypep vp-ref 'copular-predication)
             (push-debug `(,np-ref ,vp-ref))
             (break "Extend subj rel for copulas"))
           (let ((clause-ref (bind-dli-variable var np-ref vp-ref)))
-            ;;(lsp-break "context-needs-clause? true")
-            ;;(revise-parent-edge :form category::s)
-            ;; make this into an NP whose head is the vp+ing
+            (revise-parent-edge :category (itype-of clause-ref)
+                                :form category::vp+ing
+                                :referent clause-ref)
             clause-ref))
          (t
           ;; copy down the upstairs subject
@@ -197,32 +198,31 @@
   (declare (special category::APOSTROPHE-S category::parentheses
                     category::do))
   (let ((before (edges-before (left-edge-for-referent))))
-    (declare (special before))
     (loop for e in before
-          thereis
-            (let ((ref (edge-referent e)))
-              (when (and (null ref)
-                         (not (member (cat-name (edge-category e))
-                                      '(apostrophe-s parentheses semicolon)))
-                         *break-on-null-ref-in-context-needs-clause*)
-                (lsp-break "null ref in context-needs-clause in ~%  ~s~%-- quiet this by ~
+       thereis
+         (let ((ref (edge-referent e)))
+           (when (and (null ref)
+                      (not (member (cat-name (edge-category e))
+                                   '(apostrophe-s parentheses semicolon)))
+                      *break-on-null-ref-in-context-needs-clause*)
+             (lsp-break "null ref in context-needs-clause in ~%  ~s~%-- quiet this by ~
                      setting *break-on-null-ref-in-context-needs-clause* to nil"
-                       (current-string)))
-              (and ref
-                   ;; these previous items want a following clause
-                   (or (itypep ref '(:or that whether))
-                       (eq (edge-category e) category::do) ;; auxiliary --
-                       ;; see "Does phosphorylated BRAF being high precede phosphorylated MAP2K1 reaching... level?"
-                       (itypep ref '(:or precede follow)))
-                   ;;these items would allow an NP to make a clause
-                   (not
-                    (and *right-edge-into-reference*
-                         (loop for e in
-                                 (edges-after *right-edge-into-reference*)
-                               thereis
-                                 (member (form-cat-name e)
-                                         '(vg vp vp+passive vp+past)))))
-                   ))))) ;; need to generalize
+                        (current-string)))
+           (and ref
+                ;; these previous items want a following clause
+                (or (itypep ref '(:or that whether))
+                    (eq (edge-category e) category::do) ;; auxiliary --
+                    ;; see "Does phosphorylated BRAF being high precede phosphorylated MAP2K1 reaching... level?"
+                    (itypep ref 'event-relation))
+                ;;these items would allow an NP to make a clause
+                (not
+                 (and *right-edge-into-reference*
+                      (loop for e in
+                           (edges-after *right-edge-into-reference*)
+                         thereis
+                           (member (form-cat-name e)
+                                   '(vg vp vp+passive vp+past)))))
+                ))))) ;; need to generalize
              
 
 (defun apply-object-relative-clause (np-ref vp-ref)
