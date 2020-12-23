@@ -17,7 +17,7 @@
 ;;"It is interesting that various stimuli provoke EGF receptor tyrosine phosphorylation by two distinct means.")
 (define-category post-translational-modification :specializes caused-biochemical-process
   :bindings (uid  "GO:0043687")
-  :mixins (on-substrate with-specified-amino-acid)               
+  :mixins (on-substrate with-specified-amino-acid capable-of-being-measured)               
   :binds (;; allow variant to pick up "phosphorylated fraction"
 	  (site (:or molecular-location residue))) ;; which is attached here
   :restrict ((agent (:or protein gene bio-complex bio-mechanism bio-activate peptide component;; this is for "fraction of ..."
