@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2020 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "copulars"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  November 2019
+;;;  Version:  December 2020
 
 (in-package :sparser)
 
@@ -143,9 +143,16 @@
        (else
          ;; The adjective should subcategorize via :s for the
          ;; sensible subjects it can compose with.
-         (bind-variable 'aux copula adjective))))))
+         (let* ((i (specialize-object adjective 'state))
+                (j (add-tense/aspect-info-to-head copula i)))
+             j ))))))
 
+#| "... being high ..."
+  The edge over "being" is an instance of 'be' with its progressive
+variable bound.  We want to carry that information (and in general
+all of the information in the vg) up to adjective (which is now a state)
 
+|#
 
 ;;--- be + location
 
