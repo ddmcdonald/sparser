@@ -1396,7 +1396,7 @@
 ;;; debugging tools
 ;;;-----------------
 
-(defun applicable-sc-patterns (head label)
+#+ignore(defun applicable-sc-patterns (head label)
   "From the subcategization of the head individual return the patterns
    that are for this label"
   (let ((category (itype-of head))
@@ -1404,6 +1404,31 @@
     (if (null subcat-patterns)
       (format nil "~a has no subcategorizations" head)
       (sc-pat-matching-label label subcat-patterns))))
+
+(defgeneric applicable-sc-patterns (head label)
+  (:documentation "From the subcategization of the head individual
+    return the patterns that are for this label")
+  (:method ((name symbol) (pname string))
+    (applicable-sc-patterns (category-named name :error) (resolve pname)))
+  (:method ((name symbol) (label symbol))
+    (applicable-sc-patterns (category-named name :error) label))
+  (:method ((i individual) (pname string))
+    (applicable-sc-patterns (itype-of i) (resolve pname)))
+  (:method ((i individual) (label symbol))
+    (applicable-sc-patterns (itype-of i) label))
+  (:method ((c category) (w word))
+    (let ((subcat-patterns (known-subcategorization? c)))
+      (if (null subcat-patterns)
+        (format nil "~a has no subcategorizations" c)
+        (applicable-sc-patterns subcat-patterns w))))
+  (:method ((c category) (label symbol))
+    (let ((subcat-patterns (known-subcategorization? c)))
+      ;;(push-debug `(,subcat-patterns)) (break "~a" (type-of subcat-patterns))
+      (if (null subcat-patterns)
+        (format nil "~a has no subcategorizations" c)
+        (applicable-sc-patterns subcat-patterns label))))
+  (:method ((patterns cons) (label label)) ;; 'list' doesn't work either
+    (sc-pat-matching-label label patterns)))
       
 (defun sc-pat-matching-label (label subcat-patterns)
   "Given a label and a list of subcategorization patterns, return the
