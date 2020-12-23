@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  May 2020
+;;;  Version:  December 2020
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -1193,7 +1193,10 @@ there was an edge for the qualifier (e.g., there is no edge for the
 ;;/// compare to what's done in record-verb-tense for single verb edges
 
 (defun add-tense/aspect-info-to-head (aux vg)
-  (declare (special category::verb+ing))
+  ;; within a verb-group ('has been being') we look for verb-level
+  ;; form. In make-copular-adjective we've got a VG in our hands
+  ;; as the aux.
+  (declare (special category::verb+ing category::vg+ing))
   (let ((aux-form (edge-form (left-edge-for-referent))))
     ;; Check for negation
     (when (value-of 'negation aux)
@@ -1204,7 +1207,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
                              ((itypep aux 'future) 'occurs-at-moment)
                              ((itypep aux 'have) 'perfect)
                              ((itypep aux 'be)
-                              (if (eq aux-form category::verb+ing)
+                              (if (or (eq aux-form category::verb+ing)
+                                      (eq aux-form category::vg+ing))
                                 'progressive
                                 (return-from add-tense/aspect-info-to-head vg)))
                              (t (return-from add-tense/aspect-info-to-head vg)))
