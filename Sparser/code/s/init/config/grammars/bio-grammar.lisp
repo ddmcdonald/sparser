@@ -219,7 +219,7 @@
 ;; (include-grammar-module  *checkpoint-ops*)
 (include-grammar-module  *disease*)
 (include-grammar-module  *biology*)
-;;(include-grammar-module  *score-stats*)
+(include-grammar-module  *score-stats*)
 ;; (include-grammar-module  *hurricanes*)
 ;;(include-grammar-module  *generic-military*)
 
