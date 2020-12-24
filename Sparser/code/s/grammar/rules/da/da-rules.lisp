@@ -1385,6 +1385,10 @@
   :pattern ( question ifcomp )
   :action (:function clause-subordinate first second))
 
+(define-debris-analysis-rule polar-question-ifcomp
+  :pattern ( polar-question-form ifcomp )
+  :action (:function clause-subordinate first second))
+
 (define-debris-analysis-rule clause-subordinate-s
   :pattern ( s subordinate-s )
   :action (:function clause-subordinate first second))
@@ -1846,10 +1850,24 @@ assumed. |#
         ;;  possibly figure out whether the verb was swallowed by the np-edge
         ;;  as in "does RAS rise faster ..." where "rise" is mistakenly treated as a noun
         nil
-        (let ((edges (list be-edge np-edge adjp-edge))
-              (end-pos (fix-da-ending-pos *da-ending-position*)))
+        (let* ((edges (list be-edge np-edge adjp-edge))
+               (end-pos (fix-da-ending-pos *da-ending-position*))
+               (be (edge-referent (first edges)))  ;; is
+               (np (edge-referent (second edges))) ;; the ball
+               (adj (edge-referent (third edges))) ;; red
+               (copular-adj
+                 (let ((*left-edge-into-reference* (first edges))
+                       (*right-edge-into-reference* (third edges)))
+                   (make-copular-adjective be adj))))
+          #+ignore
           (make-polar-adjective-question
-           *da-starting-position* end-pos edges)))))
+           *da-starting-position* end-pos edges)
+          (when
+              copular-adj
+            (make-edge-spec
+             :category (edge-category (third edges))
+             :form category::polar-question-form
+             :referent (assimilate-subject np copular-adj)))))))
 
 (loop for n in '(np proper-noun common-noun)
         do (let ((pattern `(preposed-auxiliary ,n vp+ed))
