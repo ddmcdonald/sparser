@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "morphology"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  September 2020
+;;;  version:  December 2020
 
 ;; initiated 8/31/92 v2.3, fleshing out verb rules 10/12
 ;; 0.1 (11/2) fixed how lists of rules formed with synonyms
@@ -708,7 +708,26 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
 ;;; character examining subroutines
 ;;;---------------------------------
 
-(defparameter *vowels* (list #\a #\e #\i #\o #\u))
+(defparameter *vowels* (list #\a #\e #\i #\o #\u #\y))
+
+(defparameter *stop-consonants* (list #\p #\t #\k ; voiceless
+                                      #\b #\d #\g) ; voiced
+  "Forming past tense we can double last consonant if it's a stop")
+
+(defun semi-vowel? (character)
+  (or (eql character #\l)
+      (eql character #\r)))
+
+(defun consonant? (character)
+  (when (stringp character)
+    (setq character (elt character 0)))
+  (not (member character *vowels* :test #'eql)))
+
+(defun vowel? (character)
+  (when (stringp character)
+      (setq character (elt character 0)))
+  (member character *vowels* :test #'eql))
+
 
 (defun doubled-consonants? (c1 c2)
   (when (eql c1 c2)
@@ -716,27 +735,13 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
       ;; this gets digits and punctuation too, but it works
       t)))
 
-(defun consonant? (character)
-  (if (stringp character)
-      (setq character (elt character 0)))
-  (not (member character *vowels* :test #'eql)))
-
-(defun vowel? (character)
-  (if (stringp character)
-      (setq character (elt character 0)))
-  (member character *vowels* :test #'eql))
-
-(defun semi-vowel? (character)
-  (or (eql character #\l)
-      (eql character #\r)))
-
 (defun one-syllable? (pname)
   ;; a c/v analysis would be best 
   (= 1 (count-vowels pname)))
 
 (defun count-vowels (pname)
-  "Basic uestion is how many CV's are there as a sort of
-   syllable count. //can observe more features in the 
+  "Basic question is how many CV's are there as a sort of
+   syllable count. //could observe more features in the 
    process, like doubled vowels, vowel initial ..."
   (let ((count 0))
     (loop for i from 0 to (1- (length pname))
@@ -744,7 +749,6 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
        when (vowel? c) do (incf count))
     count))
          
-
 
 (defun stem-with-final-consonant/s-stripped (pname)
   (if (= (length pname) 0)
@@ -754,10 +758,9 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
          (subseq pname 0 (1- (length pname))))
         pname )))
 
-
 (defun v-of-final-vc-is-two-vowels? (pname)
-  ;; e.g. "join", used to stop the doubling of the final consonant
-  ;; in ed-form-of-verb
+  "e.g. 'join', used to stop the doubling of the final consonant
+   in ed-form-of-verb"
   (let ((reduced-stem (stem-with-final-consonant/s-stripped pname)))
     (when reduced-stem
       ;; If there was any vowel in this pname then the reduction
@@ -779,127 +782,159 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
 ;;; adding suffixes
 ;;;-----------------
 
-(defmethod s-form-of-verb ((base word))
-  (let* ((s-form-pname (s-form-of-verb (word-pname base)))
-         (word (resolve/make s-form-pname)))
-    (assign-brackets-as-a-main-verb word)
-    word ))
-
-(defmethod s-form-of-verb ((base polyword))
-  (let* ((s-form-pname (s-form-of-verb (pw-pname base)))
-         (word (resolve/make s-form-pname)))
-    (assign-brackets-as-a-main-verb word)
-    word ))
-
-(defmethod s-form-of-verb ((pname string))
-  ;; comlex-util uses the plural noun routine to generate
-  ;; this form, so since the original version here just
-  ;; added "s" why not try it.
-  (plural-version pname))
-
-
-(defmethod ed-form-of-verb ((word word))
-  (let* ((ed-pname (ed-form-of-verb (word-pname word)))
-         (word (resolve/make ed-pname)))
-    (assign-brackets-as-a-main-verb word)
-    word ))
-
-(defmethod ed-form-of-verb ((word polyword))
-  (let* ((ed-pname (ed-form-of-verb (pw-pname word)))
-         (word (resolve/make ed-pname)))
-    (assign-brackets-as-a-main-verb word)
-    word ))
-
-(defmethod ed-form-of-verb ((pname string))
-  ;; adapted version from comlex-util with the consonant
-  ;; doubling heuristic they cite.
-  (let ((lastchar (subseq pname (- (length pname) 1)))
-        (last2char (subseq pname (max (- (length pname) 2) 0)))
-        (last3char (subseq pname (max (- (length pname) 3) 0))))
-    (cond
-      ((member last2char '("ay" "ey" "iy" "oy" "uy")
-		       :test #'string-equal)
-       (string-append pname "ed"))
-
-      ((string-equal lastchar "y")
-	   (string-append (subseq pname 0 (- (length pname) 1)) "ied"))
-
-      ((string-equal lastchar "e")
-       (concatenate 'string pname "d"))
-
-      ((and (consonant? (char last3char 0))
-            (vowel? (char last2char 0))
-            (not (eql (char lastchar 0) #\x))
-            (consonant? (char lastchar 0)))
-       (string-append pname lastchar "ed"))
-
-      (t (string-append pname "ed")))))
+(defgeneric s-form-of-verb (base)
+  (:documentation "comlex-util uses the plural noun routine to generate
+    this form, so since the original version here just
+    added #\s why not try it.")
+  (:method ((base word))
+    (let* ((s-form-pname (s-form-of-verb (word-pname base)))
+           (word (resolve/make s-form-pname)))
+      (assign-brackets-as-a-main-verb word)
+      word ))
+  (:method ((base polyword))
+    (let* ((s-form-pname (s-form-of-verb (pw-pname base)))
+           (word (resolve/make s-form-pname)))
+      (assign-brackets-as-a-main-verb word)
+      word ))
+  (:method ((pname string))
+    (plural-version pname)))
 
 
-;(ed-form-of-verb (define-word "bat"))
-;(ed-form-of-verb (define-word "join"))
+(defgeneric ed-form-of-verb (base)
+  (:documentation "We double the final consonant when (a) the word has
+    more than one syllable, and (b) the final syllable is stressed.
+    Stress isn't a property of text, to we have to fake it by looking
+    at patterns of characters that could carry stress, like the stop consonants.
+    Other heuristics: A one-syllable word ending in cvc ('stop -> stopped').
+    Not if word ends in two consonants ('start', 'burn').
+    Not if there are there are two vowels before the final letter ('remain')
+    Never if the final consonant is #\w or #\y
+    Exceptions: 'travel', 'cancel' don't double.
+    https://speakspeak.com/resources/english-grammar-rules/english-spelling-rules/ ")
+  
+  (:method ((word word))
+    "Feeder methods call the pname method to get the correct form
+     then then they create the word to be returned"
+    (let* ((ed-pname (ed-form-of-verb (word-pname word)))
+           (word (resolve/make ed-pname)))
+      (assign-brackets-as-a-main-verb word)
+      word ))
+  
+  (:method ((word polyword))
+    (let* ((ed-pname (ed-form-of-verb (pw-pname word)))
+           (word (resolve/make ed-pname)))
+      (assign-brackets-as-a-main-verb word)
+      word ))
+
+  (:method ((pname string))
+    "Initially adapted version from verb-past in comlex-util with the consonant
+     doubling heuristic they cite."
+    (let ((length (length pname)))
+      (if (= length 2) ; "ax' -- during prime-comlex
+        (string-append pname "ed")
+        (let ((lastchar (aref pname (- length 1)))
+              (last2char (aref pname (- length 2)))
+              (last3char (aref pname (- length 3))))
+          ;;(format t "~c ~c ~c" last3char last2char lastchar)
+          (cond
+            ((and (vowel? last2char)
+                  (vowel? last3char))
+             (string-append pname "ed"))
+
+            ((eql lastchar #\y)
+             (string-append (subseq pname 0 (- (length pname) 1)) "ied"))
+
+            ((eql lastchar #\w)
+             (string-append pname "ed"))
+            
+            ((eql lastchar #\e)
+             (concatenate 'string pname "d"))
+
+            ((and (consonant? lastchar)
+                  (consonant? last2char))
+             (string-append pname "ed"))
+
+            ((eql lastchar #\x)
+             (string-append pname "ed"))
+
+            ((and (consonant? last3char)
+                  (vowel? last2char)
+                  (consonant? lastchar))
+             ;; double the last character
+             (string-append pname lastchar "ed"))
+
+            (t (string-append pname "ed"))))))))
+
+#|
+ (ed-form-of-verb "bat")  -- "batted"
+ (ed-form-of-verb "join")  -- "joined"
+ (ed-form-of-verb "stop")  -- "stopped"
+ (ed-form-of-verb "follow") -- "followed"
+|#
+
+
 
 ;;--- ing
 
-(defmethod ing-form-of-verb ((word word))
-  (let* ((ing-pname (ing-form-of-verb (word-pname word)))
-         (word (resolve/make ing-pname)))
-    (assign-brackets-as-a-main-verb word)
-    word ))
+(defgeneric ing-form-of-verb (word)
+  (:method ((word word))
+    (let* ((ing-pname (ing-form-of-verb (word-pname word)))
+           (word (resolve/make ing-pname)))
+      (assign-brackets-as-a-main-verb word)
+      word ))
+  
+  (:method ((word polyword))
+    (let* ((ing-pname (ing-form-of-verb (pw-pname word)))
+           (word (resolve/make ing-pname)))
+      (assign-brackets-as-a-main-verb word)
+      word ))
 
-(defmethod ing-form-of-verb ((word polyword))
-  (let* ((ing-pname (ing-form-of-verb (pw-pname word)))
-         (word (resolve/make ing-pname)))
-    (assign-brackets-as-a-main-verb word)
-    word ))
-    
+  (:method ((pname string))
+    (let* ((length (length pname))
+           (last-letter (elt pname (1- length)))
+           (2d-to-last (elt pname (- length 2)))
+           (3d-to-last (when (>= length 3) ;; "ax"
+                         (elt pname (- length 3))))
+           (ends-in-a-consonant? (consonant? last-letter))
+           (number-of-vowels (count-vowels pname))
+           (double nil))
+      ;; http://dictionary.cambridge.org/us/grammar/british-grammar/spelling
 
-(defmethod ing-form-of-verb ((pname string))
-  (let* ((length (length pname))
-         (last-letter (elt pname (1- length)))
-         (2d-to-last (elt pname (- length 2)))
-         (3d-to-last (when (>= length 3) ;; "ax"
-                       (elt pname (- length 3))))
-         (ends-in-a-consonant? (consonant? last-letter))
-         (number-of-vowels (count-vowels pname))
-         (double nil))
-    ;; http://dictionary.cambridge.org/us/grammar/british-grammar/spelling
+      ;; list the reasong not to double and by default
+      ;; we'll double a final consonant. 
+      (cond
+        ((eql #\e last-letter)
+         (setq pname (subseq pname 0 (1- (length pname))))
+         ;; "ie" => "ying
+         (when (eql 2d-to-last #\i)
+           (setq pname (string-append pname "y"))))
+        
+        ((eql #\w last-letter)) ;; "snow"
+        ((eql #\x last-letter)) ;; "tax"
+        ((eql #\y last-letter)) ;; "play"
 
-    ;; list the reasong not to double and by default
-    ;; we'll double a final consonant. 
-    (cond
-      ((eql #\e last-letter)
-       (setq pname (subseq pname 0 (1- (length pname))))
-       ;; "ie" => "ying
-       (when (eql 2d-to-last #\i)
-         (setq pname (string-append pname "y"))))
+        (ends-in-a-consonant? ;; something to double
+         (cond
+           ((= 1 number-of-vowels)
+            (cond
+              ((vowel? 2d-to-last) "put" "run" "get"
+               ;; applies to ading "-er", "-en" "-ish"
+               (setq double t))))
+           
+           ((and (vowel? 2d-to-last) (vowel? 3d-to-last))
+            (setq double nil)) ;; "remain" "dream" "need"
+           ((consonant? 2d-to-last)
+            (setq double nil)) ;; "start" "burn"
+
+           ;; when more that one syllable depends on placement
+           ;; of the stress. What resource could provide that?
+           (t
+            (setq double t)))))
       
-      ((eql #\w last-letter)) ;; "snow"
-      ((eql #\x last-letter)) ;; "tax"
-      ((eql #\y last-letter)) ;; "play"
-
-      (ends-in-a-consonant? ;; something to double
-       (cond
-         ((= 1 number-of-vowels)
-          (cond
-            ((vowel? 2d-to-last) "put" "run" "get"
-             ;; applies to ading "-er", "-en" "-ish"
-             (setq double t))))
-         
-          ((and (vowel? 2d-to-last) (vowel? 3d-to-last))
-           (setq double nil)) ;; "remain" "dream" "need"
-          ((consonant? 2d-to-last)
-           (setq double nil)) ;; "start" "burn"
-
-          ;; when more that one syllable depends on placement
-          ;; of the stress. What resource could provide that?
-          (t
-           (setq double t)))))
-    
-    (when double
-      (setq pname (string-append pname
-                                 last-letter)))
-    (string-append pname "ing")))
+      (when double
+        (setq pname (string-append pname
+                                   last-letter)))
+      (string-append pname "ing"))))
 
 
 ;(ing-form-of-verb (define-word "describe"))
