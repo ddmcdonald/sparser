@@ -163,6 +163,8 @@
 
 (def-form-category imperative)
 (def-form-category question)
+(def-form-category polar-question-form)
+
 (def-form-category question-marker) ;; for the WH+copula prefix
 
 (def-form-category appositive)

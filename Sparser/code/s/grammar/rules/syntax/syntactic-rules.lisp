@@ -360,9 +360,20 @@
   ;; See DA rules like attach-pp-following-clause
   :referent (:function clause+pp left-edge right-edge))
 
+(def-syntax-rule (polar-question-form pp)
+  :head :left-edge
+  :form polar-question-form
+  ;; See DA rules like attach-pp-following-clause
+  :referent (:function clause+pp left-edge right-edge))
+
 (def-syntax-rule (s than-np)
   :head :left-edge
   :form s
+  :referent (:function make-comparative-adjp-with-np left-edge right-edge))
+
+(def-syntax-rule (polar-question-form than-np)
+  :head :left-edge
+  :form polar-question-form
   :referent (:function make-comparative-adjp-with-np left-edge right-edge))
 
 
