@@ -144,8 +144,15 @@
          ;; The adjective should subcategorize via :s for the
          ;; sensible subjects it can compose with.
          (let* ((i (specialize-object adjective 'state))
-                (j (add-tense/aspect-info-to-head copula i)))
-             j ))))))
+                (j (add-tense/aspect-info-to-head copula i))
+                ;; DAVID -- please note
+                ;; we NEED to maintain the copula -- as in
+                ;; "ASPP2 protein levels remained high after CHX treatment"
+                ;; where the "copula" is "remained"
+                (k (bind-dli-variable 'copula copula j)))
+           (revise-parent-edge :category (itype-of k)
+                               :referent k)
+             k ))))))
 
 #| "... being high ..."
   The edge over "being" is an instance of 'be' with its progressive

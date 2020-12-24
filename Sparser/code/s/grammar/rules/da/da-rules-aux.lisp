@@ -172,7 +172,10 @@
    (itypep clause-referent 'copular-predication)
    ;; we are no longer creating copular-predication
    ;;  for copular adjecives
-   (adjective-phrase? (edge-right-daughter clause))))
+   (adjective-phrase? (edge-right-daughter clause))
+   ;; DAVID -- this is how we now detect copular-adjective-clauses
+   ;;  see make-copular-adjective
+   (value-of 'copula clause-referent)))
 
 (defun failed-pp-attachment (pp clause-referent)
   (declare (special *show-failed-fronted-pp-attachment*))

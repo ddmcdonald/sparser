@@ -155,6 +155,10 @@ like prepositional-phase (see syntax/syntactic-classes.lisp) |#
 
 
 (define-lambda-variable 'adjunctive-modifier
+  nil 'top)
+
+(define-lambda-variable 'copula ;; the copular verb as in "is high" ==> "is"
+  ;; and "remained high" ==> "remained"
     nil 'top)
 
 ;;;-----------------------------
