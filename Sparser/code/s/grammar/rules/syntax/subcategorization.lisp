@@ -1071,31 +1071,39 @@
    check that the v/r of that pattern is satisfied"
   (declare (special item label head *subcat-test* *subcat-use*
                     *left-edge-into-reference* *pat*))
-  (let* ((category (itype-of head))
-         (subcat-patterns (known-subcategorization? head))
+  (let* ((category (itype-of head))  ;xxx
+         (subcat-patterns
+           (cond ((collection-p head)
+                  (subcat-patterns (get-ref-subcategorization head)))
+                 ((and (individual-p head)
+                       (consp (indiv-type head))
+                       (cdr (indiv-type head)))
+                  (loop for type in (indiv-type head)
+                        append (known-subcategorization? type)))
+                 (t (known-subcategorization? head))))
          (of-object
-          (and  (equalp (pname label) "of")
-                *left-edge-into-reference* ;; it has a non-nil value
-                (member (form-cat-name *left-edge-into-reference*)
-                        '(np ng vg+ing))
-                (loop for pat in subcat-patterns
-                      when (and (pname (subcat-label pat))
-                                (equalp (pname (subcat-label pat)) "of")
-                                (equal (pname (subcat-variable pat)) "OBJECT")
-                                (satisfies-subcat-restriction? item pat)
-                                ;; n.b. look at "panel"
-                                (not (itypep (subcat-restriction pat) 'over-ridden))
-                                (not (itypep (subcat-restriction pat) 'blocked-category)))
-                      return pat)))
+           (and  (equalp (pname label) "of")
+                 *left-edge-into-reference* ;; it has a non-nil value
+                 (member (form-cat-name *left-edge-into-reference*)
+                         '(np ng vg+ing))
+                 (loop for pat in subcat-patterns
+                       when (and (pname (subcat-label pat))
+                                 (equalp (pname (subcat-label pat)) "of")
+                                 (equal (pname (subcat-variable pat)) "OBJECT")
+                                 (satisfies-subcat-restriction? item pat)
+                                 ;; n.b. look at "panel"
+                                 (not (itypep (subcat-restriction pat) 'over-ridden))
+                                 (not (itypep (subcat-restriction pat) 'blocked-category)))
+                         return pat)))
          (ambiguous-of-object
-          (when of-object
-            (loop for pat in subcat-patterns
-                  when (and (eq label (subcat-label pat))
-                            (not (eq (pname (subcat-variable pat)) 'object))
-                            (satisfies-subcat-restriction? item pat)
-                            (not (itypep (subcat-restriction pat) 'over-ridden))
-                            (not (itypep (subcat-restriction pat) 'blocked-category)))
-                  do (return pat)))))
+           (when of-object
+             (loop for pat in subcat-patterns
+                   when (and (eq label (subcat-label pat))
+                             (not (eq (pname (subcat-variable pat)) 'object))
+                             (satisfies-subcat-restriction? item pat)
+                             (not (itypep (subcat-restriction pat) 'over-ridden))
+                             (not (itypep (subcat-restriction pat) 'blocked-category)))
+                     do (return pat)))))
     (declare (special category subcat-patterns of-object ambiguous-of-object))
     (when ambiguous-of-object (warn "ambiguous-of-object is ~a" ambiguous-of-object))
 
