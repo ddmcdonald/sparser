@@ -59,15 +59,14 @@
  being asked. The basic split is between polar questions and the
  diverse kinds of WH questions.")
 
-
 (define-category polar-question
   :specializes question
   :instantiates :self 
-  :index (:temporary :key statement))
+  :index (:temporary :key statement)
   :documentation "This is a labeling category in that it does
  not add any refinements or extensions to question-core. It just
  labels the statement as a question: 'is it the case that <statement>'."
-
+  )
 
 (define-category wh-question
   :specializes question
@@ -209,6 +208,8 @@
       (cond
         ((edge-p edge)
          (cond
+           ((eq (form-cat-name edge) 'polar-question-form)
+            (make-polar-edge edge))
            ((and preposed? (null wh-initial?)
                  (itypep (edge-referent edge) 'there-exists))
             ;; The wh-initial? case doesn't need further handling
