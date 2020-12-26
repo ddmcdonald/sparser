@@ -86,55 +86,64 @@
 (define-mixin-category comlex-derived :specializes abstract
                        :documentation "Marker that this category was produced to hold a word that is only known through COMLEX")
 
-(defun svo/bio/expr (verb)
+(defun svo/bio/expr (verb &optional comlex-clause)
   (declare (special category::bio-process))
-  (when *show-bio-verbs*
-    (format t "~%creating a default bio-process for new verb ~s~%" verb))
-  (when (word-p verb) 
-    ;; came in from setup-verb
-    (setq verb (word-pname verb)))
-  (when (equal "residue" (pname verb))
+  (let ((special-cases
+          (when comlex-clause
+            (lift-special-case-form-from-comlex-clause comlex-clause))))
+    (when *show-bio-verbs*
+      (format t "~%creating a default bio-process for new verb ~s~%" verb))
+    (when (word-p verb) 
+      ;; came in from setup-verb
+      (setq verb (word-pname verb)))
+    (when (equal "residue" (pname verb))
   	
-    (warn "trying to redefine residue")
-    (return-from svo/bio/expr nil))
-  (let* ((category-name (intern (string-upcase verb)
-                                (find-package :sparser)))
-         (existing-bio-verb-category-name
-          (member category-name *comlex-category-names*))
-         (existing-bio-verb-category (and
-                                      existing-bio-verb-category-name
-                                      (category-named category-name))))
-    (when (and (category-named category-name)
-               (null existing-bio-verb-category-name))
-      ;; e.g. 'time
-      ;; had some difficulty with redefining verb "leave",
-      ;; and then redefining the category
-      (setq category-name
-            (construct-disambiguating-category-name
-             category-name category::bio-process))
-      (when (member category-name *comlex-category-names*)
-        (setq existing-bio-verb-category (category-named category-name))))
+      (warn "trying to redefine residue")
+      (return-from svo/bio/expr nil))
+    (let* ((category-name (intern (string-upcase verb)
+                                  (find-package :sparser)))
+           (existing-bio-verb-category-name
+             (member category-name *comlex-category-names*))
+           (existing-bio-verb-category (and
+                                        existing-bio-verb-category-name
+                                        (category-named category-name))))
+      (when (and (category-named category-name)
+                 (null existing-bio-verb-category-name))
+        ;; e.g. 'time
+        ;; had some difficulty with redefining verb "leave",
+        ;; and then redefining the category
+        (setq category-name
+              (construct-disambiguating-category-name
+               category-name category::bio-process))
+        (when (member category-name *comlex-category-names*)
+          (setq existing-bio-verb-category (category-named category-name))))
     
-    (cond (existing-bio-verb-category)
-          (t
-           (push category-name *comlex-category-names*)
-           (let* ((form (unless existing-bio-verb-category
-                          `(define-category ,category-name
+      (cond (existing-bio-verb-category)
+            (t
+             (push category-name *comlex-category-names*)
+             (let* ((form (unless existing-bio-verb-category
+                            `(define-category ,category-name
                                :instantiates :self
                                :specializes bio-process
                                :mixins (comlex-derived)
                                :binds ((participant endurant)
                                        (object endurant))
                                :realization (:etf (svo-passive)
-                                                  :verb ,verb :o object))))
-                  (category (or existing-bio-verb-category (eval form))))
-             (pushnew category *new-bio-processes*)
-             (when *show-new-svo/bio-definitions*
-               (print form))
-             ;; need to figure out a way to show the context!!
-             (unless existing-bio-verb-category
-               (note-permanence-of-categorys-individuals category))
-             category)))))
+                                             :verb ,verb :o object))))
+                    (category (or existing-bio-verb-category (eval form))))
+               (pushnew category *new-bio-processes*)
+               (when *show-new-svo/bio-definitions*
+                 (print form))
+               ;; need to figure out a way to show the context!!
+               (unless existing-bio-verb-category
+                 (note-permanence-of-categorys-individuals category))
+               (when special-cases
+                 (apply #'define-main-verb (cat-symbol category)
+                        :infinitive verb
+                        :category category
+                        :referent category
+                        special-cases))
+               category))))))
 
 
 ;;; Verbs added temporarily for load-test -- to be reviewed and corrected
@@ -1465,12 +1474,14 @@
 (define-category validate
   :specializes bio-rhetorical
   :mixins (bio-whethercomp bio-ifcomp)
-  :binds ((to-be biological))
+  :binds ((to-be biological)
+          (valid-object top))
   ;; validated by the success of MEK inhibition
   :realization
     (:verb "validate"
      :noun "validation"
      :etf (svo-passive)
+     :o valid-object
      :as to-be))
 
 (define-category verify :specializes bio-rhetorical
