@@ -209,9 +209,6 @@
      :like like
      :unlike unlike ))
 
-(define-category bio-scalar-attribute :specializes scalar-attribute
-  :mixins (biological))
-
 (define-category bio-abstract :specializes abstract
    :mixins (biological))
 
@@ -243,18 +240,6 @@
 (define-category bio-quality :specializes bio-predication
   :mixins (biological))
 
-#+ignore
-(define-category bio-scalar
-  :specializes scalar
-  :mixins (bio-quality)
-  :documentation "Provides a generalization over 
-    biological and scalar"
-  :restrict ((participant blocked-category))
-  :binds ((measured-item biological))
-  :realization
-     (:of measured-item
-      :m measured-item))
-
 
 ;;;--------------
 ;;; measurements
@@ -262,15 +247,15 @@
 
 (define-mixin-category with-measurement
   :specializes adds-relation
-  :binds ((at-measurement (:or bio-concentration measurement)) 
+  :binds ((at-measurement (:or scalar-attribute measurement)) 
           (extent (:or scalar-attribute  amount measurement)))
   :realization
      (:at at-measurement
       :to extent))
 
-(define-category bio-measurement :specializes measurement
-  :mixins (bio-quality has-uid)
-  :documentation "Provides a generalization over biological and measurement")
+#+ignore (define-category bio-measurement :specializes measurement
+           :mixins (bio-quality has-uid)
+           :documentation "Provides a generalization over biological and measurement")
 
 ;; ratio and value moved to amounts;measurements
 
@@ -451,7 +436,7 @@
   :restrict ((object
                (:or bio-entity cell-entity molecular-location
                     disease
-                    measurement
+                    ;;measurement
                     scalar-attribute
                     )))
   :realization
@@ -508,7 +493,8 @@
                bio-chemical-entity
                bio-location ;; "the Y561 site displayed no difference..."
                disease ;; "SARS-CoV-2 infection shows ..."
-               information 
+               information
+               quality ;; "validate the role" -- perhaps there is a better way to do this
                bio-quality
                bio-rhetorical
                bio-process ;; the B-RAFV600E mutation predicts
@@ -516,7 +502,7 @@
                ;;bio-method ;; high-throughput functional screens may inform
                bio-mechanism    ;; "this pathway describes ..."
                bio-predication ;; the success of raf and mek inhibitors
-               measurement     ;; these data
+               ;; measurement     ;; these data -- data is now "information" not "measurement"
                document-part ;; subsumes article-figure
                physical-agent
                social-agent
@@ -1388,9 +1374,7 @@ the aggregate across the predicate it's in. |#
 
 
 
-(define-category bio-strength :specializes bio-scalar-attribute
-  :realization
-    (:noun "strength"))
+
 
 
 (define-category residue-on-protein
