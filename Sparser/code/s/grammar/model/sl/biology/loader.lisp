@@ -31,6 +31,7 @@
 (gload "bio;taxonomy")
 (gload "disease;medical-taxonomy") ;; defines 'drug'
 
+(gload "bio;attributes") ;;start to move the (general) attributes out of biology
 (gload "bio;cellular-locations")
 (gload "bio;new-defs;new-cell-loc")
 (gload "bio;non-cellular-locations") ;; needs to be before protein families so human is defined
