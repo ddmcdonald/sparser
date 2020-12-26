@@ -722,7 +722,10 @@
                                        (member (cat-name (edge-form ee))
                                                '(verb+ing verb+ed)))))
        nil)
-      
+      ((some-edge-satisfying? (edges-before e)
+                              #'(lambda(ee)
+                                  (eq (edge-cat-name ee)'the)))
+       nil)
       ((plural-noun-and-present-verb? e)
        (and
         (or (some-edge-satisfying? (edges-before e) #'singular-det)
