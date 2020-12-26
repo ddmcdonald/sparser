@@ -22,7 +22,7 @@
 ;;;--------
 
 (define-category  measurement  ;; "10 yards"
-  :specializes attribute-value
+  :specializes scalar ;; not attribute-value
   :instantiates self
   :lemma (:common-noun "measurement")
   :binds ((units . unit-of-measure)
@@ -35,7 +35,8 @@
                           (modifier . (number quantity))
                           (result-type . :self))))
 
-
+(define-category measurement-with-uid :specializes measurement
+  :mixins (has-uid))
 
 ;;;----------
 ;;; coersion
@@ -189,7 +190,7 @@ and the word can stand by itself "that distance"
 ;;; rates
 ;;;-------
 
-(define-category rate
+(define-category rate-measurement
   :specializes measurement
   :binds ((units . unit-of-rate-of-change)
           (quantity . number)) ;;  :or quantity number)
@@ -198,7 +199,7 @@ and the word can stand by itself "that distance"
     that is changing, e.g. '10 mph' is a rate as this defines it
     without saying what it is whose 'speed' as '10 mph'. That link
     is developed a bit in core/qualities/attribute.lisp."
-  :realization ((:common-noun "rate")
+  :realization (;; (:common-noun "rate") -- "rate" is an attribute, not the measurement itself
                 (:tree-family  quantity+kind
                 :mapping ((quantity . quantity)
                           (base . units)
@@ -208,7 +209,7 @@ and the word can stand by itself "that distance"
                           (result-type . :self)))))
 
 (define-category qualitative-rate
-  :specializes rate
+  :specializes rate-measurement
   :index (:permanent :key name)
   :documentation "The category of any word that describes the rate
     at which something happens without giving it a precise value
