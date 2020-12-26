@@ -245,7 +245,7 @@
                  assuming ~s is a bio-verb~&" word (or *unknown-word* word)))
       ;; n.b. svo/bio/expr will check for already used categories
       ;; and specialize the category name accordingly
-      (svo/bio/expr word))
+      (svo/bio/expr word comlex-clause))
     (else
       (when (stringp word)
         (setq word (resolve/make word)))
