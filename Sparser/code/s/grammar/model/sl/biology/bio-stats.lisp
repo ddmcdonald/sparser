@@ -89,18 +89,20 @@
     (:noun "screen"))
 
 ;; metrics
+(define-category stat-measurement :specializes measurement-with-uid)
+
 (def-indiv-with-id bio-method "FdR" "NCIT:C64214" :name "false discovery rate") 
 
 (def-indiv-with-id bio-method "Gaussian" "NCIT:C53215" :name "normal distribution") 
-(def-indiv-with-id bio-measurement "eigenvalue" "NCIT:C61068" :name "eigenvalue")
-;(def-indiv-with-id bio-measurement "median" "NCIT:C28007" :name "median") 
-(def-indiv-with-id bio-measurement "variance" "NCIT:C48918" :name "variance") 
-(def-indiv-with-id bio-measurement "dispersion" "NCIT:C53321" :name "statistical dispersion")
-(def-indiv-with-id bio-measurement "maxima" "NCIT:C82868" :name "maximum value derivation technique") 
-(def-indiv-with-id bio-measurement "quantile" "NCIT:C48920" :name "quantile") 
-(def-indiv-with-id bio-measurement "quartile" "NCIT:C87306" :name "quartile") 
-(def-indiv-with-id bio-measurement "root-mean-square" "NCIT:C73485" :name "root mean square") 
-(def-indiv-with-id bio-measurement "percentile" "NCIT:C48919" :name "percentile") 
+(def-indiv-with-id stat-measurement "eigenvalue" "NCIT:C61068" :name "eigenvalue")
+;(def-indiv-with-id stat-measurement "median" "NCIT:C28007" :name "median") 
+(def-indiv-with-id stat-measurement "variance" "NCIT:C48918" :name "variance") 
+(def-indiv-with-id stat-measurement "dispersion" "NCIT:C53321" :name "statistical dispersion")
+(def-indiv-with-id stat-measurement "maxima" "NCIT:C82868" :name "maximum value derivation technique") 
+(def-indiv-with-id stat-measurement "quantile" "NCIT:C48920" :name "quantile") 
+(def-indiv-with-id stat-measurement "quartile" "NCIT:C87306" :name "quartile") 
+(def-indiv-with-id stat-measurement "root-mean-square" "NCIT:C73485" :name "root mean square") 
+(def-indiv-with-id stat-measurement "percentile" "NCIT:C48919" :name "percentile") 
 (def-indiv-with-id bio-method "FWER" "NCIT:C64215" :name "family-wise error rate") 
 (def-indiv-with-id bio-method "alpha-1" "NCIT:C67050" :name "affy alpha1 significance") 
 (def-indiv-with-id bio-method "alpha2" "NCIT:C67051" :name "affy alpha2 significance") 
@@ -125,15 +127,14 @@
 (noun "control" :super bio-method)
 
 (define-category absence :specializes experimental-condition
-  :binds ((measurement (:or biological  ;; can be "in the absence of of HRAS V12"
-                scalar-attribute)))
+  :binds ((measurement (:or biological  experimental-condition)));; can be "in the absence of of HRAS V12"
   :realization
   (:noun "absence"
-	 :of measurement))
+   :of measurement))
+
 (define-category presence :specializes experimental-condition
   :binds ((measurement
-           (:or biological ;; can be "in the presence of of HRAS V12"
-                scalar-attribute)))
+           (:or biological  experimental-condition)));; can be "in the presence of of HRAS V12"
   :realization
   (:noun "presence"
 	 :of measurement))

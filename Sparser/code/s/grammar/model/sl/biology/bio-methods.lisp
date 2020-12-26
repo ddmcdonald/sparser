@@ -311,7 +311,7 @@
 (noun "PME" :super bio-method)
 (def-synonym PME (:noun "particle mesh ewald")) ;; algorithm used in comp bio
 
-(noun "MAPE" :super bio-measurement) ;; block bad gene def
+(noun "MAPE" :super measurement) ;; block bad gene def
 (def-synonym MAPE (:noun "mean absolute percentage error"))
 (def-synonym MAPE (:noun "Mean Absolute Percentage Error"))
 (noun "MSA" :super bio-method)
@@ -603,10 +603,7 @@ with something else
 (noun "slice" :super bio-preparation) ;; brain slices
 (noun "networking" :super bio-mechanism) ;; unsure of this -- "receptor networking"
 
-(noun "role" :super attribute
-      :binds ((process bio-process))
-      :realization
-      (:in process))
+
 
 (define-category aspect :specializes bio-mechanism
   :binds ((whole bio-mechanism))
