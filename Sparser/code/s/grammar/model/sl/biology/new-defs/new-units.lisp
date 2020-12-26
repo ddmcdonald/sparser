@@ -113,5 +113,5 @@
 (def-indiv-with-id unit-of-measure "cc" "UO:0000097" :name "cubic centimeter")
 
 ;; density measures for nucleotides
-(def-indiv-with-id bio-measurement "OD260" "NCIT:C48169" :name "OD260 unit" :synonyms ("absorbance at 260nm"))  
-(def-indiv-with-id bio-measurement "OD280" "NCIT:C48170" :name "OD280 unit" :synonyms ("absorbance at 280nm"))
+(def-indiv-with-id measurement-with-uid "OD260" "NCIT:C48169" :name "OD260 unit" :synonyms ("absorbance at 260nm"))  
+(def-indiv-with-id measurement-with-uid "OD280" "NCIT:C48170" :name "OD280 unit" :synonyms ("absorbance at 280nm"))
