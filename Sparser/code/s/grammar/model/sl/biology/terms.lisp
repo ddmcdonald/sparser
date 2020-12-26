@@ -280,11 +280,7 @@
 (adj "insensitive" :super bio-relation
       :realization (:to theme))
    
-(noun "insensitivity" :super bio-scalar-attribute ;; HUH?
-      :binds ((cause biological))
-      :realization
-      (:noun "insensitivity"
-             :to cause))
+
 (noun "insight" :super bio-rhetorical
       :binds ((concept biological))
       :realization
@@ -383,11 +379,6 @@
       :realization
       (:to theme))
 
-(noun "sensitivity"  :super bio-scalar-attribute
-      :binds ((cause biological))
-      :realization
-      (:noun "sensitivity"
-             :to cause))
 
 
  

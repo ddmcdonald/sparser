@@ -46,9 +46,7 @@ be biology specific, since they aren't. |#
 (noun "the next day" :specializes time)
 (noun "p.i" :specializes time) ;; post-infection!
 
-(define-category time-course :specializes bio-scalar-attribute ;; really? maybe just attribute
-  :realization 
-  (:noun "time course"))
+
 ;; adapt to go into core/time/amounts.lisp 
 (define-category period :specializes amount-of-time
   :binds ((context bio-context)
@@ -66,23 +64,23 @@ be biology specific, since they aren't. |#
  |#
 
 (define-category noisy :specializes predication
-  :binds ((theme (:or scalar measurement biological)))
+  :binds ((theme (:or scalar scalar-attribute biological))) ;;measurement
   :realization
   (:adj "noisy"
         :s theme))
 (define-category persistent :specializes predication
-  :binds ((theme (:or scalar measurement biological)))
+  :binds ((theme (:or scalar scalar-attribute biological))) ;;measurement
   :realization
   (:adj "persistent"
         :s theme))
 (define-category unchanged :specializes predication
-   :binds ((theme (:or scalar measurement biological)))
+   :binds ((theme (:or scalar scalar-attribute biological))) ;;measurement
   :realization
    (:adj "unchanged"
          :s theme)
    )
 (define-category transient :specializes predication
-   :binds ((theme (:or scalar measurement biological)))
+   :binds ((theme (:or scalar scalar-attribute biological))) ;;measurement
   :realization
    (:adj "transient"
          :s theme))
@@ -218,13 +216,9 @@ be biology specific, since they aren't. |#
 
 
 
-(define-category threshold :specializes bio-scalar-attribute
-  :realization (:noun "threshold"))
 
-(define-category duration :specializes bio-scalar-attribute
-  :binds ((theme (:or process bio-method bio-mechanism)))
-  :realization
-    (:noun "duration"))
+
+
 
 ;;--- bio-rhetorical
 
@@ -355,15 +349,9 @@ be biology specific, since they aren't. |#
 
 ;;---- other
 
-(noun "content" :super measurement)
 
-(delete-noun-cfr (resolve "number"))
-(delete-noun-cfr (resolve "numbers"))
-(define-category count-of :specializes measurement
-  :binds ((item-counted biological)); ; needs to be COUNT-NOUN
-  :realization
-    (:noun "number"
-         :of item-counted))
+
+
 
 
 (noun "example" :super variant)
@@ -381,7 +369,7 @@ be biology specific, since they aren't. |#
      :between bounds))
 
 
-(noun "behavior" :super attribute)
+
 
 (define-category compare :specializes bio-method
   :binds ((comparator biological)

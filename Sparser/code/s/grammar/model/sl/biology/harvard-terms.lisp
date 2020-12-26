@@ -16,36 +16,10 @@
 
 
 
-(define-category bio-amount :specializes bio-scalar-attribute
-  :realization
-  (:noun "amount"))
-#| and so are active in catalytic amounts.
-the amount of α-catenin
-the total amounts of α-catenin ;; similar, same, initial
-their relative amounts remained unchanged
-for various amounts of time
-increasing amounts of recombinant XRCC1.
-(dynamic-model 54 "Double the amount of total BRAF.")
-|#
 
 
-(define-category frequency :specializes bio-scalar-attribute
-  :realization
-  (:noun "frequency"))
 
-(define-category peak :specializes bio-scalar-attribute
-  :restrict ((owner (:or biological scalar-attribute amount)))
-  :realization (:noun "peak"
-                :in owner ;;measured-item
-                      ) ;; "a peak in the measured amount ..."
-  :documentation "The preposition 'in' does the same work as 'of'
-    in other kinds of amounts / quantities of stuff. In biology
-    it seems most appropriate when we are describing locations
-    in graphs, e.g. 'dip' ")
 
-(define-category bio-concentration :specializes bio-scalar-attribute
-  :realization
-    (:noun "concentration"))
 
 (define-category scalar-variation
   :specializes bio-predication)
@@ -172,37 +146,9 @@ by which this occurs.") |#
 
 
 
-;;--- bio-scalar -- now scalar-attribute
 
-;; (p/s "Decrease the binding rate of NRAS and BRAF.")
-(delete-noun-cfr (resolve "rate")) ;;/// override it
 
-(define-category process-rate :specializes bio-scalar-attribute
- :binds ((components biological)
-         (process bio-process))
- :realization 
-    (:noun "rate"
-     :for components
-     :m process))
-(def-synonym process-rate (:noun "kinetics"))
 
-#| The parser will do "binding rate" compositionally, and will put
-the 'binding' in the process slot of the process-rate object.
-Unfortunately, generating from that requires coercing 'binding' 
-into a particple in order to provide an adjective realization,
-which if further than is worth going just now. (Same issue as we
-have with phosphorylated as a preposed modifier.) |#
-(define-category binding-rate
-  :specializes process-rate
-  :realization (:noun "binding rate"))
-
-(define-category dissociation-rate
-  :specializes process-rate
-  :realization (:noun "dissociation rate"))
-
-(define-category catalysis-rate
-  :specializes process-rate
-  :realization (:noun "catalysis rate"))
 
 
 ;; e.g. displayed sustained ERK phosphorylation
