@@ -323,7 +323,7 @@
 ;; Remove existing version of "delay" to replace it with this one
 (define-category delay :specializes bio-control
     :realization
-    (:verb "delay"
+    (:verb ("delay" :past-tense "delayed" :past-participle "delayed")
            :noun "delay"
 	   :etf (svo-passive )
            :in object
@@ -431,7 +431,7 @@
 ;; e.g. displayed sustained ERK phosphorylation
 (define-category display :specializes bio-rhetorical
   :realization
-  (:verb "display" ;; keyword: ENDS-IN-ED 
+  (:verb ("display" :past-tense "displayed" :past-participle "displayed")
          :etf (svo-passive)
          :noun "display"))
 
