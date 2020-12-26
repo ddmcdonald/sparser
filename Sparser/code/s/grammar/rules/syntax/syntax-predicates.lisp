@@ -75,6 +75,18 @@
             (t
              (funcall test item tree)))))
 
+;; specialized form of is-in-p that can be used to look for strings like "p-dir" in a tree
+(defun is-in-p-string (item tree &key test)
+  (cond ((and (consp tree) (listp (cdr tree))) ;; not a dotted pair
+         (loop for i in tree thereis (is-in-p-string item i)))
+        ((consp tree)
+         (or
+          (equal item (car tree))
+          (equal item (cdr tree))))
+        (t
+         (equal item tree)))
+  )
+
 
 
 ;;--- adjectives
