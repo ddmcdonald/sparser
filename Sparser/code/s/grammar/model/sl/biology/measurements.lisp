@@ -29,20 +29,15 @@
 (noun "COVIDx" :super dataset) ;; dataset/study
 
 ;; below is needed because of a use of "transients" in the CURE corpus
-(define-category transient-measurement :specializes bio-measurement
+(define-category transient-measurement :specializes measurement
   :realization  (:noun ("transientXXX" :plural "transients"))) ;; don't pick up "transient" from COMLEX, and don't allow "transient" as a singular noun
 
 (noun "throughput" :super measurement)
 
 
-(noun "extent" :super bio-scalar-attribute) 
-(noun "mass" :super bio-scalar-attribute)
-(noun "scale" :super bio-scalar-attribute)     
 
-(noun "dynamics" :super bio-scalar-attribute) ;;possibly just attribute
-(noun "proportion" :super bio-scalar-attribute) ;;possibly just attribute
 
-(noun "TopoPSA" :super bio-measurement)
+(noun "TopoPSA" :super measurement)
 (def-synonym TopoPSA (:noun ("Topological Polar Surface Area" "topological polar surface area")))
 
 ;;;------------------
