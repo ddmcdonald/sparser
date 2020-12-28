@@ -841,10 +841,8 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
                   (vowel? last3char))
              (string-append pname "ed"))
 
-            ((eql lastchar #\y)
-             (string-append (subseq pname 0 (- (length pname) 1)) "ied"))
-
-            ((eql lastchar #\w)
+           ((or (eql lastchar #\w)
+                (eql lastchar #\y))
              (string-append pname "ed"))
             
             ((eql lastchar #\e)
