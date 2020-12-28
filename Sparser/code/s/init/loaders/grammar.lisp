@@ -318,7 +318,7 @@ omitted and then run (perhaps) after the image has been launched."
   (let ((*inhibit-construction-of-systematic-semantic-rules* t))
     (declare (special *inhibit-construction-of-systematic-semantic-rules*))
     (gate-grammar *biology*
-        (gload "bio;loader")))
+                  (gload "bio;loader")))
   
   (gate-grammar *disease*
     (disease-loaded-after-bio))
@@ -326,6 +326,9 @@ omitted and then run (perhaps) after the image has been launched."
   (gload "bio;category-defining-words.lisp")
   ;; Defines lemmas for categories that don't naturally or easily
   ;; support them.
+
+  (gate-grammar *score-verbs*
+                (gload "bio;score-verbs.lisp"))
 
   (setup-vocabulary-suppression)
 

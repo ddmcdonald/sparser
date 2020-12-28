@@ -443,6 +443,10 @@
 
 (define-grammar-module *score-stats*
                        :name "Social and Behavior Science for SCORE program"
+  :parent *sublanguages*)
+
+(define-grammar-module *score-verbs*
+                       :name "Social and Behavior Science for SCORE program -- verbs"
                        :parent *sublanguages*)
 
 (define-grammar-module *hurricanes*
