@@ -48,19 +48,21 @@ subcategorization-pattern is a daughter of linguistic, abstract
   :realization (:s patient :mumble (sv :s patient)))
 +
 
-(define-mixin-category comlex-verb
+(define-category comlex-verb
   :specializes subcategorization-pattern
   :instantiates nil
   :documentation "Designed for use by setup-verb which is
  used to provide a category for otherwise unknown words
  that are introduced by the Comlex machinery."
   :mixins (with-actor with-patient)
-  :restrict ((actor (:or pronoun endurant))
-             (patient endurant))
+  ;; we really don't want to restrict these variables
+  ;;  -- the subject and theme can be endurants, perdurants, abstract
+  :binds ((subject top)
+             (object top))
    :realization
-    (:s actor
-     :o patient
-     :mumble (svo :s actor :o patient)))
+    (:s subject
+     :o object
+     :mumble (svo :s subject :o object)))
 
 (define-mixin-category comlex-noun
   :specializes subcategorization-pattern
