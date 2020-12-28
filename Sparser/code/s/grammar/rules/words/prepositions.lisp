@@ -170,6 +170,7 @@ these are really prepositions, and should function as such
 (define-preposition "in contact with")
 (define-preposition "in contrast to")
 (define-preposition "in contrast with")
+(define-preposition "in excess of")
 (define-preposition "in exchange for")
 (define-preposition "in face of")
 (define-preposition "in favor of")
@@ -248,3 +249,9 @@ these are really prepositions, and should function as such
 (define-preposition "without" :synonyms '("w/o"))
 (define-preposition "worth")
 
+;;; from COMLEX verbs
+
+(define-preposition "around") ;;COMLEX
+(define-preposition "in-excess-of") ;;COMLEX
+(define-preposition "till") ;; COMLEX has as a preposition, Sparser has as a conjunctions
+(define-preposition "until") ;; COMLEX has as a preposition, Sparser has as a conjunctions

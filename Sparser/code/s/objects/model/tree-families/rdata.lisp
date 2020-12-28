@@ -154,7 +154,49 @@ Should mirror the cases on the *single-words* ETF."
     :subject :such\ as
     :to :to-comp :thatcomp :through :throughout :toward :towards
     :under :unlike :upon
-    :via :whethercomp :with :within :without))
+    :via :whethercomp :with :within :without
+
+
+    :past ;;not really
+    ;; new, from COMLEX
+    :aboard
+    :according\ to
+    :ahead\ of
+    :amid
+    :amongst
+    :around
+    :along
+    :away\ from
+    :as\ to
+    :atop
+    :behind
+    :beneath
+    :beyond
+    :beside
+    :close\ to
+    :in\ excess\ of
+    :in-excess-of
+    :in\ favor\ of
+    :in\ terms\ of
+    :inside
+    :inside\ of
+    :kinds
+    :near
+    :next\ to
+    :off
+    :off\ of
+    :out
+    :out\ of
+    :outside
+    :p-dir
+    :pending
+    :regarding
+    :till
+    :time
+    :until
+    :unto
+    :up\ to
+    ))
 
 (defparameter *subcat-aliases*
     '((:s . :subject)
