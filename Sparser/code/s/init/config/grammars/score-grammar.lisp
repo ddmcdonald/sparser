@@ -220,7 +220,8 @@
 (include-grammar-module  *biology*)
 
 ;; preliminary version of sublanguage where statistical tests and measures are getting defined - temporarily commented out until it's more functional
-(include-grammar-module  *score-stats*) 
+(include-grammar-module  *score-stats*)
+(include-grammar-module *score-verbs*)
 
 ;; (include-grammar-module  *hurricanes*)
 ;;(include-grammar-module  *generic-military*)
