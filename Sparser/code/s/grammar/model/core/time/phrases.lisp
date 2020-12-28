@@ -67,35 +67,6 @@
     :referent (:function add-time-to-event left-edge right-edge))
 
 
-(defun add-time-to-event (event time)
-  (unless (itypep event 'be)
-    (let ((var (find-variable-for-category 'time event)))
-      (cond (*subcat-test* var)
-            (var 
-             (bind-variable var time event))))))
-
-(defun add-manner-to-event (event manner)
-  (unless (itypep event 'be)
-    (let ((var (find-variable-for-category 'manner event)))
-      (cond (*subcat-test* var)
-            (var 
-             (bind-variable var manner event))))))
-
-(defun add-location-to-event (event location)
-  (unless (itypep event 'be)
-    (let ((var (find-variable-for-category 'location event)))
-      (cond (*subcat-test* var)
-            (var 
-             (bind-variable var location event))))))
-
-(defun add-purpose-to-event (event purpose)
-  (unless (itypep event 'be)
-    (let ((var (find-variable-for-category 'purpose event)))
-      (cond (*subcat-test* var)
-            (var 
-             (bind-variable var purpose event))))))
-
-
 ;;;----------
 ;;; oddities
 ;;;----------

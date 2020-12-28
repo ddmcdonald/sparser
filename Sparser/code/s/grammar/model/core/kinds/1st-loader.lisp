@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "1st-loader"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  June 2017
+;;;  version:  December 2020
 
 ;; Initiated 3/28/14 to allow the upper-model file to be decomposed
 ;; into more managable pieces.
@@ -19,3 +19,5 @@
 (gload "kinds;space")
 (gload "kinds;time")
 (gload "kinds;movement")
+
+(gload "kinds;general-rules")
