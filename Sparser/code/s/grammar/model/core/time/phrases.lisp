@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1998,2011-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1998,2011-2020 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "phrases"
 ;;;   Module:  "model;core:time:"
-;;;  version:  October 2016
+;;;  version:  December 2020
 
 ;; initiated 4/9 v1.8.2
 ;; 1.0 (12/15/92 v2.3) bumped version to prepare for new semantics
@@ -58,41 +58,42 @@
 
 (def-form-rule (s calculated-day)
   :form s
-  :referent (:head left-edge
-             :bind (time right-edge)))
+  :head :left-edge
+  :referent (:function add-time-to-event left-edge right-edge))
 
 (def-form-rule (s time)
     :form s
     :head :left-edge
     :referent (:function add-time-to-event left-edge right-edge))
 
+
 (defun add-time-to-event (event time)
   (unless (itypep event 'be)
     (let ((var (find-variable-for-category 'time event)))
       (cond (*subcat-test* var)
             (var 
-             (bind-dli-variable var time event))))))
+             (bind-variable var time event))))))
 
 (defun add-manner-to-event (event manner)
   (unless (itypep event 'be)
     (let ((var (find-variable-for-category 'manner event)))
       (cond (*subcat-test* var)
             (var 
-             (bind-dli-variable var manner event))))))
+             (bind-variable var manner event))))))
 
 (defun add-location-to-event (event location)
   (unless (itypep event 'be)
     (let ((var (find-variable-for-category 'location event)))
       (cond (*subcat-test* var)
             (var 
-             (bind-dli-variable var location event))))))
+             (bind-variable var location event))))))
 
 (defun add-purpose-to-event (event purpose)
   (unless (itypep event 'be)
     (let ((var (find-variable-for-category 'purpose event)))
       (cond (*subcat-test* var)
             (var 
-             (bind-dli-variable var purpose event))))))
+             (bind-variable var purpose event))))))
 
 
 ;;;----------
