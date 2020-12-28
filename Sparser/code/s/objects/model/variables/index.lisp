@@ -403,10 +403,12 @@ and resets the cache.
             ~%It was passed ~A" symbol))
   (or (variable-defined-on-one-category symbol)
       (gethash symbol *strings-to-anonymous-variable*)
-      (let ((avar (make-anonymous-variable :name symbol)))
-	(setf (gethash symbol *strings-to-anonymous-variable*) avar)
-	avar)))
-
+      (else
+        ;;(break "about to make ~a an anonymous variable" symbol)
+        (let ((avar (make-anonymous-variable :name symbol)))
+          (setf (gethash symbol *strings-to-anonymous-variable*) avar)
+          avar))))
+  
 (defgeneric dereference-variable (variable referent-unit)
   (:documentation "There are times when we have to refer to
  a variable by name -- using lambda-variable-named -- and 
