@@ -93,6 +93,18 @@
     "welcome" "wheel" "wild" "win" "wipe" "wish" "wishes" "wonder" "woo" "word" "worship" "wrap"
     "wrote" "zone"))
 
+(setq *comlex-verbs*
+      (sort
+       (remove-duplicates
+        (loop for w in *COMLEX-VERBS*
+              when (or (second (gethash w *primed-words*))
+                       (second (gethash (stem-form w) *primed-words*)))
+                collect
+                (or (second (gethash w *primed-words*))
+                    (second (gethash (stem-form w) *primed-words*))))
+        :test #'equal)
+       #'string<))
+
 (defparameter *morph-comlex-verbs*
   '("abide" "absent" "absorb" "accessed" "accompany" "accomplish" "accord" "accuse" "achieve"
     "acknowledge" "adapt" "addressed" "adjust" "admit" "affiliate" "aged" "aggregate" "alarm" "align"
@@ -157,6 +169,18 @@
     "unleash" "unpack" "unraveled" "urge" "vacation" "vaccinate" "vacillate" "value" "ventilate"
     "vest" "violate" "visualize" "volunteer" "vote" "walk" "wander" "warrant" "wash" "watch" "weaken"
     "wear" "weigh" "weight" "whip" "wire" "withdraw" "witnessed" "worry" "yawn" "yelled" "zones"))
+
+(setq *morph-comlex-verbs*
+      (sort
+       (remove-duplicates
+        (loop for w in *morph-comlex-verbs*
+              when (or (second (gethash w *primed-words*))
+                       (second (gethash (stem-form w) *primed-words*)))
+                collect
+                (or (second (gethash w *primed-words*))
+                    (second (gethash (stem-form w) *primed-words*))))
+        :test #'equal)
+       #'string<))
 
 
 ;;;;;;;;;;; Code from
@@ -259,49 +283,84 @@
 (defun not-transitive-p (subcat)
   (not (transitive-p subcat)))
 
-(define-category comlex-verb :specializes perdurant
-  :binds ((subject)
-          (object)))
-
 (defun write-comlex-verb-defs (&optional (stream t))
-  (loop for v in *COMLEX-VERBS*
+  (loop for v in (sort (remove-duplicates (append *comlex-verbs* *morph-comlex-verbs*)
+                                          :test #'equal)
+                       #'string<)
         do
-           (pprint (def-cl-verb-form v) stream)))
+           (pprint-def-cl (def-cl-verb-form v) stream)))
   
+(defun pprint-def-cl (def stream)
+  (format stream "~%(define-category ~a :specializes comlex-verb"
+          (string-downcase (second def)))
+  (when (member :mixins def)
+    (princ (string-downcase (format nil "~%     :mixins ~s" (second (member :mixins def))))
+           stream))
+  (when (member :binds def)
+    (format stream "~%     :binds")
+    (let ((bindings (second (member :binds def))))
+      (format stream "~%      ((~s ~a)"
+              (car (car bindings))
+              (string-downcase (second (car bindings))))
+      (when (cdr bindings)
+        (loop for item in  (cdr bindings)
+              do (format stream "~%       (~s ~a)"
+                         (car item)
+                         (string-downcase (second item)))))
+      (format stream ")")))
+  (format stream "~%     :realization ")
+  (let ((realizations (second (member :realization def))))
+    (format stream "(:~a ~s" (string-downcase (car realizations))
+            (string-downcase (second realizations)))
+    (loop for (key val) on  (cddr realizations) by #'cddr
+          do
+             (if (search " " (string-downcase key))
+                 (format stream " ~s ~s"
+                         (intern (string-upcase key) :keyword)
+                         (intern (string-upcase val)))
+                 (format stream " :~a ~a"
+                     (string-downcase key) val)))
+    (format stream ")"))
+  (format stream ")~%"))
+    
+
+
 
 (defun def-cl-verb-form (word)
   (let* ((subcat (subcat-from-word word))
 	 (preps (prep-complements subcat))
 	 (not-trans? (not-transitive-p subcat))
 	 (realizations
-           (mapcar #'list
-                   (loop for prep in preps
-                         collect (intern (concatenate 'string ":" prep)))
-                   preps)))
+           (loop for prep in preps
+                 unless (equalp prep "P-DIR")
+                 collect
+                 (list
+                  (intern (string-upcase prep)
+                          (find-package :keyword))
+                  (intern (string-upcase prep)
+                          (find-package :sp)))))
+         (p-dir (member "p-dir" preps :test #'equal)))
 	       
     `(define-category ,(cond
                          ((category-named (intern (string-upcase word)))
-                          (format t  "~%found existing category ~s in ~s~%"
+                          (format t  "~%;;; found existing category ~s in ~s~%"
                                   (intern (string-upcase word))
                                   (loc (category-named (intern (string-upcase word)))))
                           (intern (format nil "~a-CL-VERB" (string-upcase word))))
                          (t
                            (intern (string-upcase word))))
        :specializes comlex-verb
-       ,@(when preps
-           `(:binds (,(mapcar (lambda (x) `(,(intern x) biological))
-                        preps))))
+       ,@(when p-dir `(:mixins (with-p-dir)))
+       ,@(when (remove "p-dir" preps  :test #'equal)
+           `(:binds ,(mapcar (lambda (x) `(,(intern (string-upcase x))
+                                            top))
+                        (remove "p-dir" preps  :test #'equal))))
        :realization
        ,(flatten (append
-                  '(:s subject)
+                  `(:verb ,word
+                    :s subject)
                   (if not-trans? nil '(:o object))
                   realizations)))))
-			     
-			     
-(defun flatten (l)
-  (cond ((null l) nil)
-        ((atom l) (list l))
-        (t (loop for a in l appending (flatten a)))))
 
 (defun write-category-defs-to-file (filename wordlist)
   (with-open-file (outfile filename
