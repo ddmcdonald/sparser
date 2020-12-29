@@ -151,7 +151,13 @@ then we immediately return from the call without creating an edge.
     (declare (special *filter-vocabulary*))
     (when *filter-vocabulary*
       (let* ((unary-rules (rs-single-term-rewrites rs)))
-        (some #'ignore-rule? unary-rules)))))
+        ;; don't want to check if "at least one rule is to be ignored"
+        ;;  want to check that there is no non-ignorable rule
+        ;;(some #'ignore-rule? unary-rules)
+        (not (loop for rule in unary-rules
+                     thereis (not (ignore-rule? rule))))
+        
+        ))))
 
 
 
