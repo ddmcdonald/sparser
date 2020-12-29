@@ -393,6 +393,15 @@ unknown words.|#
   (declare (special *suffix-pos-table*))
   (case source
     (:comlex ;; unpack-primed-word, continue-unpacking-lexical-entry
+     (when (member (pname word)
+                 '("bag" "bin" "bomb" "branch" "bre" "build" "call" "cap" "cash" "cast" "center" "centre" "chase"
+ "clean" "clear" "close" "club" "con" "core" "cox" "crash" "deal" "dream" "echo" "factor" "fail"
+ "fee" "follow" "foot" "gather" "grasp" "greet" "group" "ham" "hang" "held" "hold" "host" "lie"
+ "light" "load" "mail" "mask" "mean" "meet" "mute" "net" "overlaid" "overlay" "prep" "prey" "proce"
+ "race" "save" "segment" "sell" "shot" "sin" "sip" "ski" "smooth" "spike" "spin" "star" "str"
+                   "stud" "sun" "sup" "thread" "tower" "trip" "usher" "wild" "win")
+                 :test #'equal)
+       (warn "New comlex verb ~s" word))
      (pushnew word *from-comlex*))
 
     (:BigMech-default ;; handle-unknown-word-as-bio-entity
