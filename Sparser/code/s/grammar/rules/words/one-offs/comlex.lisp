@@ -236,24 +236,24 @@ non-words 26
   (populate-comlex-function-words)
   (setq *comlex-word-lists-loaded* t))
 
-(defmethod is-in-comlex? ((w word))
-  (is-in-comlex? (word-pname w)))
-
-(defmethod is-in-comlex? ((s string))
-  (let ((upcased (string-upcase s)))
-    (is-in-comlex? (intern upcased (find-package :sparser)))))
-		   
-(defmethod is-in-comlex? ((s symbol))
-  ;; interesting words will fit many parts of speech, 
-  ;; which we could note here with a cond-every or some such.
-  (declare (special *is-a-noun-in-comlex* *is-a-verb-in-comlex*
-                    *is-an-adjective-in-comlex* *is-an-adverb-in-comlex*
-                    *is-a-function-word-in-comlex*))
-  (or (gethash s *is-a-noun-in-comlex*)
-      (gethash s *is-a-verb-in-comlex*)
-      (gethash s *is-an-adjective-in-comlex*)
-      (gethash s *is-an-adverb-in-comlex*)
-      (gethash s *is-a-function-word-in-comlex*)))
+(defgeneric is-in-comlex? (word)
+  (:documentation "is the word in one of the tables of Comlex words?")
+  (:method ((w word))
+    (is-in-comlex? (word-pname w)))
+  (:method ((s string))
+    (let ((upcased (string-upcase s)))
+      (is-in-comlex? (intern upcased (find-package :sparser)))))
+  (:method ((s symbol))
+    ;; interesting words will fit many parts of speech, 
+    ;; which we could note here with a cond-every or some such.
+    (declare (special *is-a-noun-in-comlex* *is-a-verb-in-comlex*
+                      *is-an-adjective-in-comlex* *is-an-adverb-in-comlex*
+                      *is-a-function-word-in-comlex*))
+    (or (gethash s *is-a-noun-in-comlex*)
+        (gethash s *is-a-verb-in-comlex*)
+        (gethash s *is-an-adjective-in-comlex*)
+        (gethash s *is-an-adverb-in-comlex*)
+        (gethash s *is-a-function-word-in-comlex*))))
 
 
 ;;;---------------------------------------------
