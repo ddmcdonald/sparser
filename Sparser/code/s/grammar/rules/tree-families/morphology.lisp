@@ -446,7 +446,6 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
   (:documentation "Lookup the morphological properties of the word
     and use them to remove the suffix and attempt to recover the
     appropriate lemma")
-
   (:method ((s symbol))
     (stem-form (symbol-name s)))
   (:method  ((s string))
@@ -469,7 +468,8 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
                    ;; If Comlex says the reduced form is in its ~50k
                    ;; word dictionary then we accept it as the lemma
                    ;; form of the word and store it as the stem
-                   (attested-stem (when putative-stem (test-against-comlex putative-stem morphology))))
+                   (attested-stem (when putative-stem
+                                    (test-against-comlex putative-stem morphology))))
               (let ((stem
                      ;; Some words are not in Comlex, especially in biology,
                      ;; in these cases we'll take the stem that we construct.
@@ -514,10 +514,11 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
          (form-stem/strip-ed word))
         ((string= suffix "ing")
          (form-stem/strip-ing word))
-        (t (push-debug `(,word ,morphology))
-           (warn "Unexpected morphology keyword ~a~%on ~a"
-                 morphology word)
-           word))))
+        (t ;;(push-debug `(,word ,morphology))
+         ;;  To judge from a large sample, these are already in stem form.
+         ;;    There's nothing to remove from them
+         ;;(warn "Unexpected morphology keyword ~a~%on ~a" morphology word)
+         word))))
     (otherwise
      (push-debug `(,word ,morphology))
      (error "Unexpected type of morph keyword: ~a~%~a"
@@ -588,71 +589,75 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
 
 ;;--- Verbs ("s", "ed", "ing")
 
-(defun form-stem/strip-s (word)
+(defgeneric form-stem/strip-s (word)
   ;; the word ends in 's'
-  (let* ((pname (word-pname word))
-         (length (length pname))
-         (stem-pname (subseq pname 0 (1- length)))
-         (char-before (elt pname (- length 2))))
-
-    (when (eql char-before #\e)
-      ;; check for 'i'
-      (when (eql #\i (elt pname (- length 3)))
-        (setq stem-pname (concatenate 'string
-                                      (subseq pname 0 (- length 3))
-                                      "y"))))
-    (define-word/expr stem-pname)))
+  (:method ((w word))
+    (let ((stem (form-stem/strip-s (word-pname w))))
+      (resolve/make stem)))
+  (:method ((pname string))
+    (let* ((length (length pname))
+           (stem-pname (subseq pname 0 (1- length)))
+           (char-before (elt pname (- length 2))))
+      (cond
+        ((eql char-before #\e)
+         ;; check for 'i'
+         (when (eql #\i (elt pname (- length 3)))
+           (concatenate 'string (subseq pname 0 (- length 3)) "y")))
+        (t
+         stem-pname)))))
 
 ;(form-stem/strip-s (define-word "flies"))
 ;(form-stem/strip-s (define-word "describes"))
 
 
-(defun form-stem/strip-ed (word) ;; "called" => "cal"
-  (let* ((pname (word-pname word))
-         (length (length pname)))
-    (if (< length 5)
-      (form-stem/strip-ed/short-word pname length)
+(defgeneric form-stem/strip-ed (word) 
+  (:documentation "Remove the ending, return the stemmed word")
+  (:method ((w word))
+    (let ((stem (form-stem/strip-ed (word-pname w))))
+      (resolve/make stem)))
+  (:method ((pname string))
+    (let ((length (length pname)))
+      (if (< length 5)
+        (form-stem/strip-ed/short-word pname length)
 
-      (let ((char-minus-1 (elt pname (- length 3)))
-            (char-minus-2 (elt pname (- length 4)))
-            (char-minus-3 (elt pname (- length 5))))
-        
-        (cond
-         ((doubled-consonants? char-minus-1 char-minus-2)
-          ;; "..cced" -> "..c"
-          (setq pname
-                (subseq pname 0 (- length 3))))
+        (let ((char-minus-1 (elt pname (- length 3)))
+              (char-minus-2 (elt pname (- length 4)))
+              (char-minus-3 (elt pname (- length 5))))
+          (cond
+            ((doubled-consonants? char-minus-1 char-minus-2)
+             ;; "..cced" -> "..c"
+             (subseq pname 0 (- length 3)))
 
-         ((and (consonant? char-minus-1)
-               (not (eql char-minus-1 #\x))
-               (vowel? char-minus-2) ;; "named" => "name"
-	       (not (vowel? char-minus-3))) ;; "coiled" => "coil"
-          ;; "..vced" -> "..vce"
-          (setq pname
-                (subseq pname 0 (- length 1))))
+            ((and (consonant? char-minus-1)
+                  (not (eql char-minus-1 #\x))
+                  (vowel? char-minus-2) ;; "named" => "name"
+                  (not (vowel? char-minus-3))) ;; "coiled" => "coil"
+             ;; "..vced" -> "..vce"
+             (subseq pname 0 (- length 1)))
 
-         ((eql #\i char-minus-1)
-          ;; "..ied"  -> "..y"
-          (setq pname (subseq pname 0 (- length 3))
-                pname (concatenate 'string pname "y")))
+            ((eql #\i char-minus-1)
+             ;; "..ied"  -> "..y"
+             (concatenate 'string (subseq pname 0 (- length 3)) "y"))
 
-         ((and (semi-vowel? char-minus-1)
-               (consonant? char-minus-2))
-          ;; "..csed" -> "..cse"  where 's' is a semi-vowel: "l" "r"
-          ;;    e.g. "riddled with grief"
-          (setq pname
-                (subseq pname 0 (- length 1))))
+            ((and (semi-vowel? char-minus-1)
+                  (consonant? char-minus-2))
+             ;; "..csed" -> "..cse"  where 's' is a semi-vowel: "l" "r"
+             ;;    e.g. "riddled with grief"
+             (subseq pname 0 (- length 1)))
 
-         (t (setq pname
-                  (subseq pname 0 (- length 2)))))
+            (t
+             (subseq pname 0 (- length 2)))))))))
+#|
+ (test-stemmer "coiled") -> "coil"
+ (form-stem/strip-ed "coiled") -> "coil"
 
-        (define-word/expr pname)))))
+//// (form-stem/strip-ed "called") --> "cal"
 
-;(test-stemmer "coiled") -> "coile" /////
-;(form-stem/strip-ed (define-word "expected")) ;; default
-;(form-stem/strip-ed (define-word "named"))    ;; "..vced" -> "..vce"
-;(form-stem/strip-ed (define-word "riddled"))  ;; "..csed" -> "..cse"  where 's' is a semi-vowel
-;(form-stem/strip-ed (define-word "cried"))    ;; "..ied"  -> "..y"
+ (form-stem/strip-ed "expected") ;; default
+ (form-stem/strip-ed "named")    ;; "..vced" -> "..vce"
+ (form-stem/strip-ed "riddled")  ;; "..csed" -> "..cse"  where 's' is a semi-vowel
+ (form-stem/strip-ed "cried")    ;; "..ied"  -> "..y"
+|#
 
 (defun form-stem/strip-ed/short-word (stem-pname length)
   ;; 'short' is less than 5 characters
@@ -661,27 +666,28 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
   (define-word/expr stem-pname))
 
 
-(defun form-stem/strip-ing (word)
-  (let* ((pname (word-pname word))
-         (length (length pname)))
-    (if (< length 6)
-      (then ;; what's an example where we'd stem it?
-	word)
-      (let ((stem-pname (subseq pname 0 (- length 3))) ;; remove "ing"
-	    (char-before (elt pname (- length 4))))
-	(cond
-	  ((ends-in? stem-pname "bl") ;; "assemble
-	   (setq stem-pname (string-append stem-pname "e")))
-	  ((and (doubled-consonants? char-before (elt pname (- length 5)))
-		(> (length stem-pname) 3)) ;; "cell" "add"
-	   (setq stem-pname (subseq pname 0 (- length 4)))))
-	(define-word/expr stem-pname)))))
+(defgeneric form-stem/strip-ing (word)
+  (:method ((w word))
+    (let ((stem (form-stem/strip-ing (word-pname w))))
+      (resolve/make stem)))
+  (:method ((pname string))
+    (let ((length (length pname)))
+      (if (< length 6)
+        (then ;; what's an example where we'd stem it?
+          pname)
+        (let ((stem-pname (subseq pname 0 (- length 3))) ;; remove "ing"
+              (char-before (elt pname (- length 4))))
+          (cond
+            ((ends-in? stem-pname "bl") ;; "assemble
+             (string-append stem-pname "e"))
+            ((and (doubled-consonants? char-before (elt pname (- length 5)))
+                  (> (length stem-pname) 3)) ;; "cell" "add"
+             (subseq pname 0 (- length 4)))
+            (t stem-pname)))))))
 
+; (form-stem/strip-ing "setting") -- "set"
+; (form-stem/strip-ing "assembling") -- "assemble"
 
-
-;(form-stem/strip-ing (define-word "setting"))
-; BUT (stem-form (define-word/expr "assembling")) => "assembl"
-; and adding => "ad"
 
 (defun form-stem/strip-ly (word)
   ;; It's not obvious that we should do this since we'll be changing
@@ -800,16 +806,20 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
     (plural-version pname)))
 
 
+(defparameter *words-not-doubling-past*
+  '("cancel" "travel"))
+
 (defgeneric ed-form-of-verb (base)
   (:documentation "We double the final consonant when (a) the word has
     more than one syllable, and (b) the final syllable is stressed.
     Stress isn't a property of text, to we have to fake it by looking
     at patterns of characters that could carry stress, like the stop consonants.
-    Other heuristics: A one-syllable word ending in cvc ('stop -> stopped').
+    Other heuristics: A one-syllable word ending in cvc ('stop -> stopped'),
+    exceptions: 'travel', 'cancel' don't double.
     Not if word ends in two consonants ('start', 'burn').
     Not if there are there are two vowels before the final letter ('remain')
-    Never if the final consonant is #\w or #\y
-    Exceptions: 'travel', 'cancel' don't double.
+    Never if the final consonant is #\w.
+    If the base ends in #\y, change it to #\i when the #\y is preceded by a consonant.
     https://speakspeak.com/resources/english-grammar-rules/english-spelling-rules/ ")
   
   (:method ((word word))
@@ -841,8 +851,13 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
                   (vowel? last3char))
              (string-append pname "ed"))
 
-           ((or (eql lastchar #\w)
-                (eql lastchar #\y))
+            ((eql lastchar #\y)
+             (if (vowel? last2char) ; "delay" -> "delayed"
+               (string-append pname "ed")
+               (let ((minus-y (subseq pname 0 (- length 1))))
+                 (string-append minus-y "ied")))) ; "query" -> "queried"
+
+            ((eql lastchar #\w)
              (string-append pname "ed"))
             
             ((eql lastchar #\e)
@@ -855,6 +870,9 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
             ((eql lastchar #\x)
              (string-append pname "ed"))
 
+            ((member pname *words-not-doubling-past* :test #'string-equal)
+             (string-append pname "ed"))
+
             ((and (consonant? last3char)
                   (vowel? last2char)
                   (consonant? lastchar))
@@ -864,7 +882,12 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
             (t (string-append pname "ed"))))))))
 
 #|
+ (ed-form-of-verb "travel") -- "traveled"
+ (ed-form-of-verb "amplify") -- "amplified"
+ (ed-form-of-verb "query") -- "queried"
+"purified" and "identified"
  (ed-form-of-verb "bat")  -- "batted"
+ (ed-form-of-verb "call") -- "called"
  (ed-form-of-verb "join")  -- "joined"
  (ed-form-of-verb "stop")  -- "stopped"
  (ed-form-of-verb "follow") -- "followed"
