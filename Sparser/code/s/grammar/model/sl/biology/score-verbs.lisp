@@ -1,9 +1,9 @@
-;;; -*- mode:lisp; syntax:common-lisp; package:(sparser common-lisp) -*-
+;;; "quarantine
 ;;; copyright (c) 2017 sift llc. all rights reserved
 ;;;
 ;;;    file: "score-verbs"
 ;;;  module: "grammar/model/sl/biology/
-;;; version: december 20202
+;;; version: december 2020
 ;;; contains generated verb definitions from comlex for verbs not yet defined for score
 
 (in-package :sparser)
@@ -5770,8 +5770,16 @@
 (define-category quantify :specializes comlex-verb
      :realization (:verb  "quantify" :s SUBJECT :o OBJECT))
 
-(define-category quarantine :specializes comlex-verb
-     :realization (:verb  "quarantine" :s SUBJECT :o OBJECT))
+
+(define-category quarantine :specializes state ;;????
+  :mixins (comlex-verb)
+                 :binds ((location location))
+                 :realization (:verb "quarantine"
+                                     :noun "quarantine"
+                                     :of object
+                                     :in location
+                                     :s SUBJECT :o OBJECT))
+
 
 (define-category queen :specializes comlex-verb
      :realization (:verb  "queen" :s SUBJECT :o OBJECT))
@@ -7247,8 +7255,11 @@
      :realization (:verb ( "split"  :TENSED/SINGULAR "splits" :PRESENT-PARTICIPLE "splitting" :PAST-TENSE "split")
  :s SUBJECT :o OBJECT :among AMONG :on ON :down DOWN :to TO :along ALONG :in IN :over OVER :with WITH :between BETWEEN :from FROM :into INTO))
 
-(define-category sport :specializes comlex-verb
-     :realization (:verb  "sport" :s SUBJECT :o OBJECT))
+
+(define-category sport :specializes process
+  :mixins (comlex-verb)
+     :realization (:verb "sport" :s SUBJECT :o OBJECT))
+
 
 (define-category spot :specializes comlex-verb
      :realization (:verb ( "spot"  :TENSED/SINGULAR "spots" :PRESENT-PARTICIPLE "spotting" :PAST-TENSE "spotted")
