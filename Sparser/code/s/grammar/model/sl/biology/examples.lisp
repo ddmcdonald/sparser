@@ -12,6 +12,14 @@
 ;;;---------------
 ;;; Example texts
 ;;;---------------
+
+#| Lead paragraph in the Gardian online summary, 12/30/20
+https://www.theguardian.com/world/2020/dec/29/us-first-case-new-uk-covid-variant?utm_term=996b3518f208e4677edd57aa5463dd04&utm_campaign=USMorningBriefing&utm_source=esp&utm_medium=Email&CMP=usbriefing_email
+
+"The US has reported its first case of the new strain of coronavirus spreading in the UK. A man in Colorado was identified as having the mutant form of the virus, known as B.1.1.7, which is thought to be more contagious than other strains. The circulation of the strain in the UK has triggered even stricter lockdown measures, and prompted other countries to restrict travel from the UK."
+|#
+
+
 #|
 ;;; Abstract from https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7075079/#:~:text=Levels%20of%20social%20support%20for,degree%20of%20anxiety%20and%20stress
 "Effects of Social Support on Sleep Quality of Medical Staff ..."
