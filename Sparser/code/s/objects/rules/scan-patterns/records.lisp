@@ -107,6 +107,8 @@
                                    ((:right-string right-str))
                                    ((:head-type left-type))
                                    ((:pobj-type right-type)))
+  "This is the function that write-prep-record uses. It is the 'inflator'
+   of the preposition records, and is charged with writing the actual rules"
   (let* ((name (assemble-prep-pat-name pname left-str right-str))
          (preposition (resolve pname))
          (r (find-or-make-prep-pattern name)))
@@ -115,6 +117,7 @@
           (right-string r) right-str
           (head-type r) left-type
           (pobj-type r) right-type)
+    ;;/// figure out how to formulate a rule
     r ))
    
 

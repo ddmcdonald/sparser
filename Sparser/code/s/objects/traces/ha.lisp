@@ -43,9 +43,10 @@
 (deftrace :sweep/considering (tt category form)
   ;; Called from induction-sweep
   (when *trace-induction-sweep*
-    (trace-msg "tt e~a ~a, ~a"
+    (trace-msg "tt is e~a ~a, ~a"
                (edge-position-in-resource-array tt)
-               (cat-name category) (cat-name form))))
+               (cat-name category)
+               (cat-name form))))
 
 (deftrace :sweep/triggered (trigger)
   ;; Called from induction-sweep

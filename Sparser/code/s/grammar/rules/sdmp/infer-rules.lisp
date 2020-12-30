@@ -18,15 +18,17 @@
    the pp). The 'word' is the preposition as a word, added to the
    trigger by make-preposition-trigger when it defined the
    function. Applies a few filters to eliminate cases that do not
-   fit the pattern."  
+   fit the pattern."
   (unless (or (one-word-long? pp) ; bare preposition
               (word-p (edge-referent head)) ; comma
               (edge-over-function-word? head)) ; "and"
     (tr :sweep/takes-prep word pp head)
+    ;; (push-debug `(,word ,pp ,head)) (break "pp: ~a" pp)
     (record-instance-of-preposition-pattern
      word pp head)))
           
- 
+
+(make-preposition-trigger "about")
 (make-preposition-trigger "against")
 (make-preposition-trigger "among")
 (make-preposition-trigger "as")

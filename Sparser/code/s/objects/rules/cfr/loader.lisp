@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1994,2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1994,2015-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "loader"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   4.3 May 2015
+;;;   Version:   December 2020
 
 ;; 4.0 (9/3/92 v2.3) Pushed the version on most of the files given the dramatic
 ;;       reworking of the indexing scheme, 9/6 broke out [construct] and
@@ -33,6 +33,7 @@
 (lload "cfr;construct")
 (lload "cfr;form-rule form")
 (lload "cfr;syntax rules")
+(lload "cfr;grok-rules")
 (lload "cfr;define")
 (lload "cfr;delete")
 (lload "cfr;knit in")

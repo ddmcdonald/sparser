@@ -65,6 +65,7 @@
 ;;;--------------------------------------
 ;;; name + type of region
 ;;;--------------------------------------
+(dont-check-rule-form-for-etf-named 'kind-of-name)
 
 (define-category named-region-type ;; "the Kurdish city of Sulaimaniya"
   :specializes location
@@ -147,6 +148,8 @@
 ;; N.b. this creates define-border-type
 
 ;; dossier in [location-kinds]
+
+(dont-check-rule-form-for-etf-named 'classifier-head/of/prep)
 
 (define-category border
    :specializes location

@@ -23,9 +23,9 @@
   (:method ((s section))
     (loop for p in (children s) do (induction-sweep p)))
   (:method ((p paragraph))
-    (when (not (string-equal "" (content-string p)))
+    (let ((sentences (sentences-in-paragraph p)))
       (tr :sweep/doc-element p)
-      (loop for s in (sentences-in-paragraph p) do (induction-sweep s))))
+      (loop for s in sentences do (induction-sweep s))))
   (:method ((s sentence))
     ;; modeled on loop in identify-relations
     (declare (special *sentence-terminating-punctuation*))
