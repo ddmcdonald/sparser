@@ -94,6 +94,10 @@
    so don't apply compatible-form check in multiply-edges."
   (pushnew etf-name *dont-check-forms-for-etf*))
 
+(defun dont-check-rule-form-for-etfs-named (list-of-etf-names)
+  (loop for name in list-of-etf-names
+     do (pushnew name *dont-check-forms-for-etf*)))
+
 
 ;;---- blocking rule construction
 

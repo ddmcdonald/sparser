@@ -30,6 +30,11 @@
  on the same category
 |#
 
+(dont-check-rule-form-for-etfs-named
+ '(intransitive
+   transitive/passive
+   empty-head-of-complement))
+
 (define-category  die
   :instantiates self
   :specializes accomplishment ;; it can take a while
