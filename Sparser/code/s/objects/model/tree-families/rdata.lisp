@@ -91,6 +91,72 @@
   `(define-additional-realization ,category ,@realization))
 
 
+(defmacro apply-mixin-category (category-name mixins &body realization)
+  (let ((category (category-named category-name :error)))
+    ;;(break "top")
+    (unless realization
+      ;; maybe we're supposed to take it from a mixin
+      (let ((rdata (loop for mixin in mixins
+                      as realization = (get-tag :rdata-expr mixin)
+                      when realization
+                      append realization)))
+        (break "rdata: ~a" rdata)
+        (setq realization rdata)))
+
+    `(progn (loop for mixin in ',mixins do (add-mixin ,category mixin))
+            (cache-variable-lookup) ; make mixins visible on category
+            (setup-rdata ,category ',@realization :delete nil)
+            ,category)))
+
+#|  Examples
+(defun apply-of (category)
+  (apply-mixin-category category (takes-of) nil))
+
+
+(define-mixin-category takes-about
+    :specializes adds-relation
+    :binds ((about-var)))
+
+(p "worried about progress")
+[worried ]about [progress]
+                    source-start
+e0    WORRY         1 "worried " 2
+e4    ABOUT         2 "about progress" 4
+                    end-of-source
+
+(apply-mixin-category worry (takes-about)
+  (:about about-var))
+sp> (ic 'worry)
+
+#<ref-category WORRY>
+  [structure-object]
+
+Slots with :instance allocation:
+  plist             = (:super-categories..
+  symbol            = category::worry
+  rule-set          = #<rule-set for #<ref-category WORRY>>
+  id-counter        = 3
+  slots             = (#<variable participant> #<variable object>)
+  binds             = nil
+  mix-ins           = (#<mixin TAKES-ABOUT> #<mixin COMLEX-DERIVED>)
+  realization       = (#<realization for worry: "worry" verb> #<realization for worry>)
+  lattice-position  = #<top-lp worry->bio-process  3472>
+  operations        = #<operations for worry>
+  instances         = nil
+  rnodes            = nil
+#<ref-category WORRY>
+
+sp> (p "worried about progress")
+[worried ]about [progress]
+
+                    source-start
+e5    WORRY         1 "worried about progress" 4
+                    end-of-source
+sp> (semtree 5)
+(#<worry 112984> (about-var (#<progress-endurant 112962>))
+ (past #<ref-category PAST>) (raw-text "worried"))
+|#
+
 ;;;-------------
 ;;; Data checks
 ;;;-------------
@@ -249,6 +315,10 @@ Should mirror the cases on the *single-words* ETF."
   (when delete
     (setf (cat-realization category) nil
           (get-rules category) (map nil #'delete/cfr (get-rules category))))
+  
+  (when (itypep category 'subcategorization-pattern) ;; more types ???
+    (setf (get-tag :rdata-expr category) rdata))
+
   (dolist (rdata (etypecase (car rdata)
                    (keyword (list rdata)) ; one realization
                    (list rdata)) ; multiple realizations
