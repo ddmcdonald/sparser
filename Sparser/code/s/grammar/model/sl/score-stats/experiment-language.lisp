@@ -89,9 +89,20 @@ was exceptional or ordinary.")
   :specializes activity-with-a-purpose
   :realization (:noun "experiment"))
 
-(define-category study
-  :specializes directed-activity-with-a-purpose
+(define-category study :specializes directed-activity-with-a-purpose
   :mixins (purposive-activity-with-instrument)
-  :realization  (:noun ("study" :plural "studies")))
+  :binds ((participant top))
+  :realization
+  (:noun ("study" :plural "studies")
+   :on participant
+   :in participant))
 
 
+(define-category pilot :specializes study
+  :binds ((object (:or bio-rhetorical biological)) ;; "test X on <participant>"
+          (presence-of biological))
+  :realization
+  (:verb ("pilot" :past-tense "piloted" :past-participle "piloted" :present-participle "piloted")
+         :etf (svo-passive)
+         :for presence-of
+         :o object))
