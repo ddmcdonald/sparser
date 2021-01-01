@@ -153,9 +153,7 @@
 
 ;; contexts
 (noun "setting" :super bio-context)
-(noun "trial" :super bio-context)
-(noun "pilot" :super bio-context)
-(def-synonym pilot (:noun "pilot study"))
+
 
 
 (define-category paradigm :specializes process
@@ -218,3 +216,12 @@
 
 ;; rhetoric  also seem useful
 
+#|
+(when (and (category-named 'trial)
+           (category-named 'bio-context))
+  (apply-mixin-category trial (bio-context)))
+
+(when (and (category-named 'pilot)
+           (category-named 'bio-context))
+  (apply-mixin-category pilot (bio-context)))
+|#

@@ -105,4 +105,6 @@ was exceptional or ordinary.")
   (:verb ("pilot" :past-tense "piloted" :past-participle "piloted" :present-participle "piloted")
          :etf (svo-passive)
          :for presence-of
-         :o object))
+   :o object))
+
+(def-synonym pilot (:noun "pilot study"))
