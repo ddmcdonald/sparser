@@ -325,7 +325,7 @@ be biology specific, since they aren't. |#
       :to theme))
 
 (adj "independent" :super bio-relation
-  :realization (:adj "independent"))
+  :realization (:adj "independent" :noun "independence" :of theme))
 
 (define-category lack :specializes bio-relation
   :realization (:noun "lack" :of theme))
