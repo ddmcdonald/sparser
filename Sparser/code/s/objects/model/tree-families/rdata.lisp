@@ -93,14 +93,14 @@
 
 (defmacro apply-mixin-category (category-name mixins &body realization)
   (let ((category (category-named category-name :error)))
-    ;;(break "top")
     (unless realization
       ;; maybe we're supposed to take it from a mixin
       (let ((rdata (loop for mixin in mixins
                       as realization = (get-tag :rdata-expr mixin)
                       when realization
                       append realization)))
-        ;;(break "rdata: ~a" rdata)
+        (unless rdata
+          (break "No mixin has a saved rdata expression: ~a" mixins))
         (setq realization rdata)))
 
     `(progn (loop for mixin in ',mixins do (add-mixin ,category mixin))
