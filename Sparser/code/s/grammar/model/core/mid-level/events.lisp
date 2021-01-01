@@ -39,7 +39,7 @@
  in the meaning of the word --
  the variable resoult-or-purpose only occurs when the subject of the activity-with-a-purpose
  is an agent that can have a purpose -- animal, organizational, social-agent, ..."
-  :binds ((result-or-purpose bio-process))
+  :binds ((result-or-purpose process))
   :realization
   (:s agent
    :by agent
@@ -57,7 +57,6 @@
   :specializes activity-with-a-purpose
   :mixins (with-instrument)
   :documentation ""
-  :binds ((result-or-purpose bio-process))
   :realization (:with instrument))
 
 
