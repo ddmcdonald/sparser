@@ -100,7 +100,7 @@
                       as realization = (get-tag :rdata-expr mixin)
                       when realization
                       append realization)))
-        (break "rdata: ~a" rdata)
+        ;;(break "rdata: ~a" rdata)
         (setq realization rdata)))
 
     `(progn (loop for mixin in ',mixins do (add-mixin ,category mixin))
