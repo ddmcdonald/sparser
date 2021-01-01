@@ -68,11 +68,13 @@
 (adj "cell-cell" :super bio-predication)
 
 (define-category adhesion :specializes cellular-process
-                 :bindings (uid "GO:0007155")
+  :bindings (uid "GO:0007155")
+  :binds ((adheres-to top))
     :realization
     (:verb "adhere"
 	   :etf (sv)
-	   :noun ("adhesion" "cell adhesion" "cellular adhesion")))
+       :noun ("adhesion" "cell adhesion" "cellular adhesion")
+       :to adheres-to))
                              
 
 (define-category axon-guidance :specializes cellular-process
