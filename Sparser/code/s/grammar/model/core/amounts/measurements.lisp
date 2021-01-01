@@ -105,10 +105,11 @@ and the word can stand by itself "that distance"
   :mixins (measuring-verb with-instrument)
   :realization 
   (:verb "measure"
-   :noun "measure"
    :with instrument))
 
-
+(define-category measure-as-measurement :specializes attribute
+  :realization (:noun "measure")
+  )
      
 (define-category correlate
   :specializes measure
