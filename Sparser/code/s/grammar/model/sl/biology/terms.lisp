@@ -523,9 +523,9 @@
 
 
 (noun "table" :super article-table)
-(define-category well-being :specializes :bio-predication
+(define-category well-being :specializes of-participant-bio-predication
     :realization (:noun "well-being"))
-(define-category health :specializes :bio-predication
+(define-category health :specializes of-participant-bio-predication
     :realization (:noun "health"))
 
 #+ignore

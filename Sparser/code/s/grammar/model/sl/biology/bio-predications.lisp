@@ -103,7 +103,7 @@
 (adj "diffuse" :super bio-predication) ;; TO-DO better superc
 (adj "ectopic" :super bio-predication) ;; keyword: (ic ADJ) 
 (define-adverb "ectopically") ;; keyword: ENDS-IN-LY 
-(define-category efficacy :specializes bio-predication
+(define-category efficacy :specializes of-participant-bio-predication
   :realization
   (:noun "efficacy"))
 
@@ -161,7 +161,7 @@
 (adj "rich" :super bio-predication) ;; proline rich region
 (adj "short-lived" :super bio-predication)
 (adj "speckled" :super bio-predication)
-(define-category stable :specializes bio-predication
+(define-category stable :specializes of-participant-bio-predication
   :realization
   (:adj "stable" :noun "stability"))
 (adj "sterile" :super bio-predication)

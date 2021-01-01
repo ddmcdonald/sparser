@@ -552,7 +552,7 @@
          :for presence-of))
 
 
-(define-category exist :specializes bio-predication
+(define-category exist :specializes of-participant-bio-predication
                        :binds ((measurement scalar-attribute )
                                (theme bio-chemical-entity))
   :realization
@@ -816,7 +816,8 @@
   :mixins (raising-to-object)
   :restrict ((agent (:or bio-process activity-with-a-purpose
                          bio-mechanism bio-relation
-                         bio-entity)) ;; "KRAS leads to cancer"
+                         bio-entity ;; "KRAS leads to cancer"
+                         attribute)) ;; "these results led ..."
              (theme (:or biological bio-rhetorical)))
   :realization
     (:verb ("lead" :past-tense "led")
@@ -952,7 +953,7 @@
            :from source
            :without source))
 
-(define-category occur :specializes bio-predication
+(define-category occur :specializes of-participant-bio-predication
   :realization
     (:verb ("occur" :present-participle "occurring" :past-tense "occurred")
 	   :noun "occurrence"
@@ -1138,8 +1139,10 @@
   (:verb ("read" :past-tense "read" :past-participle "read")
          :etf (svo-passive)))
 
-(define-category persist :specializes bio-predication
-  :realization (:verb "persist" :etf (sv)))
+(define-category persist :specializes of-participant-bio-predication
+                         :realization (:verb "persist"
+                                       :noun "persistence"
+                                       :etf (sv)))
 
 
 (define-category rely :specializes bio-relation
@@ -1189,7 +1192,8 @@
    :to-comp purpose))
 
 (define-category result :specializes bio-relation
-  :binds ((results-in (:or bio-process activity-with-a-purpose bio-predication))) 
+   :binds ((results-in perdurant ;;(:or bio-process activity-with-a-purpose bio-predication)
+                                            )) 
   :restrict ((participant perdurant))
     :realization
     (:verb ("result" :third-singular "results") ;; block plural form of the verb, because of interaction with noun
@@ -1197,7 +1201,8 @@
            :from participant 
 	   :in results-in))
 
-(def-synonym result (:noun "result"))
+(define-category results :specializes attribute
+  :realization (:noun "result"))
 
 
 (define-category return :specializes caused-bio-process
@@ -1370,7 +1375,7 @@
 ;;(def-synonym study-bio-method (:noun "study" :of :object))
 
 
-(define-category succeed :specializes bio-predication
+(define-category succeed :specializes of-participant-bio-predication
   :realization
   (:verb "succeed" :noun "success"
    :etf (sv)
@@ -1411,12 +1416,15 @@
 
 (define-category test :specializes bio-method
   :mixins (bio-whethercomp)
-  :binds ((object (:or bio-rhetorical biological))
+                      :binds ((object (:or bio-rhetorical biological))
+          (participant top) ;; "test X on <participant>"
           (presence-of biological))
   :realization
   (:verb "test" ;; keyword: ENDS-IN-ED 
          :etf (svo-passive)
          :for presence-of
+         :on participant
+         :in participant
          :o object)) ;; seems to be needed to make use of changed definition of object -- TO-DO fisx handling of restrict
 
 (define-category think :specializes bio-rhetorical
