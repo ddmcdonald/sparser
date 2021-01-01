@@ -470,7 +470,7 @@
 ;; DAVID -- not sure about the relation of basis to base
 (define-category base :specializes perdurant ;; DAVID -- need a better parent
    ;;bio-rhetorical -- it doesn't ake a bunch of the modifiers of bio-rhetorical
-  :binds ((cause (:or biological bio-rhetorical scalar-attribute ;; amount measurement
+  :binds ((cause (:or biological bio-rhetorical attribute ;; amount measurement -- replaced scalar-attribute by attribute, for "results"
                       ))
            (object
             (:or
@@ -1154,7 +1154,7 @@
 (def-synonym bio-reactivate
     (:verb "re-activate" :noun "re-activation"))
 
-(define-category relapse :specializes bio-predication
+(define-category relapse :specializes of-participant-bio-predication
   :realization
   (:verb "relapse" ;; keyword: ENDS-IN-ING 
          :noun "relapse"
