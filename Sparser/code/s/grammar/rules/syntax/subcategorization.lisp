@@ -1062,6 +1062,8 @@
     (t
      (find-subcat-var item label head))))
 
+(defparameter *subcat-accept-all-semantics* nil)
+
 (defun find-subcat-var (item label head)
   "Looks up the subcategorizations defined on this head.
    Considers special situations when the label is 'of' but should
@@ -1127,7 +1129,8 @@
               (loop for pat in subcat-patterns
                     ;;as scr = (subcat-restriction pat)
                     do (when (eq label (subcat-label pat))
-                         (when (satisfies-subcat-restriction? item pat)
+                         (when (or (satisfies-subcat-restriction? item pat)
+                                   *subcat-accept-all-semantics*)
                            (push pat pats))))
               (setq over-ridden (check-overridden-vars pats item head))
               (setq pats (loop for p in pats unless (member p over-ridden) collect p))
