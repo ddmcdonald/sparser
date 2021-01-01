@@ -229,8 +229,7 @@
   :restrict ((participant (:or biological document-part)))
   :realization
   (:s participant
-      :as-comp as-comp
-      :of participant))
+      :as-comp as-comp))
 
 (define-mixin-category of-participant-bio-predication :specializes bio-predication
   :realization (:of participant))
@@ -693,7 +692,8 @@
   :realization
     (:for timeperiod
       :o patient
-      :s theme))
+      :s theme
+      :of theme))
  
 
 (define-category aspectual-relation :specializes bio-relation
