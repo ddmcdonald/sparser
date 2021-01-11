@@ -431,16 +431,19 @@
 
 (define-category process-control-process :specializes caused-bio-process
   :binds ((affected-process (:or bio-process bio-mechanism activity-with-a-purpose ;; generalizes bio-method
-                                 bio-predication bio-relation medical-treatment)))
+                                 bio-predication bio-relation medical-treatment))
+          (affected-other comlex-noun)
+          (comlex-object comlex-noun))
   :restrict ((object
-               (:or bio-entity cell-entity molecular-location
-                    disease
-                    ;;measurement
-                    scalar-attribute
-                    )))
+              (:or bio-entity cell-entity molecular-location
+                   disease
+                   ;;measurement
+                   scalar-attribute
+                   )))
   :realization
   (:o affected-process
    :o object
+   :o comlex-object
    :of affected-process
    :of object))
 
