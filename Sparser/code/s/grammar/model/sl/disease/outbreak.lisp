@@ -19,10 +19,11 @@
   :specializes state
   :mixins (has-uid)
   :instantiates nil
-  :binds ((disease pathogen)
+  :binds ((disease medical-condition)
           (pathogen pathogen)
           (location geographical-region)
           (time))
+  :realization (:of disease :of pathogen)
   :documentation "Superclass for the various terms that name these
  roughly according to their size. Groups their normal possible variables")
 
@@ -40,8 +41,7 @@
 
 (define-category cases-pathogen
   :specializes disease-incidence
-  :instantiates self
-  :realization ((:common-noun "case"))
+  :realization (:noun "case")
   :documentation "A way to talk about individual incidents of a disease
  or infection by some pathogen, usually in the context of a larger outbreak")
 
