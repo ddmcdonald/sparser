@@ -34,7 +34,9 @@
           (weekday . weekday))
   :mixins (cyclic)
   :index (:permanent :sequential-keys month day year)
-  :realization (:common-noun "date"))
+  ;; replaced by DATE-OF
+  ;;:realization (:common-noun "date")
+  )
 
 
 (define-category-princ-fn date ;; => princ-date
