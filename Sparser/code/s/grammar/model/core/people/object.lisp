@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2013.2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2013.2019-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:people:"
-;;;  version:  September 2019
+;;;  version:  January 2021
 
 ;; initiated 6/8/93 v2.3
 ;; 0.1 (1/7/94) redesigned not to pre-index
@@ -28,7 +28,7 @@
 
 (define-category  person
   :instantiates self
-  :specializes physical-agent ;;named-object
+  :specializes physical-agent
   :mixins (has-uid)
   :binds ((name . person-name)
           (age . age)
@@ -37,22 +37,22 @@
           (origin top)) ;; simplistic
   :index (:permanent :key name)
   :realization
-  (;; DAVID -- these :tree-family structures seem to be inconsistent with simple preposition subcats
-   ;;  we need to talk about how to handle these
-   #+ignore
-   (:tree-family  appositive
-    :mapping ((appositive-field . age)
-              (np . :self)
-              (appositive . age)))
-   #+ignore (:tree-family premodifier-adds-property
-             :mapping ((property . age)
-                       (np-head . :self)
-                       (modifier . age)))
-   #+ignore (:tree-family  appositive
-             :mapping ((appositive-field . position)
-                       (np . :self)
-                       (appositive . position-at-co)))
-   :from origin))
+     ((:from origin
+       :of nationality)
+   
+      (:tree-family  appositive
+       :mapping ((appositive-field . age)
+                 (np . :self)
+                 (appositive . age)))
+      (:tree-family premodifier-adds-property
+       :mapping ((property . age)
+                 (np-head . :self)
+                 (modifier . age)))
+      (:tree-family  appositive
+       :mapping ((appositive-field . position)
+                 (np . :self)
+                 (appositive . position-at-co)))
+      ))
 
 
 ;;;-----------------
