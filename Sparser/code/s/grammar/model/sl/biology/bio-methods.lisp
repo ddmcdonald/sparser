@@ -18,10 +18,13 @@
 ;; verbs moved from verbs.lisp
 (define-category assess :specializes bio-method
   :mixins (bio-thatcomp)
+  :binds ((quality top)) ;; assessed X on <quality> or for <quality>
   :realization
   (:verb "assess" ;; keyword: ENDS-IN-ED 
-         :noun "assessment"
-         :etf (svo-passive)))
+   :noun "assessment"
+   :on quality
+   :for quality
+   :etf (svo-passive)))
 
 (define-category precipitate :specializes bio-method
   :binds ((co-precipitant protein))
