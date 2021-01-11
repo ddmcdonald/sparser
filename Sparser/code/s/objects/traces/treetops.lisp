@@ -311,7 +311,7 @@
 
 (deftrace :moving-to-do-treetops ()
   ;; called from Walk-pending-treetops-for-debris-analysis
-  (declare (special trace-DA-check*))
+  (declare (special *trace-DA-check*))
   (when (or *trace-forest-transitions* *trace-network*
             *trace-DA-check*)
     (trace-msg "Moving to Do-treetops")))
