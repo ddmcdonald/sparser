@@ -231,7 +231,7 @@
      :m theme
      :in theme))
 
-(noun "detail" :super abstract)
+(noun "detail" :super information)
 
 (adj "fail-proof" :super bio-predication)
 
@@ -253,7 +253,7 @@
 
 
 (define-category fact :specializes bio-rhetorical
-      :mixins (bio-thatcomp)
+      :mixins (bio-thatcomp mental-construction-concerning)
       :binds ((info-context (:or model database)))
       :realization
             (:noun "fact"
@@ -301,14 +301,6 @@
 
 (noun "mortality" :super bio-abstract) ;;/// relationship to "mortal" ??
 
-
-(adj "necessary" :super bio-relation
-     :binds ((condition biological)
-             (necessary-to biological))
-     :realization 
-          (:for necessary-to
-           :to necessary-to
-           :to-comp necessary-to))
 
 (define-adverb "notably")
 
@@ -405,7 +397,7 @@
 
 
 (define-category unable :specializes bio-relation
-  :mixins (control-verb-intrans)
+  :mixins (control-verb-intrans raising-to-subject)
   :restrict ((theme bio-process))
   :realization
   (:adj "unable" :noun "inability"))
