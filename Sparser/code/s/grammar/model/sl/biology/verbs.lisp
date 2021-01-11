@@ -255,8 +255,8 @@
 
 
 (define-category bio-range :specializes bio-relation ;; REVIEW!!
-  :binds ((low-value scalar-quantity)
-          (high-value scalar-quantity))
+  :binds ((low-value (:or scalar-quantity measurement))
+          (high-value (:or scalar-quantity measurement)))
   :realization
   (:verb "range"
          :etf (sv)
@@ -937,24 +937,6 @@
 
 (def-synonym ligate (:verb "conjugate"))
 
-
-(define-category link :specializes caused-bio-process
-  :mixins (on-substrate) ;; either a residue-on-protein (dectest 8) ubiquitin C77, or a molecule
-  :binds ((linked-processes bio-process)
-          (process bio-process)
-          (co-process bio-process)
-          (linked-process bio-process))
-                         ;; either a residue-on-protein (dectest 8) ubiquitin C77, or a molecule
-  :realization 
-  (:verb "link" :noun "linkage" 
-         :etf (svo-passive)
-         :s process
-         :into substrate
-         :to substrate
-         :to co-process
-         :between linked-processes))
-
-(def-synonym link (:noun "link"))
 
 (define-category cross-link :specializes caused-bio-process 
   :mixins (on-substrate)
