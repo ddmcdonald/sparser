@@ -227,7 +227,7 @@ these are really prepositions, and should function as such
 (define-preposition "short of")
 ;; (define-preposition "since") -- sub.con.
 (define-preposition "subsequent to")
-(define-preposition "such as")
+;;(define-preposition "such as")
 (define-preposition "thanks to")
 (define-preposition "throughout")
 ;;(define-preposition "till") -- sub.conj. but also takes a simple complement

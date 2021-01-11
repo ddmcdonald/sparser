@@ -163,7 +163,7 @@ syntactic properties of three types.
           "rather than"
           "since"
           "so"
-          ;;"such as" -- in prepositions
+          "such as" ;; -- in prepositions
           "such that"
 	  ;; "surprisingly" use the adverb
           "than" ;; much better than we could have expected
