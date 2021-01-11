@@ -94,6 +94,7 @@ by which this occurs.") |#
    :etf (svo-passive)
    :for theme
    :in theme
+   :in comlex-object
    :oc level ;; 'object complement'
    :to level))
 ;; Potentially problematic since the plural will misparse
@@ -133,11 +134,13 @@ by which this occurs.") |#
   :binds ((level (:or measurement amount scalar-attribute)))
   :realization
     (:verb ("increase" :third-singular "increases"  :past-tense "increased"
-            :present-participle "increasing")
+                       :present-participle "increasing")
+     :noun "increase"
      :etf (svo-passive)
      :for object
      :in object
      :in affected-process
+     :in comlex-object
      :oc level
      :optional-object t))
 ;; DAVID -- why can't I put this in the previous definition -- the NOUN form gets clobbered
