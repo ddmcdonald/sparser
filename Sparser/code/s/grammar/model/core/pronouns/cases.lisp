@@ -30,6 +30,7 @@
 
 (define-pronoun "we"   'first/plural 'pronoun)
 (define-pronoun "they" 'plural       'pronoun)
+(define-pronoun "others" 'plural       'pronoun)
 
 
 ;;--- object pronouns   "known to X"
