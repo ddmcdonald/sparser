@@ -11,6 +11,12 @@
 
 (in-package :sparser)
 
+;; NOT SURE WHERE ELSE THIS SHOULD GO
+(define-category severity :specializes scalar-attribute
+  :realization
+  (:noun "severity"))
+
+
 ;;--- disease
 
 (define-category disease-process
