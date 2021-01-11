@@ -1,18 +1,134 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2017-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2017-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "things"
 ;;;   Module:  "model;core:mid-level:"
-;;;  version:  February 2020
+;;;  version:  January 2021
 
 ;; Initiated 8/15/17 to hold general noun-like stuff, particularly the
 ;; vocabulary need for the fixed texts in generate.lisp
 
 (in-package :sparser)
 
-#| 
+;;;----------------------
+;;; mental constructions
+;;;----------------------
 
-"information" is a 'information-functional-objects' in Trips
+(define-category mental-construction :specializes non-physical
+  :documentation "Something like a thought, or an opinion or a perception,
+ i.e a non-physical 'object'.")
+
+(define-category mental-construction-concerning :specializes mental-construction
+  :binds ((concerning top)  ;; perhaps (:or endurant perdurant abstract)
+          (source top))
+  :realization
+  (:about concerning
+   :regarding concerning
+   :from source
+   :with-regard-to concerning)
+  :documentation "A mental-construction which is focused on some set of objects
+ or events. Not clearly a sub-category of information or information-container,
+ but some information containers may be of this type. A database may be about ships,
+ but the information it contains is not a set of ships.")
+
+(define-category create-mental-construction-concerning :specializes perdurant
+  :binds ((mental-construction mental-construction-concerning) ;; may only be the direct object of the verb?
+          (concerning top)) ;; perhaps (:or endurant perdurant abstract)
+  :realization (:about concerning
+                :regarding concerning
+                :with-regard-to concerning))
+
+
+(define-category emotion :specializes mental-construction)
+
+(define-category anxiety :specializes emotion :mixins (mental-construction-concerning)
+ :realization (:noun "anxiety" :adj "anxious"))
+(define-category concern :specializes emotion :mixins (mental-construction-concerning)
+ :realization (:noun "concern" :adj "concerned"))
+(define-category confusion :specializes create-mental-construction-concerning :mixins (emotion)
+ :realization (:noun "confusion" :adj "confused" :verb "confuse" )) ;;:etf (svo-passive)
+(define-category distress :specializes emotion :mixins (mental-construction-concerning)
+ :realization (:noun "distress"))
+(define-category fear :specializes emotion :mixins (mental-construction-concerning)
+ :realization (:noun "fear" :adj "afraid"))
+(define-category pessimism :specializes emotion :mixins (mental-construction-concerning)
+ :realization (:noun "pessimism" :adj "pessimistic"))
+(define-category preoccupation :specializes emotion :mixins (mental-construction-concerning)
+ :realization (:noun "preoccupation"))
+(define-category stress :specializes emotion :mixins (mental-construction-concerning)
+ :realization (:noun "stress"))
+(define-category worry :specializes create-mental-construction-concerning :mixins (emotion)
+ :realization (:noun ("worry" :plural "worries") :verb "worry"))
+(define-category loneliness :specializes emotion                 
+ :realization (:noun "loneliness"))
+
+
+(define-category attitude :binds ((theme top)) :specializes mental-construction-concerning
+ :realization (:noun "attitude" :toward theme :towards theme :to theme))
+(define-category awareness :specializes mental-construction-concerning
+ ;;/// second reading of "anxious" !
+ :realization (:noun "awareness" :adj "anxious"))
+(define-category belief :specializes create-mental-construction-concerning
+ :realization (:noun "belief" :verb "believe" :in concerning))
+(define-category coverage :specializes mental-construction-concerning ;;???? citation?
+ :realization (:noun "coverage"))
+(define-category decision :specializes create-mental-construction-concerning
+ :realization (:noun "decision" :verb "decide"))
+(define-category disagree :specializes create-mental-construction-concerning
+ :realization (:noun "disagreement" :verb "disagree"))
+(define-category disinformation :specializes mental-construction-concerning
+ :realization (:noun "disinformation"))
+(define-category fact :specializes mental-construction-concerning
+ :realization (:noun "fact"))
+(define-category feeling :specializes mental-construction-concerning
+  ;; :of is not quite 'concerning' but for the moment? DAVID
+ :realization (:noun "feeling" :of concerning))
+(define-category headline :specializes mental-construction-concerning
+ :realization (:noun "headline"))
+(define-category insight :specializes mental-construction-concerning
+ :realization (:noun "insight"))
+(define-category intuition :specializes mental-construction-concerning
+ :realization (:noun "intuition"))
+(define-category item :specializes mental-construction-concerning
+ :realization (:noun "item"))
+(define-category judgement :specializes mental-construction-concerning
+ :realization (:noun ("judgement" "judgment")))
+(define-category learn :specializes  mental-construction-concerning
+ :realization (:verb ("learn" :present-participle "learning")))
+(define-category news :specializes mental-construction-concerning
+ :realization (:noun "news"))
+(define-category opinion :specializes mental-construction-concerning
+ :realization (:noun "opinion"))
+(define-category perception :specializes mental-construction-concerning
+ :realization (:noun "perception" :of concerning))
+(define-category misperception :specializes mental-construction-concerning
+ :realization (:noun "misperception"))
+(define-category misinformation :specializes mental-construction-concerning
+ :realization (:noun "misinformation"))
+(define-category questionnaire :specializes mental-construction-concerning
+ :realization (:noun "questionnaire"))
+(define-category reminder :specializes mental-construction-concerning
+ :realization (:noun "reminder"))
+(define-category report :specializes create-mental-construction-concerning
+ :realization (:noun "report" :verb "report")) ;;/// merge with model/sl/reports version
+(define-category scare :specializes create-mental-construction-concerning
+ :realization (:verb ("scare" :past-tense "scared" :past-participle "scared")))
+(define-category speculation :specializes create-mental-construction-concerning
+ :realization (:noun "speculation" :verb "speculate"))
+(define-category story :specializes mental-construction-concerning
+ :realization (:noun "story"))
+(define-category theory :specializes mental-construction-concerning
+ :realization (:noun "theory"))
+(define-category view :specializes mental-construction-concerning
+ :realization (:noun ("view" :plural "views")))
+
+
+
+;;;--------------------------------
+;;; information and its containers
+;;;--------------------------------
+
+#| "information" is an 'information-functional-objects' in Trips
   < functional-object < abstract-object-nontemporal
 
 JDP: information appears to be a primitive notion
@@ -25,77 +141,6 @@ Information carries a notion of scalar quantity: 'more', 'enough'
 Fixed text: "I don't have enough information to do that."
 invites this reply: "What (else) do you need to know?"
 |#
-
-(define-category mental-construction :specializes non-physical
-  :documentation "Something like a thought, or an opinion or a perception -- a non-physical 'object'.")
-
-(define-category mental-construction-concerning :specializes mental-construction
-  :binds ((concerning top)  ;; perhaps (:or endurant perdurant abstract)
-          (source top))
-  :realization
-  (:about concerning
-   :regarding concerning
-   :from source
-   :with-regard-to concerning)
-  :documentation "A mental-construction which is focused on some set of objects or events.
-  Not clearly a sub-category of information or information-container, but some information containers may be of this type.
-  A database may be about ships, but the information it contains is not a set of ships.")
-
-(define-category create-mental-construction-concerning :specializes perdurant
-  :binds ((mental-construction mental-construction-concerning) ;; may only be the direct objec t of the verb?
-          (concerning top)) ;; perhaps (:or endurant perdurant abstract)
-  :realization
-  (:about concerning
-   :regarding concerning
-   :with-regard-to concerning)
-  :documentation "A mental-construction which is focused on some set of objects or events.
-  Not clearly a sub-category of information or information-container, but some information containers may be of this type.
-  A database may be about ships, but the information it contains is not a set of ships.")
-
-(define-category emotion :specializes mental-construction)
-
-(define-category anxiety :specializes emotion :mixins (mental-construction-concerning) :realization (:noun "anxiety" :adj "anxious"))
-(define-category concern :specializes emotion :mixins (mental-construction-concerning) :realization (:noun "concern" :adj "concerned"))
-(define-category confusion :specializes create-mental-construction-concerning :mixins (emotion) :realization (:noun "confusion" :adj "confused" :verb "confuse" )) ;;:etf (svo-passive)
-(define-category distress :specializes emotion :mixins (mental-construction-concerning) :realization (:noun "distress"))
-(define-category fear :specializes emotion :mixins (mental-construction-concerning) :realization (:noun "fear" :adj "afraid"))
-(define-category pessimism :specializes emotion :mixins (mental-construction-concerning) :realization (:noun "pessimism" :adj "pessimistic"))
-(define-category preoccupation :specializes emotion :mixins (mental-construction-concerning) :realization (:noun "preoccupation"))
-(define-category stress :specializes emotion :mixins (mental-construction-concerning) :realization (:noun "stress"))
-(define-category worry :specializes create-mental-construction-concerning :mixins (emotion):realization (:noun ("worry" :plural "worries") :verb "worry")) ;;  :etf (svo-passive)
-(define-category loneliness :specializes emotion :realization (:noun "loneliness"))
-
-
-(define-category attitude :binds ((theme top)) :specializes mental-construction-concerning :realization (:noun "attitude" :toward theme :towards theme :to theme))
-(define-category awareness :specializes mental-construction-concerning :realization (:noun "awareness" :adj "anxious"))
-(define-category belief :specializes create-mental-construction-concerning :realization (:noun "belief" :verb "believe" :in concerning))
-(define-category coverage :specializes mental-construction-concerning :realization (:noun "coverage"))
-(define-category decision :specializes create-mental-construction-concerning :realization (:noun "decision" :verb "decide"))
-(define-category disagree :specializes create-mental-construction-concerning :realization (:noun "disagreement" :verb "disagree"))
-(define-category disinformation :specializes mental-construction-concerning :realization (:noun "disinformation"))
-(define-category fact :specializes mental-construction-concerning :realization (:noun "fact"))
-(define-category feeling :specializes mental-construction-concerning :realization (:noun "feeling" :of concerning)) ;; :of is not quite 'concerning' but for the moment? DAVID
-(define-category headline :specializes mental-construction-concerning :realization (:noun "headline"))
-(define-category insight :specializes mental-construction-concerning :realization (:noun "insight"))
-(define-category intuition :specializes mental-construction-concerning :realization (:noun "intuition"))
-(define-category item :specializes mental-construction-concerning :realization (:noun "item"))
-(define-category judgement :specializes mental-construction-concerning :realization (:noun ("judgement" "judgment")))
-(define-category learn :specializes  mental-construction-concerning :realization (:verb ("learn" :present-participle "learning")))
-(define-category news :specializes mental-construction-concerning :realization (:noun "news"))
-(define-category opinion :specializes mental-construction-concerning :realization (:noun "opinion"))
-(define-category perception :specializes mental-construction-concerning :realization (:noun "perception" :of concerning))
-(define-category misperception :specializes mental-construction-concerning :realization (:noun "misperception"))
-(define-category misinformation :specializes mental-construction-concerning :realization (:noun "misinformation"))
-(define-category questionnaire :specializes mental-construction-concerning :realization (:noun "questionnaire"))
-(define-category reminder :specializes mental-construction-concerning :realization (:noun "reminder"))
-(define-category report :specializes create-mental-construction-concerning :realization (:noun "report" :verb "report")) ;; :etf (svo-passive)
-(define-category scare :specializes create-mental-construction-concerning :realization (:verb ("scare" :past-tense "scared" :past-participle "scared")))
-(define-category speculation :specializes create-mental-construction-concerning :realization (:noun "speculation" :verb "speculate"))
-(define-category story :specializes mental-construction-concerning :realization (:noun "story"))
-(define-category theory :specializes mental-construction-concerning :realization (:noun "theory"))
-(define-category view :specializes mental-construction-concerning :realization (:noun ("view" :plural "views")))
-
-
 
 
 (define-category information
@@ -122,6 +167,36 @@ invites this reply: "What (else) do you need to know?"
   singing the Star Spangled Banner at ball games) but poor copies are
   still copies of the same information.")
 
+#|
+"intent" is the 'result' of having an intention
+   It's an 'intent' to do something
+"I intend to get a new car" (same force as 'will', maybe 'expect')
+"It is my intention to ..."
+  (which sounds more natural that "my intent"
+The noun is something you can 'have' / 'possess'
+  (could be a transform from the 
+
+"relevant" and "enough" are attributes of information. 
+They are relational and have an explicit or implicit (contextual)
+  'figure' (?) that they're predicating of. 
+Tr: "relevant", "applicable", "pertinent"
+  < relevant-val < information-property-val < property-val
+
+TRIPS: "enough" qua 'adequate' is a quantity-related-property-val
+ pred-s-post-templ  "I've talked about it enough"
+ post-adv-optional-xp-templ "is it quiet enough (for you)?"
+ post-adv-xp-templ: "is it quiet enough to sing?"
+  and as a quantifier: Cabot calls the modifier 'size'
+
+--- specific cases
+ relevant goal
+ (enough) information
+ structure (I don't have any structure in mind)
+ "in mind"
+"Is your [intent] to ~a something?"
+|#
+
+
 (define-category information-container
   :specializes container
   :restrict ((contents information))
@@ -136,16 +211,13 @@ invites this reply: "What (else) do you need to know?"
  That needs an treatment somewhere, and it could be here.")
 
 
-
-
-
-
-(define-category answer/info ;; ugh
+(define-category answer/info ;; needs a better name
   :binds ((questiion top))
   :specializes information
   :instantiates self
   :realization (:noun "answer"
                 :to question))
+;; "question" (as noun & verb) is in bio;general-verbs
 
 (define-category literature
     ;; from biocuration questions e.g.,
@@ -184,38 +256,6 @@ Cf. the category two-part-label (in rules/DA/nospace-categories.lisp)
  that provides an account for ""in Figure S1", where 'figure', 'Fig.'
  are in bio;terms.lisp and the label assembled by nospace.
 |#
-
-
-#|
-"intent" is the 'result' of having an intention
-   It's an 'intent' to do something
-"I intend to get a new car" (same force as 'will', maybe 'expect')
-"It is my intention to ..."
-  (which sounds more natural that "my intent"
-The noun is something you can 'have' / 'possess'
-  (could be a transform from the 
-
-"relevant" and "enough" are attributes. 
-They are relational and have an explicit or implicit (contextual)
-  'figure' (?) that they're predicating of. 
-Tr: "relevant", "applicable", "pertinent"
-  < relevant-val < information-property-val < property-val
-
-Tr: "enough" qua 'adequate' is a quantity-related-property-val
- pred-s-post-templ  "I've talked about it enough"
- post-adv-optional-xp-templ "is it quiet enough (for you)?"
- post-adv-xp-templ: "is it quiet enough to sing?"
-  and as a quantifier: Cabot calls the modifier 'size'
-
---- specific cases
- relevant goal
- (enough) information
- structure (I don't have any structure in mind)
- "in mind"
-"Is your [intent] to ~a something?"
-|#
-
-
 
 
 ;;;---------------
@@ -263,7 +303,7 @@ some subcategory of the category 'name'
      :for item))
 
 (define-category has-symbol
-  :specializes has-attribute ;; vars: item, attribute, value
+  :specializes has-attribute
   ;; :mixins ()
   :realization 
     (:noun "symbol"
@@ -275,7 +315,7 @@ some subcategory of the category 'name'
   :realization
     (:noun "synonym"
      :of item
-     :for item)) ;; "we[s] named him[o] Daniel[a]
+     :for item))
 ;; (p/s "what are synonyms for BRAF?")
 
 
@@ -308,8 +348,39 @@ that's ubiquitous in biology examples (show-sents), e.g.
 "the upstream activator of Raf, called Ras, and the direct substrate of Raf, called MEK1/2"
 |#
      
+(define-category known-as
+  :specializes has-attribute
+  :binds ((alternate-name)) ;; v/r of 'name' will  probably fail too much
+  :realization (:adj "known as")
+  :documentation "Super category of all the variations on this pattern,
+e.g. 'aka', 'formally know as (Prince)'. Not clear where to stage the
+semantic effects of these phrases, which invariably turn up as apposatives
+to provide alternative names for the NP head. Also awkward since unlike propositions
+we don't have phrases 'headed' by the adjective that heads a np-complement
+where they will normally just be recorded as modifiers.
+  Probably need to use an explicit rule -- good excuse for a semantic type
+rule since all these behave the same")
+    
+(adj "also known as" :super known-as)
+
+(adj "formerly known as" :super known-as)
      
-     
+
+;; The verb "term" is a bio-rhetorical in bio;verbs
+;;   There's also got to be a verion for 'period of time' as in
+;;     "short term" "long term" "school term"
+;;
+(define-category term-name
+  :specializes label ;;/// maybe 'name' -- same thing as 'word' (no yet defined)
+  :realization (:noun "term"
+                      ))
+"what GO terms are most frequent in these genes"
+"the most frequent GO terms for these genes"
+"for these genes"
+"are enriched for AKT1"
+"What GO terms are those genes enriched in?"
+"the most frequent GO terms among these genes"
+
 
 
 ;;--- "model"
@@ -330,10 +401,10 @@ Show sents:
   :binds ((modeled-process perdurant)
           (modeled-object endurant))
   :realization (:noun "model"
-                      :of modeled-process
-                      :of modeled-object
-                      :for modeled-process
-                      :for modeled-object))
+                :of modeled-process
+                :of modeled-object
+                :for modeled-process
+                :for modeled-object))
 
 
 
@@ -351,7 +422,7 @@ e7    CONTAIN       1 "the model contains MEK" 5
  (present #<ref-category PRESENT>))
 
 
-;;--- "contruct" is also in general-verbs as a bio-method
+;;--- "construct" is also in general-verbs as a bio-method
 probably to get the noun reading
 |#
 
@@ -366,17 +437,3 @@ probably to get the noun reading
 ;; "What is its relationship with BRAF?"
 
 
-;; The verb "term" is a bio-rhetorical in bio;verbs
-;;   There's also got to be a verion for 'period of time' as in
-;;     "short term" "long term" "school term"
-;;
-(define-category term-name
-  :specializes label ;;/// maybe 'name' -- same thing as 'word' (no yet defined)
-  :realization (:noun "term"
-                      ))
-"what GO terms are most frequent in these genes"
-"the most frequent GO terms for these genes"
-"for these genes"
-"are enriched for AKT1"
-"What GO terms are those genes enriched in?"
-"the most frequent GO terms among these genes"

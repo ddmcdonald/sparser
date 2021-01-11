@@ -90,16 +90,17 @@
 
 ;; metrics
 (define-category stat-measurement :specializes measurement-with-uid)
+
 (define-category variance :specializes stat-measurement
   :binds ((population top))
   :realization (:noun "variancexx" :in population))
+(def-indiv-with-id variance "variance" "NCIT:C48918" :name "variance") 
 
 (def-indiv-with-id bio-method "FdR" "NCIT:C64214" :name "false discovery rate") 
 
 (def-indiv-with-id bio-method "Gaussian" "NCIT:C53215" :name "normal distribution") 
 (def-indiv-with-id stat-measurement "eigenvalue" "NCIT:C61068" :name "eigenvalue")
 ;(def-indiv-with-id stat-measurement "median" "NCIT:C28007" :name "median") 
-(def-indiv-with-id variance "variance" "NCIT:C48918" :name "variance") 
 (def-indiv-with-id stat-measurement "dispersion" "NCIT:C53321" :name "statistical dispersion")
 (def-indiv-with-id stat-measurement "maxima" "NCIT:C82868" :name "maximum value derivation technique") 
 (def-indiv-with-id stat-measurement "quantile" "NCIT:C48920" :name "quantile") 

@@ -25,7 +25,8 @@
 
 (assign-lemma quality (:common-noun "quality"))
 (assign-lemma abstract (:common-noun "abstract"))
-(noun "relation" :binds ((participants top))  :realization (:noun "relation" :between participants))
+(noun "relation" :binds ((participants top))
+  :realization (:noun "relation" :between participants))
 
 (assign-lemma physical (adjective "physical"))
 
