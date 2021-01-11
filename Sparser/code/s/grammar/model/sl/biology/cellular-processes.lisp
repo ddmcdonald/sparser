@@ -71,10 +71,14 @@
   :bindings (uid "GO:0007155")
   :binds ((adheres-to top))
     :realization
-    (:verb "adhere"
+  (:verb "adhere"
 	   :etf (sv)
        :noun ("adhesion" "cell adhesion" "cellular adhesion")
-       :to adheres-to))
+   :to adheres-to))
+
+(def-synonym adhesion
+    (:noun "adherence"))
+
                              
 
 (define-category axon-guidance :specializes cellular-process
