@@ -107,7 +107,8 @@
      :realization (:verb  "ache" :s SUBJECT))
 
 (define-category achieve :specializes comlex-verb
-     :realization (:verb  "achieve" :s SUBJECT :o OBJECT))
+  :binds ((through top))
+  :realization (:verb  "achieve" :s SUBJECT :o OBJECT :through through))
 
 (define-category acknowledge :specializes comlex-verb
      :binds
@@ -138,7 +139,7 @@
 (define-category address :specializes comlex-verb
      :binds
       ((TO top))
-     :realization (:verb  "address" :s SUBJECT :o OBJECT :to TO))
+     :realization (:verb  "address" :etf (svo-passive) :s SUBJECT :o OBJECT :to TO))
 
 (define-category adjust :specializes comlex-verb
      :binds
@@ -147,7 +148,9 @@
      :realization (:verb  "adjust" :s SUBJECT :o OBJECT :for FOR :to TO))
 
 (define-category administer :specializes comlex-verb
-     :realization (:verb  "administer" :s SUBJECT :o OBJECT))
+  :binds ((to to))
+  :realization (:verb  ("administer" :past-tense "administered" :past-participle "administered" :present-participle "administering")
+                :s SUBJECT :o OBJECT :to to))
 
 (define-category admire :specializes comlex-verb
      :realization (:verb  "admire" :s SUBJECT :o OBJECT))
@@ -158,7 +161,7 @@
        (IN top)
        (TO top)
        (OF top))
-     :realization (:verb ( "admit"  :TENSED/SINGULAR "admits" :PRESENT-PARTICIPLE "admitting" :PAST-TENSE "admitted")
+     :realization (:verb ( "admit"  :TENSED/SINGULAR "admits" :PRESENT-PARTICIPLE "admitting" :PAST-TENSE "admitted" :PAST-PARTICIPLE "admitted")
  :s SUBJECT :o OBJECT :into INTO :in IN :to TO :of OF))
 
 (define-category adopt :specializes comlex-verb
@@ -180,7 +183,7 @@
        (OF top)
        (ON top)
        (AGAINST top))
-     :realization (:verb  "advise" :s SUBJECT :o OBJECT :regarding REGARDING :in IN :about ABOUT :of OF :on ON :against AGAINST))
+     :realization (:verb  "advise" :etf (svo-passive) :s SUBJECT :o OBJECT :regarding REGARDING :in IN :about ABOUT :of OF :on ON :against AGAINST))
 
 (define-category advocate :specializes comlex-verb
      :realization (:verb  "advocate" :s SUBJECT :o OBJECT))
@@ -225,8 +228,11 @@
        (TO top)
        (ON top)
        (UPON top))
-     :realization (:verb ( "agree"  :TENSED/SINGULAR "agrees" :PRESENT-PARTICIPLE "agreeing")
- :s SUBJECT :o OBJECT :among AMONG :between BETWEEN :over OVER :with WITH :about ABOUT :to TO :on ON :upon UPON))
+  :realization (:verb
+                ( "agree"  :TENSED/SINGULAR "agrees" :PRESENT-PARTICIPLE "agreeing" :PAST-PARTICIPLE "agreed" :PAST-TENSE "agreed")
+                :noun "agreement"
+                :s SUBJECT :o OBJECT :among AMONG
+                :between BETWEEN :over OVER :with WITH :about ABOUT :to TO :on ON :upon UPON))
 
 (define-category aid :specializes comlex-verb
      :binds
@@ -1435,7 +1441,14 @@
      :realization (:verb  "complete" :s SUBJECT :o OBJECT))
 
 (define-category complicate :specializes comlex-verb
-     :realization (:verb  "complicate" :s SUBJECT :o OBJECT))
+  :realization (:verb  "complicate" :s SUBJECT :o OBJECT))
+
+(define-category comply :specializes comlex-verb
+  :binds ((rule))
+  :realization (:verb  "comply"
+                :noun "compliance"
+                :s SUBJECT :o OBJECT
+                       :with rule))
 
 (define-category comport :specializes comlex-verb
      :binds
@@ -1706,7 +1719,7 @@
      :binds
       ((BY top)
        (WITH top))
-     :realization (:verb  "counter" :s SUBJECT :o OBJECT :by BY :with WITH))
+     :realization (:verb ("counter"  :past-tense "countered" :past-participle "countered" :present-participle "countering") :s SUBJECT :o OBJECT :by BY :with WITH))
 
 (define-category counteract :specializes comlex-verb
      :realization (:verb  "counteract" :s SUBJECT :o OBJECT))
@@ -1851,7 +1864,7 @@
        (AMONG top)
        (AROUND top)
        (ACROSS top))
-     :realization (:verb ( "deal"  :TENSED/SINGULAR "deals" :PAST-TENSE "dealt")
+     :realization (:verb ( "deal"  :TENSED/SINGULAR "deals" :PAST-TENSE "dealt" :PAST-PARTICIPLE "dealt" :present-participle "dealing")
  :s SUBJECT :o OBJECT :in IN :with WITH :to TO :among AMONG :around AROUND :across ACROSS))
 
 (define-category debate :specializes comlex-verb
@@ -2074,7 +2087,7 @@
 (define-category destine :specializes comlex-verb
      :binds
       ((FOR top))
-     :realization (:verb  "destine" :s SUBJECT :o OBJECT :for FOR))
+     :realization (:verb  ("destine"   :past-tense "destined" :past-participle "destined") :s SUBJECT :o OBJECT :for FOR))
 
 (define-category destroy :specializes comlex-verb
      :realization (:verb  "destroy" :s SUBJECT :o OBJECT))
@@ -2123,7 +2136,7 @@
        (IN top)
        (ON top)
        (ABOUT top))
-     :realization (:verb  "differ" :s SUBJECT :to TO :by BY :with WITH :from FROM :in IN :on ON :about ABOUT))
+     :realization (:verb  ("differ"  :past-tense "differed" :past-participle "differed" :present-participle "differing") :s SUBJECT :to TO :by BY :with WITH :from FROM :in IN :on ON :about ABOUT))
 
 (define-category differentiate :specializes comlex-verb
      :binds
@@ -2660,7 +2673,7 @@
       ((IN top)
        (TO top)
        (WITH top))
-     :realization (:verb  "engage" :s SUBJECT :o OBJECT :in IN :to TO :with WITH))
+     :realization (:verb  "engage" :noun "engagement" :s SUBJECT :o OBJECT :in IN :to TO :with WITH))
 
 (define-category engineer :specializes comlex-verb
      :binds
@@ -2918,7 +2931,9 @@
 (define-category expose :specializes comlex-verb
      :binds
       ((TO top))
-     :realization (:verb  "expose" :s SUBJECT :o OBJECT :to TO))
+  :realization (:verb  "expose"
+                :noun "exposure"
+                :s SUBJECT :o OBJECT :to TO :toward TO))
 
 (define-category extend :specializes comlex-verb
      :mixins (with-p-dir)
@@ -2966,7 +2981,7 @@
 (define-category factor :specializes comlex-verb
      :binds
       ((INTO top))
-     :realization (:verb  "factor" :s SUBJECT :o OBJECT :into INTO))
+     :realization (:verb  ("factor"  :past-tense "factored" :past-participle "factored" :present-participle "factoring") :s SUBJECT :o OBJECT :into INTO))
 
 ;;; found existing category FAIL in #P"SPARSER:DOSSIERS;VERBS.LISP"
 
@@ -3229,7 +3244,7 @@
        (IN top)
        (UPON top)
        (ON top))
-     :realization (:verb  "focus" :s SUBJECT :o OBJECT :among AMONG :in IN :upon UPON :on ON))
+     :realization (:verb  ("focus"  :past-tense "focused" :past-participle "focused") :s SUBJECT :o OBJECT :among AMONG :in IN :upon UPON :on ON))
 
 (define-category fold :specializes comlex-verb
      :binds
@@ -3413,7 +3428,10 @@
        (WITH top)
        (INTO top)
        (IN top))
-     :realization (:verb  "gather" :s SUBJECT :o OBJECT :around AROUND :inside INSIDE :with WITH :into INTO :in IN))
+  :realization
+  (:verb  ("gather"  :past-tense "gathered" :past-participle "gathered" :present-participle "gathering")
+   :noun ("gathering" :plural "gatherings")
+   :s SUBJECT :o OBJECT :around AROUND :inside INSIDE :with WITH :into INTO :in IN))
 
 (define-category gauge :specializes comlex-verb
      :binds
@@ -3532,7 +3550,9 @@
      :binds
       ((AT top)
        (WITH top))
-     :realization (:verb  "greet" :s SUBJECT :o OBJECT :at AT :with WITH))
+  :realization (:verb  "greet"
+                :noun ("greeting" :plural "greetings")
+                :s SUBJECT :o OBJECT :at AT :with WITH))
 
 (define-category grey :specializes comlex-verb
      :realization (:verb  "grey" :s SUBJECT :o OBJECT))
@@ -3962,8 +3982,8 @@
 
 (define-category infect :specializes comlex-verb
      :binds
-      ((WITH top))
-     :realization (:verb  "infect" :s SUBJECT :o OBJECT :with WITH))
+      ((infectious-agent (:or pathogen disease)))
+     :realization (:verb  "infect" :s SUBJECT :o OBJECT :with infectious-agent :by infectious-agent ))
 
 (define-category infer :specializes comlex-verb
      :realization (:verb ( "infer"  :TENSED/SINGULAR "infers" :PRESENT-PARTICIPLE "inferring" :PAST-TENSE "inferred")
@@ -4517,7 +4537,7 @@
      :binds
       ((FOR top)
        (TO top))
-     :realization (:verb  "listen" :s SUBJECT :for FOR :to TO))
+     :realization (:verb  ("listen"  :past-tense "listened" :past-participle "listened"  :present-participle "listening") :s SUBJECT :for FOR :to TO))
 
 (define-category litter :specializes comlex-verb
      :binds
@@ -4879,7 +4899,7 @@
 (define-category monitor :specializes comlex-verb
      :binds
       ((FOR top))
-     :realization (:verb  "monitor" :s SUBJECT :o OBJECT :for FOR))
+     :realization (:verb  ("monitor"  :past-tense "monitored" :past-participle "monitored" :present-participle "monitoring") :s SUBJECT :o OBJECT :for FOR))
 
 (define-category motivate :specializes comlex-verb
      :binds
@@ -5196,7 +5216,7 @@
 ;;; found existing category PARALLEL in #P"SPARSER:BIO;BIO-PREDICATIONS.LISP"
 
 (define-category parallel-cl-verb :specializes comlex-verb
-     :realization (:verb ( "parallel"  :TENSED/SINGULAR "parallels" :PRESENT-PARTICIPLE "parallelling" :PAST-TENSE "parallelled")
+     :realization (:verb ( "parallel"  :TENSED/SINGULAR "parallels" :PRESENT-PARTICIPLE "parallelling" :PAST-PARTICIPLE "parallelled" :PAST-TENSE "parallelled")
  :s SUBJECT :o OBJECT))
 
 (define-category parcel :specializes comlex-verb
@@ -5676,7 +5696,7 @@
 (define-category prohibit :specializes comlex-verb
      :binds
       ((FROM top))
-     :realization (:verb  "prohibit" :s SUBJECT :o OBJECT :from FROM))
+     :realization (:verb  ("prohibit"  :past-tense "prohibited" :past-participle "prohibited" :present-participle "prohibiting") :s SUBJECT :o OBJECT :from FROM))
 
 (define-category project :specializes comlex-verb
      :binds
@@ -6417,11 +6437,20 @@
      :realization (:verb ( "rise"  :TENSED/SINGULAR "rises" :PAST-TENSE "rose")
  :s SUBJECT :o OBJECT :on ON :over OVER :above ABOVE :against AGAINST :|OUT OF| |OUT OF| :toward TOWARD :from FROM :to TO))
 
-(define-category risk :specializes comlex-verb
+(define-category take-a-risk :specializes comlex-verb
      :binds
       ((FOR top)
        (ON top))
-     :realization (:verb  "risk" :s SUBJECT :o OBJECT :for FOR :on ON))
+  :realization (:verb  "risk" :s SUBJECT :o OBJECT :for FOR :on ON))
+
+(define-category risk :specializes attribute
+  :binds ((at-risk top)
+          (risk-to top))
+  :realization (:noun  "risk"
+                :for at-risk
+                :to risk-to))
+
+
 
 (define-category rival :specializes comlex-verb
      :binds
@@ -7146,7 +7175,9 @@
      :realization (:verb  "solicit" :s SUBJECT :o OBJECT :for FOR :from FROM))
 
 (define-category solve :specializes comlex-verb
-     :realization (:verb  "solve" :s SUBJECT :o OBJECT))
+  :realization (:verb  "solve"
+                :noun "solution" ;; conflicts with biology solution
+                :s SUBJECT :o OBJECT))
 
 (define-category sort :specializes comlex-verb
      :binds
@@ -7584,7 +7615,7 @@
 (define-category strengthen-cl-verb :specializes comlex-verb
      :binds
       ((TO top))
-     :realization (:verb  "strengthen" :s SUBJECT :o OBJECT :to TO))
+     :realization (:verb  ("strengthen"  :past-tense "strengthened" :past-participle "strengthened" :present-participle "strengthening") :s SUBJECT :o OBJECT :to TO))
 
 (define-category stress :specializes comlex-verb
      :binds
@@ -7701,7 +7732,7 @@
        (FROM top)
        (OVER top)
        (WITH top))
-     :realization (:verb  "suffer" :s SUBJECT :o OBJECT :in IN :through THROUGH :for FOR :from FROM :over OVER :with WITH))
+     :realization (:verb  ("suffer"  :past-tense "suffered" :past-participle "suffered" :present-participle "suffering") :s SUBJECT :o OBJECT :in IN :through THROUGH :for FOR :from FROM :over OVER :with WITH))
 
 (define-category suffice :specializes comlex-verb
      :binds
@@ -7961,7 +7992,7 @@
       ((AGAINST top)
        (TO top)
        (WITH top))
-     :realization (:verb  "threaten" :s SUBJECT :o OBJECT :against AGAINST :to TO :with WITH))
+     :realization (:verb  ("threaten"  :past-tense "threatened" :past-participle "threatened" :present-participle "threatening") :s SUBJECT :o OBJECT :against AGAINST :to TO :with WITH))
 
 (define-category thrill :specializes comlex-verb
      :realization (:verb  "thrill" :s SUBJECT :o OBJECT))
