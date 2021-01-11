@@ -16,12 +16,26 @@
 ;; to ever be instantiated directly, just inherited from
 
 (without-comparatives
-  (define-category  time
+  (define-category time
     :instantiates nil
     :specializes region
-    :realization (:noun "time"
-                  :adj "temporal")
+    :realization (:adj "temporal")
     :documentation "For modeling the stuff, not the verb
  for recording an elapsed period of time or the 'timer'
  that one could use to do that."))
+
+(define-category time-of :specializes time
+  :mixins (attribute)
+  :realization
+  (:noun "time"))
+
+(define-category date-of :specializes time
+  :mixins (attribute)
+  :realization
+  (:noun "date"))
+
+;; we need more of these
+(define-category timepoint :specializes time
+  :realization
+  (:noun "timepoint"))
 
