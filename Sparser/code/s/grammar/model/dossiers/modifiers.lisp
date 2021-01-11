@@ -848,16 +848,16 @@
 (define-adjective "ill")
 
 (define-adjective "implicit")
-(define-adjective "important")
-(define-adjective "impressive")
+(adj "important" :mixins (action-on-eventuality))
+(adj "impressive" :mixins (action-on-eventuality))
 (define-adjective "inactivated")
-(define-adjective "inadequate")
-(define-adjective "inappropriate")
+(adj "inadequate" :mixins (action-on-eventuality))
+(adj "inappropriate" :mixins (action-on-eventuality))
 (define-adjective "incipient")
 (define-adjective "incomplete")
 ;;(define-adjective "independent")
 (define-adjective "individual")
-(define-adjective "inflammatory") 
+(adj "inflammatory" :mixins (action-on-eventuality))
 (define-adjective "informative")
 (define-adjective "innate")
 (define-adjective "inner" :form 'spatial-adjective)
@@ -896,7 +896,13 @@
 (define-adjective "national")
 (define-adjective "natural")
 (define-adjective "nearby" :form 'spatial-adjective)
-(define-adjective "necessary")
+(adj "necessary" :super state
+                 :mixins (action-on-eventuality)
+                 :realization 
+     (:for theme ;; 'for eating'
+       :to theme
+       :to-comp theme))
+;;(define-adjective "necessary")
 
 (define-adjective "neighboring" :form 'spatial-adjective)
 
