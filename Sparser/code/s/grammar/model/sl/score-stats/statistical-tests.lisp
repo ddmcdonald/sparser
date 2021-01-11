@@ -136,13 +136,16 @@
                  )
 
 (define-category correlation :specializes stat-test
-                 :binds ((ind-var continuous-stat-var) ;; 1 or more stats
-                         (dep-var continuous-stat-var) ;; 1 or more
-                         (r-measure stat-measure) ;; r
-                         (df stat-measure) ;; optional -- may be in parens r(df) = val
-                         )
-                 :realization (:verb "correlate" ;; though can sometimes be a noun
-                                :noun ("correlation"))
+  :binds ((ind-var continuous-stat-var) ;; 1 or more stats
+          (dep-var continuous-stat-var) ;; 1 or more
+          (vars top) ;; all of the vars (among, between)
+          (r-measure stat-measure) ;; r
+          (df stat-measure) ;; optional -- may be in parens r(df) = val
+          )
+  :realization (:verb "correlate" ;; though can sometimes be a noun
+                :noun ("correlation")
+                :among vars
+                :between vars)
                  )
 
 (define-category pearson-correlation :specializes correlation ;; add parametric somehow?
@@ -160,7 +163,12 @@
                          )
                  :realization (:noun ("spearman correlation" "Spearman's rank correlation"))
                  )
-                 
+
+
+;; need to work out the relation among "predict", "prediction" and "predictor"
+(define-category predictor :specializes data-method
+  :binds ((predicted-entity))
+  :realization (:noun "predictor" :of predicted-entity))
 
 #|
 "Table 2 illustrates the results of the multiple linear regression analysis, which indicatethat there is a collective significant effect between conscientiousness, neuroticism, risk perception, personal hygiene practices, and social distancing practices. The model explains 29.2% of the variance (F[7, 391] = 23.01; p < .001; R2 = .292; d = .41). The individual predictors were examined further and these indicated that conscientiousness (b = .112; SE = .011; p = .023), neuroticism (b = .111; SE = .010; p = .018), risk perception (b = .145; SE = .035; p = .001), and6personal hygiene practices (b = .451; SE = .044; p < .001) were significant predictors in the model.[Insert Table 2 about here]"
