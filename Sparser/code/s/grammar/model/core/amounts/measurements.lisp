@@ -82,6 +82,7 @@ and the word can stand by itself "that distance"
   :realization
      (:noun "ratio"
       :m measured
+      :of measured
       :to divisor))
 
 (define-category value
