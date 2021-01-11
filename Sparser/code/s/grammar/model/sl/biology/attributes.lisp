@@ -125,7 +125,9 @@ have with phosphorylated as a preposed modifier.) |#
 
 (noun "extent" :super scalar-attribute) 
 (noun "mass" :super scalar-attribute)
-(noun "scale" :super scalar-attribute)     
+(noun "scale" :super scalar-attribute
+              :binds ((source top)) ;; "the scale from xxx test"
+      :realization (:from source))
 
 (noun "dynamics" :super scalar-attribute) ;;possibly just attribute
 (noun "proportion" :super scalar-attribute) ;;possibly just attribute
