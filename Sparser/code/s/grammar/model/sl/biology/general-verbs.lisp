@@ -115,7 +115,7 @@
   :realization (:verb "assume" :etf (svo-passive)))
 ;;/// split to accommodate flaw in NLG sorting out POS
 (define-category assumption :specializes bio-rhetorical
-  :mixins (bio-thatcomp)
+  :mixins (bio-thatcomp mental-construction-concerning)
   :realization (:noun "assumption"))
 
 
@@ -165,20 +165,23 @@
 (define-category change :specializes bio-control
   :binds ((scale (:or scalar-attribute ;;  amount measurement
                       ))
-              (original (:or bio-entity))
-              (resulting (:or bio-entity))
-              ) 
-      :realization
-      (:verb "change"
-             :etf (svo-passive)
-             :noun "change"
-             :in object
-             :in affected-process
-             :of :object
-             :on scale
-             :from original
-             :to resulting
-             :into resulting))
+          (original (:or bio-entity))
+          (resulting (:or bio-entity comlex-noun))
+          (affected-other comlex-noun)
+          )
+  :restrict ((object top))
+  :realization
+  (:verb "change"
+   :etf (svo-passive)
+   :noun "change"
+   :in object
+   :in affected-process
+   :in affected-other
+   :of :object
+   :on scale
+   :from original
+   :to resulting
+   :into resulting))
 
 (define-category confer :specializes bio-control
     :binds ((to bio-entity)
@@ -192,9 +195,10 @@
 
 
 (define-category bio-concern :specializes bio-rhetorical
-    :mixins (bio-thatcomp)
+    :mixins (bio-thatcomp mental-construction-concerning)
     :realization
-    (:verb "concern" ;; keyword: ENDS-IN-ED 
+  (:verb "concern" ;; keyword: ENDS-IN-ED
+         :noun "concern"
 	   :etf (svo-passive)))
 
 (define-category conduct :specializes bio-method
@@ -273,6 +277,7 @@
                        ))
 
 (define-category convince :specializes bio-rhetorical
+  :mixins (create-mental-construction-concerning)
   :realization
   (:verb "convince"
          :noun "conviction" :etf (svo-passive)))
@@ -333,7 +338,7 @@
 
 
 (define-category demonstrate :specializes bio-rhetorical
-    :mixins (bio-thatcomp)
+    :mixins (bio-thatcomp create-mental-construction-concerning)
     :realization
     (:verb "demonstrate" ;; keyword: ENDS-IN-ED 
 	   :noun "demonstration"
@@ -425,7 +430,6 @@
          :etf (svo-passive)
          :for object
          :in object
-         :of :object
          :optional-object t))
 
 ;; e.g. displayed sustained ERK phosphorylation
@@ -471,13 +475,29 @@
 
 
 (define-category effect :specializes bio-control
+  :binds ((general-cause top)
+          (participants top)
+          (via top)) ;; effect through <via>
+  ;; generalize "effect of <x> on <y>" to allow any agent and object
+  :restrict ((agent top)
+             (object top)
+             )
   :realization
-  (:verb "effect"
-	 :etf (svo-passive)
-	 :of agent
-	 :on object
-         :on affected-process))
+  (:verb "affect" ;; NOTE -- the verb "affect" corresponds to "effect" as a noun, while the verb "effect" is rare
+   :noun "effect"
+   :etf (svo-passive)
+   :of agent
+   :on object
+   :on affected-process
+   :of cause
+   :of general-cause
+   :of agent
+   :between participants
+   :through via
+   :via via
+         ))
 
+#+ignore
 (def-synonym effect
     (:noun "effect"))
 
@@ -544,12 +564,14 @@
 
 (define-category examine :specializes bio-rhetorical
   :mixins (bio-whethercomp bio-ifcomp)
-  :binds ((presence-of biological))
+  :binds ((presence-of biological)
+          (object top))
   :realization
   (:verb "examine"
-         :noun "examination"
-         :etf (svo-passive)
-         :for presence-of))
+   :noun "examination"
+   :etf (svo-passive)
+   :for presence-of
+   :of object))
 
 
 (define-category exist :specializes of-participant-bio-predication
@@ -571,6 +593,7 @@
 |#
 
 (define-category expect :specializes bio-rhetorical
+    :mixins (mental-construction-concerning)
     :realization
     (:verb "expect" 
            :noun "expectation" 
@@ -578,6 +601,7 @@
 
 
 (define-category explanation :specializes bio-rhetorical
+    :mixins (create-mental-construction-concerning)
     :realization
     (:verb "explain" 
            :noun "explanation" 
@@ -667,9 +691,12 @@
   (:verb "improve" :etf (svo-passive)))
 
 (define-category include :specializes bio-relation
+  :binds ((container top))
   :realization
   (:verb ("include" :present-participle "includingxxx")
-         :etf (svo)
+   :noun "inclusion"
+   :in container
+   :etf (svo)
          ))
 
 (define-category incorporate :specializes bio-relation 
@@ -703,6 +730,7 @@
 |#
 
 (define-category inform :specializes bio-rhetorical
+    :mixins (create-mental-construction-concerning)
     :realization
     (:verb "inform" ;; keyword: ENDS-IN-ING 
 	   :etf (svo-passive)))
@@ -792,7 +820,7 @@
 
 
 (define-category know :specializes bio-rhetorical
-  :mixins (raising-to-object)
+  :mixins (raising-to-object create-mental-construction-concerning)
   :restrict ((theme (:or be biological)))
   :binds ((topic biological))
     :realization
@@ -864,7 +892,24 @@
 (define-category limit :specializes negative-bio-control
   :realization
   (:verb ("limit" :past-tense "limited" :present-participle "limiting")
-         :etf (svo-passive)))   
+   :etf (svo-passive)))
+
+(define-category link :specializes caused-bio-process
+  :mixins (on-substrate) ;; either a residue-on-protein (dectest 8) ubiquitin C77, or a molecule
+  :binds ((linked-processes top) ;; generalize from BIO
+          (process top)
+          (co-process top)
+          (linked-process bio-process))
+                         ;; either a residue-on-protein (dectest 8) ubiquitin C77, or a molecule
+  :realization 
+  (:verb "link" :noun "linkage" 
+         :etf (svo-passive)
+         :s process
+         :into substrate
+         :to substrate
+         :to co-process
+         :between linked-processes))
+(def-synonym link (:noun "link"))
 
 
 (define-category lower-as-reduce :specializes negative-bio-control
@@ -1016,7 +1061,7 @@
 	   :etf (svo-passive)))
 
 (define-category predict :specializes bio-rhetorical
-    :mixins (bio-thatcomp)
+    :mixins (bio-thatcomp create-mental-construction-concerning)
   ;; agent can be a process, like "mutation"
     :realization
     (:verb "predict"
@@ -1033,12 +1078,15 @@
 	   :etf (svo-passive)))
 
 (define-category presentation :specializes bio-relation ;; the category "present" is the adjective "present"
-    :realization
-    (:verb "present"
-	   :noun "presentation"
-	   :etf (svo-passive)
-           :o theme))
-
+  :binds ((concerning top)
+          (by-means-of top))
+  :realization
+  (:verb "present"
+   :noun "presentation"
+   :etf (svo-passive)
+   :o theme
+   :on concerning
+   :in))
 
 (define-category preserve :specializes bio-control
   :realization
@@ -1115,8 +1163,10 @@
 
 
 (define-category bio-question :specializes bio-rhetorical
-   :mixins (bio-thatcomp
-            question) ; adds 'statement'
+  :mixins (bio-thatcomp
+           create-mental-construction-concerning
+           mental-construction-concerning ;; "the question" is the construction
+           question) ; adds 'statement'
    :realization
           (:verb "question" ;; keyword: ENDS-IN-ED
            :noun "question"
@@ -1326,7 +1376,7 @@
                       :etf (svo-passive)))  |#
 
 (define-category bio-make-statement :specializes bio-rhetorical
-  :mixins (bio-thatcomp)
+  :mixins (bio-thatcomp mental-construction-concerning)
   :realization
   (:verb "state" ;; keyword: ENDS-IN-ED 
          :noun "statement"
@@ -1412,7 +1462,7 @@
     :realization
     (:verb "tend" ;; keyword: ENDS-IN-ED 
 	   :noun "tendency"
-	   :etf (sv)))
+     :etf (sv)))
 
 (define-category test :specializes bio-method
   :mixins (bio-whethercomp)
@@ -1427,7 +1477,9 @@
          :in participant
          :o object)) ;; seems to be needed to make use of changed definition of object -- TO-DO fisx handling of restrict
 
+
 (define-category think :specializes bio-rhetorical
+  :mixins (create-mental-construction-concerning)
   :realization
   (:verb ("think" :past-tense "thought") :etf (svo-passive)))
 
@@ -1465,7 +1517,9 @@
   :binds ((used-to biological)
           ;;(disease disease)
           (purpose (:or treatment disease))
-          (object (:or bio-chemical-entity bio-organ bio-process bio-mechanism
+          (object top ;; "use of ..." is very common
+                  #+ignore
+                  (:or bio-chemical-entity bio-organ bio-process bio-mechanism
                        activity-with-a-purpose 
                        experimental-condition cell-line
                        measurement ;; "data", "dataset"
