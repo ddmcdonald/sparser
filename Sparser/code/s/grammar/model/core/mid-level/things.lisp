@@ -26,9 +26,81 @@ Fixed text: "I don't have enough information to do that."
 invites this reply: "What (else) do you need to know?"
 |#
 
+(define-category mental-construction :specializes non-physical
+  :documentation "Something like a thought, or an opinion or a perception -- a non-physical 'object'.")
+
+(define-category mental-construction-concerning :specializes mental-construction
+  :binds ((concerning top)  ;; perhaps (:or endurant perdurant abstract)
+          (source top))
+  :realization
+  (:about concerning
+   :regarding concerning
+   :from source
+   :with-regard-to concerning)
+  :documentation "A mental-construction which is focused on some set of objects or events.
+  Not clearly a sub-category of information or information-container, but some information containers may be of this type.
+  A database may be about ships, but the information it contains is not a set of ships.")
+
+(define-category create-mental-construction-concerning :specializes perdurant
+  :binds ((mental-construction mental-construction-concerning) ;; may only be the direct objec t of the verb?
+          (concerning top)) ;; perhaps (:or endurant perdurant abstract)
+  :realization
+  (:about concerning
+   :regarding concerning
+   :with-regard-to concerning)
+  :documentation "A mental-construction which is focused on some set of objects or events.
+  Not clearly a sub-category of information or information-container, but some information containers may be of this type.
+  A database may be about ships, but the information it contains is not a set of ships.")
+
+(define-category emotion :specializes mental-construction)
+
+(define-category anxiety :specializes emotion :mixins (mental-construction-concerning) :realization (:noun "anxiety" :adj "anxious"))
+(define-category concern :specializes emotion :mixins (mental-construction-concerning) :realization (:noun "concern" :adj "concerned"))
+(define-category confusion :specializes create-mental-construction-concerning :mixins (emotion) :realization (:noun "confusion" :adj "confused" :verb "confuse" )) ;;:etf (svo-passive)
+(define-category distress :specializes emotion :mixins (mental-construction-concerning) :realization (:noun "distress"))
+(define-category fear :specializes emotion :mixins (mental-construction-concerning) :realization (:noun "fear" :adj "afraid"))
+(define-category pessimism :specializes emotion :mixins (mental-construction-concerning) :realization (:noun "pessimism" :adj "pessimistic"))
+(define-category preoccupation :specializes emotion :mixins (mental-construction-concerning) :realization (:noun "preoccupation"))
+(define-category stress :specializes emotion :mixins (mental-construction-concerning) :realization (:noun "stress"))
+(define-category worry :specializes create-mental-construction-concerning :mixins (emotion):realization (:noun ("worry" :plural "worries") :verb "worry")) ;;  :etf (svo-passive)
+(define-category loneliness :specializes emotion :realization (:noun "loneliness"))
+
+
+(define-category attitude :binds ((theme top)) :specializes mental-construction-concerning :realization (:noun "attitude" :toward theme :towards theme :to theme))
+(define-category awareness :specializes mental-construction-concerning :realization (:noun "awareness" :adj "anxious"))
+(define-category belief :specializes create-mental-construction-concerning :realization (:noun "belief" :verb "believe" :in concerning))
+(define-category coverage :specializes mental-construction-concerning :realization (:noun "coverage"))
+(define-category decision :specializes create-mental-construction-concerning :realization (:noun "decision" :verb "decide"))
+(define-category disagree :specializes create-mental-construction-concerning :realization (:noun "disagreement" :verb "disagree"))
+(define-category disinformation :specializes mental-construction-concerning :realization (:noun "disinformation"))
+(define-category fact :specializes mental-construction-concerning :realization (:noun "fact"))
+(define-category feeling :specializes mental-construction-concerning :realization (:noun "feeling" :of concerning)) ;; :of is not quite 'concerning' but for the moment? DAVID
+(define-category headline :specializes mental-construction-concerning :realization (:noun "headline"))
+(define-category insight :specializes mental-construction-concerning :realization (:noun "insight"))
+(define-category intuition :specializes mental-construction-concerning :realization (:noun "intuition"))
+(define-category item :specializes mental-construction-concerning :realization (:noun "item"))
+(define-category judgement :specializes mental-construction-concerning :realization (:noun ("judgement" "judgment")))
+(define-category learn :specializes  mental-construction-concerning :realization (:verb ("learn" :present-participle "learning")))
+(define-category news :specializes mental-construction-concerning :realization (:noun "news"))
+(define-category opinion :specializes mental-construction-concerning :realization (:noun "opinion"))
+(define-category perception :specializes mental-construction-concerning :realization (:noun "perception" :of concerning))
+(define-category misperception :specializes mental-construction-concerning :realization (:noun "misperception"))
+(define-category misinformation :specializes mental-construction-concerning :realization (:noun "misinformation"))
+(define-category questionnaire :specializes mental-construction-concerning :realization (:noun "questionnaire"))
+(define-category reminder :specializes mental-construction-concerning :realization (:noun "reminder"))
+(define-category report :specializes create-mental-construction-concerning :realization (:noun "report" :verb "report")) ;; :etf (svo-passive)
+(define-category scare :specializes create-mental-construction-concerning :realization (:verb ("scare" :past-tense "scared" :past-participle "scared")))
+(define-category speculation :specializes create-mental-construction-concerning :realization (:noun "speculation" :verb "speculate"))
+(define-category story :specializes mental-construction-concerning :realization (:noun "story"))
+(define-category theory :specializes mental-construction-concerning :realization (:noun "theory"))
+(define-category view :specializes mental-construction-concerning :realization (:noun ("view" :plural "views")))
+
+
+
+
 (define-category information
   :specializes non-physical
-  :mixins (scalar)
+  :mixins (scalar mental-construction-concerning)
   :instantiates self
   :lemma (:common-noun "information")
   :documentation
@@ -63,25 +135,33 @@ invites this reply: "What (else) do you need to know?"
  vs. the telic newspaper that you always read for its articles, etc.
  That needs an treatment somewhere, and it could be here.")
 
+
+
+
+
+
 (define-category answer/info ;; ugh
+  :binds ((questiion top))
   :specializes information
   :instantiates self
-  :lemma (:common-noun "answer"))
+  :realization (:noun "answer"
+                :to question))
 
 (define-category literature
     ;; from biocuration questions e.g.,
     ;; "What factors from the literature regulate IL15 and IL2?"
-    :specializes information-container
+  :specializes information-container
+  :mixins (mental-construction-concerning)
     :instantiates self
-    :lemma (:common-noun "literature"))
+    :realization (:noun "literature"))
 
 (define-category database
     ;; from biocuration questions e.g.,
     ;; "What regulates GLUL from the GEO RNAi database?"
     :specializes information-container
-    :mixins (has-UID) ;; because of how we're defining the individuals
+    :mixins (has-UID mental-construction-concerning) ;; because of how we're defining the individuals
     :instantiates self
-    :lemma (:common-noun "database"))
+    :realization (:noun "database"))
 
 
 ;;--- 'label'
@@ -277,10 +357,12 @@ probably to get the noun reading
 
 (define-category relationship
   :specializes state ;;?? maybe relation
-  :binds ((agent) (patient)) ;;/// yeuch! Wrong meaning.
+  :binds ((agent) (patient)(participants)) ;;/// yeuch! Wrong meaning.
   :realization (:noun "relationship"
                 :m agent
-                :with patient))
+                :with patient
+                :between participants
+                :among participants))
 ;; "What is its relationship with BRAF?"
 
 
