@@ -87,10 +87,11 @@ was exceptional or ordinary.")
 
 (define-category experiment
   :specializes activity-with-a-purpose
+  :mixins (mental-construction-concerning)
   :realization (:noun "experiment"))
 
 (define-category study :specializes directed-activity-with-a-purpose
-  :mixins (purposive-activity-with-instrument)
+  :mixins (purposive-activity-with-instrument mental-construction-concerning)
   :binds ((participant top))
   :realization
   (:noun ("study" :plural "studies")
