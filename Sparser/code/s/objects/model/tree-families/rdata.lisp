@@ -254,6 +254,7 @@ Should mirror the cases on the *single-words* ETF."
     :out
     :out\ of
     :outside
+    :per
     :p-dir
     :pending
     :regarding
@@ -262,6 +263,7 @@ Should mirror the cases on the *single-words* ETF."
     :until
     :unto
     :up\ to
+    :with-regard-to
     ))
 
 (defparameter *subcat-aliases*
