@@ -14,6 +14,10 @@
 (def-indiv-with-id molecule "threonyl" "CHEBI:32835" :name "threonine residue") 
 (def-indiv-with-id molecule "L-aspartyl" "CHEBI:29958" :name "L-aspartic acid residue") 
 (def-indiv-with-id molecule "asparaginyl" "CHEBI:32664" :name "asparagine residue") 
+
+(def-indiv-with-id molecule "Solution" "CHEBI:75958" :name "solution") 
+
+
 |#
 
 (def-indiv-with-id molecule "NVP-AUY922" "PUBCHEM:10096043") 
@@ -604,7 +608,6 @@
 (def-indiv-with-id molecule "SDMA" "CHEBI:25682" :name "N(omega),N'(omega)-dimethyl-L-arginine") 
 (def-indiv-with-id molecule "SBCl3" "CHEBI:74856" :name "antimony trichloride") 
 (def-indiv-with-id molecule "Steward" "CHEBI:38630" :name "indoxacarb") 
-(def-indiv-with-id molecule "Solution" "CHEBI:75958" :name "solution") 
 (def-indiv-with-id molecule "Silver" "CHEBI:9141" :name "silver(0)") 
 (def-indiv-with-id molecule "Thiourea" "NCIT:C44455" :name "thiourea") 
 (def-indiv-with-id molecule "ThT" "CHEBI:76023" :name "thioflavine T") 
