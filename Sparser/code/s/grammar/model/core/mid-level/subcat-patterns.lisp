@@ -91,7 +91,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
   :specializes subcategorization-pattern
   :instantiates nil
   :mixins (with-actor with-theme)
-  :restrict ((actor endurant)
+  :restrict ((actor top)
              (theme perdurant))
   :realization
     (:s actor
