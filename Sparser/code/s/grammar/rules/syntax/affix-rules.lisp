@@ -38,8 +38,12 @@
     (declare (special *source-of-unknown-words-definition*))  
     (add-new-word-to-catalog word :default)
     (if *edge-for-unknown-words*
-      (setup-common-noun word)
-      (assign-brackets-as-a-common-noun word))))
+        (unless
+            (resolve (concatenate 'string (pname word) "s"))
+          ;; Last-ditch attempt to avoid defining a typo of foreign language word which will conflict with an existing definition
+          ;;  example "studie" in some German papers which conflicts with "studies" and "study"
+          (setup-common-noun word))
+        (assign-brackets-as-a-common-noun word))))
 
 
 
