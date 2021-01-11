@@ -73,7 +73,14 @@ a 'subject', e.g. "southern Chinese girls are never tall"
   :specializes attribute
   :mixins (scalar)
   :binds ((comparative :primitive category)
-          (superlative :primitive category))
+          (superlative :primitive category)
+          (for-grouping top)
+          (per-grouping top)
+          (by-grouping top))
+  :realization
+  (:for for-grouping
+   :per per-grouping
+   :by by-grouping)
   :documentation "Calling this 'scalar' is to say that
  its values are arranged along some dimension, in this
  case the dimention is determined by the attribute")
