@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2015-2020 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2015-2021 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "examples"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: August 2020
+;;; version: January 2021
 
 ;; Broken out from Biology-workspace 10/8/15
 
@@ -12,6 +12,10 @@
 ;;;---------------
 ;;; Example texts
 ;;;---------------
+
+#| From para on CoV in England in Washington Post 'Coronavirus Updates'
+email 1/11/21 |#
+"In Ireland, cases are skyrocketing. Just weeks ago, the country was doing well compared with the rest of Europe. Now it has the highest number of per capita infections in the world."
 
 #| Lead paragraph in the Gardian online summary, 12/30/20
 https://www.theguardian.com/world/2020/dec/29/us-first-case-new-uk-covid-variant?utm_term=996b3518f208e4677edd57aa5463dd04&utm_campaign=USMorningBriefing&utm_source=esp&utm_medium=Email&CMP=usbriefing_email
