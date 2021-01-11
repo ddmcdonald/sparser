@@ -34,12 +34,14 @@ be biology specific, since they aren't. |#
 (adj "also known as" :super bio-relation)
 
 
-(noun "surface" :super bio-entity)
+(noun "surface" :super bio-entity
+      :mixins (attribute))
 
 
 ;;/// move to quantifiers -- lesser/least
 (adj "lesser" :super bio-predication)
 
+(adj "prone" :binds ((prone-to top)) :realization (:to prone-to))
 
 ;;---- time
 
@@ -141,12 +143,13 @@ be biology specific, since they aren't. |#
 ;;--- bio-relation
 
 (define-category ability :specializes bio-relation
-   :mixins (control-verb-intrans)
+   :mixins (control-verb-intrans raising-to-subject)
    :binds ((ability bio-process))
    :realization (:noun "ability"
                        :adj "able"
                        :of theme
-                       :to ability))
+                       ;; :to ability -- must be a sentential to-comp
+                       ))
 
 (define-category capability :specializes ability
   :restrict ((theme bio-entity))
@@ -226,23 +229,26 @@ be biology specific, since they aren't. |#
 
 (noun "hint" :super bio-rhetorical)
 
-(delete-adj-cfr (resolve "important"))
-(define-category importance :specializes bio-rhetorical
+
+(define-category importance :specializes attribute
+  ;; how should this be related to "important"
+  :mixins (bio-rhetorical)
   :realization
-    (:noun "importance"
-     :adj "important"))
+    (:noun "importance"))
+
 
 (define-category of-interest :specializes bio-rhetorical
   :realization  (:adj "of interest"))
 
-(define-category significance :specializes bio-rhetorical
+(define-category significance :specializes attribute
+  :mixins (bio-rhetorical)
   :realization
     (:noun "significance"
            :adj "significant"
            :of agent))
 
-(define-category possibility :specializes bio-rhetorical
-  :mixins (bio-thatcomp)
+(define-category possibility :specializes attribute
+  :mixins (bio-rhetorical bio-thatcomp)
   :realization
      (:noun "possibility"))
 
@@ -273,7 +279,9 @@ be biology specific, since they aren't. |#
  :binds ((compared biological))
  :realization
    (:noun "difference"
-    :between compared))
+    :between compared
+    :in compared
+    :among compared ))
 
 (adj "early" :super bio-predication)
 
