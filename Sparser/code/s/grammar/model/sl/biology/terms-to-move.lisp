@@ -31,8 +31,6 @@ be biology specific, since they aren't. |#
 
 (noun "route" :super bio-mechanism)
 
-(adj "also known as" :super bio-relation)
-
 
 (noun "surface" :super bio-entity
       :mixins (attribute))
