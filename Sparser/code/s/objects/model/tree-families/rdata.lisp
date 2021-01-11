@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2014-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2014-2021 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "rdata"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  April 2020
+;;;  version:  January 2021
 
 ;; initiated 8/4/92 v2.3, fleshed out 8/10, added more cases 8/31
 ;; 0.1 (5/25/93) changed what got stored, keeping around a dereferenced
@@ -92,6 +92,26 @@
 
 
 (defmacro apply-mixin-category (category-name mixins &body realization)
+  "Extend the category with both an additional realization, but also
+   with one or more additional mixin categories.
+   Usage:
+    1. The mixin already has an integrated realization:
+            (apply-mixin-category category (takes-of) nil)
+
+    2. The mixin doesn't come with its own realization so we have to
+       define it here:
+            (define-mixin-category takes-about
+               :specializes adds-relation
+               :binds ((about-var)))
+            (apply-mixin-category worry (takes-about)
+              (:about about-var))
+
+   Note that since this is a macro none of the terms are quoted.
+   If you don't supply an explicit realization and none of the mixin
+   categories do then we signal an error. The category being modified
+   is checked for spelling (i.e. it has to exist) here. The add-mixin
+   call checks the spelling of the mixins."
+  
   (let ((category (category-named category-name :error)))
     (unless realization
       ;; maybe we're supposed to take it from a mixin
@@ -108,54 +128,7 @@
             (setup-rdata ,category ',@realization :delete nil)
             ,category)))
 
-#|  Examples
-(defun apply-of (category)
-  (apply-mixin-category category (takes-of) nil))
 
-
-(define-mixin-category takes-about
-    :specializes adds-relation
-    :binds ((about-var)))
-
-(p "worried about progress")
-[worried ]about [progress]
-                    source-start
-e0    WORRY         1 "worried " 2
-e4    ABOUT         2 "about progress" 4
-                    end-of-source
-
-(apply-mixin-category worry (takes-about)
-  (:about about-var))
-sp> (ic 'worry)
-
-#<ref-category WORRY>
-  [structure-object]
-
-Slots with :instance allocation:
-  plist             = (:super-categories..
-  symbol            = category::worry
-  rule-set          = #<rule-set for #<ref-category WORRY>>
-  id-counter        = 3
-  slots             = (#<variable participant> #<variable object>)
-  binds             = nil
-  mix-ins           = (#<mixin TAKES-ABOUT> #<mixin COMLEX-DERIVED>)
-  realization       = (#<realization for worry: "worry" verb> #<realization for worry>)
-  lattice-position  = #<top-lp worry->bio-process  3472>
-  operations        = #<operations for worry>
-  instances         = nil
-  rnodes            = nil
-#<ref-category WORRY>
-
-sp> (p "worried about progress")
-[worried ]about [progress]
-
-                    source-start
-e5    WORRY         1 "worried about progress" 4
-                    end-of-source
-sp> (semtree 5)
-(#<worry 112984> (about-var (#<progress-endurant 112962>))
- (past #<ref-category PAST>) (raw-text "worried"))
-|#
 
 ;;;-------------
 ;;; Data checks
@@ -326,6 +299,8 @@ Should mirror the cases on the *single-words* ETF."
                    (list rdata)) ; multiple realizations
            (rdata category))
     (multiple-value-bind (args slots relations) (decode-subcat-slots rdata)
+      #|(push-debug `(,args ,slots ,relations)) ;; help sort out complex cases
+        (break "args: ~a slots: ~a~%relations: ~a " args slots relations) |#
       (apply #'fom-subcategorization category slots)
       (loop for (relation variable) on relations by #'cddr
          do (register-variable category relation variable))
