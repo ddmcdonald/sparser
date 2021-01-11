@@ -39,6 +39,7 @@
 (define-function-word "they"  :brackets '( ].pronoun .[np  np].  pronoun.[ ))
 (define-function-word "them"  :brackets '( ].pronoun .[np  np].  pronoun.[ ))
 (define-function-word "theirs":brackets '( ].pronoun .[np  np].  pronoun.[ ))
+(define-function-word "others":brackets '( ].pronoun .[np  np].  pronoun.[ ))
 
 ;; possessives
 (define-function-word "my"    :brackets '( ].pronoun  .[np ))

@@ -138,7 +138,7 @@
 (define-quantifier "a number")
 ;;(define-quantifier "other")
  
-(define-quantifier "others")
+;;(define-quantifier "others") -- really a pronoun
 (define-quantifier "several")
 (define-quantifier "some")
 (define-quantifier "such")
