@@ -28,6 +28,8 @@
  of these arguments"
   (unless form
     (setq form 'adjective))
+  (unless (member :adj realization)
+    (setq realization `(:adj ,string ,@realization)))
   (define-function-term string form
     :super-category (or super-category 
                         (super-category-for-POS :adjective))
