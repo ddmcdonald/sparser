@@ -138,7 +138,9 @@ come
     :mixins (with-agent)
     :binds ((artifact artifact)) ;; what they build
     :restrict ((agent physical-agent))
-    :realization (:verb ("build" :past-tense "built")
+    :realization (:verb ("build" :past-tense "built"
+                                 :present-participle "building"
+                                 :past-participle "built")
                   :etf (svo-passive)
                   :s agent
                   :o artifact
