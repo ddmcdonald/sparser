@@ -20,11 +20,13 @@
 
 (define-category data :specializes information
 		 :realization
-		 (:noun ("datum" :plural "data")))
+  (:noun ("datum" :plural "data")
+                   :on concerning))
 
 (define-category dataset :specializes information
 		 :realization
-		 (:noun ("dataset" :plural "datasets")))
+  (:noun ("dataset" :plural "datasets")
+         :on concerning))
 
 (noun "COVIDx" :super dataset) ;; dataset/study
 
