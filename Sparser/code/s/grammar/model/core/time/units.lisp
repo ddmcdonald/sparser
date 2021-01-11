@@ -18,8 +18,13 @@
 (define-category time-unit
   :instantiates  self
   :specializes  unit-of-measure
-  :binds ((name :primitive word))
+  :binds ((name :primitive word)
+          (from-start top)
+          (within top)) ;; maybe perdurant?
   :index (:permanent :key name)
-  :realization (:common-noun name))
+  :realization (:common-noun name
+                :in within
+                :into from-start
+                :during within)) ;; "one month into lockdown"
 
 ;; dossier is time-units.lisp
