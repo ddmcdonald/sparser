@@ -33,20 +33,26 @@
   :binds ((name . person-name)
           (age . age)
           (position . (:or title position-at-co))
-          (nationality . country)) ;; simplistic
+          (nationality . country)
+          (origin top)) ;; simplistic
   :index (:permanent :key name)
-  :realization ((:tree-family  appositive
-                 :mapping ((appositive-field . age)
-                           (np . :self)
-                           (appositive . age)))
-                (:tree-family premodifier-adds-property
-                 :mapping ((property . age)
-                           (np-head . :self)
-                           (modifier . age)))
-                (:tree-family  appositive
-                 :mapping ((appositive-field . position)
-                           (np . :self)
-                           (appositive . position-at-co)))))
+  :realization
+  (;; DAVID -- these :tree-family structures seem to be inconsistent with simple preposition subcats
+   ;;  we need to talk about how to handle these
+   #+ignore
+   (:tree-family  appositive
+    :mapping ((appositive-field . age)
+              (np . :self)
+              (appositive . age)))
+   #+ignore (:tree-family premodifier-adds-property
+             :mapping ((property . age)
+                       (np-head . :self)
+                       (modifier . age)))
+   #+ignore (:tree-family  appositive
+             :mapping ((appositive-field . position)
+                       (np . :self)
+                       (appositive . position-at-co)))
+   :from origin))
 
 
 ;;;-----------------
@@ -96,8 +102,13 @@
 (define-category role-based-person
   :instantiates person
   :specializes person
-  :binds ((name :primitive word))
-  :realization (:common-noun name)
+  :binds ((name :primitive word)
+          (in top)
+          (with top)
+          (under top)
+          (from top))
+  :realization (:common-noun name
+                :in in :with with :under under :from from)
   :documentation "Similar to how titles can refer, this covers
  people construed by some role that they play in some relation.
  That would subsume family-member (for instance), but we want
