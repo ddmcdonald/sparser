@@ -599,10 +599,10 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
            (stem-pname (subseq pname 0 (1- length)))
            (char-before (elt pname (- length 2))))
       (cond
-        ((eql char-before #\e)
+        ((and (eql char-before #\e)
+              (eql #\i (elt pname (- length 3))))
          ;; check for 'i'
-         (when (eql #\i (elt pname (- length 3)))
-           (concatenate 'string (subseq pname 0 (- length 3)) "y")))
+           (concatenate 'string (subseq pname 0 (- length 3)) "y"))
         (t
          stem-pname)))))
 
@@ -616,6 +616,7 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
     (let ((stem (form-stem/strip-ed (word-pname w))))
       (resolve/make stem)))
   (:method ((pname string))
+    (declare (special *primed-words*))
     (let ((length (length pname)))
       (if (< length 5)
         (form-stem/strip-ed/short-word pname length)
@@ -630,10 +631,18 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
 
             ((and (consonant? char-minus-1)
                   (not (eql char-minus-1 #\x))
-                  (vowel? char-minus-2) ;; "named" => "name"
+                  (not (and (or (eql char-minus-1 #\r)  ;; wondered
+                                (eql char-minus-1 #\n)) ;; weakened
+                            (eql char-minus-2 #\e)))
+                  (vowel? char-minus-2)        ;; "named" => "name"
                   (not (vowel? char-minus-3))) ;; "coiled" => "coil"
              ;; "..vced" -> "..vce"
-             (subseq pname 0 (- length 1)))
+             ;; use COMLEX info to distinguish is cases of short vowel sounds like "visited"
+             (cond ((gethash (subseq pname 0 (- length 1)) *primed-words*)
+                    (subseq pname 0 (- length 1)))
+                   ((gethash (subseq pname 0 (- length 2)) *primed-words*) ;; e.g. "visited"
+                    (subseq pname 0 (- length 2)))
+                   (t (subseq pname 0 (- length 1)))))
 
             ((eql #\i char-minus-1)
              ;; "..ied"  -> "..y"
