@@ -443,14 +443,35 @@ previous records of treetop-counts.
         collect 
         (list (car v) i (second p))))))
 
-(defun find-corpus-instances (str)
-  (loop for s in (all-corpus-sentences)
-    when
-    (search str (third s))
-    collect s))
+(defun find-corpus-instances (str &optional all-sents)
+  (if (consp all-sents)
+      (cond ((stringp (car all-sents))
+             (loop for s in all-sents
+                   when (search str s)
+                     collect s))
+            ((and (consp (car all-sents))
+                  (stringp (car (last all-sents))))
+             (loop for s in all-sents
+                   when (search str (car (last s)))
+                     collect s))
+            (t
+             (break "~%The input all-sents should be either a list of strings, or 
+a list of three element items whose third element is a string~%")))
+         
+      (loop for s in (all-corpus-sentences)
+            when
+            (search str (third s))
+            collect s)))
 
-(defun show-sents (str)
-  (np (find-corpus-sents str)))
+(defun show-sents (str &optional all-sents)
+  (unless (or (null all-sents)
+              (and (consp all-sents)
+                   (or (stringp (car all-sents))
+                       (and (consp (car all-sents))
+                            (stringp (car (last (car all-sents))))))))
+    (break "~%The input all-sents should be either a list of strings, or 
+a list of three element items whose third element is a string~%"))
+  (np (find-corpus-sents str all-sents)))
 
 (defun show-art-sents (str &optional sents)
   (declare (special *all-sentences*))
@@ -466,8 +487,8 @@ previous records of treetop-counts.
      collect (list (second a) (name (third a))))
    :test #'equal))
 
-(defun find-corpus-sents(str)
-  (find-corpus-instances str))
+(defun find-corpus-sents(str &optional all-sents)
+  (find-corpus-instances str all-sents))
 
 ;;;---------------------------------
 ;;; regression testing for chunking
