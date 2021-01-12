@@ -52,7 +52,7 @@
     (multiple-value-bind (keyword residue from-end?)
         (detect-score-title text)
       
-      (unless keyword
+      (if (not keyword)
         (cond
           ((tacit-running-head? text) ; looks at just the prefix
            ;;(break "running head: ~s" text)
@@ -75,10 +75,9 @@
             (setq p (make-instance 'text-paragraph :index index))
             (setf (content-string p) (trim-whitespace text))
             (let ((size (if (> 12 length) length 12)))
-              (setf (prefix p) (subseq text 0 size)))))) ; for printing
+              (setf (prefix p) (subseq text 0 size))))) ; for printing
         
-        
-      (when keyword
+      ;; else keyword non-nil
         (case keyword
           ((:running-head :running-title)
            (setq p (make-instance
@@ -111,7 +110,7 @@
            (when residue
              (setf (content-string p) residue)
              (setf (arg-alist p) `(:text ,residue))))
-
+          
           (otherwise
            (cond
              (residue
@@ -147,11 +146,16 @@
    useful parts that we'd want to model independently of its identify.
    They run around a dozen characters and don't have any structural
    elements: commas, colons"
-  (when (< length 35)
+  (and (< length 130)
+       ;; any others that are reliable?
+       )
+#+ignore
+   (when (< length 35)
     (null (or (position #\, text)
               (position #\: text)
               (position #\. text)
-              (position #\- text)))))
+              (position #\- text)
+              ))))
 
 
 ;;;------------------------

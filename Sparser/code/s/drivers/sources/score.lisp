@@ -495,7 +495,8 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
   "Walk through the paragraphs starting at a heading, and call
    collect-next-section to collect successive sections through to the end
    of the text. The caller (aggregate-score-para-into-sections) knits them
-   together"
+   together.  
+   New wrinkle - heading-paragraph for :keywords marks end of a section (abstract)"
   (let ((max-index (1- (length paragraph-list)))
         sections  section  header-index  index-of-next )
     (setq header-index starting-at)
@@ -521,33 +522,38 @@ parser will get to see them.
 
 (defun index-of-next-header (start paragraphs)
   "Walk the index across successive paragraphs until a 'major' 
-   heading-paragraph is reached. Return the value of the index.
+   heading-paragraph is reached or a heading-paragraph for Keywords. Return the value of the index.
    When we're getting to the end of the list of pagagraphs we don't
    expect them to end in a header paragraphs, but we aren't checking for that"
   (let* ((index start)
          (max-index (length paragraphs))
-         (para (nth index paragraphs)))
+         (para (nth index paragraphs))
+         (saw-keywords nil)
+         )
     (if (and (null para)
              (= index max-index))
       ;; Then we were called at the moment the outer walk had reached the end
       ;; index ;;(break "index: ~a" index)
       (1- index) 
       (else
-        (until (major-section? para)
+        (until (or (major-section? para) saw-keywords)
             index
           ;; (format t "~&~a ~a" index para) ; prints each paragraph being colected
+          (setf saw-keywords (and (typep para 'heading-paragraph)
+                                  (eq (flag para) :keywords)))
           (incf index)
           (when (>= index max-index)
             (return-from index-of-next-header (1- index)))
           (setq para (nth index paragraphs)))))))
 
 (defun collect-next-section (header-index #|ndex-of-next|# paragraph-list)
-  "Collect the paragraphs from the starting para (a heading-paragraph)
+  "Collect the paragraphs from the starting para (a heading-paragraph) -- ( not always a heading for section 1 - mb)
    up to but not including the next header (or the end of the
-   list of paragraphs). Make the section object based on the header paragraph.
+   list of paragraphs). Keywords line can end the Abstract section.  Make the section object based on the header paragraph.
    Set the accumulated paragraphs to be its children and knit the
    paragraphs together."
   (let ((header-para (nth header-index paragraph-list)))
+    #+ignore ;; may not be a header if right after abstract
     (unless (typep header-para 'heading-paragraph)
       (break "The para pointed to by ~a is not a header" header-index))
     
