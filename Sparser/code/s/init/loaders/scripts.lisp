@@ -125,6 +125,7 @@ in conjunction with an early version of Hark. Notable for using the
 (defscript fire ()
   "FIRE stands for 'Free-text Information and Relation Extraction'.
 It is essentially GROK going forward."
+  (:script-variable *fire*)
   (:parameters
    (*description-lattice* t)
    (*index-bindings-to-variables* t))
