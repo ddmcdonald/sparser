@@ -52,15 +52,20 @@
 (define-category SARS-CoV-2 :specializes betacoronavirus
                  :bindings (uid "NCIT:C169076")
                  :realization (:noun ("SARS-CoV-2"
-                                      "SARS-CoV2" "2019-nCoV" "2019 Novel Coronavirus" "2019nCoV" 
+                                      "SARS-CoV2"
+                                      "2019-nCoV"
+                                      "2019 Novel Coronavirus"
+                                      "2019 novel coronavirus"
+                                      "2019nCoV" 
                                       "nCoV" "nCoV-2019" "SARS-CoV-2" "SARSCoV2" "SARSCoV-2"
                                       "SARS Coronavirus 2"
                                       "SAR-CoV-2" "HCoV-19" "hCoV-19"
-                                      "Severe Acute Respiratory Syndrome Coronavirus 2"
+                                      "severe acute respiratory syndrome coronavirus 2"
                                       "novel-coronavirus-2019" "2019-CoV" "CoV-2019"
                                       "covid19 virus" "COVID19 virus" "COVID-19 virus"
                                       "covid-19 virus"
                                       "SEVERE ACUTE RESPIRATORY SYNDROME CORONAVIRUS 2"
+                                      "Coronavirus disease 2019"
                                       "COV-2" "CoV-2")))
 
 
