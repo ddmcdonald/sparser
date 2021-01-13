@@ -87,7 +87,8 @@
   ;; makes more sense for ATP than H20, but not worrying about whether
   ;; we're doing organic or inorganic chemistry. 
   :mixins (reactome-category))
- 
+
+#+ignore  ; moved to mid-level/document-parts
 (define-mixin-category visual-representation ;; figures, arrows, stars, etc.
   :specializes bio-abstract)
 #| Interfers with the "observation" that is a kind of evidence

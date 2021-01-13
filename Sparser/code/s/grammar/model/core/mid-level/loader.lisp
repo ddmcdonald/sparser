@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "model;core:mid-level:"
-;;;  version:  November 2020
+;;;  version:  January 2021
 
 ;; Initiated 12/3/15
 
@@ -33,3 +33,4 @@
 
 (gload "mid-level;cars")
 (gload "mid-level;internet")
+(gload "mid-level;document-parts")
