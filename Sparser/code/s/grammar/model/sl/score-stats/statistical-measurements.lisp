@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2020 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2020-2021 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "statistical-measurements"
 ;;;  Module: "grammar/model/sl/score-stats
-;;; version: September 2020
+;;; version: January 2021
 
 ;;; started 9/2020 to gather tests and their metrics for reading
 ;;; articles for the SCORE project and other articles with statistics,
@@ -79,7 +79,8 @@
    :category (itype-of (edge-referent statistic))
    :form category::n-bar
    :referent (bind-dli-variable
-              'value (make-relational-number relation (edge-referent value))
+              'value
+              (make-relational-number relation (edge-referent value))
               (edge-referent statistic))))
 
 (define-early-pattern-rule one-df-paren-less-than

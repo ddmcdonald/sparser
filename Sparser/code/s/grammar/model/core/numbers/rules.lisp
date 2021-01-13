@@ -68,20 +68,20 @@ is easiest with a cs rule.  |#
 
 (defun make-relational-number (relation number)
   (etypecase relation
-    (cons (let ((rname (pname (car relation))))
-            (cond ((member rname '("=" "COLON" ":") :test #'equal)
-                   number)
-                  ((equal rname ">")
-                   (define-or-find-individual 'range
-                       :low (edge-referent number)
-                       :includes-low nil
-                       ))
-                  ((equal rname "<")
-                   (define-or-find-individual 'range
-                       :high (edge-referent number)
-                       :includes-high nil
-                       )
-                   ))))
+    (cons
+     (unless (individual-p number)
+       (error "caller did pass in a individual for the number: ~a" number))
+     (let ((rname (pname (car relation))))
+       (cond ((member rname '("=" "COLON" ":") :test #'equal)
+              number)
+             ((equal rname ">")
+              (define-or-find-individual 'range
+                  :low number
+                  :includes-low nil))
+             ((equal rname "<")
+              (define-or-find-individual 'range
+                  :high number
+                  :includes-high nil)))))
     (edge (cond ((or (member (edge-cat-name relation) '(BE OF))
                      (equal (edge-category relation) word::colon))
                  number)))))
