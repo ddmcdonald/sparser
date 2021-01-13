@@ -291,7 +291,7 @@
 
 ;;;---------- deictic, standalone
 
-(define-relative-time-adverb "ago")
+;; (define-relative-time-adverb "ago") -- only works as a phrases
 (define-relative-time-adverb "already")
 (define-relative-time-adverb "as yet")
 (define-relative-time-adverb "currently")

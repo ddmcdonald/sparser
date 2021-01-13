@@ -118,7 +118,8 @@
   :index (:sequential-keys age-ago)
   :realization (:tree-family  item+idiomatic-head
                 :mapping ((np . :self)
-                          (modifier . amount-of-time)
+                          (modifier (:or amount-of-time ; "10 years"
+                                         time)) ; "just weeks"
                           (np-head . "ago")
                           (result-type . :self)
                           (item . age-ago)))
