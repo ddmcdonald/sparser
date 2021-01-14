@@ -441,16 +441,25 @@
 ;; GO:0016310	
 ;; "activated IKKα phosphorylates specific serines"
 ;;  "The phosphorylation of these specific serines"
-(define-category phosphorylate
-  :specializes phosphorylation-modification
-  :instantiates self
-  :realization
-     (:verb ("phosphorylate" :past-participle ("p" "p-" "phosphorylated"))
-      :noun "phosphorylation"
-      :adj "phospho"
-      ;; :etf (svo-passive) <-- messed up the mapping
-      :mumble ("phosphorylate" svo :s agent :o substrate)))
-
+(if (eq (script) :bio)
+    (define-category phosphorylate
+      :specializes phosphorylation-modification
+      :instantiates self
+      :realization
+      (:verb ("phosphorylate" :past-participle ("p" "p-" "phosphorylated"))
+       :noun "phosphorylation"
+       :adj "phospho"
+       ;; :etf (svo-passive) <-- messed up the mapping
+       :mumble ("phosphorylate" svo :s agent :o substrate)))
+    (define-category phosphorylate
+      :specializes phosphorylation-modification
+      :instantiates self
+      :realization
+      (:verb ("phosphorylate" :past-participle ("phosphorylated"))
+       :noun "phosphorylation"
+       :adj "phospho"
+       ;; :etf (svo-passive) <-- messed up the mapping
+       :mumble ("phosphorylate" svo :s agent :o substrate))))
 
 (define-category auto-phosphorylate
   :specializes phosphorylation-modification
