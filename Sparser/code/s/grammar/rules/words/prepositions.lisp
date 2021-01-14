@@ -222,6 +222,7 @@ these are really prepositions, and should function as such
 (define-preposition "previous to")
 ;; (define-preposition "prior to") -- sub.con.
 (define-preposition "pursuant to")
+(define-preposition "relative to")
 (define-preposition "regarding")
 (define-preposition "regardless of") ;;in modifiers as a reflection-on
 (define-preposition "short of")

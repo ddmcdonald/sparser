@@ -343,8 +343,9 @@
      ;; keyword: (ory ADJ)
 
 
+#+ignore ;; make "relative to" a preposition
 (define-category relative :specializes bio-relation
-     :restrict ((participant scalar-attribute))
+     :restrict ((participant top))
      :realization (:adj "relative"
                    :to participant))
 
