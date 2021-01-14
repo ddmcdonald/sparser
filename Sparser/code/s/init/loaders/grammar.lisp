@@ -328,7 +328,8 @@ omitted and then run (perhaps) after the image has been launched."
   ;; support them.
 
   (gate-grammar *score-verbs*
-                (gload "bio;score-verbs.lisp"))
+                (gload "bio;score-verbs.lisp")
+                (gload "bio;score-nouns.lisp"))
 
   (setup-vocabulary-suppression)
 
