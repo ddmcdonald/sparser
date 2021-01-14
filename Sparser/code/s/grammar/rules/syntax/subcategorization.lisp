@@ -928,67 +928,68 @@
                     category::pronoun/first/plural category::quantifier
                     category::this category::that category::these category::those
                     category::pronoun category::number category::ordinal))
-  (let ((restriction
-         (if (subcat-pattern-p pat-or-v/r)
-             (subcat-restriction pat-or-v/r)
-             pat-or-v/r))
-        (source (when (subcat-pattern-p pat-or-v/r) (subcat-source pat-or-v/r)))
-        (var (when (subcat-pattern-p pat-or-v/r) (subcat-variable pat-or-v/r)))
-        (override-category (unless (symbolp item) ;; e.g. '*lambda-var*
-                             (override-label (itype-of item)))))
-    (when (and *trivial-subcat-test*
-               (note-failed-tests item restriction))
-      (return-from satisfies-subcat-restriction? t))
+  (or *subcat-accept-all-semantics*
+      (let ((restriction
+              (if (subcat-pattern-p pat-or-v/r)
+                  (subcat-restriction pat-or-v/r)
+                  pat-or-v/r))
+            (source (when (subcat-pattern-p pat-or-v/r) (subcat-source pat-or-v/r)))
+            (var (when (subcat-pattern-p pat-or-v/r) (subcat-variable pat-or-v/r)))
+            (override-category (unless (symbolp item) ;; e.g. '*lambda-var*
+                                 (override-label (itype-of item)))))
+        (when (and *trivial-subcat-test*
+                   (note-failed-tests item restriction))
+          (return-from satisfies-subcat-restriction? t))
 
-    (flet ((subcat-itypep (item category)
-             ;; For protein-families and such that are re-written
-             ;; as a more general catgory (e.g. protein). There's no
-             ;; provision for inheritance, but if we need it because
-             ;; of the reach of the override we should do something
-             ;; different with it.
-             (cond
-               ((itypep item category)) ;; handles conjunctions
-               ((and (eq (cat-name category) 'biological)
-                     *trivial-test-for-biological*)
-                t)
-               (t (eq category override-category)))))
-      (cond
-        ((or (pronominal-or-deictic? item)
-             (and (eq 'bio-entity (cat-name (itype-of item)))
-                  (subcat-itypep 'bio-chemical-entity restriction)))
-         t)
-        ((and (one-anaphor-item? item)
-              (not *in-collect-no-space-segment-into-word*)
-              (not (member pat-or-v/r
-                           '(blocked-category
-                             (:or time-unit time amount-of-time))
-                           :test #'equal)))
-         (when (and *show-one-anaphora* (not *subcat-test*))
-           (format t "~%one anaphora ~s in ~s~%"
-                   (list item pat-or-v/r)
-                   (current-string)))
-         t) ;; this was done to handle one anaphora, but should be revisited
+        (flet ((subcat-itypep (item category)
+                 ;; For protein-families and such that are re-written
+                 ;; as a more general catgory (e.g. protein). There's no
+                 ;; provision for inheritance, but if we need it because
+                 ;; of the reach of the override we should do something
+                 ;; different with it.
+                 (cond
+                   ((itypep item category)) ;; handles conjunctions
+                   ((and (eq (cat-name category) 'biological)
+                         *trivial-test-for-biological*)
+                    t)
+                   (t (eq category override-category)))))
+          (cond
+            ((or (pronominal-or-deictic? item)
+                 (and (eq 'bio-entity (cat-name (itype-of item)))
+                      (subcat-itypep 'bio-chemical-entity restriction)))
+             t)
+            ((and (one-anaphor-item? item)
+                  (not *in-collect-no-space-segment-into-word*)
+                  (not (member pat-or-v/r
+                               '(blocked-category
+                                 (:or time-unit time amount-of-time))
+                               :test #'equal)))
+             (when (and *show-one-anaphora* (not *subcat-test*))
+               (format t "~%one anaphora ~s in ~s~%"
+                       (list item pat-or-v/r)
+                       (current-string)))
+             t) ;; this was done to handle one anaphora, but should be revisited
          
-        ((consp restriction)
-         (cond
-           ((eq (car restriction) :or)
-            (loop for type in (cdr restriction)
-                  thereis (subcat-itypep item type)))
-           ((eq (car restriction) :primitive)
-            ;; this is usually meant for NAME (a WORD) or
-            ;; other special cases
-            nil)
-           (t (error "subcat-restriction on is a cons but it ~
+            ((consp restriction)
+             (cond
+               ((eq (car restriction) :or)
+                (loop for type in (cdr restriction)
+                        thereis (subcat-itypep item type)))
+               ((eq (car restriction) :primitive)
+                ;; this is usually meant for NAME (a WORD) or
+                ;; other special cases
+                nil)
+               (t (error "subcat-restriction on is a cons but it ~
                       does not start with :or~%  ~a"
-                     restriction))))
-        ((category-p restriction)
-         (subcat-itypep item restriction))
-        ((null restriction)
-         t)
-        ((symbolp restriction) ;; this is the case for :prep subcat-patterns
-         nil)
-        (t (error "Unexpected type of subcat restriction: ~a"
-                  restriction))))))
+                         restriction))))
+            ((category-p restriction)
+             (subcat-itypep item restriction))
+            ((null restriction)
+             t)
+            ((symbolp restriction) ;; this is the case for :prep subcat-patterns
+             nil)
+            (t (error "Unexpected type of subcat restriction: ~a"
+                      restriction)))))))
 
 (defgeneric satisfies-variable-restriction? (item v/r)
   (:documentation "Simpest case. Caller is sure that they have a simple
@@ -1129,8 +1130,8 @@
               (loop for pat in subcat-patterns
                     ;;as scr = (subcat-restriction pat)
                     do (when (eq label (subcat-label pat))
-                         (when (or (satisfies-subcat-restriction? item pat)
-                                   *subcat-accept-all-semantics*)
+                         (when (satisfies-subcat-restriction? item pat)
+                           ;; now includes check for *subcat-accept-all-semantics*
                            (push pat pats))))
               (setq over-ridden (check-overridden-vars pats item head))
               (setq pats (loop for p in pats unless (member p over-ridden) collect p))
