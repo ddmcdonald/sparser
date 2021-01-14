@@ -101,6 +101,10 @@
               ("can't") ;;("can" apostrophe-t)
               "cannot"))
 
+;; Just define this here, since morphology will create a verb from this
+;;  and get the modal "can" confused
+(adj "canned" :specializes predicate)
+
 (define-modal "could"
   :negatives (("couldn" apostrophe-t)))
 
