@@ -66,25 +66,25 @@ is easiest with a cs rule.  |#
      :form (category-named 'np)
      :referent i)))
 
-(defun make-relational-number (relation number)
+(defun make-relational-number (relation number &aux (num (if (edge-p number) (edge-referent number) number)))
   (etypecase relation
-    (cons
-     (unless (individual-p number)
-       (error "caller did pass in a individual for the number: ~a" number))
-     (let ((rname (pname (car relation))))
-       (cond ((member rname '("=" "COLON" ":") :test #'equal)
-              number)
-             ((equal rname ">")
-              (define-or-find-individual 'range
-                  :low number
-                  :includes-low nil))
-             ((equal rname "<")
-              (define-or-find-individual 'range
-                  :high number
-                  :includes-high nil)))))
+    (cons (let ((rname (pname (car relation))))
+            (cond ((member rname '("=" "COLON" ":") :test #'equal) num)
+                  ((equal rname ">")
+                   (define-or-find-individual 'range
+                     :low num
+                     :includes-low nil
+                     ))
+                  ((equal rname "<")
+                   (define-or-find-individual 'range
+                     :high num
+                     :includes-high nil
+                     )
+                   ))))
+    ;; (avoid error condition in make-relational-number (handle both edges and semantics for the number))
     (edge (cond ((or (member (edge-cat-name relation) '(BE OF))
                      (equal (edge-category relation) word::colon))
-                 number)))))
+                 num)))))
 
 ;; make new single-bounded range with limit and relation -- make numerical relation
 ;; what about -5 < r < 5 "less-than-or-equal-to" 0-5
