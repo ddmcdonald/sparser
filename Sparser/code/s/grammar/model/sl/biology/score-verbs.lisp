@@ -1,4 +1,3 @@
-;;; "quarantine
 ;;; copyright (c) 2017 sift llc. all rights reserved
 ;;;
 ;;;    file: "score-verbs"
@@ -966,9 +965,6 @@
 
 ;;; found existing category CAN in #P"SPARSER:SYNTAX-VG;MODALS.LISP"
 
-(define-category can-cl-verb :specializes comlex-verb
-     :realization (:verb ( "can"  :TENSED/SINGULAR "cans" :PRESENT-PARTICIPLE "canning" :PAST-TENSE "canned")
- :s SUBJECT :o OBJECT))
 
 (define-category cancel :specializes comlex-verb
      :realization (:verb ( "cancel"  :TENSED/SINGULAR "cancels" :PRESENT-PARTICIPLE "cancelling" :PAST-TENSE ("cancelled"
@@ -3449,7 +3445,8 @@
        (OUT top)
        (ON top)
        (TOWARD top))
-     :realization (:verb  "gaze" :s SUBJECT :upon UPON :towards TOWARDS :over OVER :across ACROSS :at AT :through THROUGH :out OUT :on ON :toward TOWARD))
+  :realization (:verb  "gaze" :noun "gaze"
+                :s SUBJECT :upon UPON :towards TOWARDS :over OVER :across ACROSS :at AT :through THROUGH :out OUT :on ON :toward TOWARD))
 
 (define-category gear :specializes comlex-verb
      :binds
