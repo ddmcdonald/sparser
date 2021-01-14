@@ -109,6 +109,19 @@ places. ]]
       (add-new-word-to-catalog lemma-word :comlex)
       instance-word )))
 
+(defun is-known-definition? (lemma-word clause)
+  ;; we had a case where "relative" was a known ADJECTIVE
+  ;;  and the corpus had "relatives" as a lexical item
+  ;; We want to get only the NOUN reading from COMLEX, not the ADJECTIVE
+  ;; (which has already been defined)
+  (let ((known-categories (loop for cfr in (find-unary-rules lemma-word)
+                                collect (cat-name (cfr-form cfr)))))
+    (case (car clause)
+      (adjective (member 'adjective known-categories))
+      (noun (member 'common-noun known-categories))
+      (verb (member 'verb known-categories))
+      (adverb (member 'adverb known-categories))
+      (t nil))))
 
 (defgeneric standalone-lexicon-unpacker (word)
   (:documentation "Used when we need to get the benefit of
@@ -193,52 +206,55 @@ places. ]]
   (let ((combinations (sort (copy-list (mapcar #'car clauses))
                             #'alphabetize)))
     (tr ::unpacking-ambiguous combinations)
+    (when (equal lemma "relative")
+      (lsp-break "defining relative"))
+
     (cond
      ((equal combinations '(adjective noun))
       (when *edge-for-unknown-words*
-        (setup-adjective lemma clauses :ambiguous)
-        (setup-common-noun lemma clauses :ambiguous))
+        (maybe-setup-adjective lemma clauses :ambiguous)
+        (maybe-setup-common-noun lemma clauses :ambiguous))
       (brackets-for-adjective-noun lemma))
      
      ((equal combinations '(adjective adverb))
       (when *edge-for-unknown-words*
-        (setup-adjective lemma clauses :ambiguous)
-        (setup-adverb lemma :ambiguous))
+        (maybe-setup-adjective lemma clauses :ambiguous)
+        (maybe-setup-adverb lemma clauses :ambiguous))
       (brackets-for-adjective-adverb lemma))
      
      ((equal combinations '(adjective verb))
       (when *edge-for-unknown-words*
-        (setup-adjective lemma clauses :ambiguous)
-        (setup-verb lemma clauses :ambiguous))
+        (maybe-setup-adjective lemma clauses :ambiguous)
+        (maybe-setup-verb lemma clauses :ambiguous))
       (brackets-for-adjective-verb lemma))
      
      ((equal combinations '(adjective noun verb))
       (when *edge-for-unknown-words*
-        (setup-adjective lemma clauses :ambiguous)
-        (setup-common-noun lemma clauses :ambiguous)
-        (setup-verb lemma clauses :ambiguous))
+        (maybe-setup-adjective lemma clauses :ambiguous)
+        (maybe-setup-common-noun lemma clauses :ambiguous)
+        (maybe-setup-verb lemma clauses :ambiguous))
       (assign-noun-verb-brackets lemma clauses))
      
      ((equal combinations '(adjective adverb noun))
       (when *edge-for-unknown-words*
-        (setup-adjective lemma clauses :ambiguous)
-        (setup-adverb lemma :ambiguous)
-        (setup-common-noun lemma clauses :ambiguous))
+        (maybe-setup-adjective lemma clauses :ambiguous)
+        (maybe-setup-adverb lemma clauses :ambiguous)
+        (maybe-setup-common-noun lemma clauses :ambiguous))
       (brackets-for-adjective-adverb-noun lemma))
      
      ((equal combinations '(adjective adverb verb))
       (when *edge-for-unknown-words*
-        (setup-adjective lemma clauses :ambiguous)
-        (setup-adverb lemma :ambiguous)
-        (setup-verb lemma clauses :ambiguous))
+        (maybe-setup-adjective lemma clauses :ambiguous)
+        (maybe-setup-adverb lemma clauses :ambiguous)
+        (maybe-setup-verb lemma clauses :ambiguous))
       (brackets-for-adjective-adverb-noun-verb lemma))
      
      ((equal combinations '(adjective adverb noun verb))
       (when *edge-for-unknown-words*
-        (setup-adjective lemma clauses :ambiguous)
-        (setup-adverb lemma :ambiguous)
-        (setup-common-noun lemma clauses :ambiguous)
-        (setup-verb lemma clauses :ambiguous))
+        (maybe-setup-adjective lemma clauses :ambiguous)
+        (maybe-setup-adverb lemma clauses :ambiguous)
+        (maybe-setup-common-noun lemma clauses :ambiguous)
+        (maybe-setup-verb lemma clauses :ambiguous))
       (brackets-for-adjective-adverb-noun-verb lemma))
      
      ((equal combinations '(adjective noun prep)) 
@@ -246,70 +262,70 @@ places. ]]
         ;; ignoring preposition -- first example is "plus" in the
         ;; phrase "in Nigeria plus numerous European states"
         ;; where it's effectively a conjunction
-        (setup-adjective lemma clauses :ambiguous)
-        (setup-common-noun lemma clauses :ambiguous))
+        (maybe-setup-adjective lemma clauses :ambiguous)
+        (maybe-setup-common-noun lemma clauses :ambiguous))
       (brackets-for-adjective-noun lemma))
      
      ((equal combinations '(adjective noun prep sconj verb)) 
       (when *edge-for-unknown-words*
-        (setup-adjective lemma clauses :ambiguous)
-        (setup-adverb lemma :ambiguous)
-        (setup-common-noun lemma clauses :ambiguous)
+        (maybe-setup-adjective lemma clauses :ambiguous)
+        (maybe-setup-adverb lemma clauses :ambiguous)
+        (maybe-setup-common-noun lemma clauses :ambiguous)
         ;; sconj
-        (setup-verb lemma clauses :ambiguous))
+        (maybe-setup-verb lemma clauses :ambiguous))
       (brackets-for-adjective-noun-sconj-prep-verb lemma))
      
      ((equal combinations '(adverb advpart)) ;; "apart"
       ;; ignoring the participle reading
       (if *edge-for-unknown-words*
-          (setup-adverb lemma)
+          (maybe-setup-adverb lemma clauses)
           (assign-brackets-to-adverb lemma)))
           
      ((equal combinations '(adverb advpart noun)) ;; "aside"
       ;; ignoring the participle reading
       (when *edge-for-unknown-words*
-        (setup-adverb lemma :ambiguous)
-        (setup-common-noun lemma clauses :ambiguous))
+        (maybe-setup-adverb lemma clauses :ambiguous)
+        (maybe-setup-common-noun lemma clauses :ambiguous))
       (assign-brackets-to-adverb lemma))
 
      ((equal combinations '(adverb noun))
       (when *edge-for-unknown-words*
-        (setup-adverb lemma :ambiguous)
-        (setup-common-noun lemma clauses :ambiguous))
+        (maybe-setup-adverb lemma clauses :ambiguous)
+        (maybe-setup-common-noun lemma clauses :ambiguous))
       (brackets-for-adverb-noun lemma))
      
      ((equal combinations '(adverb noun verb))
       (when *edge-for-unknown-words*
-        (setup-adverb lemma :ambiguous)
-        (setup-common-noun lemma clauses :ambiguous)
-        (setup-verb lemma clauses :ambiguous))
+        (maybe-setup-adverb lemma clauses :ambiguous)
+        (maybe-setup-common-noun lemma clauses :ambiguous)
+        (maybe-setup-verb lemma clauses :ambiguous))
       (brackets-for-adverb-noun-verb lemma clauses))
      
      ((equal combinations '(noun verb))
       (when *edge-for-unknown-words*
-        (setup-common-noun lemma clauses :ambiguous)
-        (setup-verb lemma clauses :ambiguous))
+        (maybe-setup-common-noun lemma clauses :ambiguous)
+        (maybe-setup-verb lemma clauses :ambiguous))
       (assign-noun-verb-brackets lemma clauses))
 
      ((equal combinations '(noun pronoun verb)) ;; ignore pn
       (when *edge-for-unknown-words*
-        (setup-common-noun lemma clauses :ambiguous)
-        (setup-verb lemma clauses :ambiguous))
+        (maybe-setup-common-noun lemma clauses :ambiguous)
+        (maybe-setup-verb lemma clauses :ambiguous))
       (assign-noun-verb-brackets lemma clauses))
      
      ((equal combinations '(sconj verb)) ;; "provide"
       ;; sconj is a weak analysis. /// look for other cases
       ;; to establish if this simple version is  ok
       (when *edge-for-unknown-words*
-        (setup-verb lemma clauses)) ;; n.b. not ambiguous
+        (maybe-setup-verb lemma clauses)) ;; n.b. not ambiguous
       (assign-brackets-as-a-main-verb lemma))
 
      ((equal combinations '(adjective adverb advpart noun verb)) ;; "back"
       (when *edge-for-unknown-words*
-        (setup-adjective lemma clauses :ambiguous)
-        (setup-adverb lemma :ambiguous)
-        (setup-common-noun lemma clauses :ambiguous)
-        (setup-verb lemma clauses :ambiguous))
+        (maybe-setup-adjective lemma clauses :ambiguous)
+        (maybe-setup-adverb lemma clauses :ambiguous)
+        (maybe-setup-common-noun lemma clauses :ambiguous)
+        (maybe-setup-verb lemma clauses :ambiguous))
       (brackets-for-adverb-noun-verb lemma clauses))
      
      ;; "firm" is four-ways ambiguous
@@ -341,6 +357,28 @@ places. ]]
           (record-lemma p-word lemma :noun))
         (record-inflections clause-plural/s lemma :noun)
         clause-plural/s))))
+
+
+(defun maybe-setup-adjective (lemma clauses ambiguous)
+  (unless (is-known-definition? lemma (assoc 'adjective clauses) )
+    (setup-adjective lemma clauses ambiguous)))
+
+(defun maybe-setup-adverb (lemma clauses &optional ambiguous )
+  (unless (is-known-definition? lemma (assoc 'adverb clauses))
+    (if ambiguous
+        (setup-adverb lemma ambiguous)
+        (setup-adverb lemma))))
+
+(defun maybe-setup-common-noun (lemma clauses ambiguous)
+    (unless (is-known-definition?  lemma (assoc 'noun clauses))
+      (setup-common-noun lemma clauses ambiguous)))
+
+(defun maybe-setup-verb (lemma clauses &optional ambiguous)
+  (unless (is-known-definition?  lemma (assoc 'verb clauses))
+    (if ambiguous
+        (setup-verb lemma clauses ambiguous)
+        (setup-verb lemma clauses))))
+
 
 (defmethod decode-and-instantiate-primed-verb ((lemma word) clause)
   ;; As originally written, this supplied a category and referent
