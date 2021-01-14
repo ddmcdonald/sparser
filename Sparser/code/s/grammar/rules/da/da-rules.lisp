@@ -2211,7 +2211,7 @@
                           right-fringe))
              (push (list ambigs (sentence-string (sentence))) *ambiguous-adjuncts*)
              nil)
-            (t
+            (edge-taking-adjunct
              (push (list (list
                           (intern (string-upcase (pname prep-word)) :sp)
                           (cat-name (itype-of (edge-referent edge-taking-adjunct)))
@@ -2434,10 +2434,17 @@
 ;; -- try to get the subject of the participials first
 
 (defun make-subj-vp-rule-pair (subj vp)
-  (let ((rule-name (intern (format nil "~s-~s" subj vp)))) ; e.g. |vp+ing-vp|
+  (let ((rule-name (intern (format nil "~s-~s" subj vp) :sp))) ; e.g. |vp+ing-vp|
     `(progn
        (define-debris-analysis-rule ,rule-name
            :pattern (,subj ,vp)
+           ;; The action can fail. Returning nil ought to suffice
+         :action (:function ,rule-name first second))
+       ;; handle examples like
+       ;; "then shifting attention to a peripheral location should speed lexical decisions "
+       (define-debris-analysis-rule
+           ,(intern (format nil "SUBORDINATE-CONJUNCTION-~a" rule-name) :sp)
+           :pattern (subordinate-conjunction ,subj ,vp)
            ;; The action can fail. Returning nil ought to suffice
            :action (:function ,rule-name first second))
 
