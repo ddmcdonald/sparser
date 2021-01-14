@@ -10,9 +10,17 @@
 
 (in-package :sparser)
 
-(define-calulated-time "now")
-(define-calculated-day "today" 'today)
-(define-calculated-day "tomorrow" 'tomorrow)
-(define-calculated-day "yesterday" 'yesterday)
+(defparameter *compute-deictic-times* nil)
+
+(cond (*compute-deictic-times*
+       (define-calulated-time "now")
+       (define-calculated-day "today" 'today)
+       (define-calculated-day "tomorrow" 'tomorrow)
+       (define-calculated-day "yesterday" 'yesterday))
+      (t (noun "now" :specializes calculated-time)
+         (noun "today" :specializes calculated-day)
+         (noun "tomorrow" :specializes calculated-day)
+         (noun "yesterday" :specializes calculated-day)))
+         
 
 
