@@ -231,6 +231,7 @@ Should mirror the cases on the *single-words* ETF."
     :p-dir
     :pending
     :regarding
+    :relative\ to
     :till
     :time
     :until
