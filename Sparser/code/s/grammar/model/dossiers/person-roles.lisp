@@ -19,6 +19,7 @@
     ;; specific to experiments
     "participant" ; participates in some study or other activity
     "respondent"  ; "565 responses (35.3%) were obtained"
+    "relative"
     "subject"
 
     "student"
