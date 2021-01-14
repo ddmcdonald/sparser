@@ -111,7 +111,7 @@
         (current-date index)
 
         (let* ((year-word (resolve/make (format nil "~a" year)))
-               (iyear (find-individual 'year :name year-word))
+               (iyear (get-year year)) ; 'year' is a number
                (imonth (nth-item (1- month) category::month))
                (iweekday (nth-item day-of-week category::weekday)))
 
@@ -120,7 +120,7 @@
           (setf (current-day index) date)
           (setf (current-day-of-week index) iweekday)
 
-          (let ((date (define-or-find-individual'date
+          (let ((date (define-or-find-individual 'date
                         :day date
                         :month imonth
                         :year iyear

@@ -13,6 +13,9 @@
 ;;; Example texts
 ;;;---------------
 
+#| From Washington Post 1/13/21 where the larger context is China imposing a lockdown|#
+"The move comes at a time when the Chinese economy was surging back after last year’s slump and when residents, many who felt like the pandemic was a thing of the past, were getting used to something close to normal life. China, a country of 1.4 billion people, has reported an average of 109 new cases a day over the past week. (For some perspective, the U.S. is averaging a quarter-million a day.)"
+
 #| From para on CoV in England in Washington Post 'Coronavirus Updates'
 email 1/11/21 |#
 "In Ireland, cases are skyrocketing. Just weeks ago, the country was doing well compared with the rest of Europe. Now it has the highest number of per capita infections in the world."

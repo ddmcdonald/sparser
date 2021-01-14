@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2000,2013-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2000,2013-2021 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "years"
 ;;;   Module:  "model;core:time:"
-;;;  version:  April 2020
+;;;  version:  January 2021
 
 ;; initiated in February 1991
 ;; 0.1 (4/9 v1.8.2)  Added the years from 1959 to 1979
@@ -37,37 +37,56 @@
 ;;; defining form
 ;;;---------------
 
+(defvar *year-digits-to-year* (make-hash-table)
+  "Since a year is defined in terms of more than one variable,
+   it's simpler to record it against something we'll have at hand
+   when we want to look it up (with get-year).")
+
 (defvar *year-of-century-to-year* (make-hash-table)
   "The wiring of the description lattice makes it unduely hard to
    allow both finding from the first variable ('name') and any later
    variable ('year-of-century'). This ad-hoc table fills the gap.")
 
 (defun define-year (string integer)  ;; e.g. "2015" & 15
-  (let ((number (find-or-make-number string)))
-    (or (find-individual 'year :name string)
+  "Only designed to run once, at system load time when the dossier
+   of years is loaded"
+  (let ((lisp-number (read-from-string string)))
+    (or (get-year lisp-number)
         (let ((year
                (define-individual 'year
                  :name string
-                 :value (value-of 'value number)
+                 :value lisp-number
                  :year-of-century integer)))
+          (setf (gethash lisp-number *year-digits-to-year*) year)
           (setf (gethash integer *year-of-century-to-year*) year)
           year))))
 
 
-;;;-----------
-;;; functions
-;;;-----------
+(defgeneric get-year (index)
+  (:documentation "Presumes that the year that we want exists (otherise
+    we return nil. Looks at the index and consults the appropriate table.")
+  (:method ((n integer)) ; e.g. 2021
+    (gethash n *year-digits-to-year*))
+  (:method ((s string)) ; e.g. "2021"
+    (let ((n (read-from-string s)))
+      (get-year n))))
 
-(defun get-year (name)
+#+ignore
+;; Original definition -- When using the description lattice this tends
+;; to not return the whole number, just one of its v+v components
   (if *description-lattice*
     (let ((word
            (etypecase name
              (string (resolve/make name))
              (number
               (resolve/make (format nil "~a" name)))
-             (word name))))     
+             (word name))))  
       (get-by-name category::year word))
-    (find-individual 'year :name name)))
+    (find-individual 'year :name name))
+
+;;;-----------
+;;; functions
+;;;-----------
 
 (defgeneric get-year-from-last-two-digits (number)
   (:method ((i individual))
