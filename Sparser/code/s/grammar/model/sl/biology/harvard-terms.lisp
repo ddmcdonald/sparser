@@ -88,7 +88,8 @@ by which this occurs.") |#
 (define-category decrease
   :specializes negative-bio-control
   :binds ((theme biological)
-          (level (:or measurement amount)))
+          (level (:or measurement amount))
+          (compared-to top))
   :realization
   (:verb "decrease" 
    :etf (svo-passive)
@@ -96,7 +97,8 @@ by which this occurs.") |#
    :in theme
    :in comlex-object
    :oc level ;; 'object complement'
-   :to level))
+   :to level
+   :relative\ to compared-to))
 ;; Potentially problematic since the plural will misparse
 ;; "monoubiquitination decreases". Committing horrible hack
 ;; of putting in a dummy plural to circumvent that.
@@ -131,7 +133,8 @@ by which this occurs.") |#
 ;; added 'level' 5/31/19 ddm
 (define-category increase
   :specializes positive-bio-control
-  :binds ((level (:or measurement amount scalar-attribute)))
+  :binds ((level (:or measurement amount scalar-attribute))
+          (compared-to top))
   :realization
     (:verb ("increase" :third-singular "increases"  :past-tense "increased"
                        :present-participle "increasing")
@@ -142,7 +145,9 @@ by which this occurs.") |#
      :in affected-process
      :in comlex-object
      :oc level
-     :optional-object t))
+     :optional-object t
+     :relative\ to compared-to
+           ))
 ;; DAVID -- why can't I put this in the previous definition -- the NOUN form gets clobbered
 (def-synonym increase
     (:noun "increase"))
