@@ -40,7 +40,7 @@
   (declare (special *time-to-read-document*))
   (let* ((word-count (token-count article))
          (wps-string (compute-words-per-second
-                      word-count *time-to-read-document* :msec))
+                      word-count *time-to-read-document* :microsec)) ;; :msec
          (total-time *time-to-read-document*))
     (format stream "~& ~a words  time to parse: ~a msec  ~a~%"
             ;; (name article) "Parsing article: ~s,"
