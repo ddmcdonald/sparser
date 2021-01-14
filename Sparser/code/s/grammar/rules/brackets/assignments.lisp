@@ -445,7 +445,7 @@
   "Similar to construct-disambiguating-category-name but applies in
    any case where the name is already taken by an already defined
    category."
-  (let ((new-name (string-append original-name '#:-auto)))
+  (let ((new-name (string-append original-name "-AUTO")))
     (when *report-distinguishing-auto-category*
       (if (search "-" (format nil "~a" original-name))
         (format t "*** distinguish-category given ~a produces ~a~%"
