@@ -45,7 +45,9 @@
 ;;;-------------
 
 ;; (trace-island-driving)
-;; (trace-parsing-style) -- to see the transitions
+;; (trace-parsing-style) -- to see the transition
+(defparameter *do-last-ditch-non-semantic-whacks* nil)
+
 
 (defun island-driven-forest-parse (sentence layout start-pos end-pos)
   "Called from new-forest-driver after it has called 
@@ -74,7 +76,13 @@
       (unless (eq coverage :one-edge-over-entire-segment)
         (tr :island-driver-forest-pass-2)
         (when *trace-island-driving* (tts))
-        (run-island-checks-pass-two sentence start-pos end-pos)))))
+        (run-island-checks-pass-two sentence start-pos end-pos)
+        (when *do-last-ditch-non-semantic-whacks*
+          ;; attach subjects and objects (and all other syntactically licensed items)
+          ;;  without checking semantic compatibility
+          (let ((*subcat-accept-all-semantics* t))
+            (declare (special *subcat-accept-all-semantics*))
+            (whack-a-rule-cycle sentence)))))))
 
 
 ;;;------------
