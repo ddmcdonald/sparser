@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2021 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "pass1"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  December 2018
+;;;  Version:  January 2021
 
 ;; Broken out of island-driving 10/23/14.
 ;; RJB 12/14/2014 -- simple fix to prevent failure in simple-subject-verb when subject is a pronoun -- need to treat pronouns better <<DAVID>>
@@ -16,7 +16,126 @@
 ;;  smashing base proteins, etc.
 
 (in-package :sparser)
-      
+
+;;--------
+;; driver
+;;--------
+
+(defun pass-one (sentence) ;;layout)
+  "Makes a couple of layout-mediated special checks before and
+   after its main operation of running the whack-a-rule-cycle
+   to walk through pairs of constituents."
+  
+  (when (there-are-parentheses?)
+    (tr :handle-parentheses)
+    (handle-parentheses))
+  
+  ;;(Overnight 1 (p "Ras, like all GTPases, cycles between an inactive GDP-bound state and  an active GTP-bound state.")) 
+  (when (there-are-conjunctions?)
+    (tr :looking-for-short-conjuncts)
+    (let ((*allow-form-conjunction-heuristic* nil))
+      (declare (special *allow-form-conjunction-heuristic*))
+      (look-for-short-obvious-conjunctions)))
+  
+  (when (there-are-prepositions?)
+    (tr :look-for-prep-binders)
+    (look-for-prep-binders))
+  
+  (when (there-are-conjunctions?) 
+    ;; Originally inserted this call for conjunctions to merge
+    ;; conjoined NPs before creating PPs as in "as a tumor suppressor
+    ;; and an activator" Now only used for VG conjunctions
+    (tr :try-spanning-conjunctions)
+    (let ((*allow-form-conjunction-heuristic* :vg))
+      (declare (special *allow-form-conjunction-heuristic*))
+      (try-spanning-conjunctions :vg)))
+
+  (if *whack-a-rule*
+    (whack-a-rule-cycle sentence)
+    (older-island-driving-rest-of-pass-one))
+
+  (when (there-are-conjunctions?)
+    (tr :try-spanning-conjunctions-again)
+    (let ((*allow-form-conjunction-heuristic* t))
+      (declare (special *allow-form-conjunction-heuristic*))
+      (or (try-spanning-conjunctions)
+          (look-for-submerged-conjunct)))))
+
+
+
+;;;--------------------
+;;; older pass1 driver
+;;;--------------------
+
+(defun older-island-driving-rest-of-pass-one ()
+  (when (starts-with-prep?)
+    (tr :try-parsing-leading-pp)
+    (try-parsing-leading-pp))
+    
+  (when  (there-are-prepositions?)
+    (tr :trying-to-form-simple-pps)
+    (try-simple-pps)
+    (when *trace-island-driving* (tts)))
+    
+  ;;/// conjunctions over two words
+  ;; though the regular conjunction routine in pts seems to get these
+  ;; in-line if they're really simple: "GDP or GTP"
+    
+  (when  (there-are-known-subcat-patterns?)
+    (tr :there-are-known-subcat-patterns)
+    ;;(break "subcat")
+    (let ((edges (apply-subcat-patterns)))
+      ;; Assuming the patterns match, there will be 
+      ;; an edge for every treetop that had a subcategorization
+      ;; pattern
+      (when edges
+        ;; The subcategorizations are particularly solid,
+        ;; and they're usually the equivalent of VPs or
+        ;; complements. Gingerly look for leftward compositions. 
+        (dolist (edge edges)
+          (look-for-short-leftward-extension edge)))
+      (when *trace-island-driving* (tts))))
+    
+  (try-simple-subj+verb)
+  (when *trace-island-driving* (tts))
+  ;;//// good place to update the layout
+    
+  (when (there-are-of-mentions?)
+    (tr :try-to-compose-instances-of-of)
+    (try-to-compose-of-complements)
+    (when *trace-island-driving* (tts)))
+    
+  (when (there-are-loose-nps?)
+    (tr :try-to-extend-loose-nps)
+    (look-for-np-extensions)
+    (when *trace-island-driving* (tts)))
+    
+  (when (there-are-prepositions?)
+    (tr :trying-to-form-simple-pps)
+    (try-simple-pps)
+    (when *trace-island-driving* (tts)))
+    
+  (when (there-are-post-mvb-verbs?)
+    (tr :try-simple-vps)
+    (try-simple-vps)
+    (when *trace-island-driving* (tts))))
+
+
+
+;;----------- Ancilary routines from original pass1 ----------------
+
+
+
+
+
+
+
+
+
+
+
+
+
 ;;;----------------------
 ;;; subject + verb group
 ;;;----------------------
