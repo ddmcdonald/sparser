@@ -87,6 +87,7 @@
 
 (define-category analyze :specializes bio-method
   :mixins (bio-whethercomp bio-ifcomp)
+  :restrict ((object top))
   :realization 
   (:verb "analyze" :noun ("analysis" :plural "analyses")
          :etf (svo-passive)))
@@ -387,6 +388,7 @@
 |#
 
 (define-category describe :specializes bio-rhetorical
+    :mixins (attribute) ;; "description of ...
     :realization
     (:verb "describe"
 	   :noun "description"
@@ -1366,6 +1368,8 @@
   :realization
   (:verb ("list")
          :etf (svo-passive)))
+;; noun sense is defined under information-container
+
 
 #| recreated in dossiers/verbs.lisp
 (define-category tell :specializes bio-rhetorical
