@@ -22,10 +22,25 @@ was exceptional or ordinary.")
 [The within-subject independent variables ][were ][behavioral history ](cheating, irrelevant, trustworthy) and whether [the behavioral description
 ][was ][exceptional or ordinary] |#
 
+(define-category experiment-design :specializes state
+  :mixins (has-uid) 
+  :realization
+  (:noun ("experiment design" "experiment design")))
+
+(define-category within-subjects :specializes experiment-design
+  :realization (:noun "within-subjects"))
+
+(define-category between-subjects :specializes experiment-design
+  :realization (:noun "between-subjects"))
 
 (define-category variable/term
+  :binds ((experimental-design experiment-design))
   :specializes label
-  :lemma (:common-noun "variable"))
+  :realization (:noun "variable"
+                :m experimental-design))
+
+(define-category covariate :specializes variable/term
+  :realization (:noun "covariate"))
 
 (define-category variable/attribute
   :specializes attribute
