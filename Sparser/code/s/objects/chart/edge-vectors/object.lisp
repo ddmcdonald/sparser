@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2011-2020  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2011-2021  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "objects;chart:edge-vectors:"
-;;;  Version:  June 2020
+;;;  Version:  January 2021
 
 ;; 2.0 (11/26/92 v2.3) bumped on general principles anticipating changes.
 ;;     (5/5/93) Added Preterminal-edges
@@ -46,13 +46,17 @@
 ;;; access functions
 ;;;------------------
 
-(defun ev/s (position#)
-  (let ((position (position# position#)))
-    (pos-starts-here position)))
+(defgeneric ev/s (position#)
+  (:method ((p# number))
+    (ev/s (position# p#)))
+  (:method ((p position))
+    (pos-starts-here p)))
 
-(defun ev/e (position#)
-  (let ((position (position# position#)))
-    (pos-ends-here position)))
+(defgeneric ev/e (position#)
+  (:method ((p# number))
+    (ev/e (position# p#)))
+  (:method ((p position))
+    (pos-ends-here p)))
 
 
 (defun pos-edge-starts-at (edge)
