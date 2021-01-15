@@ -547,9 +547,12 @@
            :referent (:function apply-object-relative-clause left-edge right-edge))))
 
 
-(loop for n in `(np wh-pronoun demonstrative pronoun demonstrative ,@*n-bar-categories*)
+(loop for n in `(np wh-pronoun demonstrative pronoun demonstrative ,@*n-bar-categories*
+                    ;; put this in for "eating ice cream makes me feel good"
+                    vp+ing) 
   do
-  (loop for v in '(vp vg vp+passive vg+passive vp+past #|vp+ed|#
+     (loop for v in '(vp vg vp+passive vg+passive vp+past
+                      #|vp+ed|#
                    ;; vg+ing ;; TO-DO see if this change improves or damages things
                    ;; or move vp+ing vg+ing to da-rules
                       )
@@ -926,7 +929,15 @@
                 :form subordinate-clause
                 :referent (:function make-subordinate-clause left-edge right-edge))))
 
+(def-syntax-rule (subordinate-conjunction np)
+  :head :left-edge
+  :form subordinate-np
+  :referent (:function make-subordinate-np left-edge right-edge))
 
+(def-syntax-rule (np subordinate-np)
+  :head :left-edge
+  :form np
+  :referent (:function add-subordinate-np-as-adjunct left-edge right-edge))
 
 
 
