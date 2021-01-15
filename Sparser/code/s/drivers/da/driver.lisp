@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,1995, 2021  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "driver"
 ;;;   Module:  "drivers;DA:"
-;;;  Version:  May 1995
+;;;  Version:  January 2021
 
 ;; initiated 10/26/94 v2.3.  Enriched it 5/5/95. Tweeked ..5/18
 ;; 1.0 (5/19) redid the treewalk loop as tail recursion to setup for interleaving
@@ -88,37 +88,57 @@
           (else ;; will be nil at the edge of the chart
            (do-treetop-triggers))))))))
 
-    
 
-  
-#|  original loop version -- given its interaction with the return
-    values of the look-for routines, it would often restart at the
-    beginning of the chart for unfathomable reasons. 
-(defun walk-pending-treetops-for-debris-analysis ()
-  (let ((start-pos  *left-boundary/treetop-actions*)
-        (end-pos    *rightmost-quiescent-position*)
-        tt  position  next-position  multiple? )
-    (tr :looking-for-analyzable-debris start-pos end-pos)
+;;;-----------------------------
+;;; Loop used in Island Driving
+;;;-----------------------------
+;; treetops and bound supplied by caller
 
-    (setq position start-pos)
-    (loop
-      (when (eq position end-pos)
-        (return))
+(defun da-rule-cycle (start-pos end-pos treetops)
+  "Called from pass-two and  as part of operating on the forest.
+   Returns after any DA rule has applied -- this permits this to be
+   interleaved with calls to the whack-a-rule-cycle to capitalizd
+   on the edge(s) laid down by the DA rule."
+  (tr :entering-da-cycle)
+  (let ((once-only? t) ; had been an optional argument
+        rule-executed?)
+    (loop with result
+       while (setq result (execute-one-da-rule treetops))
+       do
+         (setq rule-executed? t)
+         (when (edge-p result)
+           (tr :p2-da-returned-edge result))
+         (setq treetops (successive-treetops :from start-pos :to end-pos))
+         (when once-only? (return t)))
+    rule-executed?))
 
-      (multiple-value-setq (tt next-position multiple?)
-        (next-treetop/rightward position))
+(defun execute-one-da-rule (treetops)
+  "Walks through the treetops from left to right. 
+   Returns when a DA rule has succeeded."
+  (loop with result for tt in treetops
+    thereis
+    (progn
+      (tr :trying-da-pattern-on tt)
+      (setq result (look-for-da-pattern tt))
+      (and result (not (eq result :trie-exhausted))))))
 
-      (when multiple?
-        (setq tt (reduce-multiple-initial-edges tt)))
+(defun look-for-da-pattern (tt)
+  "If there is a da pattern that starts at this treetop
+   execute it and return the 'result'. Used by old-pass2
+   and by execute-one-da-rule as of 1/3/17"
+  (let ((da-node (trie-for-1st-item tt)))
+    (when da-node
+      (standalone-da-execution da-node tt))))
 
-      (setq *da-dispatch-position*
-            (look-for-and-execute-any-DA-pattern
-             tt position next-position))
-     
-      (setq position (or *da-dispatch-position*
-                         next-position))
-      (tr :resuming-DA-walk-at position))
 
-    (tr :moving-to-do-treetops)
-    (do-treetop-triggers)))      |#
+;;--- special invocation
 
+(defun da-final-cycle (sentence)
+  "Called from sentence-processing-core to clean up"
+  (let* ((start-pos (starts-at-pos sentence))
+         (end-pos (ends-at-pos sentence))
+         (treetops (all-tts start-pos end-pos)))
+    (da-rule-cycle start-pos end-pos treetops)
+    (unless (eq (coverage-over-region start-pos end-pos)
+                :one-edge-over-entire-segment)
+      (whack-a-rule-cycle sentence))))
