@@ -44,29 +44,6 @@
 (adv "probably" :super certain)
 (adv "possibly" :super certain)
 (adv "potentially" :super certain)
-
-
-;;--- nominal perspective
-
-(define-category certainty
-  :specializes certain
-  :realization (:noun "certainty")
-  :documentation "The word 'certainty' doesn't pattern like
-     'likelyhood' or 'probability' but this probably doesn't
-     do any substantial harm")
-
-(noun "chance" :super certainty)
-(noun "probability" :super certainty)
-
-(noun "likelihood" :super certainty)
-
-;; modifiers -- likelihood adverbs
-;; make sense here too. 
-;; is likely to be mediated by
-;; is likely that this possible feedback
-;; will likely be useful
-
-
 (define-category likely-adj :specializes certain
    :realization (:adj "likely"))
 ;; this is to handle uses like "it is likely that ..."
@@ -82,6 +59,30 @@
 ;;
 ;; These still fail in "It is likely that this possible feedback loop..."
 ;; and "This effect is likely to be mediated..."
+
+
+
+;;--- nominal perspective
+
+(define-category certainty
+  :specializes certain
+  :mixins (attribute)
+  :realization (:noun "certainty")
+  :documentation "The word 'certainty' doesn't pattern like
+     'likelihood' or 'probability' but this probably doesn't
+     do any substantial harm")
+
+(noun "chance" :super certainty)
+(noun "probability" :super certainty)
+
+(noun "likelihood" :super certainty)
+
+;; modifiers -- likelihood adverbs
+;; make sense here too. 
+;; is likely to be mediated by
+;; is likely that this possible feedback
+;; will likely be useful
+
 
 
 ;; presently has to follow all the definitions

@@ -47,7 +47,8 @@
 
 (noun "abnormality" :super medical-condition)
 (noun "disorder" :super medical-condition)
-(noun "symptom" :super medical-condition)
+(noun "symptom" :super medical-condition
+      :mixins (attribute)) ;; symptom of disease
 
 
 (define-category disease  :specializes medical-condition
