@@ -21,18 +21,16 @@
 ;;; object
 ;;;--------
 
-(define-category amount
-  :specializes abstract ;; delimits a region in a quantity space
+(define-category amount :specializes abstract ;; delimits a region in a quantity space
+  :mixins (attribute) ;; it can be used as an attribute (e.g. "the amount of snow")
   :instantiates self
   :index (:temporary :sequential-keys stuff measurement)
   :binds ((measurement . measurement)
-          (stuff)
-
           ;; adjuncts that can be expected
+          (stuff) ;; needed for :sequential-keys -- but how???
           (alternative-amount)
           (time-period))
-   :realization (:noun "amount"
-                 :of stuff))
+   :realization (:noun "amount"))
 
 
 
