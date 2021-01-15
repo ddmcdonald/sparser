@@ -187,7 +187,6 @@
          (if (eq prep word::|of|)
            (push-of tt)
            (push-preposition tt prior-tt))))
-      
       (pp
        (push-prepositional-phrase tt))
       
@@ -264,7 +263,6 @@
                    (and (category-p (edge-category prior-tt))
                         (memq (edge-cat-name prior-tt) '(pp adverb)))))
       (push :subject properties)
-      (break "subject =? ~a" tt)
       (set-subject tt))
     
     (when (pronoun-category? form)

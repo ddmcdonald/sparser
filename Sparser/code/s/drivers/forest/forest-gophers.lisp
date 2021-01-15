@@ -82,7 +82,9 @@
   (:method ((ev edge-vector))
     (loop for e in (all-edges-on ev)
        when (treetop-over-a-verb? e)
-       collect e)))
+       collect e))
+  (:method ((empty null)) ; preposition is probably initial
+    nil))
 
 (defun push-post-mvs-verbs (tt)
   (push tt (post-mvb-verbs (layout))))
@@ -157,7 +159,7 @@
    prepositions field of the layout."
   ;;(push-debug `(,tt ,prior-tt))
   (if (treetop-over-a-verb? prior-tt)
-    (let ((verb-edges (treetop-over-a-verb? prior-tt)))
+    (let ((verb-edges (ensure-list (treetop-over-a-verb? prior-tt))))
       (loop for v in verb-edges
          as rule = (multiply-edges v tt)
          when rule do
