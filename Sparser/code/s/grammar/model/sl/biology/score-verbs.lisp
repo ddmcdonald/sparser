@@ -1959,8 +1959,10 @@
        (ON top)
        (OVER top)
        (AROUND top)
-       (BY top))
-     :realization (:verb  "define" :s SUBJECT :o OBJECT :against AGAINST :for FOR :in IN :into INTO :on ON :over OVER :around AROUND :by BY))
+       (BY top)
+       (AS as))
+  :realization (:verb  "define" :s SUBJECT :o OBJECT :against AGAINST :for FOR :in IN :into INTO :on ON :over OVER :around AROUND :by BY
+                       :as as))
 
 (define-category deflect :specializes comlex-verb
      :binds
@@ -7980,9 +7982,6 @@
       ((THROUGH top)
        (WITH top))
      :realization (:verb  "thread" :s SUBJECT :o OBJECT :through THROUGH :with WITH))
-
-(define-category threat :specializes comlex-verb
-     :realization (:verb  "threat" :s SUBJECT))
 
 (define-category threaten :specializes comlex-verb
      :binds
