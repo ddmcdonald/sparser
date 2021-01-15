@@ -35,6 +35,7 @@
   :binds ((mental-construction mental-construction-concerning) ;; may only be the direct object of the verb?
           (concerning top)) ;; perhaps (:or endurant perdurant abstract)
   :realization (:about concerning
+                :of concerning
                 :regarding concerning
                 :with-regard-to concerning))
 
@@ -42,7 +43,7 @@
 (define-category emotion :specializes mental-construction)
 
 (define-category anxiety :specializes emotion :mixins (mental-construction-concerning)
- :realization (:noun "anxiety" :adj "anxious"))
+  :realization (:noun "anxiety" :adj "anxious"))
 (define-category concern :specializes emotion :mixins (mental-construction-concerning)
  :realization (:noun "concern" :adj "concerned"))
 (define-category confusion :specializes create-mental-construction-concerning :mixins (emotion)
@@ -63,11 +64,13 @@
  :realization (:noun "loneliness"))
 
 
+(define-category attention :specializes mental-construction-concerning
+ :realization (:noun "attention" :to concerning))
 (define-category attitude :binds ((theme top)) :specializes mental-construction-concerning
  :realization (:noun "attitude" :toward theme :towards theme :to theme))
 (define-category awareness :specializes mental-construction-concerning
  ;;/// second reading of "anxious" !
- :realization (:noun "awareness" :adj "anxious"))
+ :realization (:noun "awareness" :adj "anxious" :of concerning))
 (define-category belief :specializes create-mental-construction-concerning
  :realization (:noun "belief" :verb "believe" :in concerning))
 (define-category coverage :specializes mental-construction-concerning ;;???? citation?
@@ -122,6 +125,12 @@
 (define-category view :specializes mental-construction-concerning
  :realization (:noun ("view" :plural "views")))
 
+(define-category survey :specializes mental-construction-concerning
+  :binds ((ACROSS top)
+          (ABOUT top)
+          (FOR top)
+          (THROUGHOUT top))
+  :realization (:noun  "survey" :across ACROSS :about ABOUT :for FOR :throughout THROUGHOUT :of concerning))
 
 
 ;;;--------------------------------
@@ -225,7 +234,8 @@ TRIPS: "enough" qua 'adequate' is a quantity-related-property-val
   :specializes information-container
   :mixins (mental-construction-concerning)
     :instantiates self
-    :realization (:noun "literature"))
+  :realization (:noun "literature"))
+
 
 (define-category database
     ;; from biocuration questions e.g.,
@@ -235,7 +245,11 @@ TRIPS: "enough" qua 'adequate' is a quantity-related-property-val
     :instantiates self
     :realization (:noun "database"))
 
-
+(define-category list-container :specializes information-container
+  :restrict ((contents top))
+  :realization
+  (:noun "list"
+         :of contents))
 ;;--- 'label'
 
 (define-category label
