@@ -155,6 +155,7 @@
    an upper-model category. It's real job is to contribute slots."
   :mixins (with-quantifier has-location)
   :binds ((context (:or bio-context
+                        experimental-condition
                         bio-mechanism ;; for pathways -- they are context, not manner
                         experiment-data))
           (disease disease)
