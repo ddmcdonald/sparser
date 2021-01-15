@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1990  Content Technologies Inc.
-;;; copyright (c) 1992,2013-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992,2013-2021 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "treetops"
 ;;;   Module:  "objects;traces:"
-;;;  Version:   December 2020
+;;;  Version:   January 2021
 
 ;; Stubbed with parameters 10/1990. Moved in the traces from
 ;; drivers/chart/psp/march-forest 3/8/13. 
@@ -551,8 +551,13 @@
 (deftrace :next-tt-swept (tt pos-after)
   ;; called from sweep-sentence-treetops
   (when *trace-treetops-sweep*
-    (trace-msg "[sweep] Next tt is ~a ending at p~a"
+    (trace-msg "[sweep] Next treetop is ~a ending at p~a"
                tt (pos-token-index pos-after))))
+
+(deftrace :sweep-dispatching-on (tt)
+  ;; called from sweep/form-dispatch
+  (when *trace-treetops-sweep*
+    (trace-msg "[sweep]    Looking at ~a" tt)))
 
 (deftrace :terminated-sweep-at (pos-after)
   ;; called from sweep-sentence-treetops
@@ -564,6 +569,31 @@
   ;; called from set-subject
   (when *trace-treetops-sweep*
     (trace-msg "[sweep] setting the subject to ~a" tt)))
+
+(deftrace :setting-mvb-to (tt)
+  ;; called from set-main-verb
+  (when *trace-treetops-sweep*
+    (trace-msg "[sweep] setting the main verb to ~a" tt)))
+
+(deftrace :waiting-on-non-verb ()
+  ;; called from set-main-verb
+  (when *trace-treetops-sweep*
+    (trace-msg "[sweep]    waiting for a non-verb")))
+
+(deftrace :non-verb-seen ()
+  ;; called from sweep/form-dispatch
+  (when *trace-treetops-sweep*
+    (trace-msg "[sweep]    non-verb seen")))
+
+(deftrace :bound-prep-to-verb (verb-edge prep-edge new-edge)
+  ;; called from push-preposition
+  (when *trace-treetops-sweep*
+    (trace-msg "[sweep] composed verb ~a with proposition ~a~
+              ~%        to create ~a"
+               (edge-position-in-resource-array verb-edge)
+               (edge-position-in-resource-array prep-edge)
+               new-edge)))
+
 
 
 ;;;------------------------------------------

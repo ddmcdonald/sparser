@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2021 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "forest-gophers"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  October 2020
+;;;  Version:  January 2021
 
 ;; Initiated 8/30/14. To hold predicates and other little computations
 ;; done by the forest-level sweeping and island-driving. Also a good
@@ -21,17 +21,22 @@
 
 (defvar subject-seen? nil)
 (defvar main-verb-seen? nil)
+(defvar waiting-for-non-verb nil
+  "The treetop over a verb might be an edge-vector containing
+   edges for different interpretations of the verb. That means
+   that we can't set main-verb-seen? until we've looped around
+   and encountered an edge that isn't a verb")
 
 (defun clear-sweep-sentence-tt-state-vars ()
   (declare (special nps-seen)) ; in sweep.lisp
   (setq subject-seen? nil
         main-verb-seen? nil
+        waiting-for-non-verb nil
         nps-seen nil))
 
 ;;;----------------------------------------
 ;;; setting and getting fields of a layout
 ;;;----------------------------------------
-
 
 (defun set-subject (tt)
   (declare (special subject-seen?))
@@ -60,8 +65,24 @@
       collect edge)))
 
 (defun set-main-verb (tt)
-  (setf (main-verb (layout)) tt)
-  (setq main-verb-seen? t))
+  (let ((pending-verbs (main-verb (layout))))
+    (tr :setting-mvb-to tt)
+    (setf (main-verb (layout))
+          (cons tt pending-verbs))
+    (tr :waiting-on-non-verb)
+    (setq waiting-for-non-verb t)))
+
+(defgeneric treetop-over-a-verb? (tt)
+  (:documentation "Assuming this treetop dominates a verb,
+   return the edge(s) for the it.")
+  (:method ((edge edge))
+    (when (or (vg-category? edge)
+              (verb-category? edge))
+      edge))
+  (:method ((ev edge-vector))
+    (loop for e in (all-edges-on ev)
+       when (treetop-over-a-verb? e)
+       collect e)))
 
 (defun push-post-mvs-verbs (tt)
   (push tt (post-mvb-verbs (layout))))
@@ -128,8 +149,21 @@
       collect edge)))
 
 
-(defun push-preposition (tt)
-  (push tt (prepositions (layout))))
+(defun push-preposition (tt prior-tt)
+  "Check for whether we're adjacent to a verb and that this prep
+   is bound to it. If that's the case, create the corresponding
+   edge (see setup-bound-preposition). If we aren't, or if the verb
+   doesn't bind this preposition, then push the prep-edge on the
+   prepositions field of the layout."
+  ;;(push-debug `(,tt ,prior-tt))
+  (if (treetop-over-a-verb? prior-tt)
+    (let ((verb-edges (treetop-over-a-verb? prior-tt)))
+      (loop for v in verb-edges
+         as rule = (multiply-edges v tt)
+         when rule do
+           (let ((edge (execute-one-one-rule rule v tt)))
+             (tr :bound-prep-to-verb v tt edge))))    
+    (push tt (prepositions (layout)))))
 
 (defun there-are-prepositions? ()
   (let ((original-list (prepositions (layout))))
