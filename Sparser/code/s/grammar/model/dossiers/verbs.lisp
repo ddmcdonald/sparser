@@ -276,9 +276,8 @@ come
     (:verb ("make" :past-tense "made")
            :mumble ("make" svo :a agent :o patient)))
 
-#+ignore ;; for the moment remove this
 (define-category make-up
-    ;; in the sense of "compose" "the rsidues make up the binding site"
+    ;; in the sense of "compose" "the residues make up the binding site"
   :specializes process
   :mixins (resultative)
   :restrict ((patient endurant))
