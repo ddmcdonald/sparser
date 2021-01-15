@@ -910,6 +910,7 @@
 (define-adjective "nominal")
 
 (define-adjective "normal")
+(define-adjective "corrected-to-normal")
 (define-adjective "notable")
 (define-adjective "null")
 (define-adjective "obscure")
