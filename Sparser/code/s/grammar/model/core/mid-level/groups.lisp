@@ -16,19 +16,16 @@
 
 (define-category group
   :specializes collection
-  :binds ((group-members)
+  :binds ((group-members top)
           (label label)) ;; "group 2B CoVs"
   :realization (:noun "group"
                 :of group-members))
 
-(def-synonym group (:noun "set"))
+(define-category set :specializes group :realization (:noun "set"))
 
-(def-synonym group (:noun "family"))
-(def-synonym group (:noun "superfamily"))
-
-(def-synonym group (:noun "cluster"))
-
-
+(define-category family :specializes group :realization (:noun "family"))
+(define-category superfamily :specializes group :realization (:noun "superfamily"))
+(define-category cluster :specializes group :realization (:noun "cluster"))
 
 
 (define-category member
@@ -46,8 +43,7 @@
      :of whole
      :in whole))
 
-(def-synonym component (:noun "part"))
+(define-category  part :specializes component :realization (:noun "part"))
+(define-category fraction :specializes component :realization (:noun "fraction"))
+(define-category subset :specializes component :realization (:noun "subset"))
 
-(def-synonym component (:noun "fraction"))
-
-(def-synonym component (:noun "subset"))
