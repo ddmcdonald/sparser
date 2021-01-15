@@ -378,6 +378,7 @@
 
 (define-category bio-activate
   :specializes positive-bio-control
+  :restrict ((agent top))
   :realization
     (:verb "activate" 
      :noun "activation"
@@ -397,6 +398,7 @@
      :noun "autoactivation"
      :etf (svo)))
 
+#+ignore
 (define-category affect :specializes bio-control
   :binds ((causing (:or be biological)))
   :realization 
