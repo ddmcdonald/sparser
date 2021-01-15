@@ -78,11 +78,6 @@
        (TO top))
      :realization (:noun  "alert" :of OF :to TO))
 
-(define-category amount-cl-noun :specializes comlex-noun
-     :binds
-      ((TO top))
-     :realization (:noun  "amount" :to TO))
-
 (define-category anger-cl-noun :specializes comlex-noun
      :realization (:noun ( "anger" )))
 
@@ -1133,6 +1128,7 @@
      :realization (:noun ( "esteem" )))
 
 (define-category estimate-cl-noun :specializes comlex-noun
+    :mixins (attribute)
      :binds
       ((FROM top)
        (AT top))
@@ -1215,8 +1211,9 @@
 
 (define-category fear-cl-noun :specializes comlex-noun
      :binds
-      ((FOR top))
-     :realization (:noun  "fear" :for FOR))
+  ((FOR top)
+   (cause top))
+     :realization (:noun  "fear" :for FOR :of cause))
 
 (define-category fence-cl-noun :specializes comlex-noun
      :binds
@@ -2867,10 +2864,11 @@
      :realization (:noun  "ripple" :with WITH :across ACROSS :through THROUGH))
 
 (define-category risk-cl-noun :specializes comlex-noun
-     :binds
-      ((FOR top)
-       (ON top))
-     :realization (:noun  "risk" :for FOR :on ON))
+  :mixins (attribute)
+  :binds
+  ((FOR top)
+   (ON top))
+  :realization (:noun  "risk" :for FOR :on ON))
 
 (define-category rivet-cl-noun :specializes comlex-noun
      :binds
@@ -3129,8 +3127,9 @@
        (TOWARDS top)
        (TOWARD top)
        (TO top)
-       (FROM top))
-     :realization (:noun  "shift" :|OUT OF| |OUT OF| :among AMONG :into INTO :on ON :onto ONTO :within WITHIN :between BETWEEN :towards TOWARDS :toward TOWARD :to TO :from FROM))
+       (FROM top)
+       (OF top))
+     :realization (:noun  "shift" :|OUT OF| |OUT OF| :among AMONG :into INTO :on ON :onto ONTO :within WITHIN :between BETWEEN :towards TOWARDS :toward TOWARD :to TO :from FROM :of of))
 
 (define-category shock-cl-noun :specializes comlex-noun
      :binds
@@ -3242,7 +3241,8 @@
      :realization (:noun  "sound" :against AGAINST :behind BEHIND :like LIKE :through THROUGH))
 
 (define-category source-cl-noun :specializes comlex-noun
-     :realization (:noun  "source"))
+  :mixins (attribute)
+  :realization (:noun  "source"))
 
 (define-category spare-cl-noun :specializes comlex-noun
      :binds
@@ -3485,14 +3485,6 @@
        (WITHIN top))
      :realization (:noun  "surround" :with WITH :in IN :within WITHIN))
 
-(define-category survey-cl-noun :specializes comlex-noun
-     :binds
-      ((ACROSS top)
-       (ABOUT top)
-       (FOR top)
-       (THROUGHOUT top))
-     :realization (:noun  "survey" :across ACROSS :about ABOUT :for FOR :throughout THROUGHOUT))
-
 (define-category suspect-cl-noun :specializes comlex-noun
      :binds
       ((ABOUT top)
@@ -3542,7 +3534,8 @@
      :realization (:noun  "thread" :through THROUGH :with WITH))
 
 (define-category threat-cl-noun :specializes comlex-noun
-     :realization (:noun  "threat"))
+  :binds ((cause top))
+  :realization (:noun  "threat" :of cause))
 
 (define-category thrill-cl-noun :specializes comlex-noun
      :realization (:noun  "thrill"))
@@ -3672,14 +3665,15 @@
      :realization (:noun  "twitter"))
 
 (define-category type-cl-noun :specializes comlex-noun
-     :binds
-      ((INTO top)
-       (ONTO top)
-       (ON top))
-     :realization (:noun  "type" :into INTO :onto ONTO :on ON))
+  :mixins (attribute)
+  :binds
+  ((INTO top)
+   (ONTO top)
+   (ON top))
+  :realization (:noun  "type" :into INTO :onto ONTO :on ON))
 
 (define-category underestimate-cl-noun :specializes comlex-noun
-     :realization (:noun  "underestimate"))
+  :realization (:noun  "underestimate"))
 
 (define-category uniform-cl-noun :specializes comlex-noun
      :realization (:noun  "uniform"))
