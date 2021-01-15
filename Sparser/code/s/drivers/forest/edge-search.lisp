@@ -83,7 +83,9 @@
  From this set of 'triples' it heuristically selects the best
  one, applies it to create a new edge, and then repeats the process
  again on the revised forest. Terminates when there are no more
- triples to consider."
+ triples to consider.
+   N.b. Returning the edge indicates to the caller that there was
+ something done in this instance of the cycle."
   (tr :entering-whack-cycle)
   (let ((*whack-a-rule-sentence* sentence))
     (declare (special *whack-a-rule-sentence*))
