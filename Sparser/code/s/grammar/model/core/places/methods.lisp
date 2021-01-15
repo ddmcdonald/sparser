@@ -25,18 +25,22 @@
    have a location (any 'object'). Called by interpret-pp-adjunct-to-np
    in the first clause of its 'or'."
   (declare (special *subcat-test*))
-  (if *subcat-test*
-    t
-    (else
-      (tr :has-location+location np pp)
-      (let ((i (bind-variable 'location pp np)))
-        i))))
+  (when (eq (edge-form-name (right-edge-for-referent )) 'pp)
+    (tr :has-location+location np pp)
+    (let ((i (bind-variable 'location pp np)))
+      i)))
 
 
 
 ;;--- prepositional location operators
 
 ;; "on the table"
+
+#+ignore
+;; but not "in the presence of RAS" or "on the other hand" -- this method is far too unselective
+;;  you can't locally determine that a PP should be interpreted as a relative location
+;;  the governing head (that takes the PP as a dependent) may have constraints on how it interprets
+;;  a particular preposition
 (def-k-method compose ((op category::relative-location)
                        (place category::has-location))
   "Spatio(-temoral) prepositions are specializations of relative-location.
