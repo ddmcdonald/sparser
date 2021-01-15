@@ -899,13 +899,20 @@ than a bare "to".  |#
            ;; not which or whose, because of relative clause starts
            t)
           ((and (eq ecn 'that)
-                (edge-p (edge-just-to-left-of e))
-                (loop for ee in (edges-before e)
-                        thereis
-                        (takes-thatcomp? (edge-referent ee)))
-                ;; was (edge-referent (edge-just-to-left-of ))
-                ;;  but that is confused by the fact that "likely" is both an ADVERB and ADJ
-                )
+                (or
+                 (and (edge-p (edge-just-to-left-of e))
+                      (loop for ee in (edges-before e)
+                              thereis
+                              (takes-thatcomp? (edge-referent ee)))
+                      ;; was (edge-referent (edge-just-to-left-of ))
+                      ;;  but that is confused by the fact that "likely" is both an ADVERB and ADJ
+                      )
+                 (and (edge-p (edge-just-to-right-of e))
+                      ;; "that thinking ..." is most likely a thatcomp
+                      (loop for ee in (edges-after e)
+                              thereis
+                              (eq (edge-form-name ee) 'verb+ing)))))
+           
            nil)
           ((verb-premod-sequence? (edge-just-to-right-of e))
            nil)
@@ -1234,7 +1241,10 @@ than a bare "to".  |#
       ((and (loop for ev in evlist
                   thereis
                     (loop for ee in (ev-edges ev)
-                          thereis (eq (edge-form-name ee) 'common-noun/plural)))
+                            thereis (and
+                                     (eq (edge-form-name ee) 'common-noun/plural)
+                                     ;; special case for "data collection", "data analysis", etc.
+                                     (and (not (eq (edge-cat-name ee) 'data))))))
             (not (multiple-named-items e eform)))
        ;; plural nouns 'cannot' occur inside an NG -- only as the head
        nil)
@@ -1873,11 +1883,18 @@ than a bare "to".  |#
 
 (defun sentence-initial? (e)
   ;; an attempt at this predicate
+  (declare (special word::colon))
   (let* ((start-pos (pos-edge-starts-at e))
          (ending-at (pos-ends-here start-pos)))
-    (and
-     (edge-vector-p ending-at)
-     (= 0 (ev-number-of-edges ending-at)))))
+    (or
+     (and
+      (edge-vector-p ending-at)
+      (= 0 (ev-number-of-edges ending-at)))
+     (loop for ee in (edges-before e)
+             thereis (and (eq (form-cat-name ee) 'punctuation)
+                          (or (eq (edge-category ee) word::colon)
+                              (and (category-p (edge-category ee))
+                                   (eq (edge-cat-name ee) 'semicolon))))))))
 
 (defun preceding-pronoun-or-which? (e &optional (edges (edges-before e)))
   (loop for ee in edges
