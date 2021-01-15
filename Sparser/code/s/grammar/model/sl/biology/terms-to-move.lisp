@@ -49,7 +49,7 @@ be biology specific, since they aren't. |#
 
 ;; adapt to go into core/time/amounts.lisp 
 (define-category period :specializes amount-of-time
-  :binds ((context bio-context)
+  :binds ((context (:or bio-context experimental-condition))
           (state bio-state))
   :realization (:noun "period"
                       :m context
