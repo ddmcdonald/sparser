@@ -523,8 +523,14 @@
       (declare (special l-triple-rhs l-triple-left triple-1-rhs r-triple-3))
       ;;(lsp-break "compete")
       (or
-       (eq 'category::syntactic-there l-triple-left) ;; competing against a "there BE"
+       (member (cat-name (cfr-form (triple-rule l-triple)))
+               '(syntactic-there)) ;; competing against a "there BE"
        (losing-to-leftwards-pp? l-triple r-triple)
+       (and (eq (cat-name (cfr-form (triple-rule r-triple))) 's)
+            (member (edge-form-name (right-edge-of-triple l-triple))
+                             '(vp+ing vg+ing))
+            (not (member (edge-form-name (left-edge-of-triple l-triple))
+                         '(subordinate-conjunction))))
        (and (competition-against-clausal-object? l-triple-rhs)
             ;; special case for "matches MEK inhibits ERK" --
             ;;  where we want the embedded sentence created
@@ -565,7 +571,7 @@
                             pp-relative-clause
                             subject-relative-clause comma-separated-subject-relative-clause))))))
        
-       )))
+      )))
 
 (defparameter *l-triple-tests* nil
   "Holds the list of category pairs that should have every vp-forming rules
