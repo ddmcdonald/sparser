@@ -60,6 +60,24 @@
     :specializes subordinate-clause)
 (mark-as-form-category category::subordinate-s)
 
+#| Used to mark the subordinatated np when we are making 
+a subordinate np like 'such as this book' or 'with the exception of this book'
+Added to the interpretation of the subordinate conjunction (similar to the way
+an np is added to a PP) that indicates the subordinating relation.
+Deemed to be overkill to use a scafolding class
+like prepositional-phase (see syntax/syntactic-classes.lisp) |#
+
+(define-category subordinate-np 
+  :specializes phrase-interpretation
+  :binds ((subordinated-np top)
+          (subordinate-conjunction top)))
+
+(mark-as-form-category category::subordinate-np)
+
+
+
+
+
 
 ;;--- pied-piping
 

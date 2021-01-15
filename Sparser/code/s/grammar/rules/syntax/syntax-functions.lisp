@@ -117,12 +117,15 @@
     nil 'top)
 
 (define-lambda-variable 'subordinate-conjunction
-#| Used to mark the suborinatating conjunction when we are making 
+#| Used to mark the subordinating conjunction when we are making 
 a subordinate clause. Added to the interpretation of the clause or
 vp that it subordinates. Deemed to be overkill to use a scafolding class
 like prepositional-phase (see syntax/syntactic-classes.lisp) |#
-    nil 'top)
+  nil 'top)
 
+
+(define-lambda-variable 'subordinate-conjunct
+    nil 'top)
 
 (define-lambda-variable 'quantifier
     nil 'top)
@@ -165,7 +168,7 @@ like prepositional-phase (see syntax/syntactic-classes.lisp) |#
 ;;; enabling k-methods (or not)
 ;;;-----------------------------
 
-(defparameter *use-k-methods-in-syntax-functions* nil
+(defparameter *use-k-methods-in-syntax-functions* t
   "Permits overriding default in use-methods")
 
 (defun use-methods ()
@@ -1634,6 +1637,11 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
          ;; (push-debug `(,np ,pp ,variable-to-bind ,pobj-referent ,prep-word))
          ;; (when (eq prep-word of) (break "np: ~a" np))
 
+         ;; important note
+         ;;  you can't locally determine that a PP should be interpreted as a relative location
+         ;;  the governing head (that takes the PP as a dependent) may have constraints on how it interprets
+         ;;  a particular preposition
+         ;; In general, you can't give a non-trivial interpretation to a PP without consulting its context
          (if *subcat-test*
            (or variable-to-bind
                (maybe-extend-premod-adjective-with-pp np pp)
@@ -1686,7 +1694,6 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
               (let ((i (sort-out-specifier/of np pobj-referent)))
                 (swap-rule-head *pobj-edge* i)
                 i))
-
              ((when (valid-method compose np pp)
                 ;; e.g. has-location + location : "the block at the left end of the row"
                 (let ((result (compose np pp)))
@@ -2334,8 +2341,17 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
         (revise-parent-edge :form category::subordinate-s))
       cl)))
 
+(defun make-subordinate-np (conj np)
+  (declare (special category::pp conj clause))
+  (or *subcat-test*
+      (define-or-find-individual 'subordinate-np
+        :subordinated-np np
+        :subordinate-conjunction conj)))
 
-         
+
+(defun add-subordinate-np-as-adjunct (np subordinate-np)
+  (or *subcat-test*
+      (bind-dli-variable :subordinate-conjunct subordinate-np np)))
 
 ;; for v in (vp vp+passive vg+passive vg)
 ;; as rel in '(which who whom why that)
