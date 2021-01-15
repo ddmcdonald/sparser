@@ -393,10 +393,10 @@
 
 (defun setup-bound-preposition (prep verb-category referent)
   "Add the preposition, referent pair to the subcat record
-   of the verb. Make a rewrite rule that composes them."
-  ;; Called from make-rules-for head when the verb has a :prep value,
-  ;; which should be a preposition or a list of the preposition, the verb,
-  ;; and the target category
+   of the verb. Make a rewrite rule that composes them.
+   Called from make-rules-for-head when the verb has a :prep value,
+   which should be a preposition or a list of the preposition, the verb,
+   and the target category"
   (declare (special category::vg))
   (let ((verb-category-copy verb-category)
         (target-category verb-category))  ;; put-forward
