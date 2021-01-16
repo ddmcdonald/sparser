@@ -75,7 +75,9 @@
             *n-bar-categories*)
            (member
             (cat-name (edge-form (right-edge-of-triple triple)))
-            `(verb+ing verb+ed vg+ing vg+ed))
+            `(verb+ing verb+ed vg+ing vg+ed
+                       number ;; added this for "study 2 participants" so that "study 2" is given priority
+                       ))
            (or 
             (null *show-priority-NG-rules*)
             ;; this gives an indication of where internal NG priority rules fire

@@ -243,6 +243,11 @@
 (def-syntax-rule (np number) ;; "position 146"
            :head :left-edge
            :form np
+  :referent (:function np-number left-edge right-edge))
+
+(def-syntax-rule (common-noun number) ;; "study 2 participants" for "study 2"
+           :head :left-edge
+           :form n-bar
            :referent (:function np-number left-edge right-edge))
 
 (def-syntax-rule (quantifier np) ;; "all the blocks" (should be red)
