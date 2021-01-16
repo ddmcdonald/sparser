@@ -148,6 +148,11 @@
         (push position-before *pending-conjunction*)
         (setq *pending-conjunction* position-before)))))
 
+(defun remove-and-from-pending-conjunction (position)
+  "Removed this specific position from the list on pending conjunction list
+   because some other routine is using it, such number-word-fsa"
+  (setq *pending-conjunction* (remove position *pending-conjunction*)))
+
 
 ;;--- Treetop hook
 

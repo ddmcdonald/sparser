@@ -176,6 +176,7 @@
               (word-after-next (pos-terminal next-position)))
          (cond
            ((eq next-word (word-named "and"))
+            (remove-and-from-pending-conjunction current-position)
             (tr :nw-fsa-hit-and current-position)
             (if (next-word-is-a-number-word? current-position)
               (scan-for-number-after-and current-position next-position)
@@ -498,7 +499,13 @@
       (multiple-value-bind (product-value product-edge)
           (two-edge-number e1 e2)
 
-        ;; lets assume the next relationship the third edge is addition
+#| (p "one hundred million")
+e4    NUMBER-PRODUCT  1 "one hundred " 3
+e3    MULTIPLIER    3 "million" 4
+
+|#
+        ;; Whether
+
         (let* ((label3 (third labels))
                (rule-name (case label3
                             (:ones 'product+ones)
