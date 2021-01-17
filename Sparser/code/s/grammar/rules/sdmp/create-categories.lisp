@@ -98,8 +98,11 @@
         
         (category::comparative)
         (category::comparative-adjp)
+        (category::comparative-adjective)
+        (category::comparative-adverb)
         (category::superlative)
         (category::superlative-adjective)
+        (category::superlative-adverb)
         (category::superlative-adjp)
 
         (category::s)
