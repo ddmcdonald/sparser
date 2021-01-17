@@ -763,8 +763,7 @@
            (optimize (debug 3)(speed 1)))
   ;;(lsp-break "compatible with vg? e = ~a" e)
   (or (vg-compatible? (edge-form e))
-      (eq category::not (edge-category e))
-      (eq category::apostrophe-t (edge-category e))
+      (member (edge-cat-name e) '(not apostrophe-t comparative))
       (verb-premod-sequence? e)
       (and (eq category::time (edge-category e))
            (not (loop for ee in (all-edges-at e)
@@ -1002,7 +1001,7 @@ than a bare "to".  |#
           ((and (edge-form e)
                 (eq (form-cat-name e) 'wh-pronoun)
                 (not (member (edge-cat-name e)
-                             '(whether when where)))
+                             '(whether when where how why)))
                 (or (not (preceding-preposition e))
                     (member (edge-cat-name e)
                             '(what whom whichever))))
@@ -1218,17 +1217,8 @@ than a bare "to".  |#
         (ecat (when (edge-p e) (edge-cat-name e)))
         (before (when (edge-p e) (edges-before e)))
         preceding-noun-refs)
-    (declare (special edges eform ecat before preceding-noun-refs))
-    #+ignore
-    (when (eq (form-cat-name e) 'adjective)
-      (break))
- 
+    (declare (special edges eform ecat before preceding-noun-refs)) 
     (cond
-       ;; why was this added by RJB on 8/23???
-      #+ignore
-      ((and (eq eform 'preposition)
-            (eq ecat 'of))
-       t)
       ((and (eq eform 'preposition)
             (eq ecat 'of)
             (loop for ee in before
@@ -1238,6 +1228,8 @@ than a bare "to".  |#
                         (member (form-cat-name ee)
                                 '(quantifier)))))
        t)
+      ((loop for ee in before thereis (member (edge-cat-name ee) '(who when whom where why how whether whoever)))
+       nil)
       ((and (loop for ev in evlist
                   thereis
                     (loop for ee in (ev-edges ev)
@@ -1249,16 +1241,22 @@ than a bare "to".  |#
        ;; plural nouns 'cannot' occur inside an NG -- only as the head
        nil)
       ((and (eq eform 'verb+ed)
-            (loop for ee in before
-                  thereis (eq (edge-form-name ee) 'proper-noun))
+            (not (loop for ee in before
+                         thereis (member (edge-form-name ee) '(det superlative-adjective))))
             (or
+             #+ignore ;; not sure what this was in for
+             (loop for ee in before thereis (member (edge-form-name ee) '(proper-noun)))
              (loop for ee in before
-                   thereis
-                     (loop for eee in (edges-before ee)
-                           thereis (and (edge-p eee)
-                                        (eq (edge-cat-name eee) 'that))))
+                     thereis
+                     (or (and (eq (edge-form-name ee) 'adverb)
+                              (loop for eee in (edges-before ee)
+                                      thereis (ng-head? eee)))
+                                
+                         (loop for eee in (edges-before ee)
+                                 thereis (and (edge-p eee)
+                                              (eq (edge-cat-name eee) 'that)))))
              (loop for ee in (edges-before-chunk)
-                   thereis
+                     thereis
                      (or (eq (edge-cat-name ee) 'of)
                          ;;(eq (edge-form-name ee) 'subordinate-conjunction)
                          (eq (edge-cat-name ee) 'since)))
