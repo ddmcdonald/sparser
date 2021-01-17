@@ -588,12 +588,6 @@
 (define-category bay :specializes comlex-verb
      :realization (:verb  "bay" :s SUBJECT))
 
-;;; found existing category BE in #P"SPARSER:SYNTAX-VG;BE.LISP"
-
-(define-category be-cl-verb :specializes comlex-verb
-     :realization (:verb ( "be"  :TENSED/SINGULAR "are" :PRESENT-PARTICIPLE "being")
- :s SUBJECT))
-
 (define-category beach :specializes comlex-verb
      :realization (:verb  "beach" :s SUBJECT :o OBJECT))
 
@@ -5906,10 +5900,6 @@
 (define-category reap :specializes comlex-verb
      :realization (:verb  "reap" :s SUBJECT :o OBJECT))
 
-(define-category reason :specializes comlex-verb
-     :binds
-      ((WITH top))
-     :realization (:verb  "reason" :s SUBJECT :o OBJECT :with WITH))
 
 (define-category reassess :specializes comlex-verb
      :binds
@@ -7800,12 +7790,6 @@
        (|AHEAD OF| top)
        (ABOVE top))
      :realization (:verb  "surge" :s SUBJECT :o OBJECT :by BY :to TO :in IN :|AHEAD OF| |AHEAD OF| :above ABOVE))
-
-(define-category surprise :specializes comlex-verb
-     :binds
-      ((BY top)
-       (WITH top))
-     :realization (:verb  "surprise" :s SUBJECT :o OBJECT :by BY :with WITH))
 
 (define-category surround :specializes comlex-verb
      :binds

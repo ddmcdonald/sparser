@@ -2647,10 +2647,6 @@
 (define-category ration-cl-noun :specializes comlex-noun
      :realization (:noun  "ration"))
 
-(define-category reason-cl-noun :specializes comlex-noun
-     :binds
-      ((WITH top))
-     :realization (:noun  "reason" :with WITH))
 
 (define-category rebuke-cl-noun :specializes comlex-noun
      :binds
@@ -5031,8 +5027,10 @@
        (WITH top)
        (INTO top)
        (IN top)
-       (TO top))
-     :realization (:noun  "tie" :about ABOUT :around AROUND :behind BEHIND :on ON :over OVER :with WITH :into INTO :in IN :to TO))
+       (TO top)
+       (BETWEEN top))
+  :realization (:noun  "tie" :about ABOUT :around AROUND :behind BEHIND :on ON :over OVER :with WITH :into INTO :in IN :to TO
+                       :between between))
 
 (define-category total-cl-noun :specializes comlex-noun
      :binds
