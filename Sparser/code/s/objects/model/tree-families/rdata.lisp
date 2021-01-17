@@ -193,7 +193,12 @@ Should mirror the cases on the *single-words* ETF."
     :subject :such\ as
     :to :to-comp :thatcomp :through :throughout :toward :towards
     :under :unlike :upon
-    :via :whethercomp :with :within :without
+    :via
+    :whethercomp
+    :whycomp
+    :with
+    :within
+    :without
 
 
     :past ;;not really
