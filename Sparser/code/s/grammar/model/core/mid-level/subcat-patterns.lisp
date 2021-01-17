@@ -58,7 +58,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
   ;; we really don't want to restrict these variables
   ;;  -- the subject and theme can be endurants, perdurants, abstract
   :binds ((subject top)
-             (object top))
+          (object top))
    :realization
     (:s subject
      :o object
@@ -144,7 +144,9 @@ subcategorization-pattern is a daughter of linguistic, abstract
      :to beneficiary
      :o theme ; 'said a few things to her sister'
      :thatcomp theme
-     :whethercomp theme))
+     :whethercomp theme
+     :whycomp theme
+        ))
 
 (define-mixin-category attributing-verb
   :specializes subcategorization-pattern
@@ -277,12 +279,13 @@ subcategorization-pattern is a daughter of linguistic, abstract
   :mixins (with-agent with-patient with-theme)
   :restrict ((agent physical-agent)
              (patient physical)
-             (theme perdurant))
+             (theme top)) ;; perdurant generalize
   :realization (:s agent
                 :o patient
                 :in patient ;; "believe in dragons" only NPs?
                 :thatcomp theme
                 :whethercomp theme
+                :whycomp theme
                 :mumble ((svscomp :s agent :c theme)
                          (svo :s agent :o patient)
                          (svoscomp :s agent  :o patient :c theme)))
@@ -310,10 +313,13 @@ subcategorization-pattern is a daughter of linguistic, abstract
 (define-mixin-category knowledge-verb
   :specializes subcategorization-pattern
   :mixins (prop-attitude with-experiencer)
-  :restrict ((experiencer (:or pronoun physical-agent))) ;; "I"
+  :restrict ((experiencer (:or pronoun physical-agent social-agent))) ;; "I"
   :realization
-    (:s experiencer
-     :mumble (svscomp :s experiencer :c theme))) ;; I know that roses are red
+  (:s experiencer
+   :howcomp theme
+   :whethercomp theme
+   :whycomp theme
+   :mumble (svscomp :s experiencer :c theme))) ;; I know that roses are red
 
 
 (define-mixin-category ask/tell
@@ -333,6 +339,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
                 :to-comp theme
                 :thatcomp theme
                 :whethercomp theme
+                :whycomp theme
                 :mumble ((svscomp :s agent :c theme)
                          (svo :s agent :o beneficiary)
                          (svoscomp :s agent  :o beneficiary :c theme))))
