@@ -880,7 +880,6 @@
   :binds ((process bio-process))
     :realization
     (:verb "implicate" ;; keyword: ENDS-IN-ING 
-	   :noun "implication"
 	   :etf (svo-passive)
            :in process))
 
@@ -1432,10 +1431,12 @@
 
 ;; base form is "underlie" though...
 (define-category underly :specializes bio-relation
-    :realization
-    (:verb ("underlie" :present-participle "underlying") ;; keyword: ENDS-IN-ING 
-	   :etf (svo)
-           :o theme))
+  :restrict ((theme top)
+             (patient top))
+  :realization
+  (:verb ("underlie" :present-participle "underlying") ;; keyword: ENDS-IN-ING 
+   :etf (svo)
+   :o patient))
 
 
 (define-category upregulate
