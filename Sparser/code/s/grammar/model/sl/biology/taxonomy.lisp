@@ -139,6 +139,10 @@
 (define-mixin-category bio-whethercomp
   :specializes bio-complement
   :realization (:whethercomp statement))
+
+(define-mixin-category bio-whycomp
+  :specializes bio-complement
+  :realization (:whycomp statement))
  
 (define-mixin-category bio-ifcomp  :specializes bio-complement
   :realization (:ifcomp statement))
