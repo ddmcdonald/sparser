@@ -566,7 +566,8 @@
                                    (itype-of (edge-referent (left-edge-of-triple l-triple)))))
                   (not (some-edge-satisfying? (edges-after r-triple-3) #'pp?)))
              (not (member (form-cat-name r-triple-3)
-                          '(pp vg+ing ;;and prevent GTP loading"
+                          '(whycomp thatcomp
+                            pp vg+ing ;;and prevent GTP loading"
                             ;; "To validate the use of an in vitro system to dissect the mechanism of Ras regulation.
                             to-comp where-relative-clause when-relative-clause
                             transitive-clause-without-object
