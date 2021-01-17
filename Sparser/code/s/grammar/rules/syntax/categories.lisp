@@ -197,6 +197,7 @@
 (def-form-category thatcomp)
 (def-form-category howcomp)
 (def-form-category whethercomp)
+(def-form-category whycomp)
 (def-form-category ifcomp)
 
 (def-form-category unknown-grammatical-function)
