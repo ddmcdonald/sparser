@@ -1310,6 +1310,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
            (setq vg (bind-dli-variable 'adverb adverb vg)))
           (t vg)))))
 
+
+
 (defun interpret-comparative+adjective (comparative adjp) ;; "more precise"
   "The comparative is modulating the interpretation of the adjective rather like
    a quantifier would. It doesn't change the type of the adjectival head though."
@@ -1317,6 +1319,23 @@ there was an edge for the qualifier (e.g., there is no edge for the
       (let ((head (bind-variable 'quantifier ; on top
                                  comparative adjp)))
         (specialize-object head category::comparative))))
+
+
+(defun interpret-superlative-adverb (superlative adverb) ;; "most rapidly"
+  "The superlative is modulating the interpretation of the adverb rather like
+   a quantifier would. It doesn't change the type of the adverbial head though."
+  (or *subcat-test* ; always works
+      (let ((head (bind-variable 'quantifier ; on top
+                                 superlative adverb)))
+        (specialize-object head category::superlative-adverb))))
+
+(defun interpret-comparative+adverb (comparative adverb) ;; "more rapidly"
+  "The comparative is modulating the interpretation of the adveb rather like
+   a quantifier would. It doesn't change the type of the adverbial head though."
+  (or *subcat-test* ; always works
+      (let ((head (bind-variable 'quantifier ; on top
+                                 comparative adverb)))
+        (specialize-object head category::comparative-adverb))))
 
 (defun interpret-superlative+adjective (superlative adjp)
   (or *subcat-test*
@@ -2260,11 +2279,26 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
 (defun assimilate-whethercomp (vg-or-np whethercomp)
   (assimilate-subcat vg-or-np :whethercomp whethercomp))
 
+(defun assimilate-whycomp (vg-or-np whycomp)
+  (assimilate-subcat vg-or-np :whycomp whycomp))
+
+
+
 (defun create-whethercomp (wh s)
   (declare (special category::whethercomp))
   (cond
     (*subcat-test* t)
     (t (revise-parent-edge :form category::whethercomp)
+       (let ((embedded? (not (top-level-wh-question?))))
+         (make-wh-object (category-named 'whether)
+                         :statement s
+                         :embedded embedded?)))))
+
+(defun create-whycomp (wh s)
+  (declare (special category::whycomp))
+  (cond
+    (*subcat-test* t)
+    (t (revise-parent-edge :form category::whycomp)
        (let ((embedded? (not (top-level-wh-question?))))
          (make-wh-object (category-named 'whether)
                          :statement s
