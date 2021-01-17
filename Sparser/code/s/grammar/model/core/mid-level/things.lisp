@@ -32,9 +32,12 @@
  but the information it contains is not a set of ships.")
 
 (define-category create-mental-construction-concerning :specializes perdurant
+  :mixins (knowledge-verb)
+  :restrict ((experiencer top))
   :binds ((mental-construction mental-construction-concerning) ;; may only be the direct object of the verb?
           (concerning top)) ;; perhaps (:or endurant perdurant abstract)
-  :realization (:about concerning
+  :realization (:verb "foobar -- avoid error"
+                :about concerning
                 :of concerning
                 :regarding concerning
                 :with-regard-to concerning))
@@ -45,7 +48,9 @@
 (define-category anxiety :specializes emotion :mixins (mental-construction-concerning)
   :realization (:noun "anxiety" :adj "anxious"))
 (define-category concern :specializes emotion :mixins (mental-construction-concerning)
- :realization (:noun "concern" :adj "concerned"))
+  :realization (:noun "concern" :with concerning))
+(define-category are-concerned :specializes emotion :mixins (create-mental-construction-concerning)
+ :realization (:adj "concerned" :with concerning))
 (define-category confusion :specializes create-mental-construction-concerning :mixins (emotion)
  :realization (:noun "confusion" :adj "confused" :verb "confuse" )) ;;:etf (svo-passive)
 (define-category distress :specializes emotion :mixins (mental-construction-concerning)
@@ -55,7 +60,9 @@
 (define-category pessimism :specializes emotion :mixins (mental-construction-concerning)
  :realization (:noun "pessimism" :adj "pessimistic"))
 (define-category preoccupation :specializes emotion :mixins (mental-construction-concerning)
- :realization (:noun "preoccupation"))
+  :realization (:noun "preoccupation"))
+(define-category surprise :specializes create-mental-construction-concerning
+  :realization (:verb  "surprise" :noun "surprise"))
 (define-category stress :specializes emotion :mixins (mental-construction-concerning)
  :realization (:noun "stress"))
 (define-category worry :specializes create-mental-construction-concerning :mixins (emotion)
@@ -87,7 +94,10 @@
   ;; :of is not quite 'concerning' but for the moment? DAVID
  :realization (:noun "feeling" :of concerning))
 (define-category headline :specializes mental-construction-concerning
- :realization (:noun "headline"))
+  :realization (:noun "headline"))
+(define-category implication :specializes mental-construction-concerning
+ :realization (:noun "implication" :of concerning))
+
 (define-category insight :specializes mental-construction-concerning
  :realization (:noun "insight"))
 (define-category intuition :specializes mental-construction-concerning
@@ -109,7 +119,12 @@
 (define-category misinformation :specializes mental-construction-concerning
  :realization (:noun "misinformation"))
 (define-category questionnaire :specializes mental-construction-concerning
- :realization (:noun "questionnaire"))
+  :realization (:noun "questionnaire"))
+(define-category reason :specializes create-mental-construction-concerning
+  :mixins (knowledge-verb)
+  :binds ((WITH top))
+  :realization (:verb "reason" :noun  "reason" :with WITH))
+
 (define-category reminder :specializes mental-construction-concerning
  :realization (:noun "reminder"))
 (define-category report :specializes create-mental-construction-concerning
