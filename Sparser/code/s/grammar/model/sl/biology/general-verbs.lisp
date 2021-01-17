@@ -1436,8 +1436,8 @@
    :in theme))
 
 (define-category suggest :specializes bio-rhetorical
-  :mixins (raising-to-object bio-thatcomp)
-  :restrict ((theme (:or be biological))) ;; could be "the effects..."
+  :mixins (raising-to-object bio-thatcomp create-mental-construction-concerning)
+  :restrict ((theme top)) ;; could be "the effects..."
   :realization
   (:verb ("suggest" :present-participle "suggesting"
                        :past-tense "suggested") ;; keyword: ENDS-IN-ED 
