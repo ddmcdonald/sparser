@@ -176,6 +176,17 @@
            :head :right-edge
            :form :n-bar
            :referent (:function adverb-noun-compound left-edge right-edge)))
+     (eval
+            `(def-syntax-rule (comparative-adverb ,nb)
+           :head :right-edge
+           :form :n-bar
+           :referent (:function adverb-noun-compound left-edge right-edge)))
+
+     (eval
+      `(def-syntax-rule (superlative-adverb ,nb)
+           :head :right-edge
+           :form :n-bar
+           :referent (:function adverb-noun-compound left-edge right-edge)))
 
      (eval
       `(def-syntax-rule (,nb adjective) ;; "RAS in vivo"
@@ -313,7 +324,7 @@
               :form np
               :referent (:function interpret-pp-adjunct-to-np left-edge right-edge)))
      
-;;--- NP + sentential-complements (THATCOMP, WHETHERCOMP, HOWCOMP, IFCOMP)
+;;--- NP + sentential-complements (THATCOMP, WHETHERCOMP, HOWCOMP, IFCOMP, WHYCOMP)
         (eval
          `(def-syntax-rule (,nb thatcomp)
               :head :left-edge
@@ -338,7 +349,12 @@
          `(def-syntax-rule (,nb to-comp)
               :head :left-edge
               :form np
-              :referent (:function interpret-to-comp-adjunct-to-np left-edge right-edge))))
+              :referent (:function interpret-to-comp-adjunct-to-np left-edge right-edge)))
+        (eval 
+         `(def-syntax-rule (,nb whycomp)
+              :head :left-edge
+              :form np
+              :referent (:function assimilate-whycomp left-edge right-edge))))
 
 
 
@@ -376,6 +392,11 @@
   :form s
   :referent (:function make-comparative-adjp-with-np left-edge right-edge))
 
+(def-syntax-rule (vg+ed than-np) ;; e.g. less concerned than liberals
+  :head :left-edge
+  :form s
+  :referent (:function make-comparative-adjp-with-np left-edge right-edge))
+
 (def-syntax-rule (polar-question-form than-np)
   :head :left-edge
   :form polar-question-form
@@ -403,61 +424,72 @@
                   (s s)
                   (infinitive infinitive)
                   (to-comp to-comp))
-  ;; "here" is used adverbially
-  do
-  (eval 
-   `(def-form-rule (deictic-location ,(car vv))
-        :head :right-edge
-        :form ,(second vv)
-        :referent (:function interpret-adverb+verb left-edge right-edge)))
-  (eval 
-   `(def-form-rule (,(car vv) deictic-location)
-        :head :left-edge
-        :form ,(second vv)
-        :referent (:function interpret-adverb+verb right-edge left-edge)))
+      ;; "here" is used adverbially
+      do
+         (eval 
+          `(def-form-rule (deictic-location ,(car vv))
+             :head :right-edge
+             :form ,(second vv)
+             :referent (:function interpret-adverb+verb left-edge right-edge)))
+         (eval 
+          `(def-form-rule (,(car vv) deictic-location)
+             :head :left-edge
+             :form ,(second vv)
+             :referent (:function interpret-adverb+verb right-edge left-edge)))
   
-  (eval
-   `(def-syntax-rule  (adverb ,(car vv))
-        :head :right-edge
-        :form ,(second vv)
-        :referent (:function interpret-adverb+verb left-edge right-edge)))
+         (eval
+          `(def-syntax-rule  (adverb ,(car vv))
+             :head :right-edge
+             :form ,(second vv)
+             :referent (:function interpret-adverb+verb left-edge right-edge)))
+         (eval
+          `(def-syntax-rule  (comparative-adverb ,(car vv))
+             :head :right-edge
+             :form ,(second vv)
+             :referent (:function interpret-adverb+verb left-edge right-edge)))
 
-     (eval
-      `(def-form-rule (not ,(car vv))
-           :form ,(second vv)
-           :head :right-edge
-           :referent (:head right-edge
-                     :bind (negation left-edge))))
+         (eval
+          `(def-syntax-rule  (superlative-adverb ,(car vv))
+             :head :right-edge
+             :form ,(second vv)
+             :referent (:function interpret-adverb+verb left-edge right-edge)))
+
+         (eval
+          `(def-form-rule (not ,(car vv))
+             :form ,(second vv)
+             :head :right-edge
+             :referent (:head right-edge
+                        :bind (negation left-edge))))
      
-  (eval
-    `(def-form-rule  (both ,(car vv))
-        :head :right-edge
-        :form ,(second vv)
-        :referent (:function interpret-verb-conjunction-quantifier+verb left-edge right-edge)))
+         (eval
+          `(def-form-rule  (both ,(car vv))
+             :head :right-edge
+             :form ,(second vv)
+             :referent (:function interpret-verb-conjunction-quantifier+verb left-edge right-edge)))
 
-  (eval
-    `(def-form-rule  (either ,(car vv))
-        :head :right-edge
-        :form ,(second vv)
-        :referent (:function interpret-verb-conjunction-quantifier+verb left-edge right-edge)))
+         (eval
+          `(def-form-rule  (either ,(car vv))
+             :head :right-edge
+             :form ,(second vv)
+             :referent (:function interpret-verb-conjunction-quantifier+verb left-edge right-edge)))
 
-  (eval
-   `(def-syntax-rule  (approximator ,(car vv))
-        :head :right-edge
-        :form ,(second vv)
-        :referent (:function interpret-adverb+verb left-edge right-edge)))
+         (eval
+          `(def-syntax-rule  (approximator ,(car vv))
+             :head :right-edge
+             :form ,(second vv)
+             :referent (:function interpret-adverb+verb left-edge right-edge)))
 
-  (eval
-   `(def-syntax-rule  (,(car vv) adverb)
-        :head :left-edge
-        :form ,(second vv)
-        :referent (:function interpret-adverb+verb right-edge left-edge)))
+         (eval
+          `(def-syntax-rule  (,(car vv) adverb)
+             :head :left-edge
+             :form ,(second vv)
+             :referent (:function interpret-adverb+verb right-edge left-edge)))
 
-   (eval
-   `(def-form-rule  (,(car vv) n-fold)
-        :head :left-edge
-        :form ,(second vv)
-        :referent (:function interpret-adverb+verb right-edge left-edge))))
+         (eval
+          `(def-form-rule  (,(car vv) n-fold)
+             :head :left-edge
+             :form ,(second vv)
+             :referent (:function interpret-adverb+verb right-edge left-edge))))
 
 
 
@@ -758,6 +790,11 @@
               :form ,(second vv)
               :referent (:function assimilate-whethercomp left-edge right-edge)))
         (eval
+         `(def-syntax-rule (,(car vv) whycomp)
+              :head :left-edge
+              :form ,(second vv)
+              :referent (:function assimilate-whycomp left-edge right-edge)))
+        (eval
          `(def-syntax-rule (,(car vv) ifcomp)
               :head :left-edge
               :form ,(second vv)
@@ -843,7 +880,7 @@
 (def-form-rule (why s)
     :form whethercomp
     :head :right-edge
-    :referent (:function create-whethercomp left-edge right-edge))
+    :referent (:function create-whycomp left-edge right-edge))
 
 ;; For the moment, treat clauses like "if STAT3 regulates MEK" in "Tell me if STAT3..."
 ;;  creates bad parses for subordinated conjunction use of "if"
@@ -1254,25 +1291,26 @@ similar to an oncogenic RasG12V mutation (9)."))
 
 (def-syntax-rule (comparative adjective) ;; "more precise"
     :head :right-edge
-    :form comparative-adjp
+    :form comparative-adjective
     :referent (:function interpret-comparative+adjective left-edge right-edge))
 
 (def-syntax-rule (superlative adjective)
     :head :right-edge
-    :form adjp ;;superlative-adjp ;; adjective ;;superlative
+    :form superlative-adjective ;;superlative-adjp ;; adjective ;;superlative
     :referent (:function interpret-superlative+adjective left-edge right-edge))
 
 
 (def-syntax-rule (superlative adverb) ;;/// what's an example of this??
     ;; "most frequently"
     :head :right-edge
-    :form adverb ;;superlative-adverb ;; adverb ;;superlative
-    :referent (:function interpret-superlative+adjective left-edge right-edge))
+    :form superlative-adverb ;;superlative-adverb ;; adverb ;;superlative
+    :referent (:function interpret-superlative-adverb left-edge right-edge))
 
-(def-syntax-rule (comparative-adjective adverb) ; "more tightly"
+(def-syntax-rule (comparative adverb) ; "more/less tightly"
     :head :right-edge
-    :form adverb
-    :referent (:function interpret-comparative+adjective left-edge right-edge))
+    :form comparative-adverb
+  :referent (:function interpret-comparative+adverb left-edge right-edge))
+
 ;;/// these functions need method options since the implicatures
 ;; are based on the direction of the comparative
 (def-syntax-rule (quantifier comparative) ;; "many more"
