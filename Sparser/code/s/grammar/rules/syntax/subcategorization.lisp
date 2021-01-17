@@ -317,6 +317,7 @@
     :oc ; object-complement
     :verb-premod
     :whethercomp
+    :whycomp
     ))
 
 
