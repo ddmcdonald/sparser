@@ -5138,7 +5138,14 @@
        (IN top)
        (UPON top)
        (ON top))
-     :realization (:noun  "focus" :among AMONG :in IN :upon UPON :on ON))
+  :realization (:noun  "focus" :among AMONG :in IN :upon UPON :on ON))
+
+(define-category marker-cl-noun :specializes comlex-noun
+     :binds
+      ((FOR top))
+     :realization (:noun  "marker"  :for FOR))
+
+
 
 (define-category monitor-cl-noun :specializes comlex-noun
      :binds
