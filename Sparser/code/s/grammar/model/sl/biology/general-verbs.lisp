@@ -1328,39 +1328,6 @@
          :etf (svo-passive)
          :to value))
 
-
-;; can be both "<people> show ..." and "<molecule> shows <properties>"
-(define-category show :specializes bio-rhetorical
-   :mixins (bio-thatcomp raising-to-object directed-action
-            with-specified-location takes-wh-nominals)           
-  :restrict ((theme (:or be biological predication abstract))
-             (beneficiary interlocutor))
-  ;; it was shown that
-  :realization
-  (:verb ("show" :past-tense "showed" :past-participle "shown")
-         :etf (svo-passive)))
-
-;; two verbs that are similar to "show" and are used in papers
-(define-category demonstrate :specializes bio-rhetorical
-   :mixins (bio-thatcomp raising-to-object directed-action
-            with-specified-location takes-wh-nominals)           
-  :restrict ((theme (:or be biological predication abstract))
-             (beneficiary interlocutor))
-  ;; it was shown that
-  :realization
-  (:verb "demonstrate"
-         :etf (svo-passive)))
-
-(define-category exhibit :specializes bio-rhetorical
-   :mixins (bio-thatcomp raising-to-object directed-action
-            with-specified-location takes-wh-nominals)           
-  :restrict ((theme (:or be biological predication abstract))
-             (beneficiary interlocutor))
-  ;; it was shown that
-  :realization
-  (:verb ("exhibit" :past-tense "exhibited" :past-participle "exhibited")
-         :etf (svo-passive)))
-
 (define-category list :specializes perdurant
   :mixins (directed-action)
   :binds ((theme (:or be biological predication abstract)))
@@ -1384,12 +1351,6 @@
   :realization
   (:verb "state" ;; keyword: ENDS-IN-ED 
          :noun "statement"
-         :etf (svo-passive)))
-
-;; want this to inherit from SHOW, so moved it here
-(define-category reveal :specializes show
-  :realization
-  (:verb "reveal" :noun "revelation" 
          :etf (svo-passive)))
 
 #| This is there before the attribute-value 'slow' loads
@@ -1461,7 +1422,7 @@
        :etf (svo-passive)))
 |#
 
-(define-category tend :specializes bio-rhetorical
+(define-category tend :specializes action-on-eventuality
    ;; :mixins (bio-tocomp) working on this.. other comps not working.
     :realization
     (:verb "tend" ;; keyword: ENDS-IN-ED 
@@ -1474,7 +1435,8 @@
           (participant top) ;; "test X on <participant>"
           (presence-of biological))
   :realization
-  (:verb "test" ;; keyword: ENDS-IN-ED 
+  (:verb "test" ;; keyword: ENDS-IN-ED
+         :noun "test"
          :etf (svo-passive)
          :for presence-of
          :on participant

@@ -42,6 +42,13 @@
                 :regarding concerning
                 :with-regard-to concerning))
 
+(define-mixin-category takes-wh-nominals
+  :specializes linguistic  
+  :documentation "Provides an indicator that a predicate
+ should be understood as taking wh-nominal arguments.
+ Useful for cases that don't fall into a family of
+ nominal-taking predicates")
+
 
 (define-category emotion :specializes mental-construction)
 
@@ -125,10 +132,45 @@
   :binds ((WITH top))
   :realization (:verb "reason" :noun  "reason" :with WITH))
 
+
+;; two verbs that are similar to "show" and are used in papers
+(define-category show :specializes create-mental-construction-concerning
+  :mixins (thatcomp raising-to-object directed-action
+            with-specified-location takes-wh-nominals)           
+  :restrict (;; (theme (:or be biological predication abstract))
+             (beneficiary interlocutor))
+  :realization
+  (:verb ("show" :past-tense "showed" :past-participle "shown")
+         :etf (svo-passive)))
+
+;; two verbs that are similar to "show" and are used in papers
+(define-category demonstrate :specializes create-mental-construction-concerning
+  :mixins (thatcomp raising-to-object directed-action
+            with-specified-location takes-wh-nominals)           
+  :restrict (;; (theme (:or be biological predication abstract))
+             (beneficiary interlocutor))
+  :realization
+  (:verb "demonstrate"
+         :noun "demonstration"
+         :etf (svo-passive)))
+
+(define-category exhibit :specializes create-mental-construction-concerning
+  :mixins (thatcomp raising-to-object directed-action
+           with-specified-location takes-wh-nominals)           
+  :restrict ( ;; (theme (:or be biological predication abstract))
+             (beneficiary interlocutor))
+  ;; it was shown that
+  :realization
+  (:verb ("exhibit" :past-tense "exhibited" :past-participle "exhibited")
+   :noun "exhibit"
+   :etf (svo-passive)))
+
 (define-category reminder :specializes mental-construction-concerning
  :realization (:noun "reminder"))
 (define-category report :specializes create-mental-construction-concerning
- :realization (:noun "report" :verb "report")) ;;/// merge with model/sl/reports version
+  :realization (:noun "report" :verb "report")) ;;/// merge with model/sl/reports version
+(define-category reveal :specializes create-mental-construction-concerning
+ :realization (:noun "reveal" :verb "reveal"))
 (define-category scare :specializes create-mental-construction-concerning
  :realization (:verb ("scare" :past-tense "scared" :past-participle "scared")))
 (define-category speculation :specializes create-mental-construction-concerning
