@@ -24,6 +24,7 @@
   :binds ((multiplier (:or #|n-fold|# measurement
                                       unit-of-measure))
           (info-context (:or model database))
+          (variable top)
           )
   :mixins (protein-verb-premod)
   :realization
@@ -33,7 +34,8 @@
          :by multiplier
          :m multiplier
          :in info-context
-         :at pathway-segment ;; should-be generalized
+   :at pathway-segment ;; should-be generalized
+         :for variable ;; the test controlled for age
          ))
                     
 
