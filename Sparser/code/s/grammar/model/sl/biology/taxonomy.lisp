@@ -485,7 +485,8 @@
 ;;;----------------
 
 (define-category bio-rhetorical :specializes perdurant
-  :mixins (with-agent biological 
+  :mixins (bio-complement
+           with-agent biological 
            bio-thatcomp bio-whethercomp
            with-measurement bio-howcomp)
   :restrict ((agent
