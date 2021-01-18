@@ -273,6 +273,36 @@ subcategorization-pattern is a daughter of linguistic, abstract
  The ETF for this set of arguments is 'svol'.
  In TRIPS 'put' is  agent, affected, result.")
 
+;;;;;;;;;;;;;;;
+
+(define-mixin-category with-complement
+  :specializes abstract
+  :binds ((statement top))
+  :documentation "Common parent to the other types of biological 
+    complements to share the same standard set of bindings.")
+
+;; closely related to prop-attitude and we should revise to take that into account
+(define-mixin-category thatcomp :specializes with-complement
+  :realization (:thatcomp statement)
+  :documentation "Actions that take a that complement -- verbs of
+     communication, demonstration, observation. Would like to have a
+     better break-down of these -- at least for whether they are
+     positive or negative in terms of belief state. The prefix -bio-
+     may not be warranted, since these are quite general, but at the
+     moment we are putting them below the bio-processes.")
+
+(define-mixin-category howcomp :specializes with-complement
+  :realization (:howcomp statement))
+
+(define-mixin-category whethercomp :specializes with-complement
+  :realization (:whethercomp statement))
+
+(define-mixin-category whycomp :specializes with-complement
+  :realization (:whycomp statement))
+ 
+(define-mixin-category ifcomp  :specializes with-complement
+  :realization (:ifcomp statement))
+
 
 (define-mixin-category prop-attitude ;; "believe that"
   :specializes subcategorization-pattern
