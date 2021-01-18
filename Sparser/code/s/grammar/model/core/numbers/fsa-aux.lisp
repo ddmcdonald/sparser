@@ -42,6 +42,8 @@ completed a battery of items")
 ;;; trace
 ;;;-------
 
+;; (setq *debug-numbers* t)
+
 (defparameter *trace-number-word-fsa* nil)
 (defun trace-number-words ()
   (setq *trace-number-word-fsa* t))

@@ -176,10 +176,11 @@
               (word-after-next (pos-terminal next-position)))
          (cond
            ((eq next-word (word-named "and"))
-            (remove-and-from-pending-conjunction current-position)
             (tr :nw-fsa-hit-and current-position)
             (if (next-word-is-a-number-word? current-position)
-              (scan-for-number-after-and current-position next-position)
+              (then
+                (remove-and-from-pending-conjunction current-position)
+                (scan-for-number-after-and current-position next-position))
               (else (tr :nw-not-number-word next-word)
                     (tr :nw-terminating-at current-position)
                     current-position)))
@@ -418,7 +419,8 @@
   (def-cfr number (number-product ones-number)))
 (defparameter product+tens
   (def-cfr number (number-product tens-number)))
-              
+(defparameter product*multiplier
+  (def-cfr number (number-produce multiplier)))
 
 (defparameter tens+ones
   (def-cfr number (tens-number ones-number)))
@@ -438,6 +440,7 @@
       (1 (break "How did we get here with just one edge?"))
       (2 (two-edge-number (car edges) (cadr edges)))
       (3 (three-edge-number edges))
+      (4 (four-edge-number edges))
       (otherwise
        (push-debug `(,edges))
        (error "no algorithm to compute the value of ~a number edges:~%~a"
@@ -482,8 +485,6 @@
          (when *debug-numbers*
            (break "next two-edge case: ~a" labels)))))))
 
-
-
 (defgeneric three-edge-number (edges)
   (:method ((edges list))
     (let ((e1 (first edges))
@@ -493,28 +494,25 @@
       ;; If there's not a multiplicand in the middle then need to rethink
       (unless (eq (second labels) :multiplicand)
         (when *debug-numbers*
-          (break "unanticipated 3-edge number: ~a" labels))
+          (break "unanticipated pattern of 3-edge number: ~a" labels))
         (return-from three-edge-number nil))
 
       (multiple-value-bind (product-value product-edge)
           (two-edge-number e1 e2)
 
-#| (p "one hundred million")
-e4    NUMBER-PRODUCT  1 "one hundred " 3
-e3    MULTIPLIER    3 "million" 4
-
-|#
-        ;; Whether
-
+        ;; Whether we add or multiply depends on the label on e3
         (let* ((label3 (third labels))
                (rule-name (case label3
-                            (:ones 'product+ones)
-                            (:tens 'product+tens)
+                            (:ones 'product+ones) ; "two"
+                            (:tens 'product+tens) ; "thirty"
+                            (:multiplicand        ; "million"
+                             'product*multiplier)
                             (otherwise
-                             (break "New label on edge three")))))
-
+                             (break "New label on edge thre: ~a" label3)))))
           (let* ((product-lisp-value (value-of 'value product-value))
-                 (lisp-value (+ product-lisp-value (number-value e3)))
+                 (lisp-value (if (eq label3 :multiplicand)
+                               (* product-lisp-value (number-value e3))
+                               (+ product-lisp-value (number-value e3))))
                  (number (find-or-make-number lisp-value))
                  (edge (make-chart-edge
                         :left-edge product-edge :right-edge e3
@@ -525,6 +523,40 @@ e3    MULTIPLIER    3 "million" 4
                     edge)))))))
 
 
+(defgeneric four-edge-number (edges) ;; e.g. "One hundred thirty three"
+  (:documentation "Assumes this is two pairs that are added together")
+  (:method ((edges list))
+    (let ((e1 (first edges))
+          (e2 (second edges))
+          (e3 (third edges))
+          (e4 (fourth edges))
+          (labels (loop for e in edges collect (numeric-label e))))
+      
+      ;; peel off the first two and form their edge
+      (unless (eq (second labels) :multiplicand)
+        (when *debug-numbers*
+          (break "unanticipated pattern of 4-edge number: ~a" labels))
+        (return-from four-edge-number nil))
+      (multiple-value-bind (leading-value leading-edge)
+          (two-edge-number e1 e2)
+
+        ;; Do we need to do any prep on the 2d pair?
+        (multiple-value-bind (trailing-value trailing-edge)
+            (two-edge-number e3 e4)
+
+          (let* ((leading-lisp-value (value-of 'value leading-value))
+                 (trailing-lisp-value (value-of 'value trailing-value))
+                 (sum (+ leading-lisp-value trailing-lisp-value))
+                 (i (find-or-make-number sum))
+                 (edge (make-chart-edge
+                        :left-edge leading-edge :right-edge trailing-edge
+                        :category category::number
+                        :form category::number
+                        :referent i
+                        :rule 'four-edge-number)))
+            (values i
+                    edge)))))))
+  
 
 
 
