@@ -34,6 +34,8 @@ indigo and gray.Mar 28, 2017
 ;;--- size
 (define-size "big" :dir :+)
 (define-size "little" :dir :-)
+;; DAVID -- (define-size "little to no" ...) caused an error -- WHY
+(adj "little to no" :specializes size-value) ;; little to no evidence was found
 
 (define-size "large" :dir :+)
 (define-size "small" :dir :-)
