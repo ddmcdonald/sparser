@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1994,2016-2020  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2016-2021  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "FSA"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  May 2020
+;;;  January:  May 2021
 
 ;; initiated November 1990
 ;; 0.1  (2/15/91 v1.8.1)  Changed *trace-pw-buffer* to *trace-next-terminal*
@@ -213,3 +213,38 @@
 (deftrace :efsa-failed ()
   (when *trace-fsas*
     (trace-msg "[FSA]    it failed")))
+
+
+
+;;;---------------------
+;;; apostrophe handling
+;;;---------------------
+
+(deftrace :apos-start (p)
+  ;; called from apostrophe-fsa
+  (when *trace-fsas*
+    (trace-msg "[FSA: apostrophe] Starting FSA for |'s_or't| at p~A"
+               (pos-token-index p))))
+
+(deftrace :apos-created-edge-over (word edge)
+  ;; called from apostrophe-fsa
+  (when *trace-fsas*
+    (trace-msg "[FSA: apostrophe] scanned ~A and created the edge~
+              ~%        ~A" word edge)))
+
+(deftrace :apos-end (word)
+   ;; called from apostrophe-fsa
+  (when *trace-fsas*
+    (trace-msg "[FSA: apostrophe] No 's' at the end ~
+               of the prior word ~a" word)))
+
+(deftrace :s-on-prior-word-apostrophe-afterwards (edge word)
+  ;; called from mark-possessive-on-prior-word
+  (when *trace-fsas*
+    (trace-msg "  The prior word, \"~A\", ends in 's', so the ' ~
+              ~%    is spanned as ~A" (word-pname word) edge)))
+
+(deftrace :apos-space-to-left ()
+     ;; called from apostrophe-fsa
+  (when *trace-fsas*
+    (trace-msg "[FSA: apostrophe] space to the left. Not completing")))

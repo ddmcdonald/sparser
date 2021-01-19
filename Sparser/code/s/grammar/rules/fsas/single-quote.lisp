@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-1995,2012-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1995,2012-2021 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "single quote"
 ;;;   Module:  "grammar;rules:FSAs:"
-;;;  Version:  December2020
+;;;  Version:  January 2021
 
 ;; initiated 4/23/91 v1.8.4, tweeked 4/24,25, Comment added 1/3/92
 ;; 1.0 (11/24/92 v2.3) Flushed the old use of fake names as referents
@@ -57,6 +57,8 @@
 ;;; fsa
 ;;;------
 
+;; (trace-fsas)
+
 (defun apostrophe-fsa (single-quote starting-position)
   ;; There's a single-quote (appostrophe) at the starting position.
   ;; We check here whether there's an "s", "t", "re", or "ll" just after it,
@@ -65,9 +67,7 @@
            (special category::verb category::modal category::verb+present
                     word::|s| word::|t| word::|re| word::|d|
                     word::|ve| word::|ll| word::|m| ))
-  (when *trace-fsas*
-    (format t "~&Starting FSA for |'s_or't| at p~A~%"
-            (pos-token-index starting-position)))
+  (tr :apos-start starting-position)
 
   (let ((next-position (chart-position-after starting-position)))
     (unless (pos-assessed? next-position)
@@ -102,7 +102,7 @@
              (setq spanning-category category::apostrophe-m
                    form category::verb+present
                    referent (category-named 'be))))
-        
+
       (if spanning-category
         (then
           (setq edge
@@ -115,22 +115,30 @@
                  :ending-position
                  (setq position-after
                        (chart-position-after next-position))))
-          
-          (when *trace-fsas*
-            (format t "~&  It scanned ~A and created the edge~
-                       ~%     ~A~%" word edge))
+          (tr :apos-created-edge-over word edge)
           position-after )
         
-        ;; check for "xxxs'" -- possessive off of a plural
-        (let ((prior-word
-               (pos-terminal (chart-position-before starting-position))))
-          (if (eq :ends-in-s (word-morphology prior-word))
-            (mark-possessive-on-prior-word starting-position
-                                           next-position prior-word)
-            (else
-              (when *trace-fsas*
-                (format t "~&  It scanned ~A and terminated~%" word))
-              next-position )))))))
+        ;; check for "xxxs' -- possessive off of a plural
+        (if (pos-preceding-whitespace starting-position)
+          ;; there's a space to the left of the apostrophe
+          (then (tr :apos-space-to-left)
+                nil)
+
+          (let ((prior-word
+                 (pos-terminal (chart-position-before starting-position))))
+            (if (word-morphology prior-word)
+              ;; something to look at
+              (if (eq :ends-in-s (word-morphology prior-word))
+                (mark-possessive-on-prior-word starting-position
+                                               next-position prior-word)
+                (else
+                  (tr :apos-end prior-word)
+                  next-position))
+              (else ;;/// should we complain? -- define-adjective is an offender
+               ;;(break "No morphology recorded on ~a" prior-word)
+               ))))))))
+
+  
 
 
 (defun mark-possessive-on-prior-word (pos-before pos-after word)
@@ -150,9 +158,3 @@
           :ending-position pos-after )))
     (tr :s-on-prior-word-apostrophe-afterwards edge word)
     pos-after ))
-
-
-(deftrace :s-on-prior-word-apostrophe-afterwards (edge word)
-  (when *trace-fsas*
-    (trace-msg "  The prior word, \"~A\", ends in 's', so the ' ~
-              ~%    is spanned as ~A" (word-pname word) edge)))
