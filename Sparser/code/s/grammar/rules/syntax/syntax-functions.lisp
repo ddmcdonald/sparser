@@ -167,37 +167,7 @@ like prepositional-phase (see syntax/syntactic-classes.lisp) |#
 ;;;-----------------------------
 ;;; enabling k-methods (or not)
 ;;;-----------------------------
-
-(defparameter *use-k-methods-in-syntax-functions* t
-  "Permits overriding default in use-methods")
-
-(defun use-methods ()
-  "Gates k-method calls such as 'compose'. "
-  (declare (special *use-k-methods-in-syntax-functions*))
-  (or *use-k-methods-in-syntax-functions*
-      (not (current-script :biology))))
-
-(defmacro applicable-method (method &rest arguments)
-  "Combines the 'do we use methods?' gate with the check to determine whether
-   there is a signature on this method for this particular set of arguments."
-  (when (use-methods)
-    `(most-specific-k-method ',method (list ,@arguments)) ))
-
-(defmacro valid-method (method &rest arguments)
-  "If there is an applicable signature for this method, apply the method
-   and return the results. Intended for use in the *subcat-test* portion
-   of a function, where a similar clause in the method applies its test."
-  (when (use-methods)
-    `(when (most-specific-k-method ',method (list ,@arguments))
-       (apply ',method (list ,@arguments)))))
-
-(defmacro apply-valid-method (method &rest arguments)
-  "Largely just a renaming, but leaves open the option of communicating the
-   'passed the test' flag some other way."
-  (when (use-methods)
-    `(when (most-specific-k-method ',method (list ,@arguments))
-       (apply ',method (list ,@arguments)))))
-
+;;   Contents moved to syntax/syntax-methods 1/19/21
 
 
 ;;;-------------
