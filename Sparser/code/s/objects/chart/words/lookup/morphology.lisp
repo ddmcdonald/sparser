@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1990,1991  Content Technologies Inc.
-;;; copyright (c) 1992-1993,2014-2020  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1993,2014-2021  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "morphology"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:  April 2020
+;;;  Version:  January 2021
 
 ;; initiated June 1990
 ;; 0.1 (7/22/91 v1.8.6) Added an error check in Start-affix-stripper/
@@ -63,7 +63,7 @@
         (setq *ending-that-was-stripped-off*
               (or (try-to-strip-off-ED/wb  index-of-last-char)
                   (try-to-strip-off-ING/wb index-of-last-char)
-                  ;;(try-to-strip-off-S/wb   index-of-last-char)
+                  (try-to-strip-off-S/wb   index-of-last-char)
                   (try-to-strip-off-LY/wb  index-of-last-char)
                   ))
         (when *ending-that-was-stripped-off*
@@ -72,17 +72,13 @@
                    (ecase  *ending-that-was-stripped-off*
                      (:ends-in-ed  2)
                      (:ends-in-ly  2)
-                     ;;(:ends-in-s   1)
+                     (:ends-in-s   1)
                      (:ends-in-ing 3)))))
 
         *ending-that-was-stripped-off* ))))
 
 
 ;;----- "ed"
-
-
-
-
 
 (defun try-to-strip-off-ED/wb (index-of-last-char)
   (let ((char (char/wb index-of-last-char)))
@@ -95,7 +91,6 @@
     (if (char-equal char #\e)
       :ends-in-ed
       nil)))
-
 
 #|
 (defun try-to-strip-off-ED/wb (index-of-last-char)
@@ -146,8 +141,6 @@
     (if (char-equal char #\i)
       :ends-in-ing
       nil)))
-
-
 
 #|
 (defun try-to-strip-off-ING/wb (index-of-last-char)
