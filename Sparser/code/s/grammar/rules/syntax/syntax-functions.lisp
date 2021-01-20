@@ -801,52 +801,51 @@ val-pred-var (pred vs modifier - left or right?)
 (defun determiner-noun (determiner head)
   "bind the determiner to a variable (no longer stash it in mention)"  
   (if *subcat-test*
-      (or (applicable-method compose determiner head)
-          (let ((det-edge (left-edge-for-referent)))
-            ;; "HOW" is not a valid determiner, though "WHAT" and "WHICH" are
-            (or (not (eq (edge-form-name det-edge) 'wh-pronoun))
-                (member (edge-cat-name det-edge)
-                        '(what which whichever whose how-many how-much))))
-          (valid-method determiner+np determiner head))
+    (or (valid-method apply-determiner determiner head)
+        (let ((det-edge (left-edge-for-referent)))
+          ;; "HOW" is not a valid determiner, though "WHAT" and "WHICH" are
+          (or (not (eq (edge-form-name det-edge) 'wh-pronoun))
+              (member (edge-cat-name det-edge)
+                      '(what which whichever whose how-many how-much)))))
     
-      (let* ((parent-edge (parent-edge-for-referent))
-             (det-edge (left-edge-for-referent))
-             (det-word (edge-left-daughter det-edge))
-             (head-edge (right-edge-for-referent)))
+    (let* ((parent-edge (parent-edge-for-referent))
+           (det-edge (left-edge-for-referent))
+           (det-word (edge-left-daughter det-edge))
+           (head-edge (right-edge-for-referent)))
 
-        (unless (or (determiner? det-word)
-                    (itypep determiner 'demonstrative)) ;; anticipated cases
-          (pushnew determiner *dets-seen*))
+      (unless (or (determiner? det-word)
+                  (itypep determiner 'demonstrative)) ;; anticipated cases
+        (pushnew determiner *dets-seen*))
       
-        (when (definite-determiner? determiner)
-          (add-def-ref determiner parent-edge))
+      (when (definite-determiner? determiner)
+        (add-def-ref determiner parent-edge))
       
-        (cond
-          ((when (valid-method determiner+np determiner head)
-             ;; clause returns nil if the method does
-             (let ((result (apply-valid-method determiner+np determiner head)))
-               ;; There are a ton of categories that are defined to be
-               ;; syntactic determiners that deserve their own careful
-               ;; semantic treatment that might funnel through here
-               ;; We can dispatch of the type of the determner:
-               ;; quantity, approximator, etc. Pull them out of the
-               ;; modifiers dossier. 
-               result)))
-          
-          ((or (individual-p head) (category-p head))
-           (setq head
-                 (bind-variable
-                  (if  (or (eq (edge-form-name det-edge) 'wh-pronoun)
-                           (member (edge-cat-name det-edge)
-                                   '(what which whichever whose how-many how-much)))
-                    'quantifier
-                    'has-determiner)
-                  determiner head))
-           (when (or (eq (edge-form head-edge) category::common-noun/plural)
-                     (itypep head 'plural))
-             (unless (value-of 'number head)
-               (setq head (bind-variable 'number :plural head))))
-           head)))))
+      (cond
+        ((when (valid-method apply-determiner determiner head)
+           ;; clause returns nil if the method does
+           (let ((result (apply-valid-method apply-determiner determiner head)))
+             ;; There are a ton of categories that are defined to be
+             ;; syntactic determiners that deserve their own careful
+             ;; semantic treatment that might funnel through here
+             ;; We can dispatch of the type of the determiner:
+             ;; quantity, approximator, etc. Pull them out of the
+             ;; modifiers dossier. 
+             result)))
+        
+        ((or (individual-p head) (category-p head))
+         (setq head
+               (bind-variable
+                (if  (or (eq (edge-form-name det-edge) 'wh-pronoun)
+                         (member (edge-cat-name det-edge)
+                                 '(what which whichever whose how-many how-much)))
+                  'quantifier
+                  'has-determiner)
+                determiner head))
+         (when (or (eq (edge-form head-edge) category::common-noun/plural)
+                   (itypep head 'plural))
+           (unless (value-of 'number head)
+             (setq head (bind-variable 'number :plural head))))
+         head)))))
 
 
 (defun add-def-ref (determiner parent-edge)
@@ -2538,11 +2537,11 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
 (defun make-pp (prep pobj)
   (declare (special category::prepositional-phrase))
   (if *subcat-test*
-    (or (valid-method analyze-pp prep pobj)
+    (or (valid-method analyze-pp prep pobj) ; had been compose
         (not (itypep prep category::prepositional-phrase)))
     (else
       (setq prep (individual-for-ref prep))
-      (or (apply-valid-method analyze-pp prep pobj)
+      (or (apply-valid-method analyze-pp prep pobj) ; vs. compose
           (make-simple-individual
            category::prepositional-phrase
            `((prep ,prep) (pobj ,pobj)))))))

@@ -109,7 +109,7 @@
 
 ;;--- determiners
 
-(def-k-function determiner+np (determiner head)
+(def-k-function apply-determiner (determiner head)
   (:documentation "Allows for category-specific handling of particular
    determiners and the np head, e.g. to work with things that are only 
    sort of determiners, such as WH words."))
