@@ -258,6 +258,13 @@
         *interpret-in-context* t))
 
 
+;;--- post-chunking extras
+
+(defun experimental-settings ()
+  (setq *do-adjunctive-attachments* t
+        *do-last-ditch-non-semantic-whacks* t))
+
+
 ;;--- What do we do with a segment after we've delimited
 ;;    it and parsed it.
 
