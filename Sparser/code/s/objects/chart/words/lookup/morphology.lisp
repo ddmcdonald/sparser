@@ -63,6 +63,9 @@
         (setq *ending-that-was-stripped-off*
               (or (try-to-strip-off-ED/wb  index-of-last-char)
                   (try-to-strip-off-ING/wb index-of-last-char)
+                  ;; This change leads to a different handling of mUbRas
+                  ;;  in R3 -- it used to end up as a bio-entity
+                  ;; It now ends up as a comlex-noun
                   (try-to-strip-off-S/wb   index-of-last-char)
                   (try-to-strip-off-LY/wb  index-of-last-char)
                   ))
