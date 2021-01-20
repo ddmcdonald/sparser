@@ -89,11 +89,16 @@
            :form np
            :referent (:function determiner-noun left-edge right-edge)))
      
-     (eval
+       (eval
       `(def-syntax-rule (possessive ,nb) 
            :head :right-edge
            :form np
            :referent (:function possessive-np left-edge right-edge))))
+
+(def-syntax-rule (possessive np) 
+           :head :right-edge
+           :form np
+           :referent (:function possessive-np left-edge right-edge))
 
 
 ;;--- Partitive NPs

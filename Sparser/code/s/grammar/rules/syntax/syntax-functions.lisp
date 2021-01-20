@@ -102,6 +102,9 @@
 
 
 (define-lambda-variable 'predicate
+  nil 'top)
+
+(define-lambda-variable 'genitive
     nil 'top)
 
 (define-lambda-variable 'predication
@@ -860,13 +863,16 @@ val-pred-var (pred vs modifier - left or right?)
    *subcat-test*
    (when (valid-method compose possessive head)
      (compose possessive head))
+   #+ignore
    (let ((var (subcategorized-variable head word::|of| possessive)))
      (if var
        (setq head (bind-variable var possessive head))
        (else
          ;; trace goes here
          (setq head (bind-variable 'modifier possessive head))))
-     head)))
+     head)
+   (bind-variable 'genitive possessive head)
+   ))
 
 
 (defun indefinite-pn/np (indef-pn head)
