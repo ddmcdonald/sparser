@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2017-2020  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2017-2021  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  December 2020
+;;;  Version:  January 2021
 
 ;; Initiated 2/17/17 to gather all of the k-function that might be
 ;; used into one place for better review.
@@ -95,7 +95,7 @@
   
 (def-k-function analyze-pp (preposition complement)
   (:documentation "Computes the referent of a pp created
-   by the  computed-pp ETF. Particular combinations can produced anything
+   by the computed-pp ETF. Particular combinations can produced anything
    they want. The default is the referent of the complement, which
    is equivalent to :daughter right-edge."))
 
@@ -105,6 +105,14 @@
 (def-k-function quantify (quantifier body)
   (:documentation "Provides for specializing the relationship between
    a particular category of quantifier and category of body."))
+
+
+;;--- determiners
+
+(def-k-function determiner+np (determiner head)
+  (:documentation "Allows for category-specific handling of particular
+   determiners and the np head, e.g. to work with things that are only 
+   sort of determiners, such as WH words."))
 
 
 ;;;---------------------------------

@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2020 David D. McDonald -- all rights reserved
+;;; copyright (c) 2014-2021 David D. McDonald -- all rights reserved
 ;;;
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  December 2020
+;;;  Version:  January 2021
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -806,7 +806,8 @@ val-pred-var (pred vs modifier - left or right?)
             ;; "HOW" is not a valid determiner, though "WHAT" and "WHICH" are
             (or (not (eq (edge-form-name det-edge) 'wh-pronoun))
                 (member (edge-cat-name det-edge)
-                        '(what which whichever whose how-many how-much)))))
+                        '(what which whichever whose how-many how-much))))
+          (valid-method determiner+np determiner head))
     
       (let* ((parent-edge (parent-edge-for-referent))
              (det-edge (left-edge-for-referent))
@@ -821,23 +822,25 @@ val-pred-var (pred vs modifier - left or right?)
           (add-def-ref determiner parent-edge))
       
         (cond
-          ((valid-method compose determiner head)
-           ;; There are a ton of categories that are defined to be
-           ;; syntactic determiners that deserve their own careful
-           ;; semantic treatment that might funnel through here
-           ;; We can dispatch of the type of the determner:
-           ;; quantity, approximator, etc. Pull them out of the
-           ;; modifiers dossier. 
-           (compose determiner head))
-        
+          ((when (valid-method determiner+np determiner head)
+             ;; clause returns nil if the method does
+             (let ((result (apply-valid-method determiner+np determiner head)))
+               ;; There are a ton of categories that are defined to be
+               ;; syntactic determiners that deserve their own careful
+               ;; semantic treatment that might funnel through here
+               ;; We can dispatch of the type of the determner:
+               ;; quantity, approximator, etc. Pull them out of the
+               ;; modifiers dossier. 
+               result)))
+          
           ((or (individual-p head) (category-p head))
            (setq head
-                 (bind-dli-variable
+                 (bind-variable
                   (if  (or (eq (edge-form-name det-edge) 'wh-pronoun)
-                          (member (edge-cat-name det-edge)
-                                  '(what which whichever whose how-many how-much)))
-                      'quantifier
-                      'has-determiner)
+                           (member (edge-cat-name det-edge)
+                                   '(what which whichever whose how-many how-much)))
+                    'quantifier
+                    'has-determiner)
                   determiner head))
            (when (or (eq (edge-form head-edge) category::common-noun/plural)
                      (itypep head 'plural))
@@ -2535,13 +2538,11 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
 (defun make-pp (prep pobj)
   (declare (special category::prepositional-phrase))
   (if *subcat-test*
-    (or (valid-method compose prep pobj)
+    (or (valid-method analyze-pp prep pobj)
         (not (itypep prep category::prepositional-phrase)))
     (else
       (setq prep (individual-for-ref prep))
-      (or #+ignore(when (valid-method compose prep pobj)
-                    (compose prep pobj))
-          (apply-valid-method compose prep pobj)
+      (or (apply-valid-method analyze-pp prep pobj)
           (make-simple-individual
            category::prepositional-phrase
            `((prep ,prep) (pobj ,pobj)))))))
