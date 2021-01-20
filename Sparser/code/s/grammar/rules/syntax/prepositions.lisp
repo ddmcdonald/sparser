@@ -18,7 +18,7 @@
  are possible in the future."
   :specializes prepositional)
 
-  
+#|
 (def-k-method analyze-pp ((prep category::prepositional-operator) complement)
   ;; like a daughter rule in that it just drops the preposition on the floor
   (declare (ignore prep))
@@ -30,7 +30,7 @@
   (declare (ignore prep))
   (tr :analyze-pp_t+t)
   complement)
-
+|#
 
 (defparameter *prep-complements* nil
   "For collecting examples of how this is used.")
