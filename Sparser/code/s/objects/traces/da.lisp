@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995,2011,2019-2020  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2011,2019-2021  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "DA"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  December 2020
+;;;  Version:  Jamuary 2021
 
 ;; initiated 5/5/95.  Elaborated ..5/19. 11/3/11 added missing trace.
 
@@ -21,15 +21,22 @@
 (defun untrace-da-hook ()
   (setq *trace-DA-check* nil))
 
+(defun trace-da-core ()
+  (trace-da-hook)
+  (trace-da-execution))
+(defun untrace-da-core ()
+  (untrace-da-hook)
+  (untrace-da-execution))
+
 ;; useful combination
 (defun trace-da-question ()
   (declare (special *debug-questions* *show-wh-problems*))
-  (trace-da-hook) (trace-da-execution)
+  (trace-da-core)
   (trace-questions) (setq *debug-questions* t)
   (setq *show-wh-problems* t))
 (defun untrace-da-question ()
   (declare (special *debug-questions* *show-wh-problems*))
-  (untrace-da-hook) (untrace-da-execution)
+  (untrace-da-core)
   (untrace-questions) (setq *debug-questions* nil)
   (setq *show-wh-problems* nil))
 
