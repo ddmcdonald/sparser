@@ -529,10 +529,13 @@
                '(syntactic-there)) ;; competing against a "there BE"
        (losing-to-leftwards-pp? l-triple r-triple)
        (and (eq (cat-name (cfr-form (triple-rule r-triple))) 's)
-            (member (edge-form-name (right-edge-of-triple l-triple))
-                             '(vp+ing vg+ing))
-            (not (member (edge-form-name (left-edge-of-triple l-triple))
-                         '(subordinate-conjunction))))
+            (or  (member (edge-form-name (left-edge-of-triple l-triple))
+                         '(possessive))
+                 (and
+                  (member (edge-form-name (right-edge-of-triple l-triple))
+                          '(vp+ing vg+ing))
+                  (not (member (edge-form-name (left-edge-of-triple l-triple))
+                               '(subordinate-conjunction))))))
        (and (competition-against-clausal-object? l-triple-rhs)
             ;; special case for "matches MEK inhibits ERK" --
             ;;  where we want the embedded sentence created
