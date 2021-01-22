@@ -118,6 +118,7 @@
     :head :right-edge
     :referent (:function create-partitive-np left-edge right-edge))
 
+
 ;;--- other cases of leading quantifiers making det's or np's
 
 (def-form-rule (all det) ;; e.g. "all these"
@@ -1189,6 +1190,11 @@
 (def-syntax-rule (adverb adjective)
     :head :right-edge
     :form adjective
+    :referent (:function interpret-adverb+adjective left-edge right-edge))
+
+(def-syntax-rule (approximator adjective) ;; "barely detectable"
+    :head :right-edge
+    :form adjp
     :referent (:function interpret-adverb+adjective left-edge right-edge))
 
 ;;--- predicate adjective
