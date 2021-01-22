@@ -13,6 +13,9 @@
 ;;; Example texts
 ;;;---------------
 
+;; NYT Evening Briefing 1/20/21
+"A new variant of the coronavirus variant has emerged closer to home. The mutant, which belongs to a lineage known as CAL.20C, seemed to have popped up in California in July but lain low until November. The variant may be more transmissible; it showed up in more than half of samples tested last week by researchers in Los Angeles."
+
 #| From Washington Post 1/13/21 where the larger context is China imposing a lockdown|#
 "The move comes at a time when the Chinese economy was surging back after last year’s slump and when residents, many who felt like the pandemic was a thing of the past, were getting used to something close to normal life. China, a country of 1.4 billion people, has reported an average of 109 new cases a day over the past week. (For some perspective, the U.S. is averaging a quarter-million a day.)"
 
