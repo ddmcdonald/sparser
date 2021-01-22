@@ -58,7 +58,8 @@
    Runs in two passes over the chunks. DA rules are applied
    in the second pass."
   (declare (special *allow-pure-syntax-rules*
-                    *edges-from-referent-categories* ;; repurpus
+                    *edges-from-referent-categories* ;; repurpous
+                    *do-last-ditch-non-semantic-whacks*
                     *trace-island-driving* *parse-edges* ;; trace flags
                     *trace-whack-a-rule*
                     *trace-conjunction-hook*)
@@ -80,6 +81,11 @@
     (let ((coverage (coverage-over-region start-pos end-pos)))
       (unless (eq coverage :one-edge-over-entire-segment)        
         (pass-two sentence start-pos end-pos)
+
+        ;; Moved here from sentence-processing-core
+        (repair-bad-composition sentence) ;; lifts-out predicted but smothered complements
+        (make-this-a-question-if-appropriate sentence)
+        (da-final-cycle sentence) ;; handle post-modifying subordinate conjunctions after questions
         
         (when *do-last-ditch-non-semantic-whacks*
           ;; attach subjects and objects (and all other syntactically licensed items)

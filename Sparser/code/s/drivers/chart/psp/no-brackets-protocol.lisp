@@ -325,31 +325,20 @@
       (tr :identifying-chunks-in sentence)
       (identify-chunks sentence) ;; calls PTS too
       (cleanup-segment-printing-if-necessary sentence)
-      (when *trace-island-driving* (tts)))
+      (when *trace-island-driving* (tts))
 
-    (when *parse-chunked-treetop-forest*
-      (let ((*return-after-doing-forest-level* t))
-        (declare (special *return-after-doing-forest-level*))
-        (new-forest-driver sentence)))
+      (when *parse-chunked-treetop-forest*
+        (let ((*return-after-doing-forest-level* t))
+          (declare (special *return-after-doing-forest-level*))
+          (new-forest-driver sentence))
       
-    (when *island-driving*
-      ;; We ran the analysis to completion in the just-above call to
-      ;; new-forest-driver. (We may well have only run the early parts
-      ;; of that function though.)
-      (tr :returned-from-island-driving)
-      (repair-bad-composition sentence)
-      ;; lift-out predicted but smothered complements
-      (make-this-a-question-if-appropriate sentence)
-      ;; handle post-modifying subordinate conjunctions after questions
-      (da-final-cycle sentence)
+        (when *island-driving*
+          (post-analysis-operations sentence)
 
-
-      (post-analysis-operations sentence)
-
-      (when *interpret-in-context*
-        (interpret-treetops-in-context (all-tts (starts-at-pos sentence)
-                                                (ends-at-pos sentence))))
-      (record-sentence-model-data sentence)))
+          (when *interpret-in-context*
+            (interpret-treetops-in-context (all-tts (starts-at-pos sentence)
+                                                    (ends-at-pos sentence))))
+          (record-sentence-model-data sentence)))))
   
     ;; EOS throws to a higher catch. If the next sentence
     ;; is empty we will hit the end of source as we
