@@ -115,7 +115,7 @@ in conjunction with an early version of Hark. Notable for using the
   (:script-variable *SBS*)
   (:parameters
    (*description-lattice* t)
-   (*ignore-literal-edges* t)
+   (*ignore-literal-edges* nil)
    (*index-under-permanent-instances* t)
    (*index-bindings-to-variables* nil)
    (*filter-vocabulary* :score))
