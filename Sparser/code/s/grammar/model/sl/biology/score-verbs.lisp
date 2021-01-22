@@ -7039,10 +7039,11 @@
      :realization (:verb  "ski" :s SUBJECT :o OBJECT))
 
 (define-category skyrocket :specializes comlex-verb
-     :binds
-      ((FROM top)
-       (TO top))
-     :realization (:verb  "skyrocket" :s SUBJECT :o OBJECT :from FROM :to TO))
+     :binds ((FROM top)
+             (TO top))
+     :realization (:verb ("skyrocket" :past-tense "skyrocketed"
+                                      :present-participle "skyrocketing")
+                   :s SUBJECT :o OBJECT :from FROM :to TO))
 
 (define-category sleep :specializes comlex-verb
      :binds
