@@ -150,30 +150,28 @@
   (:method ((name symbol))
     (memq name '(what which whichever whose))))
 
-                              
-(defmethod definite-np? ((e edge))
-  (or ;;(definite-np? (edge-mention e))
-   ;; not being reset? ERROR -- FIX THIS
-   (and (individual-p (edge-referent e))
+
+(defgeneric definite-np? (np)
+  (:method ((e edge))
+    (let ((referent (edge-referent e)))
+      (when (individual-p referent)
         (or
-         (and (value-of 'has-determiner (edge-referent e))
-              (definite-determiner? (value-of 'has-determiner (edge-referent e))))
-         (itypep (edge-referent e) 'these)
-         (itypep (edge-referent e) 'those)
-         (itypep (edge-referent e) 'pronoun/plural) ;; "they" "them"
+         (and (value-of 'has-determiner referent)
+              (definite-determiner? (value-of 'has-determiner referent)))
+         (itypep referent 'these)
+         (itypep referent 'those)
+         (itypep referent 'pronoun/plural) ;; "they" "them"
          ))))
+  (:method ((m discourse-mention))
+    (definite-np? (mention-source m))))
 
-(defmethod definite-np? ((m discourse-mention))
-   (definite-np? (mention-source m)))
-
-
-(defmethod indefinite-np? ((e edge))
-  (or (and (individual-p (edge-referent e))
-           (value-of 'has-determiner (edge-referent e))
-           (indefinite-determiner? (value-of 'has-determiner (edge-referent e))))))
-
-(defmethod indefinite-np? ((m discourse-mention))
-   (indefinite-np? (mention-source m)))
+(defgeneric indefinite-np? (np)
+  (:method ((e edge))
+    (and (individual-p (edge-referent e))
+         (value-of 'has-determiner (edge-referent e))
+         (indefinite-determiner? (value-of 'has-determiner (edge-referent e)))))
+  (:method ((m discourse-mention))
+    (indefinite-np? (mention-source m))))
 
 
                      
