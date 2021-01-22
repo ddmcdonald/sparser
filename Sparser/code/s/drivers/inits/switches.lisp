@@ -560,6 +560,7 @@
   (uncontroversial-settings)
   (top-edges-setting)
   (standard-extras)
+  (include-comlex)
   
   ;;(parsing-protocol-for-documents) which is ...
   (what-to-do-at-the-forest-level :new-forest-protocol)
@@ -593,7 +594,6 @@
   (whack-a-rule t)
 
   (use-unknown-words)
-  (include-comlex)
   (setq *make-edges-over-new-digit-sequences* t)
   (what-to-do-with-unknown-words
    ;; :capitalization-digits-&-morphology/or-primed
