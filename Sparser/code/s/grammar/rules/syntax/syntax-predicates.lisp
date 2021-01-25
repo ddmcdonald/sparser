@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "syntax-predicates"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  June 2019
+;;;  Version:  January 2021
 
-;; Simple function lifted from syntax-functions 8/30/16
+;; Simple functions lifted from syntax-functions 8/30/16
 
 (in-package :sparser)
 
@@ -84,8 +84,7 @@
           (equal item (car tree))
           (equal item (cdr tree))))
         (t
-         (equal item tree)))
-  )
+         (equal item tree))))
 
 
 
@@ -399,7 +398,7 @@
           (eq (edge-rule prep-edge) 'resolve-initial-stranded-hyphen)
           (eq (cat-name (edge-category right-daughter)) 'preposition))
          ;; strange case "qRT-PCR- Smyd3 -For 5′ TGCGCACCATGGAGCCGTAC"
-         ;; probably not a preoposition, but avoid this error
+         ;; probably not a preposition, but avoid this error
          right-daughter)
         ((word-p left-daughter)
          left-daughter)
@@ -492,8 +491,31 @@
         (t edge)))
 
 
+(defun variable-to-bind-pp-to-head (base-pp-edge head)
+  "Find the preposition and the pobj, asks whether the head subcategorizes
+   for this preposition. Returns four values starting with the variable
+   or nil if it doesn't."
+  (declare (special *force-modifiers*))
+  (let* ((pp-edge (base-pp base-pp-edge))
+         (prep-word (identify-preposition pp-edge))
+         (*pobj-edge* (edge-right-daughter pp-edge))
+         (pobj-referent (identify-pobj pp-edge))
+         (variable-to-bind
+          (when prep-word
+            ;; test if there is a known interpretation of the HEAD/PP combination
+            (or (subcategorized-variable head prep-word pobj-referent)
+                (and (itypep (edge-referent pp-edge) 'upon-condition)
+                     (find-variable-for-category 'context (itype-of head)))
+                ;; or if we are making a last ditch effore
+                (when *force-modifiers* 'modifier)))))
+    (values variable-to-bind
+            (individual-for-ref pobj-referent)
+            prep-word
+            *pobj-edge*)))
+
+
 ;;;--------------------
-;;; mqnipulqting edges
+;;; mqnipulating edges
 ;;;--------------------
 
 (defun swap-rule-head (edge interp)
