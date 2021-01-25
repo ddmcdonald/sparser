@@ -250,6 +250,9 @@
 (defgeneric save-article (handle article)
   (:method ((handle symbol) (article article))
     (push handle *handles-analyzed*)
+    (setf (gethash handle *handles-to-articles*) article))
+  (:method ((handle string) (article article))
+    (push handle *handles-analyzed*)
     (setf (gethash handle *handles-to-articles*) article)))
 
 (defgeneric get-article (handle)
