@@ -269,7 +269,7 @@
 (define-country "Ukraine")
 (define-country "United Arab Emirates")
 (define-country "United States"
-  :aliases '("US" "U.S." "U.S.A." "America" )
+  :aliases '("US" "U.S." "U.S.A." "America" "United States of America")
   :adjective '("American")
   :cities '("Washington, D.C." "New York"
             "San Francisco" "Miami" "Boston" "Sunnyvale" "Seattle" "Portland" "Newark"
