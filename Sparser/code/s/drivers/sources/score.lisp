@@ -226,7 +226,7 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
 
 
 
-(defun read-score-json-article (pathname &key n handle style quiet show-sect stats)
+(defun read-score-json-article (pathname &key n handle style quiet show-sect stats (skip-errors nil))
   (let ((filename (pathname-name pathname)))
     (format t "~&Reading ~a~%" filename)
     (let ((sexp (cl-json::decode-json-from-source pathname)))
@@ -237,10 +237,14 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
         (setf (name article) (intern handle (find-package :sparser)))
         (setf (article-source article) pathname)
         (sort-out-score-paragraphs article sexp)
-        (when (children article) ; could have aborted in para. construction
+        (if (children article) ; could have aborted in para. construction
           (run-json-article
-           article :quiet quiet :show-sect show-sect :stats stats ;; :skip-errors nil catch errors for debugging
-           ))
+           article :quiet quiet :show-sect show-sect :stats stats
+           :skip-errors skip-errors ;; :skip-errors nil catch errors for debugging
+           )
+          (format t "~%~%No paragraphs in article ~s~%" article))
+        (save-article (pathname-name pathname) article)
+        
         article))))
 
 
@@ -663,7 +667,18 @@ parser will get to see them.
     p))
 
  
-
+(defun score-article-sentences (score-article &key (strings? t))
+  (loop for p in (paragraphs-in-doc-element score-article)
+        as p# from 1 by 1
+        append
+        (loop for s in (sentences-in-paragraph p)
+              as s# from 1 by 1
+              collect
+              (list (pname (name score-article))
+                    (format nil "p:~s s:~s"  p# s#)
+                    (if strings?
+                        (sentence-string s)
+                        s)))))
 
 ;;;--------------
 ;;; testing jigs
