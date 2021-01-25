@@ -476,7 +476,7 @@
 
 
 
-(define-category effect :specializes bio-control
+(define-category effect :specializes caused-bio-process-with-of-agent
   :binds ((general-cause top)
           (participants top)
           (via top)) ;; effect through <via>
@@ -488,12 +488,10 @@
   (:verb "affect" ;; NOTE -- the verb "affect" corresponds to "effect" as a noun, while the verb "effect" is rare
    :noun "effect"
    :etf (svo-passive)
-   :of agent
-   :on object
-   :on affected-process
    :of cause
    :of general-cause
-   :of agent
+   :on affected-process
+   :on object
    :between participants
    :through via
    :via via
@@ -650,7 +648,7 @@
          :noun ("formation")
          :etf (svo-passive) ))
 
-(define-category frees :specializes caused-bio-process
+(define-category frees :specializes caused-bio-process-base
    :binds ((free-of biological))
    :realization 
    (:verb ("free" :past-tense "freed")
