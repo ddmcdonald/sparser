@@ -762,6 +762,22 @@ val-pred-var (pred vs modifier - left or right?)
             (not (itypep np 'number)))
        (bind-dli-variable 'relative-position-number number np)))
 
+
+;;--- partitives
+
+(defun partitive-check-and-swap (spec right-daughter)
+  "The essential operation of installing a partitive, particularly swapping
+   what the head is. The right side will start as a pp, the right-daughter
+   parameter is the right daughter of that pp.
+   Use this function (rather than create-partitive-np) when caller knows
+   it has a partitive"
+  (let* ((pp-edge (right-edge-for-referent))
+         (right-daughter-edge (edge-right-daughter pp-edge))
+         (pobj-ref (individual-for-ref (edge-referent right-daughter-edge)))
+         (interpretation-of-head (sort-out-specifier/of spec pobj-ref)))
+    (swap-rule-head right-daughter-edge interpretation-of-head)
+    interpretation-of-head))
+
 (defun create-partitive-np (spec of-pp)
   (declare (special spec of-pp category::preposition))
   (let* ((pp-edge (right-edge-for-referent))
@@ -775,15 +791,9 @@ val-pred-var (pred vs modifier - left or right?)
         ((definite-np? right-daughter)
          (cond
            (*subcat-test* t)
-           (t
-            (unless *sentence-in-core*
-              (error "Threading bug. No value for *sentence-in-core*"))
-            ;; (break "create-partitive spec = ~a" spec) ;;#########
-            (let* ((pobj-ref (individual-for-ref (edge-referent right-daughter)))
-                   (interpretation-of-head (sort-out-specifier/of spec pobj-ref)))
-              (swap-rule-head right-daughter interpretation-of-head)
-              interpretation-of-head))))))))
-
+           (t            
+            ;; (break "create-partitive spec = ~a" spec) 
+            (partitive-check-and-swap spec right-daughter))))))))
 
 (defun create-partitive-wh-relativizer (quantifier of-pp)
   ;; e.g. "three of which"  of-pp should be a relativized-prepositional-phrase
@@ -799,6 +809,8 @@ val-pred-var (pred vs modifier - left or right?)
                             :form (category-named 'wh-pronoun))
         i)))
     
+
+;;--- determiners
 
 (defparameter *dets-seen* nil "Keep track of what kinds of new 'determiners' we get")
 
@@ -914,7 +926,6 @@ val-pred-var (pred vs modifier - left or right?)
          ;;         :quantifier quantifier :comparative comparative))
          (bind-variable 'quantifier quantifier comparative)))))
 
-  
 (defun quantifier-noun-compound (quantifier head)
   ;; Not all quantifiers are equivalent. We want to identify
   ;; cases of negation ("no increase") and eventually probably
@@ -1474,23 +1485,6 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
 |#
 
 
-(defun variable-to-bind-pp-to-head (base-pp-edge head)
-  (let* ((pp-edge (base-pp base-pp-edge))
-         (prep-word (identify-preposition pp-edge))
-         (*pobj-edge* (edge-right-daughter pp-edge))
-         (pobj-referent (identify-pobj pp-edge))
-         (variable-to-bind
-          (when prep-word
-            ;; test if there is a known interpretation of the HEAD/PP combination
-            (or (subcategorized-variable head prep-word pobj-referent)
-                (and (itypep (edge-referent pp-edge) 'upon-condition)
-                     (find-variable-for-category 'context (itype-of head)))
-                ;; circumstance)
-                ;; or if we are making a last ditch effore
-                (when *force-modifiers* 'modifier)))))
-    (values variable-to-bind (individual-for-ref pobj-referent)
-            prep-word *pobj-edge*)))
-
 (defun adjoin-prepcomp-to-vg (vg prep-comp) ;; "by binding..."
   (let* ((comp-edge (right-edge-for-referent))
          (prep-word (identify-preposition comp-edge))
@@ -1641,10 +1635,11 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
          ;; (when (eq prep-word of) (break "np: ~a" np))
 
          ;; important note
-         ;;  you can't locally determine that a PP should be interpreted as a relative location
-         ;;  the governing head (that takes the PP as a dependent) may have constraints on how it interprets
-         ;;  a particular preposition
-         ;; In general, you can't give a non-trivial interpretation to a PP without consulting its context
+         ;;  you can't locally determine that a PP should be interpreted as
+         ;;  a relative location. The governing head (that takes the PP as a dependent)
+         ;;  may have constraints on how it interprets a particular preposition.
+         ;; In general, you can't give a non-trivial interpretation to a
+         ;; PP without consulting its context
          (if *subcat-test*
            (or variable-to-bind
                (maybe-extend-premod-adjective-with-pp np pp)
@@ -1704,10 +1699,10 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
              ((and (eq prep-word of)
                    (or (itypep np 'measurement) ;; "42% of all new cases"
                        (itypep np 'number) ;; "two of them"
-                       (itypep np 'quantifier))) ;; (itypep np 'quantifier)
-              (let ((i (sort-out-specifier/of np pobj-referent)))
-                (swap-rule-head *pobj-edge* i)
-                i))
+                       (itypep np 'quantifier))) ;; "all of them"
+              (partitive-check-and-swap np pp))
+
+
              ((when (valid-method compose np pp)
                 ;; e.g. has-location + location : "the block at the left end of the row"
                 (let ((result (compose np pp)))
@@ -2762,7 +2757,77 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
   (if *subcat-test*
       t
       (bind-dli-variable :intensity intensifier adjective)))
+
+
+;;;-----------
+;;; adjp + pp
+;;;-----------
 ;;##########################################################################
+
+(defun adjoin-pp-to-adjp (adjp pp)
+  ;; The adjp is the head. We ask whether it subcategorizes for
+  ;; the preposition in this PP and if so whether the complement
+  ;; of the preposition satisfies the specified value restriction.
+  ;; Otherwise we check for some anticipated cases and then
+  ;; default to binding it to the variable modifier.
+ 
+  (push-debug `(,adjp ,pp)) ;;(break "adjoin-pp-to-adjp")
+  (unless (and adjp pp)
+    (return-from adjoin-pp-to-adjp nil))
+  (when (itypep pp 'collection)
+    (warn-or-error "Adjoining adjp to a pp that is a collection")
+    ;; See treatment in adjoin-pp-to-vg
+    (return-from adjoin-pp-to-adjp nil))
+
+  (format t "~&rule: ~a~%adjp edge: ~a~%pp edge: ~a~%"
+          (rule-being-interpreted)
+          (left-edge-for-referent)
+          (right-edge-for-referent))
+  (let* ((adjp-edge (left-edge-for-referent))
+         (adjp-form (edge-form adjp-edge))
+         (adjp-ref (edge-referent adjp-edge)))
+  
+    (multiple-value-bind (variable-to-bind
+                          pobj-referent
+                          prep-word
+                          *pobj-edge*)
+        (variable-to-bind-pp-to-head (right-edge-for-referent) adjp)
+      (push-debug `(,variable-to-bind ,pobj-referent ,prep-word ,*pobj-edge*))
+
+      (let ((of (word-named "of"))
+            (*in-scope-of-np+pp* prep-word))
+        (declare (special *in-scope-of-np+pp*))
+
+        ;;(break "adjoin-pp-to-adjp~%~a ~a" adjp pp)
+        
+        (if *subcat-test*
+          (or variable-to-bind
+              (applicable-method compose adjp pp)
+              (and (eq prep-word of) ; partitive and component readings
+                   (or (itypep adjp-ref 'quantifier) ; "most of"
+                       ))
+              (break "What licenses ~a and ~a" adjp pp))
+          
+          (cond
+            (variable-to-bind
+             (collect-subcat-statistics adjp prep-word variable-to-bind pp)
+             (setq adjp (bind-variable variable-to-bind pobj-referent adjp))
+             adjp)
+            
+            ((when (valid-method compose adjp pp)
+               (let ((result (compose adjp pp)))
+                 (when result
+                   (tr :np-pp-composition adjp pp)
+                   result))))
+
+            ((and (eq prep-word of)
+                  (itypep adjp-ref 'quantifier))  ;; create-partitive-np (spec of-pp)
+             (partitive-check-and-swap adjp pp))
+
+            (t (break "no handler for ~a + ~a" adjp pp))))))))
+
+
+
 
 ;;;------------
 ;;; add adverb

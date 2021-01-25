@@ -103,17 +103,24 @@
 
 ;;--- Partitive NPs
 
-(def-form-rule (quantifier of)
+(def-form-rule (quantifier of) ;; "all of the countries"
     :form np
     :head :left-edge
     :referent (:function create-partitive-np left-edge right-edge))
 
-(def-syntax-rule (quantifier rel-pro-to-be-quantified) ;; "many of which"
+(def-syntax-rule (quantifier rel-pro-to-be-quantified) ;; "all of which"
     :form np
     :head :left-edge
     :referent (:function create-partitive-np left-edge right-edge))
 
+
+;; Doesn't work for "most of whom"
 (def-syntax-rule (superlative-adjective pp-wh-pronoun) ;; "most of whom"
+    :form np
+    :head :right-edge
+    :referent (:function create-partitive-np left-edge right-edge))
+
+(def-form-rule (most pp-wh-pronoun)
     :form np
     :head :right-edge
     :referent (:function create-partitive-np left-edge right-edge))
@@ -693,10 +700,12 @@
                   (vp+passive vp+passive)
                   (infinitive to-comp)
                   (to-comp to-comp)
-                  (adjective adjp)
-                  (comparative-adjective adjp)
-                  (superlative-adjective adjp)
-                  (adjp adjp))
+                  ;; moved to be next to the other comparative rules
+                  ;; (adjective adjp)
+                  ;; (comparative-adjective adjp)
+                  ;; (superlative-adjective adjp)
+                  ;; (adjp adjp)
+                  )
   do
   (eval
    `(def-syntax-rule (,(car vv) pp)
@@ -1297,10 +1306,47 @@ similar to an oncogenic RasG12V mutation (9)."))
     :head :left-edge
     :form superlative-adjp
     :referent (:function adjoin-pp-to-vg left-edge right-edge))
- 
+
+
+(loop for vv in '((adjective adjp)
+                  (comparative-adjective adjp)
+                  (superlative-adjective adjp)
+                  (adjp adjp))
+  do
+  (eval
+   `(def-syntax-rule (,(car vv) pp) ;; ___ the countries
+        :head :left-edge
+        :form ,(second vv)
+        :referent (:function adjoin-pp-to-adjp left-edge right-edge)))
+
+  (eval
+   `(def-syntax-rule (,(car vv) pp-wh-pronoun)
+        :head :left-edge
+        :form ,(second vv)
+        :referent (:function adjoin-pp-to-adjp left-edge right-edge)))
+  (eval
+   `(def-syntax-rule (,(car vv) to-comp)
+        :head :left-edge
+        :form ,(second vv)
+        :referent (:function adjoin-tocomp-to-adjp left-edge right-edge)))
+  
+  (eval
+   `(def-syntax-rule (,(car vv) as-comp)
+        :head :left-edge
+        :form ,(second vv)
+        :referent (:function adjoin-ascomp-to-adjp left-edge right-edge)))
+
+  (eval
+   `(def-syntax-rule (,(car vv) prep-comp)
+        :head :left-edge
+        :form ,(second vv)
+        :referent (:function adjoin-prepcomp-to-adjp left-edge right-edge))))
+
+
+
 ;;--- comparatives + adjp
 
-(def-syntax-rule (comparative adjective) ;; "more precise"
+(def-syntax-rule (comparative adjective)
     :head :right-edge
     :form comparative-adjective
     :referent (:function interpret-comparative+adjective left-edge right-edge))
