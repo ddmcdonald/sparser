@@ -2234,6 +2234,14 @@
                                            (edge-referent edge-taking-adjunct)
                                            )))))))
 
+(defun find-adjunctive-attachments (head &optional prep)
+  (loop for ss in *adjunctive-attachments*
+        when
+        (and (eq head (second (car ss)))
+             (or (null prep)
+                 (eq prep (caar ss))))
+        collect ss))
+
 
 (define-debris-analysis-rule s-with-np-conj-pp
     :pattern (s pp)
