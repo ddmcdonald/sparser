@@ -106,7 +106,7 @@ places. ]]
          ;;(or (look-for-and-decode-comlex-irregular instance-string clauses)
          (ambiguous-comlex-primed-decoder lemma-word clauses)))
       (push instance-word *comlex-primed-words*)
-      (add-new-word-to-catalog lemma-word :comlex)
+      (add-new-word-to-catalog lemma-word :comlex instance-string)
       instance-word )))
 
 (defun is-known-definition? (lemma-word clause)
