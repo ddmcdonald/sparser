@@ -396,7 +396,7 @@
     (lsp-break "apply-of-np-to-nominalization-of-transitive")))
     
 
-(define-category caused-bio-process
+(define-category caused-bio-process-base
     :specializes bio-process
     :mixins (with-agent)
     :restrict ((participant blocked-category)
@@ -428,10 +428,20 @@
     (:s agent
         :s cause
         :o :object
-        :of :object
+        ;;:of :object
         :m agent
         :m object
-        :by agent))
+     :by agent))
+
+(define-category caused-bio-process
+  :specializes caused-bio-process-base
+  :realization
+  (:of :object))
+
+(define-category caused-bio-process-with-of-agent
+    :specializes caused-bio-process-base
+    :realization
+    (:of :agent))
 
 
 (define-category process-control-process :specializes caused-bio-process
@@ -651,7 +661,9 @@
     for 'liquid chromatography', etc. that may be the basis
     of the grammar patterns."
   :restrict ((agent biological)
-             (object (:or biological scalar-attribute measure ;; assay is a measure ;; amount measurement 
+             (object (:or biological
+                          attribute ;; was scalar-attribute, not sure why we restricted to scalar-attribute, "we obtained results"
+                          measure ;; assay is a measure ;; amount measurement 
                           ))
              (instrument (:or bio-process activity-with-a-purpose))) ;; generalizes bio-method
   
@@ -1050,27 +1062,7 @@
      :in in-family
      :m site))
 
-(define-category variant :specializes protein ;; not true, but the most common case
-                 ;; need to write rules that make the class of the result of "Pak variant"
-                 ;;  be the class of "Pak"
-                 ;; bio-chemical-entity 
-  ;; not sure this is the correct term, but intended for things like "forms of ras" 
-  :binds ((basis bio-entity)) ;; can be a gene or protein, or something else
-  :instantiates :self
-  :realization
-    (:noun ("variant" "form")
-     :m basis
-     :of basis))
-
-;;; These have been moved here to allow state to be a variant
-
-(define-category bio-state :specializes variant
-  :documentation  "not quite right, but it is almost always a protein
-      for things like activated state"
-  :binds ((stateful-item biological))
-  :realization
-    (:noun "state"
-     :of stateful-item)) ;; subject in on bio-predication
+ ;; subject in on bio-predication
 
 (define-category slashed-protein-collection :specializes protein
                  :mixins (collection)
