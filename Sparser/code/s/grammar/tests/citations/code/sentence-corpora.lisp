@@ -450,7 +450,7 @@ previous records of treetop-counts.
                    when (search str s)
                      collect s))
             ((and (consp (car all-sents))
-                  (stringp (car (last all-sents))))
+                  (stringp (car (last (car all-sents)))))
              (loop for s in all-sents
                    when (search str (car (last s)))
                      collect s))
