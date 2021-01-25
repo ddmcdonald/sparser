@@ -83,8 +83,12 @@
     (loop for e in (all-edges-on ev)
        when (treetop-over-a-verb? e)
        collect e))
+  
+  (:method ((wd word)) ;; DAVID -- what causes this?
+    nil)
   (:method ((empty null)) ; preposition is probably initial
-    nil))
+    nil)
+  )
 
 (defun push-post-mvs-verbs (tt)
   (push tt (post-mvb-verbs (layout))))
