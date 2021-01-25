@@ -220,6 +220,7 @@
  reference to the discourse context or general knowledge of defaults
  to be grounded.")
 
+
 (define-category of-prototype-description ;; terrible name -- David?
   :specializes requires-context
   :binds ((prototype top))

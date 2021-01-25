@@ -565,6 +565,12 @@ val-pred-var (pred vs modifier - left or right?)
         (let ((result (compose qualifier head)))
           (tr :composed-qualifier-with-head qualifier head result)
           result))
+       ((itypep head 'of-prototype-description)
+        ;; "MEK variant"
+        (setq head (bind-variable 'prototype qualifier head))
+        (loop for qualifier-ref-type in (indiv-type qualifier)
+              do (setq head (specialize-object head qualifier-ref-type)))
+        head)       
        ((and (not (eq script :biology))
              ;; w/o methods: "bottom" in "bottom block"
              (itypep qualifier 'object-dependent-location))
@@ -1647,6 +1653,7 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                (is-domain-adjunctive-pp? np (right-edge-for-referent))
                (and (eq prep-word of)
                     (or (itypep np 'attribute)
+                        (itypep np 'of-prototype-description)
                         (or (itypep np 'measurement) ; "42% of all new cases"
                             (itypep np 'number) ; "two of them"
                             (itypep np 'quantifier)) ; "all of them" "the majority of them"
@@ -1664,8 +1671,18 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
               (collect-subcat-statistics np prep-word variable-to-bind pp)
               (setq np (bind-dli-variable variable-to-bind pobj-referent np))
               np)
-             
              ((and (eq prep-word of)
+                   (itypep np 'of-prototype-description)) ;; "variant of MEK"
+              (setq np (bind-variable 'prototype pobj-referent np))
+              (loop for pobj-ref-type in (indiv-type pobj-referent)
+                    do (setq np (specialize-object np pobj-ref-type)))
+              np)             
+             ((and (eq prep-word of)
+                   (itypep np 'attribute)) ;; "color of the block"
+              (find-or-make-individual 'quality-predicate
+                                       ;;:attribute (itype-of np) :item pobj-referent
+                                       :attribute np
+                                       :item pobj-referent))((and (eq prep-word of)
                    (itypep np 'attribute)) ;; "color of the block"
               (find-or-make-individual 'quality-predicate
                                        ;;:attribute (itype-of np) :item pobj-referent

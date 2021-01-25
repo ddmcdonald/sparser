@@ -356,8 +356,23 @@ be biology specific, since they aren't. |#
 ;;---- other
 
 
+(define-category variant :specializes of-prototype-description
+  ;; was "protein" which is not true, but the most common case
+  ;; need to write rules that make the class of the result of "Pak variant"
+  ;;  be the class of "Pak" bio-chemical-entity 
+  ;; not sure this is the correct term, but intended for things like "forms of ras" 
+  :instantiates :self
+  :realization
+    (:noun ("variant" "form")
+))
 
+;;; These have been moved here to allow state to be a variant
 
+(define-category bio-state :specializes variant
+  :documentation  "not quite right, but it is almost always a protein
+      for things like activated state"
+  :realization
+    (:noun "state"))
 
 
 (noun "example" :super variant)
