@@ -23,7 +23,10 @@
 
 (assign-lemma transition (:common-noun "transition"))
 
-(assign-lemma quality (:common-noun "quality"))
+(noun "quality"
+      :mixins (takes-of)
+      :realization (:noun "quality"
+             ))
 (assign-lemma abstract (:common-noun "abstract"))
 (noun "relation" :binds ((participants top))
   :realization (:noun "relation" :between participants))
