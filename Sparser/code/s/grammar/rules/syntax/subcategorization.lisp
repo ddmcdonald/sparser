@@ -1440,7 +1440,7 @@
       (if (null subcat-patterns)
         (format nil "~a has no subcategorizations" c)
         (applicable-sc-patterns subcat-patterns label))))
-  (:method ((patterns cons) (label label)) ;; 'list' doesn't work either
+  (:method ((patterns cons) (label symbol)) ;; bug was argument spec (label label) -- not 'list' doesn't work either
     (sc-pat-matching-label label patterns)))
       
 (defun sc-pat-matching-label (label subcat-patterns)
