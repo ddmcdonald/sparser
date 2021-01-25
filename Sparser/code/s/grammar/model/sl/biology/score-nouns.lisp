@@ -11,6 +11,2756 @@
      :realization (:noun  "abuse"))
 
 (define-category access-cl-noun :specializes comlex-noun
+     :realization (:noun ( "access" )
+))
+
+(define-category accord-cl-noun :specializes comlex-noun
+     :realization (:noun  "accord"))
+
+(define-category account-cl-noun :specializes comlex-noun
+     :binds
+      ((BY top)
+       (ON top))
+     :realization (:noun  "account" :by BY :on ON))
+
+(define-category ache-cl-noun :specializes comlex-noun
+     :realization (:noun  "ache"))
+
+(define-category addict-cl-noun :specializes comlex-noun
+     :realization (:noun  "addict"))
+
+(define-category address-cl-noun :specializes comlex-noun
+     :realization (:noun  "address"))
+
+(define-category advocate-cl-noun :specializes comlex-noun
+     :realization (:noun  "advocate"))
+
+(define-category age-cl-noun :specializes comlex-noun
+     :realization (:noun  "age"))
+
+(define-category aggregate-cl-noun :specializes comlex-noun
+     :realization (:noun  "aggregate"))
+
+(define-category aid-cl-noun :specializes comlex-noun
+     :realization (:noun  "aid"))
+
+(define-category aim-cl-noun :specializes comlex-noun
+     :realization (:noun  "aim"))
+
+(define-category alarm-cl-noun :specializes comlex-noun
+     :realization (:noun  "alarm"))
+
+(define-category alert-cl-noun :specializes comlex-noun
+     :binds
+      ((ON top))
+     :realization (:noun  "alert" :on ON))
+
+(define-category anger-cl-noun :specializes comlex-noun
+     :realization (:noun ( "anger" )
+))
+
+(define-category angle-cl-noun :specializes comlex-noun
+     :realization (:noun  "angle"))
+
+(define-category ape-cl-noun :specializes comlex-noun
+     :realization (:noun  "ape"))
+
+(define-category appeal-cl-noun :specializes comlex-noun
+     :realization (:noun  "appeal"))
+
+(define-category approach-cl-noun :specializes comlex-noun
+     :realization (:noun  "approach"))
+
+(define-category arm-cl-noun :specializes comlex-noun
+     :realization (:noun  "arm"))
+
+(define-category assault-cl-noun :specializes comlex-noun
+     :realization (:noun  "assault"))
+
+(define-category attack-cl-noun :specializes comlex-noun
+     :binds
+      ((PENDING top)
+       (UPON top))
+     :realization (:noun  "attack" :pending PENDING :upon UPON))
+
+(define-category attempt-cl-noun :specializes comlex-noun
+     :realization (:noun  "attempt"))
+
+(define-category author-cl-noun :specializes comlex-noun
+     :realization (:noun  "author"))
+
+(define-category average-cl-noun :specializes comlex-noun
+     :binds
+      ((ABOVE top)
+       (BELOW top)
+       (ON top))
+     :realization (:noun  "average" :above ABOVE :below BELOW :on ON))
+
+(define-category award-cl-noun :specializes comlex-noun
+     :realization (:noun  "award"))
+
+(define-category back-cl-noun :specializes comlex-noun
+     :realization (:noun  "back"))
+
+(define-category backfire-cl-noun :specializes comlex-noun
+     :realization (:noun  "backfire"))
+
+(define-category balance-cl-noun :specializes comlex-noun
+     :realization (:noun  "balance"))
+
+(define-category ball-cl-noun :specializes comlex-noun
+     :realization (:noun  "ball"))
+
+(define-category battle-cl-noun :specializes comlex-noun
+     :realization (:noun  "battle"))
+
+(define-category bay-cl-noun :specializes comlex-noun
+     :realization (:noun  "bay"))
+
+(define-category beach-cl-noun :specializes comlex-noun
+     :realization (:noun  "beach"))
+
+(define-category being-cl-noun :specializes comlex-noun
+     :realization (:noun  "being"))
+
+(define-category bell-cl-noun :specializes comlex-noun
+     :realization (:noun  "bell"))
+
+(define-category benefit-cl-noun :specializes comlex-noun
+     :realization (:noun  "benefit"))
+
+(define-category bias-cl-noun :specializes comlex-noun
+     :realization (:noun  "bias"))
+
+(define-category bike-cl-noun :specializes comlex-noun
+     :realization (:noun  "bike"))
+
+(define-category bill-cl-noun :specializes comlex-noun
+     :realization (:noun  "bill"))
+
+(define-category bin-cl-noun :specializes comlex-noun
+     :realization (:noun  "bin"))
+
+(define-category blame-cl-noun :specializes comlex-noun
+     :realization (:noun ( "blame" )
+))
+
+(define-category bleach-cl-noun :specializes comlex-noun
+     :realization (:noun  "bleach"))
+
+(define-category blend-cl-noun :specializes comlex-noun
+     :realization (:noun  "blend"))
+
+(define-category blind-cl-noun :specializes comlex-noun
+     :realization (:noun  "blind"))
+
+(define-category bolster-cl-noun :specializes comlex-noun
+     :realization (:noun  "bolster"))
+
+(define-category bomb-cl-noun :specializes comlex-noun
+     :realization (:noun  "bomb"))
+
+(define-category boost-cl-noun :specializes comlex-noun
+     :realization (:noun  "boost"))
+
+(define-category bottle-cl-noun :specializes comlex-noun
+     :realization (:noun  "bottle"))
+
+(define-category bow-cl-noun :specializes comlex-noun
+     :realization (:noun ( "bow"  :PLURAL "bow")
+))
+
+(define-category bowl-cl-noun :specializes comlex-noun
+     :realization (:noun  "bowl"))
+
+(define-category box-cl-noun :specializes comlex-noun
+     :realization (:noun  "box"))
+
+(define-category brace-cl-noun :specializes comlex-noun
+     :realization (:noun  "brace"))
+
+(define-category bracket-cl-noun :specializes comlex-noun
+     :realization (:noun  "bracket"))
+
+(define-category brake-cl-noun :specializes comlex-noun
+     :realization (:noun  "brake"))
+
+(define-category branch-cl-noun :specializes comlex-noun
+     :realization (:noun  "branch"))
+
+(define-category bridge-cl-noun :specializes comlex-noun
+     :realization (:noun  "bridge"))
+
+(define-category brief-cl-noun :specializes comlex-noun
+     :realization (:noun  "brief"))
+
+(define-category broadcast-cl-noun :specializes comlex-noun
+     :realization (:noun  "broadcast"))
+
+(define-category brook-cl-noun :specializes comlex-noun
+     :realization (:noun  "brook"))
+
+(define-category browse-cl-noun :specializes comlex-noun
+     :realization (:noun  "browse"))
+
+(define-category bubble-cl-noun :specializes comlex-noun
+     :realization (:noun  "bubble"))
+
+(define-category burden-cl-noun :specializes comlex-noun
+     :realization (:noun  "burden"))
+
+(define-category burn-cl-noun :specializes comlex-noun
+     :realization (:noun  "burn"))
+
+(define-category bus-cl-noun :specializes comlex-noun
+     :realization (:noun ( "bus"  :PLURAL "bus")
+))
+
+(define-category butter-cl-noun :specializes comlex-noun
+     :realization (:noun  "butter"))
+
+(define-category button-cl-noun :specializes comlex-noun
+     :realization (:noun  "button"))
+
+(define-category bypass-cl-noun :specializes comlex-noun
+     :realization (:noun  "bypass"))
+
+(define-category cable-cl-noun :specializes comlex-noun
+     :realization (:noun  "cable"))
+
+(define-category call-cl-noun :specializes comlex-noun
+     :realization (:noun  "call"))
+
+(define-category calm-cl-noun :specializes comlex-noun
+     :realization (:noun  "calm"))
+
+(define-category campaign-cl-noun :specializes comlex-noun
+     :realization (:noun  "campaign"))
+
+(define-category capture-cl-noun :specializes comlex-noun
+     :realization (:noun  "capture"))
+
+(define-category career-cl-noun :specializes comlex-noun
+     :realization (:noun  "career"))
+
+(define-category cartoon-cl-noun :specializes comlex-noun
+     :realization (:noun  "cartoon"))
+
+(define-category cash-cl-noun :specializes comlex-noun
+     :realization (:noun ( "cash" )
+))
+
+(define-category caution-cl-noun :specializes comlex-noun
+     :realization (:noun  "caution"))
+
+(define-category cease-cl-noun :specializes comlex-noun
+     :binds
+      ((WITHOUT top))
+     :realization (:noun  "cease" :without WITHOUT))
+
+(define-category censor-cl-noun :specializes comlex-noun
+     :realization (:noun  "censor"))
+
+(define-category center-cl-noun :specializes comlex-noun
+     :realization (:noun  "center"))
+
+(define-category centre-cl-noun :specializes comlex-noun
+     :realization (:noun  "centre"))
+
+(define-category certificate-cl-noun :specializes comlex-noun
+     :realization (:noun  "certificate"))
+
+(define-category chain-cl-noun :specializes comlex-noun
+     :realization (:noun  "chain"))
+
+(define-category chair-cl-noun :specializes comlex-noun
+     :realization (:noun  "chair"))
+
+(define-category charge-cl-noun :specializes comlex-noun
+     :binds
+      ((IN top)
+       (WITHOUT top))
+     :realization (:noun  "charge" :in IN :without WITHOUT))
+
+(define-category chase-cl-noun :specializes comlex-noun
+     :binds
+      ((IN top))
+     :realization (:noun  "chase" :in IN))
+
+(define-category check-cl-noun :specializes comlex-noun
+     :realization (:noun  "check"))
+
+(define-category checker-cl-noun :specializes comlex-noun
+     :realization (:noun  "checker"))
+
+(define-category cheer-cl-noun :specializes comlex-noun
+     :realization (:noun  "cheer"))
+
+(define-category chew-cl-noun :specializes comlex-noun
+     :realization (:noun  "chew"))
+
+(define-category circle-cl-noun :specializes comlex-noun
+     :realization (:noun  "circle"))
+
+(define-category claim-cl-noun :specializes comlex-noun
+     :realization (:noun  "claim"))
+
+(define-category class-cl-noun :specializes comlex-noun
+     :realization (:noun  "class"))
+
+(define-category clean-cl-noun :specializes comlex-noun
+     :realization (:noun  "clean"))
+
+(define-category clear-cl-noun :specializes comlex-noun
+     :realization (:noun  "clear"))
+
+(define-category click-cl-noun :specializes comlex-noun
+     :realization (:noun  "click"))
+
+(define-category close-cl-noun :specializes comlex-noun
+     :realization (:noun  "close"))
+
+(define-category cloud-cl-noun :specializes comlex-noun
+     :realization (:noun  "cloud"))
+
+(define-category coach-cl-noun :specializes comlex-noun
+     :realization (:noun  "coach"))
+
+(define-category coat-cl-noun :specializes comlex-noun
+     :realization (:noun  "coat"))
+
+(define-category coin-cl-noun :specializes comlex-noun
+     :realization (:noun  "coin"))
+
+(define-category coke-cl-noun :specializes comlex-noun
+     :realization (:noun  "coke"))
+
+(define-category collapse-cl-noun :specializes comlex-noun
+     :realization (:noun  "collapse"))
+
+(define-category collar-cl-noun :specializes comlex-noun
+     :realization (:noun  "collar"))
+
+(define-category collect-cl-noun :specializes comlex-noun
+     :realization (:noun  "collect"))
+
+(define-category comb-cl-noun :specializes comlex-noun
+     :realization (:noun  "comb"))
+
+(define-category combat-cl-noun :specializes comlex-noun
+     :realization (:noun  "combat"))
+
+(define-category combine-cl-noun :specializes comlex-noun
+     :realization (:noun  "combine"))
+
+(define-category comfort-cl-noun :specializes comlex-noun
+     :realization (:noun  "comfort"))
+
+(define-category comment-cl-noun :specializes comlex-noun
+     :realization (:noun  "comment"))
+
+(define-category commission-cl-noun :specializes comlex-noun
+     :realization (:noun  "commission"))
+
+(define-category compass-cl-noun :specializes comlex-noun
+     :realization (:noun  "compass"))
+
+(define-category complement-cl-noun :specializes comlex-noun
+     :realization (:noun  "complement"))
+
+(define-category compound-cl-noun :specializes comlex-noun
+     :realization (:noun  "compound"))
+
+(define-category concentrate-cl-noun :specializes comlex-noun
+     :realization (:noun  "concentrate"))
+
+(define-category concert-cl-noun :specializes comlex-noun
+     :realization (:noun  "concert"))
+
+(define-category condition-cl-noun :specializes comlex-noun
+     :binds
+      ((ON top)
+       (WITHOUT top))
+     :realization (:noun  "condition" :on ON :without WITHOUT))
+
+(define-category conflict-cl-noun :specializes comlex-noun
+     :realization (:noun  "conflict"))
+
+(define-category conjecture-cl-noun :specializes comlex-noun
+     :realization (:noun  "conjecture"))
+
+(define-category consent-cl-noun :specializes comlex-noun
+     :realization (:noun ( "consent" )
+))
+
+(define-category contact-cl-noun :specializes comlex-noun
+     :realization (:noun  "contact"))
+
+(define-category contour-cl-noun :specializes comlex-noun
+     :realization (:noun  "contour"))
+
+(define-category converse-cl-noun :specializes comlex-noun
+     :realization (:noun ( "converse" )
+))
+
+(define-category coordinate-cl-noun :specializes comlex-noun
+     :realization (:noun  "coordinate"))
+
+(define-category copyright-cl-noun :specializes comlex-noun
+     :realization (:noun  "copyright"))
+
+(define-category cord-cl-noun :specializes comlex-noun
+     :realization (:noun  "cord"))
+
+(define-category core-cl-noun :specializes comlex-noun
+     :realization (:noun  "core"))
+
+(define-category cough-cl-noun :specializes comlex-noun
+     :realization (:noun  "cough"))
+
+(define-category count-cl-noun :specializes comlex-noun
+     :realization (:noun  "count"))
+
+(define-category counterbalance-cl-noun :specializes comlex-noun
+     :realization (:noun  "counterbalance"))
+
+(define-category couple-cl-noun :specializes comlex-noun
+     :realization (:noun  "couple"))
+
+(define-category course-cl-noun :specializes comlex-noun
+     :binds
+      ((ON top)
+       (OFF top)
+       (IN top))
+     :realization (:noun  "course" :on ON :off OFF :in IN))
+
+(define-category cox-cl-noun :specializes comlex-noun
+     :realization (:noun  "cox"))
+
+(define-category craft-cl-noun :specializes comlex-noun
+     :binds
+      ((BY top))
+     :realization (:noun  "craft" :by BY))
+
+(define-category crash-cl-noun :specializes comlex-noun
+     :realization (:noun  "crash"))
+
+(define-category crease-cl-noun :specializes comlex-noun
+     :realization (:noun  "crease"))
+
+(define-category crew-cl-noun :specializes comlex-noun
+     :realization (:noun  "crew"))
+
+(define-category cripple-cl-noun :specializes comlex-noun
+     :realization (:noun  "cripple"))
+
+(define-category cross-cl-noun :specializes comlex-noun
+     :realization (:noun  "cross"))
+
+(define-category cruise-cl-noun :specializes comlex-noun
+     :realization (:noun  "cruise"))
+
+(define-category crush-cl-noun :specializes comlex-noun
+     :realization (:noun  "crush"))
+
+(define-category cue-cl-noun :specializes comlex-noun
+     :realization (:noun  "cue"))
+
+(define-category cure-cl-noun :specializes comlex-noun
+     :realization (:noun  "cure"))
+
+(define-category curve-cl-noun :specializes comlex-noun
+     :realization (:noun  "curve"))
+
+(define-category dare-cl-noun :specializes comlex-noun
+     :realization (:noun  "dare"))
+
+(define-category dash-cl-noun :specializes comlex-noun
+     :realization (:noun  "dash"))
+
+(define-category dawn-cl-noun :specializes comlex-noun
+     :realization (:noun  "dawn"))
+
+(define-category daydream-cl-noun :specializes comlex-noun
+     :realization (:noun  "daydream"))
+
+(define-category debate-cl-noun :specializes comlex-noun
+     :realization (:noun  "debate"))
+
+(define-category decay-cl-noun :specializes comlex-noun
+     :realization (:noun ( "decay" )
+))
+
+(define-category decline-cl-noun :specializes comlex-noun
+     :realization (:noun  "decline"))
+
+(define-category default-cl-noun :specializes comlex-noun
+     :realization (:noun ( "default" )
+))
+
+(define-category defect-cl-noun :specializes comlex-noun
+     :realization (:noun  "defect"))
+
+(define-category delay-cl-noun :specializes comlex-noun
+     :binds
+      ((WITHOUT top))
+     :realization (:noun  "delay" :without WITHOUT))
+
+(define-category deluge-cl-noun :specializes comlex-noun
+     :realization (:noun  "deluge"))
+
+(define-category demand-cl-noun :specializes comlex-noun
+     :realization (:noun  "demand"))
+
+(define-category design-cl-noun :specializes comlex-noun
+     :realization (:noun  "design"))
+
+(define-category desire-cl-noun :specializes comlex-noun
+     :realization (:noun  "desire"))
+
+(define-category despair-cl-noun :specializes comlex-noun
+     :realization (:noun ( "despair" )
+))
+
+(define-category discard-cl-noun :specializes comlex-noun
+     :realization (:noun  "discard"))
+
+(define-category discharge-cl-noun :specializes comlex-noun
+     :realization (:noun  "discharge"))
+
+(define-category discipline-cl-noun :specializes comlex-noun
+     :realization (:noun  "discipline"))
+
+(define-category discontent-cl-noun :specializes comlex-noun
+     :realization (:noun  "discontent"))
+
+(define-category discount-cl-noun :specializes comlex-noun
+     :realization (:noun  "discount"))
+
+(define-category discourse-cl-noun :specializes comlex-noun
+     :realization (:noun  "discourse"))
+
+(define-category discredit-cl-noun :specializes comlex-noun
+     :realization (:noun ( "discredit" )
+))
+
+(define-category disgust-cl-noun :specializes comlex-noun
+     :realization (:noun ( "disgust" )
+))
+
+(define-category dislike-cl-noun :specializes comlex-noun
+     :realization (:noun  "dislike"))
+
+(define-category display-cl-noun :specializes comlex-noun
+     :binds
+      ((BY top)
+       (FOR top)
+       (OFF top)
+       (ON top))
+     :realization (:noun  "display" :by BY :for FOR :off OFF :on ON))
+
+(define-category dispute-cl-noun :specializes comlex-noun
+     :binds
+      ((BEYOND top)
+       (IN top)
+       (WITHOUT top))
+     :realization (:noun  "dispute" :beyond BEYOND :in IN :without WITHOUT))
+
+(define-category disregard-cl-noun :specializes comlex-noun
+     :realization (:noun ( "disregard" )
+))
+
+(define-category dissent-cl-noun :specializes comlex-noun
+     :realization (:noun ( "dissent" )
+))
+
+(define-category distance-cl-noun :specializes comlex-noun
+     :realization (:noun  "distance"))
+
+(define-category distress-cl-noun :specializes comlex-noun
+     :realization (:noun ( "distress" )
+))
+
+(define-category distrust-cl-noun :specializes comlex-noun
+     :realization (:noun ( "distrust" )
+))
+
+(define-category divine-cl-noun :specializes comlex-noun
+     :realization (:noun  "divine"))
+
+(define-category divorce-cl-noun :specializes comlex-noun
+     :realization (:noun  "divorce"))
+
+(define-category document-cl-noun :specializes comlex-noun
+     :realization (:noun  "document"))
+
+(define-category dodge-cl-noun :specializes comlex-noun
+     :realization (:noun  "dodge"))
+
+(define-category dose-cl-noun :specializes comlex-noun
+     :realization (:noun  "dose"))
+
+(define-category doubt-cl-noun :specializes comlex-noun
+     :realization (:noun  "doubt"))
+
+(define-category dovetail-cl-noun :specializes comlex-noun
+     :realization (:noun  "dovetail"))
+
+(define-category down-cl-noun :specializes comlex-noun
+     :realization (:noun  "down"))
+
+(define-category draft-cl-noun :specializes comlex-noun
+     :realization (:noun  "draft"))
+
+(define-category dread-cl-noun :specializes comlex-noun
+     :realization (:noun ( "dread" )
+))
+
+(define-category dream-cl-noun :specializes comlex-noun
+     :binds
+      ((IN top))
+     :realization (:noun  "dream" :in IN))
+
+(define-category dupe-cl-noun :specializes comlex-noun
+     :realization (:noun  "dupe"))
+
+(define-category dwarf-cl-noun :specializes comlex-noun
+     :realization (:noun  "dwarf"))
+
+(define-category dye-cl-noun :specializes comlex-noun
+     :realization (:noun  "dye"))
+
+(define-category earth-cl-noun :specializes comlex-noun
+     :realization (:noun ( "earth" )
+))
+
+(define-category ease-cl-noun :specializes comlex-noun
+     :realization (:noun ( "ease" )
+))
+
+(define-category echo-cl-noun :specializes comlex-noun
+     :realization (:noun ( "echo"  :PLURAL "echoes")
+))
+
+(define-category egg-cl-noun :specializes comlex-noun
+     :realization (:noun  "egg"))
+
+(define-category elbow-cl-noun :specializes comlex-noun
+     :realization (:noun  "elbow"))
+
+(define-category embrace-cl-noun :specializes comlex-noun
+     :realization (:noun  "embrace"))
+
+(define-category employ-cl-noun :specializes comlex-noun
+     :realization (:noun  "employ"))
+
+(define-category empty-cl-noun :specializes comlex-noun
+     :realization (:noun  "empty"))
+
+(define-category encounter-cl-noun :specializes comlex-noun
+     :realization (:noun  "encounter"))
+
+(define-category end-cl-noun :specializes comlex-noun
+     :binds
+      ((WITHOUT top))
+     :realization (:noun  "end" :without WITHOUT))
+
+(define-category endeavor-cl-noun :specializes comlex-noun
+     :realization (:noun  "endeavor"))
+
+(define-category engineer-cl-noun :specializes comlex-noun
+     :realization (:noun  "engineer"))
+
+(define-category entail-cl-noun :specializes comlex-noun
+     :realization (:noun  "entail"))
+
+(define-category entrance-cl-noun :specializes comlex-noun
+     :realization (:noun  "entrance"))
+
+(define-category esteem-cl-noun :specializes comlex-noun
+     :realization (:noun ( "esteem" )
+))
+
+(define-category estimate-cl-noun :specializes comlex-noun
+     :binds
+      ((BY top)
+       (BEYOND top)
+       (|ACCORDING TO| top))
+     :realization (:noun  "estimate" :by BY :beyond BEYOND :|ACCORDING TO| |ACCORDING TO|))
+
+(define-category evidence-cl-noun :specializes comlex-noun
+     :realization (:noun ( "evidence" )
+))
+
+(define-category excuse-cl-noun :specializes comlex-noun
+     :binds
+      ((BEYOND top)
+       (IN top)
+       (WITHOUT top))
+     :realization (:noun  "excuse" :beyond BEYOND :in IN :without WITHOUT))
+
+(define-category exercise-cl-noun :specializes comlex-noun
+     :realization (:noun  "exercise"))
+
+(define-category exhaust-cl-noun :specializes comlex-noun
+     :realization (:noun  "exhaust"))
+
+(define-category exhibit-cl-noun :specializes comlex-noun
+     :realization (:noun  "exhibit"))
+
+(define-category experience-cl-noun :specializes comlex-noun
+     :realization (:noun  "experience"))
+
+(define-category exploit-cl-noun :specializes comlex-noun
+     :realization (:noun  "exploit"))
+
+(define-category extract-cl-noun :specializes comlex-noun
+     :realization (:noun  "extract"))
+
+(define-category face-cl-noun :specializes comlex-noun
+     :realization (:noun  "face"))
+
+(define-category fail-cl-noun :specializes comlex-noun
+     :realization (:noun ( "fail" )
+))
+
+(define-category fake-cl-noun :specializes comlex-noun
+     :realization (:noun  "fake"))
+
+(define-category fashion-cl-noun :specializes comlex-noun
+     :realization (:noun  "fashion"))
+
+(define-category fatigue-cl-noun :specializes comlex-noun
+     :realization (:noun  "fatigue"))
+
+(define-category fault-cl-noun :specializes comlex-noun
+     :realization (:noun  "fault"))
+
+(define-category favor-cl-noun :specializes comlex-noun
+     :realization (:noun  "favor"))
+
+(define-category fear-cl-noun :specializes comlex-noun
+     :realization (:noun  "fear"))
+
+(define-category fence-cl-noun :specializes comlex-noun
+     :realization (:noun  "fence"))
+
+(define-category field-cl-noun :specializes comlex-noun
+     :binds
+      ((IN top)
+       (|OUT OF| top))
+     :realization (:noun  "field" :in IN :|OUT OF| |OUT OF|))
+
+(define-category file-cl-noun :specializes comlex-noun
+     :binds
+      ((ON top))
+     :realization (:noun  "file" :on ON))
+
+(define-category filter-cl-noun :specializes comlex-noun
+     :realization (:noun  "filter"))
+
+(define-category finance-cl-noun :specializes comlex-noun
+     :realization (:noun  "finance"))
+
+(define-category finger-cl-noun :specializes comlex-noun
+     :realization (:noun  "finger"))
+
+(define-category finish-cl-noun :specializes comlex-noun
+     :realization (:noun  "finish"))
+
+(define-category fix-cl-noun :specializes comlex-noun
+     :realization (:noun  "fix"))
+
+(define-category flame-cl-noun :specializes comlex-noun
+     :binds
+      ((INTO top))
+     :realization (:noun  "flame" :into INTO))
+
+(define-category flash-cl-noun :specializes comlex-noun
+     :realization (:noun  "flash"))
+
+(define-category flavour-cl-noun :specializes comlex-noun
+     :realization (:noun  "flavour"))
+
+(define-category flock-cl-noun :specializes comlex-noun
+     :realization (:noun  "flock"))
+
+(define-category flood-cl-noun :specializes comlex-noun
+     :realization (:noun  "flood"))
+
+(define-category floor-cl-noun :specializes comlex-noun
+     :realization (:noun  "floor"))
+
+(define-category flour-cl-noun :specializes comlex-noun
+     :realization (:noun ( "flour" )
+))
+
+(define-category flourish-cl-noun :specializes comlex-noun
+     :realization (:noun  "flourish"))
+
+(define-category flow-cl-noun :specializes comlex-noun
+     :realization (:noun  "flow"))
+
+(define-category fold-cl-noun :specializes comlex-noun
+     :realization (:noun  "fold"))
+
+(define-category foot-cl-noun :specializes comlex-noun
+     :realization (:noun ( "foot"  :PLURAL "feet")
+))
+
+(define-category force-cl-noun :specializes comlex-noun
+     :realization (:noun  "force"))
+
+(define-category forecast-cl-noun :specializes comlex-noun
+     :realization (:noun  "forecast"))
+
+(define-category format-cl-noun :specializes comlex-noun
+     :realization (:noun  "format"))
+
+(define-category fox-cl-noun :specializes comlex-noun
+     :realization (:noun  "fox"))
+
+(define-category fracture-cl-noun :specializes comlex-noun
+     :realization (:noun  "fracture"))
+
+(define-category frame-cl-noun :specializes comlex-noun
+     :realization (:noun  "frame"))
+
+(define-category freelance-cl-noun :specializes comlex-noun
+     :realization (:noun  "freelance"))
+
+(define-category front-cl-noun :specializes comlex-noun
+     :binds
+      ((IN top))
+     :realization (:noun  "front" :in IN))
+
+(define-category fry-cl-noun :specializes comlex-noun
+     :realization (:noun ( "fry"  :PLURAL "fry")
+))
+
+(define-category fund-cl-noun :specializes comlex-noun
+     :realization (:noun  "fund"))
+
+(define-category gain-cl-noun :specializes comlex-noun
+     :realization (:noun  "gain"))
+
+(define-category gamble-cl-noun :specializes comlex-noun
+     :realization (:noun  "gamble"))
+
+(define-category game-cl-noun :specializes comlex-noun
+     :realization (:noun  "game"))
+
+(define-category garden-cl-noun :specializes comlex-noun
+     :realization (:noun  "garden"))
+
+(define-category gargle-cl-noun :specializes comlex-noun
+     :realization (:noun  "gargle"))
+
+(define-category garland-cl-noun :specializes comlex-noun
+     :realization (:noun  "garland"))
+
+(define-category gauge-cl-noun :specializes comlex-noun
+     :realization (:noun  "gauge"))
+
+(define-category gaze-cl-noun :specializes comlex-noun
+     :realization (:noun  "gaze"))
+
+(define-category gear-cl-noun :specializes comlex-noun
+     :realization (:noun  "gear"))
+
+(define-category gesture-cl-noun :specializes comlex-noun
+     :binds
+      ((OF top)
+       (WITHOUT top))
+     :realization (:noun  "gesture" :of OF :without WITHOUT))
+
+(define-category gift-cl-noun :specializes comlex-noun
+     :realization (:noun  "gift"))
+
+(define-category ginger-cl-noun :specializes comlex-noun
+     :realization (:noun ( "ginger" )
+))
+
+(define-category glance-cl-noun :specializes comlex-noun
+     :realization (:noun  "glance"))
+
+(define-category glimmer-cl-noun :specializes comlex-noun
+     :realization (:noun  "glimmer"))
+
+(define-category glimpse-cl-noun :specializes comlex-noun
+     :realization (:noun  "glimpse"))
+
+(define-category gong-cl-noun :specializes comlex-noun
+     :realization (:noun  "gong"))
+
+(define-category grade-cl-noun :specializes comlex-noun
+     :realization (:noun  "grade"))
+
+(define-category graduate-cl-noun :specializes comlex-noun
+     :realization (:noun  "graduate"))
+
+(define-category grant-cl-noun :specializes comlex-noun
+     :realization (:noun  "grant"))
+
+(define-category grasp-cl-noun :specializes comlex-noun
+     :realization (:noun  "grasp"))
+
+(define-category grave-cl-noun :specializes comlex-noun
+     :realization (:noun  "grave"))
+
+(define-category grey-cl-noun :specializes comlex-noun
+     :realization (:noun  "grey"))
+
+(define-category group-cl-noun :specializes comlex-noun
+     :realization (:noun  "group"))
+
+(define-category guess-cl-noun :specializes comlex-noun
+     :realization (:noun  "guess"))
+
+(define-category guide-cl-noun :specializes comlex-noun
+     :realization (:noun  "guide"))
+
+(define-category hail-cl-noun :specializes comlex-noun
+     :realization (:noun  "hail"))
+
+(define-category halt-cl-noun :specializes comlex-noun
+     :realization (:noun  "halt"))
+
+(define-category hamper-cl-noun :specializes comlex-noun
+     :realization (:noun  "hamper"))
+
+(define-category hand-cl-noun :specializes comlex-noun
+     :binds
+      ((|OUT OF| top)
+       (AT top)
+       (BY top)
+       (IN top)
+       (OFF top)
+       (ON top)
+       (TO top))
+     :realization (:noun  "hand" :|OUT OF| |OUT OF| :at AT :by BY :in IN :off OFF :on ON :to TO))
+
+(define-category handle-cl-noun :specializes comlex-noun
+     :realization (:noun  "handle"))
+
+(define-category handshake-cl-noun :specializes comlex-noun
+     :realization (:noun  "handshake"))
+
+(define-category harm-cl-noun :specializes comlex-noun
+     :realization (:noun ( "harm" )
+))
+
+(define-category harness-cl-noun :specializes comlex-noun
+     :realization (:noun  "harness"))
+
+(define-category hatch-cl-noun :specializes comlex-noun
+     :realization (:noun  "hatch"))
+
+(define-category hazard-cl-noun :specializes comlex-noun
+     :realization (:noun  "hazard"))
+
+(define-category head-cl-noun :specializes comlex-noun
+     :realization (:noun  "head"))
+
+(define-category heat-cl-noun :specializes comlex-noun
+     :realization (:noun  "heat"))
+
+(define-category hedge-cl-noun :specializes comlex-noun
+     :realization (:noun  "hedge"))
+
+(define-category heed-cl-noun :specializes comlex-noun
+     :realization (:noun ( "heed" )
+))
+
+(define-category help-cl-noun :specializes comlex-noun
+     :realization (:noun  "help"))
+
+(define-category hijack-cl-noun :specializes comlex-noun
+     :realization (:noun  "hijack"))
+
+(define-category hire-cl-noun :specializes comlex-noun
+     :realization (:noun ( "hire" )
+))
+
+(define-category hoard-cl-noun :specializes comlex-noun
+     :realization (:noun  "hoard"))
+
+(define-category hoax-cl-noun :specializes comlex-noun
+     :realization (:noun  "hoax"))
+
+(define-category hole-cl-noun :specializes comlex-noun
+     :realization (:noun  "hole"))
+
+(define-category holiday-cl-noun :specializes comlex-noun
+     :realization (:noun  "holiday"))
+
+(define-category honor-cl-noun :specializes comlex-noun
+     :realization (:noun  "honor"))
+
+(define-category host-cl-noun :specializes comlex-noun
+     :realization (:noun  "host"))
+
+(define-category house-cl-noun :specializes comlex-noun
+     :realization (:noun  "house"))
+
+(define-category humor-cl-noun :specializes comlex-noun
+     :realization (:noun  "humor"))
+
+(define-category humour-cl-noun :specializes comlex-noun
+     :realization (:noun  "humour"))
+
+(define-category hunch-cl-noun :specializes comlex-noun
+     :realization (:noun  "hunch"))
+
+(define-category hunt-cl-noun :specializes comlex-noun
+     :realization (:noun  "hunt"))
+
+(define-category hurdle-cl-noun :specializes comlex-noun
+     :realization (:noun  "hurdle"))
+
+(define-category image-cl-noun :specializes comlex-noun
+     :realization (:noun  "image"))
+
+(define-category implement-cl-noun :specializes comlex-noun
+     :realization (:noun  "implement"))
+
+(define-category incline-cl-noun :specializes comlex-noun
+     :realization (:noun  "incline"))
+
+(define-category index-cl-noun :specializes comlex-noun
+     :realization (:noun ( "index"  :PLURAL ("indexes" "indices"))
+))
+
+(define-category input-cl-noun :specializes comlex-noun
+     :realization (:noun  "input"))
+
+(define-category instance-cl-noun :specializes comlex-noun
+     :binds
+      ((FOR top))
+     :realization (:noun  "instance" :for FOR))
+
+(define-category institute-cl-noun :specializes comlex-noun
+     :realization (:noun  "institute"))
+
+(define-category insult-cl-noun :specializes comlex-noun
+     :realization (:noun  "insult"))
+
+(define-category interest-cl-noun :specializes comlex-noun
+     :realization (:noun  "interest"))
+
+(define-category interview-cl-noun :specializes comlex-noun
+     :realization (:noun  "interview"))
+
+(define-category introvert-cl-noun :specializes comlex-noun
+     :realization (:noun  "introvert"))
+
+(define-category invalid-cl-noun :specializes comlex-noun
+     :realization (:noun  "invalid"))
+
+(define-category inverse-cl-noun :specializes comlex-noun
+     :realization (:noun  "inverse"))
+
+(define-category invite-cl-noun :specializes comlex-noun
+     :binds
+      ((BY top))
+     :realization (:noun  "invite" :by BY))
+
+(define-category issue-cl-noun :specializes comlex-noun
+     :binds
+      ((AT top)
+       (WITHOUT top))
+     :realization (:noun  "issue" :at AT :without WITHOUT))
+
+(define-category jail-cl-noun :specializes comlex-noun
+     :realization (:noun  "jail"))
+
+(define-category jaw-cl-noun :specializes comlex-noun
+     :realization (:noun  "jaw"))
+
+(define-category join-cl-noun :specializes comlex-noun
+     :realization (:noun  "join"))
+
+(define-category joke-cl-noun :specializes comlex-noun
+     :realization (:noun  "joke"))
+
+(define-category journey-cl-noun :specializes comlex-noun
+     :realization (:noun  "journey"))
+
+(define-category judge-cl-noun :specializes comlex-noun
+     :realization (:noun  "judge"))
+
+(define-category keen-cl-noun :specializes comlex-noun
+     :realization (:noun  "keen"))
+
+(define-category key-cl-noun :specializes comlex-noun
+     :binds
+      ((IN top)
+       (OFF top))
+     :realization (:noun  "key" :in IN :off OFF))
+
+(define-category kiss-cl-noun :specializes comlex-noun
+     :realization (:noun  "kiss"))
+
+(define-category knight-cl-noun :specializes comlex-noun
+     :realization (:noun  "knight"))
+
+(define-category labor-cl-noun :specializes comlex-noun
+     :realization (:noun  "labor"))
+
+(define-category labour-cl-noun :specializes comlex-noun
+     :realization (:noun  "labour"))
+
+(define-category ladder-cl-noun :specializes comlex-noun
+     :realization (:noun  "ladder"))
+
+(define-category lament-cl-noun :specializes comlex-noun
+     :realization (:noun  "lament"))
+
+(define-category land-cl-noun :specializes comlex-noun
+     :realization (:noun  "land"))
+
+(define-category landscape-cl-noun :specializes comlex-noun
+     :realization (:noun  "landscape"))
+
+(define-category last-cl-noun :specializes comlex-noun
+     :realization (:noun  "last"))
+
+(define-category laugh-cl-noun :specializes comlex-noun
+     :realization (:noun  "laugh"))
+
+(define-category launch-cl-noun :specializes comlex-noun
+     :realization (:noun  "launch"))
+
+(define-category layer-cl-noun :specializes comlex-noun
+     :realization (:noun  "layer"))
+
+(define-category lean-cl-noun :specializes comlex-noun
+     :realization (:noun ( "lean" )
+))
+
+(define-category license-cl-noun :specializes comlex-noun
+     :realization (:noun  "license"))
+
+(define-category lift-cl-noun :specializes comlex-noun
+     :realization (:noun  "lift"))
+
+(define-category litter-cl-noun :specializes comlex-noun
+     :realization (:noun  "litter"))
+
+(define-category load-cl-noun :specializes comlex-noun
+     :realization (:noun  "load"))
+
+(define-category lock-cl-noun :specializes comlex-noun
+     :realization (:noun  "lock"))
+
+(define-category lodge-cl-noun :specializes comlex-noun
+     :realization (:noun  "lodge"))
+
+(define-category lord-cl-noun :specializes comlex-noun
+     :realization (:noun  "lord"))
+
+(define-category love-cl-noun :specializes comlex-noun
+     :realization (:noun  "love"))
+
+(define-category lull-cl-noun :specializes comlex-noun
+     :realization (:noun  "lull"))
+
+(define-category lure-cl-noun :specializes comlex-noun
+     :realization (:noun  "lure"))
+
+(define-category machine-cl-noun :specializes comlex-noun
+     :binds
+      ((BY top))
+     :realization (:noun  "machine" :by BY))
+
+(define-category mail-cl-noun :specializes comlex-noun
+     :realization (:noun  "mail"))
+
+(define-category major-cl-noun :specializes comlex-noun
+     :realization (:noun  "major"))
+
+(define-category mandate-cl-noun :specializes comlex-noun
+     :realization (:noun  "mandate"))
+
+(define-category manifest-cl-noun :specializes comlex-noun
+     :realization (:noun  "manifest"))
+
+(define-category manifold-cl-noun :specializes comlex-noun
+     :realization (:noun  "manifold"))
+
+(define-category manufacture-cl-noun :specializes comlex-noun
+     :realization (:noun  "manufacture"))
+
+(define-category march-cl-noun :specializes comlex-noun
+     :realization (:noun  "march"))
+
+(define-category mark-cl-noun :specializes comlex-noun
+     :realization (:noun  "mark"))
+
+(define-category market-cl-noun :specializes comlex-noun
+     :binds
+      ((BELOW top)
+       (TO top))
+     :realization (:noun  "market" :below BELOW :to TO))
+
+(define-category mask-cl-noun :specializes comlex-noun
+     :realization (:noun  "mask"))
+
+(define-category master-cl-noun :specializes comlex-noun
+     :realization (:noun  "master"))
+
+(define-category merit-cl-noun :specializes comlex-noun
+     :realization (:noun  "merit"))
+
+(define-category message-cl-noun :specializes comlex-noun
+     :realization (:noun  "message"))
+
+(define-category mill-cl-noun :specializes comlex-noun
+     :realization (:noun  "mill"))
+
+(define-category mind-cl-noun :specializes comlex-noun
+     :binds
+      ((IN top)
+       (|OUT OF| top))
+     :realization (:noun  "mind" :in IN :|OUT OF| |OUT OF|))
+
+(define-category mine-cl-noun :specializes comlex-noun
+     :realization (:noun  "mine"))
+
+(define-category mirror-cl-noun :specializes comlex-noun
+     :realization (:noun  "mirror"))
+
+(define-category misconduct-cl-noun :specializes comlex-noun
+     :realization (:noun ( "misconduct" )
+))
+
+(define-category miss-cl-noun :specializes comlex-noun
+     :realization (:noun  "miss"))
+
+(define-category mistrust-cl-noun :specializes comlex-noun
+     :realization (:noun ( "mistrust" )
+))
+
+(define-category mix-cl-noun :specializes comlex-noun
+     :realization (:noun  "mix"))
+
+(define-category moderate-cl-noun :specializes comlex-noun
+     :realization (:noun  "moderate"))
+
+(define-category mount-cl-noun :specializes comlex-noun
+     :realization (:noun  "mount"))
+
+(define-category mouth-cl-noun :specializes comlex-noun
+     :realization (:noun  "mouth"))
+
+(define-category mute-cl-noun :specializes comlex-noun
+     :realization (:noun  "mute"))
+
+(define-category neglect-cl-noun :specializes comlex-noun
+     :realization (:noun ( "neglect" )
+))
+
+(define-category neighbor-cl-noun :specializes comlex-noun
+     :realization (:noun  "neighbor"))
+
+(define-category neighbour-cl-noun :specializes comlex-noun
+     :realization (:noun  "neighbour"))
+
+(define-category nest-cl-noun :specializes comlex-noun
+     :realization (:noun  "nest"))
+
+(define-category nettle-cl-noun :specializes comlex-noun
+     :realization (:noun  "nettle"))
+
+(define-category nose-cl-noun :specializes comlex-noun
+     :realization (:noun  "nose"))
+
+(define-category notice-cl-noun :specializes comlex-noun
+     :realization (:noun  "notice"))
+
+(define-category nuance-cl-noun :specializes comlex-noun
+     :realization (:noun  "nuance"))
+
+(define-category nudge-cl-noun :specializes comlex-noun
+     :realization (:noun  "nudge"))
+
+(define-category nurse-cl-noun :specializes comlex-noun
+     :realization (:noun  "nurse"))
+
+(define-category nurture-cl-noun :specializes comlex-noun
+     :realization (:noun ( "nurture" )
+))
+
+(define-category occasion-cl-noun :specializes comlex-noun
+     :realization (:noun  "occasion"))
+
+(define-category offer-cl-noun :specializes comlex-noun
+     :realization (:noun  "offer"))
+
+(define-category open-cl-noun :specializes comlex-noun
+     :realization (:noun  "open"))
+
+(define-category order-cl-noun :specializes comlex-noun
+     :realization (:noun  "order"))
+
+(define-category orient-cl-noun :specializes comlex-noun
+     :realization (:noun ( "orient" )
+))
+
+(define-category outline-cl-noun :specializes comlex-noun
+     :realization (:noun  "outline"))
+
+(define-category overburden-cl-noun :specializes comlex-noun
+     :realization (:noun ( "overburden" )
+))
+
+(define-category overflow-cl-noun :specializes comlex-noun
+     :realization (:noun  "overflow"))
+
+(define-category pack-cl-noun :specializes comlex-noun
+     :realization (:noun  "pack"))
+
+(define-category package-cl-noun :specializes comlex-noun
+     :realization (:noun  "package"))
+
+(define-category page-cl-noun :specializes comlex-noun
+     :realization (:noun  "page"))
+
+(define-category paint-cl-noun :specializes comlex-noun
+     :realization (:noun  "paint"))
+
+(define-category pair-cl-noun :specializes comlex-noun
+     :realization (:noun  "pair"))
+
+(define-category paper-cl-noun :specializes comlex-noun
+     :realization (:noun  "paper"))
+
+(define-category pass-cl-noun :specializes comlex-noun
+     :realization (:noun  "pass"))
+
+(define-category patent-cl-noun :specializes comlex-noun
+     :realization (:noun  "patent"))
+
+(define-category pause-cl-noun :specializes comlex-noun
+     :realization (:noun  "pause"))
+
+(define-category pension-cl-noun :specializes comlex-noun
+     :realization (:noun  "pension"))
+
+(define-category people-cl-noun :specializes comlex-noun
+     :realization (:noun  "people"))
+
+(define-category phase-cl-noun :specializes comlex-noun
+     :binds
+      ((IN top)
+       (|OUT OF| top))
+     :realization (:noun  "phase" :in IN :|OUT OF| |OUT OF|))
+
+(define-category phone-cl-noun :specializes comlex-noun
+     :binds
+      ((BY top))
+     :realization (:noun  "phone" :by BY))
+
+(define-category phrase-cl-noun :specializes comlex-noun
+     :realization (:noun  "phrase"))
+
+(define-category pick-cl-noun :specializes comlex-noun
+     :realization (:noun  "pick"))
+
+(define-category pickle-cl-noun :specializes comlex-noun
+     :realization (:noun  "pickle"))
+
+(define-category picture-cl-noun :specializes comlex-noun
+     :realization (:noun  "picture"))
+
+(define-category piece-cl-noun :specializes comlex-noun
+     :binds
+      ((BY top))
+     :realization (:noun  "piece" :by BY))
+
+(define-category plague-cl-noun :specializes comlex-noun
+     :realization (:noun  "plague"))
+
+(define-category play-cl-noun :specializes comlex-noun
+     :binds
+      ((AT top)
+       (IN top)
+       (INTO top)
+       (|OUT OF| top))
+     :realization (:noun  "play" :at AT :in IN :into INTO :|OUT OF| |OUT OF|))
+
+(define-category point-cl-noun :specializes comlex-noun
+     :realization (:noun  "point"))
+
+(define-category poison-cl-noun :specializes comlex-noun
+     :realization (:noun  "poison"))
+
+(define-category police-cl-noun :specializes comlex-noun
+     :realization (:noun ( "police"  :PLURAL "police")
+))
+
+(define-category polish-cl-noun :specializes comlex-noun
+     :realization (:noun  "polish"))
+
+(define-category poll-cl-noun :specializes comlex-noun
+     :realization (:noun  "poll"))
+
+(define-category pool-cl-noun :specializes comlex-noun
+     :realization (:noun  "pool"))
+
+(define-category port-cl-noun :specializes comlex-noun
+     :realization (:noun  "port"))
+
+(define-category portion-cl-noun :specializes comlex-noun
+     :realization (:noun  "portion"))
+
+(define-category pose-cl-noun :specializes comlex-noun
+     :realization (:noun  "pose"))
+
+(define-category position-cl-noun :specializes comlex-noun
+     :binds
+      ((IN top)
+       (INTO top)
+       (|OUT OF| top))
+     :realization (:noun  "position" :in IN :into INTO :|OUT OF| |OUT OF|))
+
+(define-category post-cl-noun :specializes comlex-noun
+     :realization (:noun  "post"))
+
+(define-category posture-cl-noun :specializes comlex-noun
+     :realization (:noun  "posture"))
+
+(define-category potter-cl-noun :specializes comlex-noun
+     :realization (:noun  "potter"))
+
+(define-category pound-cl-noun :specializes comlex-noun
+     :realization (:noun  "pound"))
+
+(define-category pout-cl-noun :specializes comlex-noun
+     :realization (:noun  "pout"))
+
+(define-category power-cl-noun :specializes comlex-noun
+     :realization (:noun  "power"))
+
+(define-category practice-cl-noun :specializes comlex-noun
+     :realization (:noun  "practice"))
+
+(define-category praise-cl-noun :specializes comlex-noun
+     :realization (:noun  "praise"))
+
+(define-category prejudice-cl-noun :specializes comlex-noun
+     :realization (:noun  "prejudice"))
+
+(define-category premise-cl-noun :specializes comlex-noun
+     :realization (:noun  "premise"))
+
+(define-category prep-cl-noun :specializes comlex-noun
+     :realization (:noun  "prep"))
+
+(define-category press-cl-noun :specializes comlex-noun
+     :binds
+      ((|OUT OF| top)
+       (TO top))
+     :realization (:noun  "press" :|OUT OF| |OUT OF| :to TO))
+
+(define-category pressure-cl-noun :specializes comlex-noun
+     :realization (:noun  "pressure"))
+
+(define-category prey-cl-noun :specializes comlex-noun
+     :realization (:noun ( "prey" )
+))
+
+(define-category price-cl-noun :specializes comlex-noun
+     :realization (:noun  "price"))
+
+(define-category print-cl-noun :specializes comlex-noun
+     :binds
+      ((IN top)
+       (|OUT OF| top))
+     :realization (:noun  "print" :in IN :|OUT OF| |OUT OF|))
+
+(define-category prize-cl-noun :specializes comlex-noun
+     :realization (:noun  "prize"))
+
+(define-category process-cl-noun :specializes comlex-noun
+     :binds
+      ((IN top))
+     :realization (:noun  "process" :in IN))
+
+(define-category profile-cl-noun :specializes comlex-noun
+     :binds
+      ((IN top))
+     :realization (:noun  "profile" :in IN))
+
+(define-category profit-cl-noun :specializes comlex-noun
+     :realization (:noun  "profit"))
+
+(define-category progress-cl-noun :specializes comlex-noun
+     :realization (:noun  "progress"))
+
+(define-category project-cl-noun :specializes comlex-noun
+     :realization (:noun  "project"))
+
+(define-category promise-cl-noun :specializes comlex-noun
+     :realization (:noun  "promise"))
+
+(define-category prompt-cl-noun :specializes comlex-noun
+     :realization (:noun  "prompt"))
+
+(define-category proposition-cl-noun :specializes comlex-noun
+     :realization (:noun  "proposition"))
+
+(define-category prospect-cl-noun :specializes comlex-noun
+     :realization (:noun  "prospect"))
+
+(define-category protest-cl-noun :specializes comlex-noun
+     :realization (:noun  "protest"))
+
+(define-category punch-cl-noun :specializes comlex-noun
+     :realization (:noun  "punch"))
+
+(define-category purchase-cl-noun :specializes comlex-noun
+     :realization (:noun  "purchase"))
+
+(define-category puzzle-cl-noun :specializes comlex-noun
+     :realization (:noun  "puzzle"))
+
+(define-category queen-cl-noun :specializes comlex-noun
+     :realization (:noun  "queen"))
+
+(define-category quest-cl-noun :specializes comlex-noun
+     :binds
+      ((IN top))
+     :realization (:noun  "quest" :in IN))
+
+(define-category quiet-cl-noun :specializes comlex-noun
+     :realization (:noun ( "quiet" )
+))
+
+(define-category quote-cl-noun :specializes comlex-noun
+     :realization (:noun  "quote"))
+
+(define-category race-cl-noun :specializes comlex-noun
+     :realization (:noun  "race"))
+
+(define-category racket-cl-noun :specializes comlex-noun
+     :realization (:noun  "racket"))
+
+(define-category raffle-cl-noun :specializes comlex-noun
+     :realization (:noun  "raffle"))
+
+(define-category raft-cl-noun :specializes comlex-noun
+     :binds
+      ((BY top)
+       (VIA top))
+     :realization (:noun  "raft" :by BY :via VIA))
+
+(define-category rail-cl-noun :specializes comlex-noun
+     :binds
+      ((BY top)
+       (VIA top))
+     :realization (:noun  "rail" :by BY :via VIA))
+
+(define-category rally-cl-noun :specializes comlex-noun
+     :realization (:noun  "rally"))
+
+(define-category ration-cl-noun :specializes comlex-noun
+     :realization (:noun  "ration"))
+
+(define-category rebuke-cl-noun :specializes comlex-noun
+     :realization (:noun  "rebuke"))
+
+(define-category recall-cl-noun :specializes comlex-noun
+     :realization (:noun  "recall"))
+
+(define-category receipt-cl-noun :specializes comlex-noun
+     :binds
+      ((IN top)
+       (ON top)
+       (UPON top))
+     :realization (:noun  "receipt" :in IN :on ON :upon UPON))
+
+(define-category record-cl-noun :specializes comlex-noun
+     :binds
+      ((OF top)
+       (OFF top)
+       (ON top))
+     :realization (:noun  "record" :of OF :off OFF :on ON))
+
+(define-category reform-cl-noun :specializes comlex-noun
+     :realization (:noun  "reform"))
+
+(define-category refrain-cl-noun :specializes comlex-noun
+     :realization (:noun  "refrain"))
+
+(define-category refund-cl-noun :specializes comlex-noun
+     :realization (:noun  "refund"))
+
+(define-category refuse-cl-noun :specializes comlex-noun
+     :realization (:noun ( "refuse" )
+))
+
+(define-category regard-cl-noun :specializes comlex-noun
+     :realization (:noun  "regard"))
+
+(define-category register-cl-noun :specializes comlex-noun
+     :realization (:noun  "register"))
+
+(define-category reign-cl-noun :specializes comlex-noun
+     :realization (:noun  "reign"))
+
+(define-category reject-cl-noun :specializes comlex-noun
+     :realization (:noun  "reject"))
+
+(define-category remark-cl-noun :specializes comlex-noun
+     :binds
+      ((OF top)
+       (WITHOUT top))
+     :realization (:noun  "remark" :of OF :without WITHOUT))
+
+(define-category remedy-cl-noun :specializes comlex-noun
+     :binds
+      ((BEYOND top))
+     :realization (:noun  "remedy" :beyond BEYOND))
+
+(define-category repeat-cl-noun :specializes comlex-noun
+     :realization (:noun  "repeat"))
+
+(define-category reply-cl-noun :specializes comlex-noun
+     :binds
+      ((IN top))
+     :realization (:noun  "reply" :in IN))
+
+(define-category repute-cl-noun :specializes comlex-noun
+     :realization (:noun ( "repute" )
+))
+
+(define-category request-cl-noun :specializes comlex-noun
+     :binds
+      ((BY top))
+     :realization (:noun  "request" :by BY))
+
+(define-category rescue-cl-noun :specializes comlex-noun
+     :realization (:noun  "rescue"))
+
+(define-category research-cl-noun :specializes comlex-noun
+     :realization (:noun  "research"))
+
+(define-category reserve-cl-noun :specializes comlex-noun
+     :realization (:noun  "reserve"))
+
+(define-category resolve-cl-noun :specializes comlex-noun
+     :realization (:noun  "resolve"))
+
+(define-category respect-cl-noun :specializes comlex-noun
+     :realization (:noun  "respect"))
+
+(define-category rest-cl-noun :specializes comlex-noun
+     :realization (:noun  "rest"))
+
+(define-category retail-cl-noun :specializes comlex-noun
+     :realization (:noun  "retail"))
+
+(define-category retire-cl-noun :specializes comlex-noun
+     :realization (:noun ( "retire" )
+))
+
+(define-category review-cl-noun :specializes comlex-noun
+     :realization (:noun  "review"))
+
+(define-category revise-cl-noun :specializes comlex-noun
+     :realization (:noun  "revise"))
+
+(define-category revolt-cl-noun :specializes comlex-noun
+     :realization (:noun  "revolt"))
+
+(define-category reward-cl-noun :specializes comlex-noun
+     :binds
+      ((IN top)
+       (WITHOUT top))
+     :realization (:noun  "reward" :in IN :without WITHOUT))
+
+(define-category ridge-cl-noun :specializes comlex-noun
+     :realization (:noun  "ridge"))
+
+(define-category right-cl-noun :specializes comlex-noun
+     :realization (:noun  "right"))
+
+(define-category rinse-cl-noun :specializes comlex-noun
+     :realization (:noun  "rinse"))
+
+(define-category ripple-cl-noun :specializes comlex-noun
+     :realization (:noun  "ripple"))
+
+(define-category risk-cl-noun :specializes comlex-noun
+     :realization (:noun  "risk"))
+
+(define-category rivet-cl-noun :specializes comlex-noun
+     :realization (:noun  "rivet"))
+
+(define-category room-cl-noun :specializes comlex-noun
+     :realization (:noun  "room"))
+
+(define-category root-cl-noun :specializes comlex-noun
+     :realization (:noun  "root"))
+
+(define-category rough-cl-noun :specializes comlex-noun
+     :realization (:noun  "rough"))
+
+(define-category round-cl-noun :specializes comlex-noun
+     :realization (:noun  "round"))
+
+(define-category row-cl-noun :specializes comlex-noun
+     :binds
+      ((BY top))
+     :realization (:noun  "row" :by BY))
+
+(define-category rule-cl-noun :specializes comlex-noun
+     :binds
+      ((BY top))
+     :realization (:noun  "rule" :by BY))
+
+(define-category rumor-cl-noun :specializes comlex-noun
+     :realization (:noun  "rumor"))
+
+(define-category rush-cl-noun :specializes comlex-noun
+     :realization (:noun  "rush"))
+
+(define-category sacrifice-cl-noun :specializes comlex-noun
+     :realization (:noun  "sacrifice"))
+
+(define-category saddle-cl-noun :specializes comlex-noun
+     :realization (:noun  "saddle"))
+
+(define-category safeguard-cl-noun :specializes comlex-noun
+     :realization (:noun  "safeguard"))
+
+(define-category salute-cl-noun :specializes comlex-noun
+     :realization (:noun  "salute"))
+
+(define-category sanction-cl-noun :specializes comlex-noun
+     :realization (:noun  "sanction"))
+
+(define-category sandwich-cl-noun :specializes comlex-noun
+     :realization (:noun  "sandwich"))
+
+(define-category save-cl-noun :specializes comlex-noun
+     :realization (:noun  "save"))
+
+(define-category savvy-cl-noun :specializes comlex-noun
+     :realization (:noun ( "savvy" )
+))
+
+(define-category scale-cl-noun :specializes comlex-noun
+     :realization (:noun  "scale"))
+
+(define-category scare-cl-noun :specializes comlex-noun
+     :realization (:noun  "scare"))
+
+(define-category scatter-cl-noun :specializes comlex-noun
+     :realization (:noun  "scatter"))
+
+(define-category scent-cl-noun :specializes comlex-noun
+     :realization (:noun  "scent"))
+
+(define-category schedule-cl-noun :specializes comlex-noun
+     :binds
+      ((BEHIND top)
+       (BY top)
+       (OFF top)
+       (ON top)
+       (TO top))
+     :realization (:noun  "schedule" :behind BEHIND :by BY :off OFF :on ON :to TO))
+
+(define-category scheme-cl-noun :specializes comlex-noun
+     :realization (:noun  "scheme"))
+
+(define-category school-cl-noun :specializes comlex-noun
+     :realization (:noun  "school"))
+
+(define-category score-cl-noun :specializes comlex-noun
+     :realization (:noun  "score"))
+
+(define-category screech-cl-noun :specializes comlex-noun
+     :realization (:noun  "screech"))
+
+(define-category search-cl-noun :specializes comlex-noun
+     :binds
+      ((IN top))
+     :realization (:noun  "search" :in IN))
+
+(define-category season-cl-noun :specializes comlex-noun
+     :binds
+      ((IN top)
+       (|OUT OF| top))
+     :realization (:noun  "season" :in IN :|OUT OF| |OUT OF|))
+
+(define-category segment-cl-noun :specializes comlex-noun
+     :binds
+      ((BY top))
+     :realization (:noun  "segment" :by BY))
+
+(define-category sense-cl-noun :specializes comlex-noun
+     :realization (:noun  "sense"))
+
+(define-category service-cl-noun :specializes comlex-noun
+     :realization (:noun  "service"))
+
+(define-category settle-cl-noun :specializes comlex-noun
+     :realization (:noun  "settle"))
+
+(define-category sex-cl-noun :specializes comlex-noun
+     :realization (:noun  "sex"))
+
+(define-category shade-cl-noun :specializes comlex-noun
+     :realization (:noun  "shade"))
+
+(define-category shadow-cl-noun :specializes comlex-noun
+     :realization (:noun  "shadow"))
+
+(define-category shallow-cl-noun :specializes comlex-noun
+     :realization (:noun  "shallow"))
+
+(define-category shape-cl-noun :specializes comlex-noun
+     :realization (:noun  "shape"))
+
+(define-category share-cl-noun :specializes comlex-noun
+     :realization (:noun  "share"))
+
+(define-category shave-cl-noun :specializes comlex-noun
+     :realization (:noun  "shave"))
+
+(define-category shelter-cl-noun :specializes comlex-noun
+     :realization (:noun  "shelter"))
+
+(define-category shield-cl-noun :specializes comlex-noun
+     :realization (:noun  "shield"))
+
+(define-category shift-cl-noun :specializes comlex-noun
+     :binds
+      ((BY top)
+       (OFF top)
+       (ON top))
+     :realization (:noun  "shift" :by BY :off OFF :on ON))
+
+(define-category shock-cl-noun :specializes comlex-noun
+     :binds
+      ((IN top))
+     :realization (:noun  "shock" :in IN))
+
+(define-category shore-cl-noun :specializes comlex-noun
+     :binds
+      ((NEAR top)
+       (OFF top)
+       (ON top))
+     :realization (:noun  "shore" :near NEAR :off OFF :on ON))
+
+(define-category shout-cl-noun :specializes comlex-noun
+     :realization (:noun  "shout"))
+
+(define-category shower-cl-noun :specializes comlex-noun
+     :realization (:noun  "shower"))
+
+(define-category side-cl-noun :specializes comlex-noun
+     :binds
+      ((WITHOUT top))
+     :realization (:noun  "side" :without WITHOUT))
+
+(define-category sign-cl-noun :specializes comlex-noun
+     :realization (:noun  "sign"))
+
+(define-category size-cl-noun :specializes comlex-noun
+     :realization (:noun  "size"))
+
+(define-category ski-cl-noun :specializes comlex-noun
+     :realization (:noun  "ski"))
+
+(define-category slight-cl-noun :specializes comlex-noun
+     :realization (:noun  "slight"))
+
+(define-category smart-cl-noun :specializes comlex-noun
+     :realization (:noun ( "smart" )
+))
+
+(define-category smoke-cl-noun :specializes comlex-noun
+     :realization (:noun  "smoke"))
+
+(define-category smooth-cl-noun :specializes comlex-noun
+     :realization (:noun ( "smooth" )
+))
+
+(define-category snack-cl-noun :specializes comlex-noun
+     :realization (:noun  "snack"))
+
+(define-category sneeze-cl-noun :specializes comlex-noun
+     :realization (:noun  "sneeze"))
+
+(define-category snow-cl-noun :specializes comlex-noun
+     :realization (:noun  "snow"))
+
+(define-category snowball-cl-noun :specializes comlex-noun
+     :realization (:noun  "snowball"))
+
+(define-category soak-cl-noun :specializes comlex-noun
+     :realization (:noun  "soak"))
+
+(define-category soap-cl-noun :specializes comlex-noun
+     :realization (:noun  "soap"))
+
+(define-category sole-cl-noun :specializes comlex-noun
+     :realization (:noun ( "sole"  :PLURAL ("soles" "sole"))
+))
+
+(define-category sort-cl-noun :specializes comlex-noun
+     :realization (:noun  "sort"))
+
+(define-category sound-cl-noun :specializes comlex-noun
+     :realization (:noun  "sound"))
+
+(define-category source-cl-noun :specializes comlex-noun
+     :realization (:noun  "source"))
+
+(define-category spare-cl-noun :specializes comlex-noun
+     :realization (:noun  "spare"))
+
+(define-category spike-cl-noun :specializes comlex-noun
+     :realization (:noun  "spike"))
+
+(define-category spill-cl-noun :specializes comlex-noun
+     :realization (:noun  "spill"))
+
+(define-category spray-cl-noun :specializes comlex-noun
+     :realization (:noun  "spray"))
+
+(define-category square-cl-noun :specializes comlex-noun
+     :realization (:noun  "square"))
+
+(define-category squire-cl-noun :specializes comlex-noun
+     :realization (:noun  "squire"))
+
+(define-category stagger-cl-noun :specializes comlex-noun
+     :realization (:noun  "stagger"))
+
+(define-category stake-cl-noun :specializes comlex-noun
+     :binds
+      ((AT top))
+     :realization (:noun  "stake" :at AT))
+
+(define-category stall-cl-noun :specializes comlex-noun
+     :realization (:noun  "stall"))
+
+(define-category staple-cl-noun :specializes comlex-noun
+     :realization (:noun  "staple"))
+
+(define-category station-cl-noun :specializes comlex-noun
+     :binds
+      ((BY top)
+       (|OUT OF| top))
+     :realization (:noun  "station" :by BY :|OUT OF| |OUT OF|))
+
+(define-category stay-cl-noun :specializes comlex-noun
+     :realization (:noun  "stay"))
+
+(define-category steel-cl-noun :specializes comlex-noun
+     :realization (:noun  "steel"))
+
+(define-category steer-cl-noun :specializes comlex-noun
+     :realization (:noun  "steer"))
+
+(define-category stereotype-cl-noun :specializes comlex-noun
+     :realization (:noun  "stereotype"))
+
+(define-category stock-cl-noun :specializes comlex-noun
+     :realization (:noun  "stock"))
+
+(define-category stone-cl-noun :specializes comlex-noun
+     :realization (:noun  "stone"))
+
+(define-category store-cl-noun :specializes comlex-noun
+     :binds
+      ((IN top))
+     :realization (:noun  "store" :in IN))
+
+(define-category strain-cl-noun :specializes comlex-noun
+     :realization (:noun  "strain"))
+
+(define-category strand-cl-noun :specializes comlex-noun
+     :realization (:noun  "strand"))
+
+(define-category stream-cl-noun :specializes comlex-noun
+     :binds
+      ((DOWN top)
+       (UP top))
+     :realization (:noun  "stream" :down DOWN :up UP))
+
+(define-category stress-cl-noun :specializes comlex-noun
+     :realization (:noun  "stress"))
+
+(define-category structure-cl-noun :specializes comlex-noun
+     :realization (:noun  "structure"))
+
+(define-category struggle-cl-noun :specializes comlex-noun
+     :realization (:noun  "struggle"))
+
+(define-category stump-cl-noun :specializes comlex-noun
+     :realization (:noun  "stump"))
+
+(define-category style-cl-noun :specializes comlex-noun
+     :realization (:noun  "style"))
+
+(define-category suit-cl-noun :specializes comlex-noun
+     :realization (:noun  "suit"))
+
+(define-category supplement-cl-noun :specializes comlex-noun
+     :realization (:noun  "supplement"))
+
+(define-category supply-cl-noun :specializes comlex-noun
+     :realization (:noun  "supply"))
+
+(define-category surface-cl-noun :specializes comlex-noun
+     :realization (:noun  "surface"))
+
+(define-category surge-cl-noun :specializes comlex-noun
+     :realization (:noun  "surge"))
+
+(define-category surprise-cl-noun :specializes comlex-noun
+     :realization (:noun  "surprise"))
+
+(define-category surround-cl-noun :specializes comlex-noun
+     :realization (:noun  "surround"))
+
+(define-category suspect-cl-noun :specializes comlex-noun
+     :realization (:noun  "suspect"))
+
+(define-category tackle-cl-noun :specializes comlex-noun
+     :realization (:noun  "tackle"))
+
+(define-category tail-cl-noun :specializes comlex-noun
+     :realization (:noun  "tail"))
+
+(define-category tailor-cl-noun :specializes comlex-noun
+     :realization (:noun  "tailor"))
+
+(define-category talk-cl-noun :specializes comlex-noun
+     :realization (:noun  "talk"))
+
+(define-category tally-cl-noun :specializes comlex-noun
+     :realization (:noun  "tally"))
+
+(define-category taste-cl-noun :specializes comlex-noun
+     :realization (:noun  "taste"))
+
+(define-category telephone-cl-noun :specializes comlex-noun
+     :binds
+      ((BY top))
+     :realization (:noun  "telephone" :by BY))
+
+(define-category thread-cl-noun :specializes comlex-noun
+     :realization (:noun  "thread"))
+
+(define-category threat-cl-noun :specializes comlex-noun
+     :realization (:noun  "threat"))
+
+(define-category thrill-cl-noun :specializes comlex-noun
+     :realization (:noun  "thrill"))
+
+(define-category thumb-cl-noun :specializes comlex-noun
+     :realization (:noun  "thumb"))
+
+(define-category tide-cl-noun :specializes comlex-noun
+     :realization (:noun  "tide"))
+
+(define-category time-cl-noun :specializes comlex-noun
+     :realization (:noun  "time"))
+
+(define-category tingle-cl-noun :specializes comlex-noun
+     :realization (:noun  "tingle"))
+
+(define-category tint-cl-noun :specializes comlex-noun
+     :realization (:noun  "tint"))
+
+(define-category tire-cl-noun :specializes comlex-noun
+     :realization (:noun  "tire"))
+
+(define-category toll-cl-noun :specializes comlex-noun
+     :realization (:noun  "toll"))
+
+(define-category touch-cl-noun :specializes comlex-noun
+     :realization (:noun  "touch"))
+
+(define-category tower-cl-noun :specializes comlex-noun
+     :realization (:noun  "tower"))
+
+(define-category trace-cl-noun :specializes comlex-noun
+     :realization (:noun  "trace"))
+
+(define-category track-cl-noun :specializes comlex-noun
+     :realization (:noun  "track"))
+
+(define-category train-cl-noun :specializes comlex-noun
+     :realization (:noun  "train"))
+
+(define-category trend-cl-noun :specializes comlex-noun
+     :realization (:noun  "trend"))
+
+(define-category troll-cl-noun :specializes comlex-noun
+     :realization (:noun  "troll"))
+
+(define-category troop-cl-noun :specializes comlex-noun
+     :realization (:noun  "troop"))
+
+(define-category trouble-cl-noun :specializes comlex-noun
+     :realization (:noun  "trouble"))
+
+(define-category trump-cl-noun :specializes comlex-noun
+     :realization (:noun  "trump"))
+
+(define-category trust-cl-noun :specializes comlex-noun
+     :realization (:noun  "trust"))
+
+(define-category try-cl-noun :specializes comlex-noun
+     :realization (:noun  "try"))
+
+(define-category turn-cl-noun :specializes comlex-noun
+     :binds
+      ((|OUT OF| top)
+       (IN top))
+     :realization (:noun  "turn" :|OUT OF| |OUT OF| :in IN))
+
+(define-category twitter-cl-noun :specializes comlex-noun
+     :realization (:noun  "twitter"))
+
+(define-category type-cl-noun :specializes comlex-noun
+     :realization (:noun  "type"))
+
+(define-category underestimate-cl-noun :specializes comlex-noun
+     :realization (:noun  "underestimate"))
+
+(define-category uniform-cl-noun :specializes comlex-noun
+     :binds
+      ((IN top)
+       (|OUT OF| top))
+     :realization (:noun  "uniform" :in IN :|OUT OF| |OUT OF|))
+
+(define-category urge-cl-noun :specializes comlex-noun
+     :realization (:noun  "urge"))
+
+(define-category usher-cl-noun :specializes comlex-noun
+     :realization (:noun  "usher"))
+
+(define-category vacation-cl-noun :specializes comlex-noun
+     :realization (:noun  "vacation"))
+
+(define-category value-cl-noun :specializes comlex-noun
+     :realization (:noun  "value"))
+
+(define-category vest-cl-noun :specializes comlex-noun
+     :realization (:noun  "vest"))
+
+(define-category visit-cl-noun :specializes comlex-noun
+     :realization (:noun  "visit"))
+
+(define-category voice-cl-noun :specializes comlex-noun
+     :realization (:noun  "voice"))
+
+(define-category volunteer-cl-noun :specializes comlex-noun
+     :realization (:noun  "volunteer"))
+
+(define-category vote-cl-noun :specializes comlex-noun
+     :realization (:noun  "vote"))
+
+(define-category wait-cl-noun :specializes comlex-noun
+     :binds
+      ((IN top))
+     :realization (:noun  "wait" :in IN))
+
+(define-category walk-cl-noun :specializes comlex-noun
+     :realization (:noun  "walk"))
+
+(define-category wall-cl-noun :specializes comlex-noun
+     :realization (:noun  "wall"))
+
+(define-category warrant-cl-noun :specializes comlex-noun
+     :realization (:noun  "warrant"))
+
+(define-category wash-cl-noun :specializes comlex-noun
+     :realization (:noun  "wash"))
+
+(define-category watch-cl-noun :specializes comlex-noun
+     :realization (:noun  "watch"))
+
+(define-category wave-cl-noun :specializes comlex-noun
+     :realization (:noun  "wave"))
+
+(define-category weather-cl-noun :specializes comlex-noun
+     :realization (:noun  "weather"))
+
+(define-category weekend-cl-noun :specializes comlex-noun
+     :realization (:noun  "weekend"))
+
+(define-category weight-cl-noun :specializes comlex-noun
+     :realization (:noun  "weight"))
+
+(define-category welcome-cl-noun :specializes comlex-noun
+     :realization (:noun  "welcome"))
+
+(define-category wheel-cl-noun :specializes comlex-noun
+     :realization (:noun  "wheel"))
+
+(define-category wipe-cl-noun :specializes comlex-noun
+     :realization (:noun  "wipe"))
+
+(define-category wire-cl-noun :specializes comlex-noun
+     :realization (:noun  "wire"))
+
+(define-category wish-cl-noun :specializes comlex-noun
+     :realization (:noun  "wish"))
+
+(define-category witness-cl-noun :specializes comlex-noun
+     :realization (:noun  "witness"))
+
+(define-category wonder-cl-noun :specializes comlex-noun
+     :realization (:noun  "wonder"))
+
+(define-category word-cl-noun :specializes comlex-noun
+     :realization (:noun  "word"))
+
+(define-category worry-cl-noun :specializes comlex-noun
+     :realization (:noun  "worry"))
+
+(define-category yawn-cl-noun :specializes comlex-noun
+     :realization (:noun  "yawn"))
+
+(define-category yell-cl-noun :specializes comlex-noun
+     :realization (:noun  "yell"))
+
+(define-category zone-cl-noun :specializes comlex-noun
+     :realization (:noun  "zone"))
+
+(define-category bag-cl-noun :specializes comlex-noun
+     :realization (:noun  "bag"))
+
+(define-category ban-cl-noun :specializes comlex-noun
+     :realization (:noun  "ban"))
+
+(define-category bear-cl-noun :specializes comlex-noun
+     :realization (:noun  "bear"))
+
+(define-category bind-cl-noun :specializes comlex-noun
+     :realization (:noun  "bind"))
+
+(define-category blur-cl-noun :specializes comlex-noun
+     :realization (:noun  "blur"))
+
+(define-category break-cl-noun :specializes comlex-noun
+     :realization (:noun  "break"))
+
+(define-category bud-cl-noun :specializes comlex-noun
+     :realization (:noun  "bud"))
+
+(define-category build-cl-noun :specializes comlex-noun
+     :realization (:noun  "build"))
+
+(define-category bullshit-cl-noun :specializes comlex-noun
+     :realization (:noun ( "bullshit" )
+))
+
+(define-category buy-cl-noun :specializes comlex-noun
+     :realization (:noun  "buy"))
+
+(define-category cap-cl-noun :specializes comlex-noun
+     :realization (:noun  "cap"))
+
+(define-category cast-cl-noun :specializes comlex-noun
+     :realization (:noun  "cast"))
+
+(define-category catch-cl-noun :specializes comlex-noun
+     :realization (:noun  "catch"))
+
+(define-category channel-cl-noun :specializes comlex-noun
+     :realization (:noun  "channel"))
+
+(define-category chat-cl-noun :specializes comlex-noun
+     :realization (:noun  "chat"))
+
+(define-category clam-cl-noun :specializes comlex-noun
+     :realization (:noun  "clam"))
+
+(define-category clip-cl-noun :specializes comlex-noun
+     :realization (:noun  "clip"))
+
+(define-category clot-cl-noun :specializes comlex-noun
+     :realization (:noun  "clot"))
+
+(define-category club-cl-noun :specializes comlex-noun
+     :realization (:noun  "club"))
+
+(define-category con-cl-noun :specializes comlex-noun
+     :realization (:noun  "con"))
+
+(define-category cop-cl-noun :specializes comlex-noun
+     :realization (:noun  "cop"))
+
+(define-category counsel-cl-noun :specializes comlex-noun
+     :realization (:noun ( "counsel" )
+))
+
+(define-category cut-cl-noun :specializes comlex-noun
+     :realization (:noun  "cut"))
+
+(define-category deal-cl-noun :specializes comlex-noun
+     :realization (:noun  "deal"))
+
+(define-category decree-cl-noun :specializes comlex-noun
+     :binds
+      ((BY top))
+     :realization (:noun  "decree" :by BY))
+
+(define-category dial-cl-noun :specializes comlex-noun
+     :realization (:noun  "dial"))
+
+(define-category dip-cl-noun :specializes comlex-noun
+     :realization (:noun  "dip"))
+
+(define-category draw-cl-noun :specializes comlex-noun
+     :realization (:noun  "draw"))
+
+(define-category drink-cl-noun :specializes comlex-noun
+     :realization (:noun  "drink"))
+
+(define-category dun-cl-noun :specializes comlex-noun
+     :realization (:noun  "dun"))
+
+(define-category equal-cl-noun :specializes comlex-noun
+     :realization (:noun  "equal"))
+
+(define-category fall-cl-noun :specializes comlex-noun
+     :realization (:noun  "fall"))
+
+(define-category fee-cl-noun :specializes comlex-noun
+     :realization (:noun  "fee"))
+
+(define-category fight-cl-noun :specializes comlex-noun
+     :realization (:noun  "fight"))
+
+(define-category find-cl-noun :specializes comlex-noun
+     :realization (:noun  "find"))
+
+(define-category flag-cl-noun :specializes comlex-noun
+     :realization (:noun  "flag"))
+
+(define-category fly-cl-noun :specializes comlex-noun
+     :realization (:noun  "fly"))
+
+(define-category freeze-cl-noun :specializes comlex-noun
+     :realization (:noun  "freeze"))
+
+(define-category fuel-cl-noun :specializes comlex-noun
+     :realization (:noun  "fuel"))
+
+(define-category go-cl-noun :specializes comlex-noun
+     :realization (:noun ( "go" )
+))
+
+(define-category grab-cl-noun :specializes comlex-noun
+     :realization (:noun  "grab"))
+
+(define-category grind-cl-noun :specializes comlex-noun
+     :realization (:noun  "grind"))
+
+(define-category guarantee-cl-noun :specializes comlex-noun
+     :realization (:noun  "guarantee"))
+
+(define-category gun-cl-noun :specializes comlex-noun
+     :realization (:noun  "gun"))
+
+(define-category gut-cl-noun :specializes comlex-noun
+     :realization (:noun  "gut"))
+
+(define-category ham-cl-noun :specializes comlex-noun
+     :realization (:noun  "ham"))
+
+(define-category hang-cl-noun :specializes comlex-noun
+     :realization (:noun ( "hang" )
+))
+
+(define-category hide-cl-noun :specializes comlex-noun
+     :realization (:noun  "hide"))
+
+(define-category hit-cl-noun :specializes comlex-noun
+     :realization (:noun  "hit"))
+
+(define-category hold-cl-noun :specializes comlex-noun
+     :realization (:noun  "hold"))
+
+(define-category hug-cl-noun :specializes comlex-noun
+     :realization (:noun  "hug"))
+
+(define-category hum-cl-noun :specializes comlex-noun
+     :realization (:noun  "hum"))
+
+(define-category hurt-cl-noun :specializes comlex-noun
+     :realization (:noun ( "hurt" )
+))
+
+(define-category job-cl-noun :specializes comlex-noun
+     :realization (:noun  "job"))
+
+(define-category jog-cl-noun :specializes comlex-noun
+     :realization (:noun  "jog"))
+
+(define-category jot-cl-noun :specializes comlex-noun
+     :realization (:noun  "jot"))
+
+(define-category kid-cl-noun :specializes comlex-noun
+     :realization (:noun  "kid"))
+
+(define-category kit-cl-noun :specializes comlex-noun
+     :realization (:noun  "kit"))
+
+(define-category know-cl-noun :specializes comlex-noun
+     :realization (:noun ( "know" )
+))
+
+(define-category lag-cl-noun :specializes comlex-noun
+     :realization (:noun  "lag"))
+
+(define-category leave-cl-noun :specializes comlex-noun
+     :realization (:noun  "leave"))
+
+(define-category lie-cl-noun :specializes comlex-noun
+     :realization (:noun  "lie"))
+
+(define-category light-cl-noun :specializes comlex-noun
+     :realization (:noun  "light"))
+
+(define-category log-cl-noun :specializes comlex-noun
+     :realization (:noun  "log"))
+
+(define-category mean-cl-noun :specializes comlex-noun
+     :realization (:noun  "mean"))
+
+(define-category meet-cl-noun :specializes comlex-noun
+     :realization (:noun  "meet"))
+
+(define-category mistake-cl-noun :specializes comlex-noun
+     :realization (:noun  "mistake"))
+
+(define-category model-cl-noun :specializes comlex-noun
+     :realization (:noun  "model"))
+
+(define-category net-cl-noun :specializes comlex-noun
+     :realization (:noun  "net"))
+
+(define-category offset-cl-noun :specializes comlex-noun
+     :realization (:noun ( "offset" )
+))
+
+(define-category panic-cl-noun :specializes comlex-noun
+     :realization (:noun  "panic"))
+
+(define-category parallel-cl-noun :specializes comlex-noun
+     :binds
+      ((WITHOUT top)
+       (IN top))
+     :realization (:noun  "parallel" :without WITHOUT :in IN))
+
+(define-category parcel-cl-noun :specializes comlex-noun
+     :realization (:noun  "parcel"))
+
+(define-category pay-cl-noun :specializes comlex-noun
+     :realization (:noun ( "pay" )
+))
+
+(define-category permit-cl-noun :specializes comlex-noun
+     :realization (:noun  "permit"))
+
+(define-category pet-cl-noun :specializes comlex-noun
+     :realization (:noun  "pet"))
+
+(define-category plan-cl-noun :specializes comlex-noun
+     :binds
+      ((|ACCORDING TO| top))
+     :realization (:noun  "plan" :|ACCORDING TO| |ACCORDING TO|))
+
+(define-category plot-cl-noun :specializes comlex-noun
+     :realization (:noun  "plot"))
+
+(define-category program-cl-noun :specializes comlex-noun
+     :realization (:noun  "program"))
+
+(define-category quarantine-cl-noun :specializes comlex-noun
+     :realization (:noun ( "quarantine" )
+))
+
+(define-category quiz-cl-noun :specializes comlex-noun
+     :realization (:noun ( "quiz"  :PLURAL "quizzes")
+))
+
+(define-category rag-cl-noun :specializes comlex-noun
+     :realization (:noun  "rag"))
+
+(define-category rap-cl-noun :specializes comlex-noun
+     :realization (:noun ( "rap"  :PLURAL "rap")
+))
+
+(define-category rebel-cl-noun :specializes comlex-noun
+     :realization (:noun  "rebel"))
+
+(define-category relay-cl-noun :specializes comlex-noun
+     :binds
+      ((BY top)
+       (IN top))
+     :realization (:noun  "relay" :by BY :in IN))
+
+(define-category rerun-cl-noun :specializes comlex-noun
+     :realization (:noun  "rerun"))
+
+(define-category rethink-cl-noun :specializes comlex-noun
+     :realization (:noun  "rethink"))
+
+(define-category rim-cl-noun :specializes comlex-noun
+     :realization (:noun  "rim"))
+
+(define-category rise-cl-noun :specializes comlex-noun
+     :binds
+      ((AT top))
+     :realization (:noun  "rise" :at AT))
+
+(define-category rival-cl-noun :specializes comlex-noun
+     :realization (:noun  "rival"))
+
+(define-category rub-cl-noun :specializes comlex-noun
+     :realization (:noun  "rub"))
+
+(define-category scrap-cl-noun :specializes comlex-noun
+     :realization (:noun  "scrap"))
+
+(define-category see-cl-noun :specializes comlex-noun
+     :realization (:noun  "see"))
+
+(define-category sell-cl-noun :specializes comlex-noun
+     :realization (:noun ( "sell" )
+))
+
+(define-category shake-cl-noun :specializes comlex-noun
+     :realization (:noun  "shake"))
+
+(define-category shin-cl-noun :specializes comlex-noun
+     :realization (:noun  "shin"))
+
+(define-category ship-cl-noun :specializes comlex-noun
+     :binds
+      ((BY top)
+       (VIA top))
+     :realization (:noun  "ship" :by BY :via VIA))
+
+(define-category shoe-cl-noun :specializes comlex-noun
+     :realization (:noun  "shoe"))
+
+(define-category shoot-cl-noun :specializes comlex-noun
+     :realization (:noun  "shoot"))
+
+(define-category shop-cl-noun :specializes comlex-noun
+     :binds
+      ((UP top))
+     :realization (:noun  "shop" :up UP))
+
+(define-category shrink-cl-noun :specializes comlex-noun
+     :realization (:noun  "shrink"))
+
+(define-category signal-cl-noun :specializes comlex-noun
+     :realization (:noun  "signal"))
+
+(define-category sin-cl-noun :specializes comlex-noun
+     :realization (:noun  "sin"))
+
+(define-category sink-cl-noun :specializes comlex-noun
+     :realization (:noun  "sink"))
+
+(define-category sip-cl-noun :specializes comlex-noun
+     :realization (:noun  "sip"))
+
+(define-category sleep-cl-noun :specializes comlex-noun
+     :realization (:noun ( "sleep" )
+))
+
+(define-category slide-cl-noun :specializes comlex-noun
+     :realization (:noun  "slide"))
+
+(define-category slur-cl-noun :specializes comlex-noun
+     :realization (:noun  "slur"))
+
+(define-category smell-cl-noun :specializes comlex-noun
+     :realization (:noun  "smell"))
+
+(define-category snap-cl-noun :specializes comlex-noun
+     :realization (:noun  "snap"))
+
+(define-category speed-cl-noun :specializes comlex-noun
+     :realization (:noun  "speed"))
+
+(define-category spin-cl-noun :specializes comlex-noun
+     :realization (:noun  "spin"))
+
+(define-category split-cl-noun :specializes comlex-noun
+     :realization (:noun  "split"))
+
+(define-category sport-cl-noun :specializes comlex-noun
+     :realization (:noun  "sport"))
+
+(define-category spot-cl-noun :specializes comlex-noun
+     :realization (:noun  "spot"))
+
+(define-category spread-cl-noun :specializes comlex-noun
+     :realization (:noun  "spread"))
+
+(define-category stand-cl-noun :specializes comlex-noun
+     :realization (:noun  "stand"))
+
+(define-category star-cl-noun :specializes comlex-noun
+     :realization (:noun  "star"))
+
+(define-category stem-cl-noun :specializes comlex-noun
+     :realization (:noun  "stem"))
+
+(define-category step-cl-noun :specializes comlex-noun
+     :realization (:noun  "step"))
+
+(define-category stick-cl-noun :specializes comlex-noun
+     :realization (:noun  "stick"))
+
+(define-category stop-cl-noun :specializes comlex-noun
+     :realization (:noun  "stop"))
+
+(define-category strap-cl-noun :specializes comlex-noun
+     :realization (:noun  "strap"))
+
+(define-category strike-cl-noun :specializes comlex-noun
+     :binds
+      ((ON top))
+     :realization (:noun  "strike" :on ON))
+
+(define-category strip-cl-noun :specializes comlex-noun
+     :realization (:noun  "strip"))
+
+(define-category stud-cl-noun :specializes comlex-noun
+     :realization (:noun  "stud"))
+
+(define-category stymie-cl-noun :specializes comlex-noun
+     :realization (:noun  "stymie"))
+
+(define-category sub-cl-noun :specializes comlex-noun
+     :realization (:noun  "sub"))
+
+(define-category sum-cl-noun :specializes comlex-noun
+     :realization (:noun  "sum"))
+
+(define-category sun-cl-noun :specializes comlex-noun
+     :realization (:noun ( "sun"  :PLURAL "sun")
+))
+
+(define-category sup-cl-noun :specializes comlex-noun
+     :realization (:noun  "sup"))
+
+(define-category swab-cl-noun :specializes comlex-noun
+     :realization (:noun  "swab"))
+
+(define-category sweep-cl-noun :specializes comlex-noun
+     :realization (:noun  "sweep"))
+
+(define-category swing-cl-noun :specializes comlex-noun
+     :binds
+      ((IN top))
+     :realization (:noun  "swing" :in IN))
+
+(define-category take-cl-noun :specializes comlex-noun
+     :realization (:noun  "take"))
+
+(define-category tan-cl-noun :specializes comlex-noun
+     :realization (:noun  "tan"))
+
+(define-category tap-cl-noun :specializes comlex-noun
+     :realization (:noun  "tap"))
+
+(define-category throw-cl-noun :specializes comlex-noun
+     :realization (:noun  "throw"))
+
+(define-category tie-cl-noun :specializes comlex-noun
+     :realization (:noun  "tie"))
+
+(define-category total-cl-noun :specializes comlex-noun
+     :realization (:noun  "total"))
+
+(define-category towel-cl-noun :specializes comlex-noun
+     :realization (:noun  "towel"))
+
+(define-category traffic-cl-noun :specializes comlex-noun
+     :realization (:noun ( "traffic" )
+))
+
+(define-category travel-cl-noun :specializes comlex-noun
+     :realization (:noun  "travel"))
+
+(define-category trim-cl-noun :specializes comlex-noun
+     :realization (:noun ( "trim" )
+))
+
+(define-category trip-cl-noun :specializes comlex-noun
+     :realization (:noun  "trip"))
+
+(define-category upset-cl-noun :specializes comlex-noun
+     :realization (:noun  "upset"))
+
+(define-category wake-cl-noun :specializes comlex-noun
+     :realization (:noun  "wake"))
+
+(define-category war-cl-noun :specializes comlex-noun
+     :realization (:noun  "war"))
+
+(define-category wear-cl-noun :specializes comlex-noun
+     :realization (:noun ( "wear" )
+))
+
+(define-category whip-cl-noun :specializes comlex-noun
+     :realization (:noun  "whip"))
+
+(define-category win-cl-noun :specializes comlex-noun
+     :realization (:noun  "win"))
+
+(define-category worship-cl-noun :specializes comlex-noun
+     :realization (:noun ( "worship" )
+))
+
+(define-category wrap-cl-noun :specializes comlex-noun
+     :realization (:noun  "wrap"))
+
+(define-category counter-cl-noun :specializes comlex-noun
+     :realization (:noun  "counter"))
+
+(define-category factor-cl-noun :specializes comlex-noun
+     :realization (:noun  "factor"))
+
+(define-category focus-cl-noun :specializes comlex-noun
+     :binds
+      ((|OUT OF| top)
+       (IN top)
+       (INTO top))
+     :realization (:noun  "focus" :|OUT OF| |OUT OF| :in IN :into INTO))
+
+(define-category marker-cl-noun :specializes comlex-noun
+     :realization (:noun  "marker"))
+
+(define-category monitor-cl-noun :specializes comlex-noun
+     :realization (:noun  "monitor"))
+
+#+ignore ;; old version with errors and edits
+(defparameter *cl-noun-defs*
+  '(
+(define-category abuse-cl-noun :specializes comlex-noun
+     :realization (:noun  "abuse"))
+
+(define-category access-cl-noun :specializes comlex-noun
      :realization (:noun ( "access" )))
 
 (define-category accord-cl-noun :specializes comlex-noun
@@ -5151,3 +7901,4 @@
      :binds
       ((FOR top))
      :realization (:noun  "monitor" :for FOR))
+))
