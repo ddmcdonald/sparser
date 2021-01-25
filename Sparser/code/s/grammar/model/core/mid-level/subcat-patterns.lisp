@@ -64,6 +64,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
      :o object
      :mumble (svo :s subject :o object)))
 
+#+ignore ;; not at all sure that all comlex-nouns take genitives!
 (define-mixin-category comlex-noun
   :specializes subcategorization-pattern
   :instantiates nil
@@ -73,7 +74,15 @@ subcategorization-pattern is a daughter of linguistic, abstract
   :mixins (with-theme)
   :restrict ((theme (:or endurant perdurant)))
   :realization
-    (:of theme))
+  (:of theme))
+
+(define-mixin-category comlex-noun
+  :specializes subcategorization-pattern
+  :instantiates nil
+  :documentation "Designed for use by setup-common-noun which is
+ used to provide a category for otherwise unknown nouns
+ that are introduced by the Comlex machinery."
+)
 
 (define-mixin-category action-verb
   :specializes subcategorization-pattern
