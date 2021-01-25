@@ -102,7 +102,7 @@
 ;;     rest of the location)
 ;;   kinds/time.lisp
 
-(define-category  quality
+(define-category quality
   :instantiates nil
   :specializes  top
   :documentation 
@@ -219,6 +219,16 @@
   :documentation "Intended for things like pronouns that require
  reference to the discourse context or general knowledge of defaults
  to be grounded.")
+
+(define-category of-prototype-description ;; terrible name -- David?
+  :specializes requires-context
+  :binds ((prototype top))
+  :documentation "Intended for things like type (of), variant(of), ...
+ whose category is unclear without either an explicit argument (of) or
+ a context"
+)
+
+
 
 
 (define-category subcategorization-pattern
