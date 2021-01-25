@@ -17,7 +17,7 @@ Available variables for the interpretation of an NP
 
 -- on Top
 
-modifiier - supplies a property. May be adverbial
+modifier - supplies a property. May be adverbial
 qualifier - a modifier that changes something's type: 'toy gun'
 negation
 quantifier
