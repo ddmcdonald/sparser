@@ -387,7 +387,7 @@ we're using in the switch settings. The precursor feeder routines are
 find-word, really-known-word?, and word-has-associated-category who encounter
 unknown words.|#
 
-(defun add-new-word-to-catalog (word source)
+(defun add-new-word-to-catalog (word source &optional instance-string)
   "Called as part of cataloging any new word. The 'source' encodes
    which of the places that define new words was involved."
   (declare (special *suffix-pos-table*))
@@ -401,7 +401,9 @@ unknown words.|#
  "race" "save" "segment" "sell" "shot" "sin" "sip" "ski" "smooth" "spike" "spin" "star" "str"
                    "stud" "sun" "sup" "thread" "tower" "trip" "usher" "wild" "win")
                  :test #'equal)
-       (warn "New comlex verb ~s" word))
+       (if instance-string
+           (warn "New comlex verb ~s with lemma ~s " instance-string word)
+           (warn "New comlex verb ~s " word)))
      (pushnew word *from-comlex*))
 
     (:BigMech-default ;; handle-unknown-word-as-bio-entity
