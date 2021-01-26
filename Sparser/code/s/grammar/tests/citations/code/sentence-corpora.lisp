@@ -430,18 +430,35 @@ previous records of treetop-counts.
     (format stream "))~%")))
         
 ;;; RUSTY added these utility functions
+(defparameter *all-corpus-sents* nil)
+
+(defmacro add-corpus-sents (sents)
+  `(setq *all-corpus-sents*
+         (append ',sents *all-corpus-sents*)))
+
+(defun dump-article-sents (&optional (within-directory "~/Desktop"))
+  (loop for aa
+          in (hal *handles-to-articles*) 
+        do (with-open-file
+               (f (pathname (format nil "~a/show-sents/~a.lisp" within-directory (car aa)))
+                  :direction :output :if-does-not-exist :create :if-exists :supersede)
+     (pprint `(in-package :sp) f)
+     (pprint `(add-corpus-sents ,(score-article-sentences (cdr aa))) f))))
+
 (defun all-corpus-sentences ()
   (declare (special *sentence-corpus-table*))
-  (let ((scvars nil)) 
-    (maphash #'(lambda(key val) 
-                 (push (list key (corpus-bound-variable val)) scvars)) 
-             *sentence-corpus-table*) 
-    (loop for v in scvars 
-      append 
-      (loop for p in (eval (second v)) 
-        as i from 1 by 1
-        collect 
-        (list (car v) i (second p))))))
+  (or
+   *all-corpus-sents*
+   (let ((scvars nil)) 
+     (maphash #'(lambda(key val) 
+                  (push (list key (corpus-bound-variable val)) scvars)) 
+              *sentence-corpus-table*) 
+     (loop for v in scvars 
+           append 
+           (loop for p in (eval (second v)) 
+                 as i from 1 by 1
+                 collect 
+                 (list (car v) i (second p)))))))
 
 (defun find-corpus-instances (str &optional all-sents)
   (if (consp all-sents)
@@ -462,6 +479,7 @@ a list of three element items whose third element is a string~%")))
             when
             (search str (third s))
             collect s)))
+
 
 (defun show-sents (str &optional all-sents)
   (unless (or (null all-sents)
