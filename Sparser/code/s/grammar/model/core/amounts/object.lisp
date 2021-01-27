@@ -20,25 +20,32 @@
 ;;;--------
 ;;; object
 ;;;--------
-
-(define-category amount :specializes abstract ;; delimits a region in a quantity space
-  :mixins (attribute) ;; it can be used as an attribute (e.g. "the amount of snow")
+   
+(define-category amount-of-stuff
+  :specializes abstract ;; delimits a region in a quantity space
   :instantiates self
   :index (:temporary :sequential-keys stuff measurement)
   :binds ((measurement . measurement)
+          (stuff)
           ;; adjuncts that can be expected
-          (stuff) ;; needed for :sequential-keys -- but how???
           (alternative-amount)
           (time-period))
-   :realization (:noun "amount"))
+  :documentation "")
 
-
+#| and so are active in catalytic amounts.
+the amount of α-catenin
+the total amounts of α-catenin ;; similar, same, initial
+their relative amounts remained unchanged
+for various amounts of time
+increasing amounts of recombinant XRCC1.
+(dynamic-model 54 "Double the amount of total BRAF.")
+|#
 
 
 ;;;-----------------------------------------------------
 ;;; words that denote vague or just unspecified amounts
 ;;;-----------------------------------------------------
-
+#|
 (define-category vague-amount 
   :specializes amount
   :instantiates self
@@ -46,7 +53,7 @@
   :index (:permanent :key name)
   :realization (:common-noun name))
 
-
 ;;(define-individual 'vague-amount :name "number")
 ;;   causes problems with R3 biology
 ;;(define-individual 'vague-amount :name "quantity")
+|#

@@ -28,17 +28,6 @@
 
 ;;; The scalar-attributes
 
-(define-category bio-amount :specializes scalar-attribute
-  :realization
-  (:noun "amount"))
-#| and so are active in catalytic amounts.
-the amount of α-catenin
-the total amounts of α-catenin ;; similar, same, initial
-their relative amounts remained unchanged
-for various amounts of time
-increasing amounts of recombinant XRCC1.
-(dynamic-model 54 "Double the amount of total BRAF.")
-|#
 (define-category bio-concentration :specializes scalar-attribute
   :realization
   (:noun "concentration"))

@@ -14,7 +14,7 @@
 
 
 (define-category  amount-of-time   ;; "three months"
-  :specializes amount
+  :specializes amount-of-stuff
   :instantiates self
   :binds ((units . time-unit)
           (quantity  :or quantity number))

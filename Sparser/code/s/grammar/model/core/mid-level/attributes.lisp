@@ -32,17 +32,18 @@
 ;; along with their values for comparatives by using the
 ;; functions these definitions created
 
-(define-attribute color)  ;; "blue"
+(define-attribute color)  ;; "blue" ;;--- not scalar - add parameter
 (define-attribute size)   ;; "big"
 (define-attribute height) ;; "tall"
 (define-attribute width)  ;; "narrow"
 (define-attribute length) ;; "long"
 
-(define-attribute amount-as-level ;; high, low
+(define-attribute amount ;; high, low
     :subcat (modifies-scalar))
 ;; The word "level" is a bio-scalar in bio, and used extensively
 ;; so have to prepare for fanout when naming this 'level'
 
+;;--- supply a name for the attribute in a parameter
 (define-attribute rate-of-change ;; fast, slow
     ;; vs 'rate' as defined in amounts/measurements.lisp
     :subcat (modifies-scalar))
