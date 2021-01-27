@@ -13,7 +13,7 @@
 (in-package :sparser)
 
 
-(define-category  amount-of-time   ;; "three months"
+(define-category amount-of-time   ;; "three months"
   :specializes amount-of-stuff
   :instantiates self
   :binds ((units . time-unit)

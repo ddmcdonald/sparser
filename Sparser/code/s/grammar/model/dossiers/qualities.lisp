@@ -44,8 +44,8 @@ indigo and gray.Mar 28, 2017
 (define-height "short" :dir :-)
 (define-height "tall" :dir :+)
 
-(define-amount-as-level "high" :dir :+) ;; not quite the same thing
-(define-amount-as-level "low" :dir :-)
+(define-amount "high" :dir :+) ;; not quite the same thing
+(define-amount "low" :dir :-)
 ;;  separable task of coersing to a state
 
 ;;--- width
