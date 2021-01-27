@@ -2547,7 +2547,7 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
 ;;;----------------------
 
 (defun make-pp (prep pobj)
-  (declare (special category::prepositional-phrase))
+  (declare (speial category::prepositional-phrase))
   (if *subcat-test*
     (or (valid-method analyze-pp prep pobj) ; had been compose
         (not (itypep prep category::prepositional-phrase)))
@@ -2770,8 +2770,9 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
   ;; of the preposition satisfies the specified value restriction.
   ;; Otherwise we check for some anticipated cases and then
   ;; default to binding it to the variable modifier.
- 
-  (push-debug `(,adjp ,pp)) ;;(break "adjoin-pp-to-adjp")
+  (declare (special category::adjp-pp category::comparative))
+
+  ;;(push-debug `(,adjp ,pp)) (break "adjoin-pp-to-adjp")
   (unless (and adjp pp)
     (return-from adjoin-pp-to-adjp nil))
   (when (itypep pp 'collection)
@@ -2779,10 +2780,11 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
     ;; See treatment in adjoin-pp-to-vg
     (return-from adjoin-pp-to-adjp nil))
 
-  (format t "~&rule: ~a~%adjp edge: ~a~%pp edge: ~a~%"
+  #+ignore(format t "~&rule: ~a~%adjp edge: ~a~%pp edge: ~a~%"
           (rule-being-interpreted)
           (left-edge-for-referent)
           (right-edge-for-referent))
+  
   (let* ((adjp-edge (left-edge-for-referent))
          (adjp-form (edge-form adjp-edge))
          (adjp-ref (edge-referent adjp-edge)))
@@ -2792,21 +2794,20 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                           prep-word
                           *pobj-edge*)
         (variable-to-bind-pp-to-head (right-edge-for-referent) adjp)
-      (push-debug `(,variable-to-bind ,pobj-referent ,prep-word ,*pobj-edge*))
+      ;;(push-debug `(,variable-to-bind ,pobj-referent ,prep-word ,*pobj-edge*))
 
       (let ((of (word-named "of"))
             (*in-scope-of-np+pp* prep-word))
         (declare (special *in-scope-of-np+pp*))
-
-        ;;(break "adjoin-pp-to-adjp~%~a ~a" adjp pp)
         
         (if *subcat-test*
           (or variable-to-bind
               (applicable-method compose adjp pp)
               (and (eq prep-word of) ; partitive and component readings
                    (or (itypep adjp-ref 'quantifier) ; "most of"
+                       (itypep adjp-ref 'attribute)
                        ))
-              (break "What licenses ~a and ~a" adjp pp))
+              t  #+ignore(break "What licenses ~a and ~a" adjp pp) )
           
           (cond
             (variable-to-bind
@@ -2821,10 +2822,22 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                    result))))
 
             ((and (eq prep-word of)
-                  (itypep adjp-ref 'quantifier))  ;; create-partitive-np (spec of-pp)
+                  (itypep adjp-ref 'quantifier))  ;; cf. create-partitive-np(spec of-pp)
              (partitive-check-and-swap adjp pp))
 
-            (t (break "no handler for ~a + ~a" adjp pp))))))))
+            ((and (eq prep-word of)
+                  (itypep adjp-ref 'attribute))
+             (bind-variable 'owner pobj-referent adjp-ref))
+
+            (t ;;(break "no handler for ~a + ~a" adjp pp)
+             (let ((i (make-simple-individual category::adjp-pp
+                                              `((adjp ,adjp)
+                                                (pp ,pp)))))
+               (when (memq (form-cat-name adjp-form)
+                           '(comparative-adjective superlative-adjective
+                             comparative-adjp superlative-adjp))
+                 (setq i (specialize-object i category::comparative)))
+               i))))))))
 
 
 
@@ -2838,7 +2851,8 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
 (defun maybe-attach-adverb-to-pp (adverb pp)
   ;; Don't accept (adverb comma) edges as premodifiers for PPs
   ;; e.g. block ""Notably, of the nine candidate ORFs..."
-  (cond (*subcat-test* (not (eq (edge-rule (left-edge-for-referent)) 'adverb-comma)) )
+  (cond (*subcat-test*
+         (not (eq (edge-rule (left-edge-for-referent)) 'adverb-comma)))
         (t (when *show-adverb-attachment-to-PPs*
              (warn "after ~s attaching adverb ~s to PP ~s~%"
                    (retrieve-surface-string (edge-just-to-left-of (left-edge-for-referent)))
@@ -2851,10 +2865,8 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
 ;;; comparatives
 ;;;---------------
 
-
 (define-lambda-variable 'comparative
     nil 'top)
-
 
 ;; "a bigger block"
 (defun comparative-adj-noun-compound (comparative head)

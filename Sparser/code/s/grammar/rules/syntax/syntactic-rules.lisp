@@ -1290,22 +1290,22 @@ similar to an oncogenic RasG12V mutation (9)."))
 (def-syntax-rule (comparative-adjective pp)
     :head :left-edge
     :form comparative-adjp
-    :referent (:function adjoin-pp-to-vg left-edge right-edge))
+    :referent (:function adjoin-pp-to-adjp left-edge right-edge))
 
 (def-syntax-rule (comparative-adjp pp)
     :head :left-edge
     :form comparative-adjp
-    :referent (:function adjoin-pp-to-vg left-edge right-edge))
+    :referent (:function adjoin-pp-to-adjp left-edge right-edge))
 
 (def-syntax-rule (superlative-adjective pp)
     :head :left-edge
     :form superlative-adjp
-    :referent (:function adjoin-pp-to-vg left-edge right-edge))
+    :referent (:function adjoin-pp-to-adjp left-edge right-edge))
 
 (def-syntax-rule (superlative-adjp pp)
     :head :left-edge
     :form superlative-adjp
-    :referent (:function adjoin-pp-to-vg left-edge right-edge))
+    :referent (:function adjoin-pp-to-adjp left-edge right-edge))
 
 
 (loop for vv in '((adjective adjp)
@@ -1314,7 +1314,7 @@ similar to an oncogenic RasG12V mutation (9)."))
                   (adjp adjp))
   do
   (eval
-   `(def-syntax-rule (,(car vv) pp) ;; ___ the countries
+   `(def-syntax-rule (,(car vv) pp)
         :head :left-edge
         :form ,(second vv)
         :referent (:function adjoin-pp-to-adjp left-edge right-edge)))

@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "syntactic-classes"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  May 2017
+;;;  Version:  January 2021
 
 ;; Extracted from syntax-functions 12/5/16
 
@@ -42,10 +42,18 @@
   :specializes phrase-interpretation
   :binds ((prep)
           (comp))
-  :documentation "If to-comp picks up infinitive complements
+  :documentation "If to-comp picks up infinitive complements,
   this picks up all the rest, e.g. 'by being phosphorylated'
   though the head decides what to do with it based on the
   composition")
+
+(define-category adjp-pp
+  :specializes phrase-interpretation
+  :binds ((adjp)
+          (pp))
+  :documentation "Provides a non-commital default for compositions
+  of an adjective or adjective phrase with a prepositional phrase.
+  Used by adjoin-pp-to-adjp (promotes comparatives to the individual)")
 
 (define-category subordinate-clause
   :specializes phrase-interpretation
@@ -70,18 +78,17 @@ like prepositional-phase (see syntax/syntactic-classes.lisp) |#
 (define-category subordinate-np 
   :specializes phrase-interpretation
   :binds ((subordinated-np top)
-          (subordinate-conjunction top)))
-
+          (subordinate-conjunction top))
+  :documentation "Used to mark the subordinatated np when we are
+ making a subordinate np like 'such as this book' or 'with the
+ exception of this book' Added to the interpretation of the subordinate
+ conjunction (similar to the way an np is added to a PP) that indicates
+ the subordinating relation. Deemed to be overkill to use a scafolding
+ class like prepositional-phrase")
 (mark-as-form-category category::subordinate-np)
 
 
-
-
-
-
-;;--- pied-piping
-
-(define-category relativized-prepositional-phrase
+(define-category relativized-prepositional-phrase ; pied-piping
   :specializes prepositional-phrase
   :binds ((prep)
           (pobj))
