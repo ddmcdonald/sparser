@@ -107,12 +107,33 @@
         )
       ;;(break "check for verb variants")
       (let* ((prior-entry ;;/// only ever one? Need to test for this !
-              (gethash string *primed-words*))
+               ;; New code to avoid merging definititions into incorrect root
+               ;;  e.g. don't merge the noun "building" into the roor form "build"
+               (cond ((and (gethash string *primed-words*)
+                           (or (is-in-p 'sp::adjective entries)
+                               (is-in-p 'sp::adverb entries)
+                               (is-in-p 'sp::noun entries)
+                               (is-in-p 'sp::prep entries)) ;; "bar" as in "bar none"ck
+                           (or (ends-in? string "ing")
+                               (ends-in? string "ed")
+                               (ends-in? string "er") ;; "cleaner" as a noun
+                               (ends-in? string "est")
+                               (ends-in? string "ly")
+                               (ends-in? string "s"))) ;; "bats" as an adjective
+                      ;; how do we detect "broke" as an adjective, "bound"
+                      ;; "does" as an aux vs plural "doe"
+                      ;; "does" as an aux vs plural "doe"
+                     
+                      ;;(format t "~%(rejecting merge of ~s ~s)" string entries)
+                      nil)
+                     (t (gethash string *primed-words*))))
              (entry-to-store
-              (if prior-entry
-                (merge-comlex-entries prior-entry clauses)
-                `(:comlex ,string ;; lemma form
-                          ,@(cdr entry)))))
+               (cond (prior-entry
+                      ;;(format t "~%(ACCEPTING merge of ~s ~s into ~s)" string entries prior-entry)
+                      (merge-comlex-entries prior-entry clauses))
+                     (t
+                      `(:comlex ,string ;; lemma form
+                                ,@(cdr entry))))))
         (dolist (string all-words)
           ;;(format t "~&priming \"~a\"~%" string)
           #+ignore
@@ -123,6 +144,9 @@
         all-words))))
 
 (defun merge-comlex-entries (prior-entry current-clauses)
+  #+ignore
+  (lsp-break "~%merge-comlex-entries prior: ~s     new: ~a~%"
+          prior-entry current-clauses)
   (let* ((pname (cadr prior-entry))
          (earlier-clauses (cddr prior-entry))
          (final-clauses earlier-clauses))
