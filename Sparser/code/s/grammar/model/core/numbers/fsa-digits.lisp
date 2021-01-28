@@ -752,9 +752,12 @@ unknown---in any event, we're taking the first edge that is installed.
   (declare (special *period-at-front-of-digit-sequence*
                     *hyphen-before-digit-sequence*))
   (cond
-    (*period-at-front-of-digit-sequence* ; ".005"
-     (unless (= 1 number-of-segments) (break "Expected just one digit edge"))
+    ((and *period-at-front-of-digit-sequence* ; ".005"
+          (= 1 number-of-segments))
      (construct-decimal-value (aref digits-array 0)))
+    (*period-at-front-of-digit-sequence* ; ".005"
+     ;;(unless (= 1 number-of-segments) (break "Expected just one digit edge"))
+     nil)
     (*hyphen-before-digit-sequence*
      (construct-negative-number number-of-segments digits-array))
     (t
