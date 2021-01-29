@@ -449,6 +449,7 @@
     (setf (name p) (next-indexical-name :paragraph))
     (setf (starts-at-pos p) start-pos)
     (setf (contents p) (install-contents p))
+    (setf (name (contents p)) (name p))
     (if (pos-character-index start-pos)
       (setf (starts-at-char p) (pos-character-index start-pos))
       (setf (starts-at-char p) 1))
