@@ -18,8 +18,10 @@
   "Runs the debris sweeper over this sentence and integrates
    it into the paragraph level state layout"
   ;;/// one step at a time
+  (declare (special *trace-debris-sweep*))
   (sweep-debris-treetops sentence)
-  (format t "~&~%") ;; formatting the repl
+  (when *trace-debris-sweep*
+    (format t "~&~%")) ;; formatting the repl
   )
 
 (defgeneric sweep-debris-treetops (sentence)
@@ -36,8 +38,9 @@
            (next-treetop/rightward rightmost-pos))
          (incf count)
 
-         (if (edge-p tt)
-           (then
+         (typecase tt
+           (edge
+
              (setq form (edge-form tt))
              (tr :debris-tt count (or form (edge-category tt)))
              
@@ -61,11 +64,16 @@
                  (cond
                    ((string-equal pname ",")) ; loose-comma
                    ))))
-           (else
-             (unless (word-p tt)
-               (error "Ill-formed chart object: ~a" tt))
-             ;; a bare, uncovered word - usually a bug
-             (tr :debris-bare-word count tt)))
+           (word
+            ;; a bare, uncovered word - usually a bug
+            (tr :debris-bare-word count tt))
+
+           (edge-vector ; indicates multiple initiate edges
+            ;; in overnight #8 it's two versions of "to"
+            )
+           (t         
+            (error "Ill-formed chart object: ~a" tt)))
+
                      
 
          (when (eq pos-after end-pos)
