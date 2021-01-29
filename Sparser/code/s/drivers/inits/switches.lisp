@@ -264,6 +264,11 @@
   (setq *do-adjunctive-attachments* t
         *do-last-ditch-non-semantic-whacks* t))
 
+(defun turn-off-experimental-settings ()
+  (setq *do-adjunctive-attachments* nil
+        *do-last-ditch-non-semantic-whacks* nil))
+
+
 
 ;;--- What do we do with a segment after we've delimited
 ;;    it and parsed it.
