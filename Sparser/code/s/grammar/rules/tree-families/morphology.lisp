@@ -453,7 +453,7 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
            ;; we got a very long (incorrect) word which caused an break
            ;; this is a patch to avoid that break
            s)
-          ((< length 3) ;; "fed" -- maybe < 4 ?
+          ((< (length s) 3) ;; "fed" -- maybe < 4 ?
            s)
           (t (let ((word (resolve/make s)))
                (stem-form word)))))
