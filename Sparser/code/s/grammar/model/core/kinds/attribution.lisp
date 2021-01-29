@@ -61,13 +61,13 @@ a 'subject', e.g. "southern Chinese girls are never tall"
  an attribute by name ('(its) size') will take us to a
  instance of this category. Provides a 'coat-hook'
  for recording ancilary information that helps in parsing,
- notably the variable."
+ notably the variable.
+ The 'owner' is the thing that has the attribute"
   :specializes quality
   :mixins (temporally-localized)
   :binds ((var :primitive lambda-variable)
           (owner))
-  :realization
-  (:of owner))
+  :realization (:of owner))
 
 (define-category scalar-attribute
   :specializes attribute
@@ -173,6 +173,7 @@ be added to attribute so it knows how to handle the individuals.
        ((:mixins name-of-mixin-category))
        ((:subcat name-of-subcategory-mixin))
        ((:word word-that-denotes-attribute))
+       ((:category category-the-attribute-specializes))
        ((:a-pos attribute-part-of-speech))
        ((:value-cat name-of-field-category))
        ((:def-fn name-of-define-fn))
@@ -192,6 +193,10 @@ be added to attribute so it knows how to handle the individuals.
             (mixin-name ;; has-size
              (or name-of-mixin-category
                  (sintern '#:has- var-name)))
+
+            (specializes ;; scalar-attribute
+             (or category-the-attribute-specializes
+                 'scalar-attribute))
             
             (v/r-category ;; 'size
              ;; must be same as name of attribute class
@@ -242,7 +247,7 @@ be added to attribute so it knows how to handle the individuals.
          ;; attribute-pos: :common-noun
          ;; attribute-word: "size"
          (define-category ,attribute-name
-           :specializes scalar-attribute
+           :specializes ,specializes  ;;scalar-attribute
            :bindings (var
                        (find-variable-for-category
                         ',var-name ',mixin-name))
