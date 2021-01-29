@@ -242,6 +242,14 @@ come
 ;; know Spencer to be a good cat
 ;; know that Spencer is a good cat
 
+(define-category lay
+  :specializes state
+  :mixins (action-verb) ; actor & patient
+  :realization (:verb ("lay" :past-tense "laid" :past-participle "lain"))
+  :documentation "The base meaning is to put something down is a careful,
+ gentle way. Extremely productive in forming idiomatic combinations:
+ 'lay the table', 'lay charges against', 'lay aside' 'lay {in, off, up, etc.}")
+
 (define-category like
   :specializes state
   :mixins (control-verb)
