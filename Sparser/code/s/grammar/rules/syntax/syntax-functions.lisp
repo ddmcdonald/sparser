@@ -2762,7 +2762,6 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
 ;;;-----------
 ;;; adjp + pp
 ;;;-----------
-;;##########################################################################
 
 (defun adjoin-pp-to-adjp (adjp pp)
   ;; The adjp is the head. We ask whether it subcategorizes for
