@@ -84,24 +84,24 @@
  one, applies it to create a new edge, and then repeats the process
  again on the revised forest. Terminates when there are no more
  triples to consider.
-   N.b. Returning the edge indicates to the caller that there was
+   N.b. Returning the triples indicates to the caller that there was
  something done in this instance of the cycle."
   (tr :entering-whack-cycle)
   (let ((*whack-a-rule-sentence* sentence))
     (declare (special *whack-a-rule-sentence*))
-    (let ( triple  edge at-least-one-rule)
+    (let ( triple  edge  triples-run)
       (clrhash *rules-for-pairs*)
       (loop
          (setq triple (best-treetop-rule sentence))
          (when (null triple)
-           (return-from whack-a-rule-cycle at-least-one-rule))
+           (return-from whack-a-rule-cycle triples-run))
          (setq edge (execute-triple triple))
          (cond
            (edge
             (tr :whacking-triple triple edge)
             (setf (gethash triple *executed-triples*) edge)
-            (setq at-least-one-rule edge))
-           (t (return-from whack-a-rule-cycle at-least-one-rule)))))))
+            (push triple triples-run))
+           (t (return-from whack-a-rule-cycle triples-run)))))))
 
 
 ;;--------------------------------------------------------
