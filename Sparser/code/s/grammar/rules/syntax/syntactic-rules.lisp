@@ -1328,7 +1328,7 @@ similar to an oncogenic RasG12V mutation (9)."))
    `(def-syntax-rule (,(car vv) to-comp)
         :head :left-edge
         :form ,(second vv)
-        :referent (:function adjoin-tocomp-to-adjp left-edge right-edge)))
+        :referent (:function adjoin-tocomp-to-vg left-edge right-edge)))
   
   (eval
    `(def-syntax-rule (,(car vv) as-comp)
