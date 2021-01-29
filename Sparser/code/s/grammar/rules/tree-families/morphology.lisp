@@ -449,16 +449,18 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
   (:method ((s symbol))
     (stem-form (symbol-name s)))
   (:method  ((s string))
-    (if (> (length s) 100)
-        ;; we got a very long (incorrect) word which caused an break
-        ;; this is a patch to avoid that break
-        s
-        (let ((word (resolve/make s)))
-          (stem-form word))))
+    (cond ((> (length s) 100)
+           ;; we got a very long (incorrect) word which caused an break
+           ;; this is a patch to avoid that break
+           s)
+          ((< length 3) ;; "fed" -- maybe < 4 ?
+           s)
+          (t (let ((word (resolve/make s)))
+               (stem-form word)))))
 
   (:method ((word word))
     ;; Redundant with stem-form-of-verb but adds more cases and
-    ;; will do a Comlex check. Stores the stem once it finds it.
+    ;; does a Comlex check. Stores the stem once it finds it.
     (or (word-stem word)
         (let ((morphology (word-morphology word)))
           ;; the word-morphology field of a word is filled at the
