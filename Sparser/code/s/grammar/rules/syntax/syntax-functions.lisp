@@ -2806,7 +2806,7 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                    (or (itypep adjp-ref 'quantifier) ; "most of"
                        (itypep adjp-ref 'attribute)
                        ))
-              t  #+ignore(break "What licenses ~a and ~a" adjp pp) )
+              #+ignore(break "What licenses ~a and ~a" adjp pp) )
           
           (cond
             (variable-to-bind
@@ -2828,6 +2828,7 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                   (itypep adjp-ref 'attribute))
              (bind-variable 'owner pobj-referent adjp-ref))
 
+            #+ignore
             (t ;;(break "no handler for ~a + ~a" adjp pp)
              (let ((i (make-simple-individual category::adjp-pp
                                               `((adjp ,adjp)
