@@ -21,6 +21,7 @@
 (lload "forest-drivers;trap")
 
 (lload "forest-drivers;parsing-containers")
+(lload "forest-drivers;debris-layout")
 (lload "forest-drivers;forest-gophers")
 (lload "forest-drivers;sweep")
 (lload "forest-drivers;debris-sweep")

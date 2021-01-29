@@ -12,6 +12,15 @@
 
 (in-package :sparser)
 
+;; (trace-debris-sweep)
+
+(defun sweep-debris-in-sentence (sentence)
+  "Runs the debris sweeper over this sentence and integrates
+   it into the paragraph level state layout"
+  ;;/// one step at a time
+  (sweep-debris-treetops sentence)
+  (format t "~&~%") ;; formatting the repl
+  )
 
 (defgeneric sweep-debris-treetops (sentence)
   (:method ((sentence sentence))
@@ -21,33 +30,43 @@
            (sentence-initial? t)
            (count 0)
            tt  prior-tt  pos-after form )
+      (tr :debris-sweep-sentence sentence)
       (loop
          (multiple-value-setq (tt pos-after)
            (next-treetop/rightward rightmost-pos))
          (incf count)
 
-         (when (edge-p tt) (setq form (edge-form tt)))
+         (if (edge-p tt)
+           (then
+             (setq form (edge-form tt))
+             (tr :debris-tt count (or form (edge-category tt)))
+             
+             (when (category-p form)
+               (case (cat-name form)
 
-         (format t "~&~a. ~a" count form)
+                 (pp
+                  (when sentence-initial?) ; preposed-pp
+                  )
 
-         (when (category-p form)
-           (case (cat-name form)
+                 (conjunction ) ; stranded conjunction
 
-             (pp
-              (when sentence-initial?) ; preposed-pp
-              )
+                 (punctuation
+                  ;; *the-punctuation-semicolon*
+                  )
 
-             (conjunction ) ; stranded conjunction
+                 ))
 
-             ))
-
-          (when (word-p (edge-category tt))
-           (let ((pname (pname (edge-category tt))))
-             (cond
-               ((string-equal pname ",")) ; loose-comma
-               )))
-    
-
+             (when (word-p (edge-category tt))
+               (let ((pname (pname (edge-category tt))))
+                 (cond
+                   ((string-equal pname ",")) ; loose-comma
+                   ))))
+           (else
+             (unless (word-p tt)
+               (error "Ill-formed chart object: ~a" tt))
+             ;; a bare, uncovered word - usually a bug
+             (tr :debris-bare-word count tt)))
+                     
 
          (when (eq pos-after end-pos)
            (return)) ;; leave the loop

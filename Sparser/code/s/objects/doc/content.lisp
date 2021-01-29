@@ -68,8 +68,10 @@
                              sentence-parse-quality
                              sentence-tt-counts ; assess-sentence-analysis-quality
                              paragraph-characteristics
-                             epistemic-state
-                             discourse-relations)
+                             epistemic-state ;; from rhetoric (empty)
+                             discourse-relations ;; rhetoric
+                             debris-layout
+                             )
   ()
   (:documentation "Will want a bunch more structure just over
     the enties for the purpose of facilitating anaphora.
@@ -127,10 +129,6 @@
           (:complex (symbol-function 'make-sentence-content-container)))))
 
 
-(defun make-paragraph-container (paragraph)
-  ;; called from start-sentence
-  (declare (ignore paragraph))
-  (error "No version of make-paragraph-container has been specified"))
 
 (defparameter *container-for-paragraph* :biology "Default choice")
 
@@ -141,8 +139,6 @@
         (ecase keyword
           (:biology (symbol-function 'make-paragraph-content-container/bio))
           (:texture (symbol-function 'make-paragraph-content-container/texture)))))
-
-
 
 (defun make-paragraph-content-container/bio (p)
   (make-instance 'paragraph-content :in p))

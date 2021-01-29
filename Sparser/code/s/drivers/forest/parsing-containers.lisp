@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2021 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "parsing-containers"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  May 2015
+;;;  Version:  January 2021
 
 ;; Initiated 8/6/14 to hold the new class of containers to support
 ;; analysis and discourse structure to go with the new forest protocol
@@ -23,10 +23,10 @@
 
 ;;--------- This is nominally a mixin, but
 ;;  the fact that we use it to keep track of things -during-
-;;  the parse makes it less what we want to presevere 
+;;  the parse makes it less what we want to preserve
 ;;  in the document structure, particularly since it stores edges.
 ;;  Long-term storage of this information will be in the text
-;;  structure
+;;  structure aspects of what we store on the document
 ;;
 (defclass sentence-layout (container) 
   ((subject :initform nil :accessor subject
@@ -103,10 +103,10 @@
     :documentation "The layout object created just after 
       a sentence has been chunked into phrases"))
   (:documentation
-   "There are many reasons to compute a layout at different
-    stages in an analysis. The base is formed in terms of edges
-    so it must be reaped at regular intervales since the edge
-    will loose their validity when they recycle."))
+   "Wraps a sentence layout in to store on the sentence-content
+    so we have a standard place to look for it. Note that the
+    curency of the slots in the class is edges, which will
+    loose their validity when they recycle."))
 
 (defvar *current-sentence-layout* nil)
 
@@ -114,7 +114,11 @@
   *current-sentence-layout*)
 
 (defun make-sentence-layout (sentence)
+  "Used by sweep-sentence-treetops to create the layout instance
+   that it populates and to set the variables for retrieving it.
+   There's a new instance for every sentence."
   (let ((l (make-instance 'sentence-layout
              :in sentence)))
     (setq *current-sentence-layout* l)
     l))
+

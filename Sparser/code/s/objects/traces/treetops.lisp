@@ -31,7 +31,6 @@
 (defun untrace-whacking ()
   (setq *trace-whack-a-rule* nil))
 
-
 (defvar *trace-shifts-in-paring-style* nil
   "For tracking when we move between, e.g. whack-a-rule and
    debris analysis. Helps sort out where to make changes")
@@ -39,6 +38,19 @@
   (setq *trace-shifts-in-paring-style* t))
 (defun untrace-parsing-style ()
   (setq *trace-shifts-in-paring-style* nil))
+
+
+(defun trace-treetops-sweep ()
+  (setq *trace-treetops-sweep* t))
+(defun untrace-treetops-sweep ()
+  (setq *trace-treetops-sweep* nil))
+
+(defvar *trace-debris-sweep* nil) ; drivers/forest/debris-sweep
+(defun trace-debris-sweep ()
+  (setq *trace-debris-sweep* t))
+(defun untrace-debris-sweep ()
+  (setq *trace-debris-sweep* nil))
+
 
 
 ;;---------- relevant to incremental scan operations
@@ -527,18 +539,14 @@
 ;;; "new" forest protocol -- sweeping
 ;;;-----------------------------------
 
-(defun trace-treetops-sweep ()
-  (setq *trace-treetops-sweep* t))
-
-(defun untrace-treetops-sweep ()
-  (setq *trace-treetops-sweep* nil))
-
 (deftrace :new-forest-driver (rightmost-pos)
   ;; called from new-forest-driver
   (when *trace-network-flow*
     (trace-msg "[scan] moved-to-forest-level~
               ~%   Rightmost position is p~a"
                (pos-token-index rightmost-pos))))
+
+;;--- post-chunking sweep
 
 (deftrace :sweep-sentence-treetops (start-pos end-pos)
   ;; called from sweep-sentence-treetops
@@ -594,6 +602,23 @@
                (edge-position-in-resource-array prep-edge)
                new-edge)))
 
+
+;;--- post-pass1 debris sweep
+
+(deftrace :debris-sweep-sentence (sentence)
+  ;; called from sweep-debris-treetops
+  (when *trace-debris-sweep*
+    (trace-msg "[debris] Sweeping ~a" sentence)))
+
+(deftrace :debris-tt (count label)
+  ;; called from sweep-debris-treetops
+  (when *trace-debris-sweep*
+    (trace-msg "[debris] ~a. ~a" count label)))
+
+(deftrace :debris-bare-word (count word)
+  ;; called from sweep-debris-treetops
+  (when *trace-debris-sweep*
+    (trace-msg "[debris] ~a. ~s" count (pname word))))
 
 
 ;;;------------------------------------------

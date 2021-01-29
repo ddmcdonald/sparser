@@ -78,6 +78,7 @@
     (clrhash *executed-triples*)
     
     (pass-one sentence)
+    (operations-after-phase-one sentence) ; see interventions.lisp
 
     (let ((coverage (coverage-over-region start-pos end-pos)))
       (unless (eq coverage :one-edge-over-entire-segment)        
@@ -93,5 +94,7 @@
           ;;  without checking semantic compatibility
           (let ((*subcat-accept-all-semantics* t))
             (declare (special *subcat-accept-all-semantics*))
-            (whack-a-rule-cycle sentence)))))))
+            (let ((triples-run (whack-a-rule-cycle sentence)))
+              ;; analyze this list to see what this pass gets
+              triples-run)))))))
 
