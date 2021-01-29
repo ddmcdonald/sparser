@@ -1849,12 +1849,13 @@ assumed. |#
           #+ignore
           (make-polar-adjective-question
            *da-starting-position* end-pos edges)
-          (when
-              copular-adj
-            (make-edge-spec
-             :category (edge-category (third edges))
-             :form category::polar-question-form
-             :referent (assimilate-subject np copular-adj)))))))
+          (when copular-adj
+            (let ((i (assimilate-subject np copular-adj)))
+              (when i
+                (make-edge-spec
+                 :category (edge-category (third edges))
+                 :form category::polar-question-form
+                 :referent i))))))))
 
 (loop for n in '(np proper-noun common-noun)
         do (let ((pattern `(preposed-auxiliary ,n vp+ed))
