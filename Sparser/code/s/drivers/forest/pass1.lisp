@@ -125,17 +125,6 @@
 ;;----------- Ancilary routines from original pass1 ----------------
 
 
-
-
-
-
-
-
-
-
-
-
-
 ;;;----------------------
 ;;; subject + verb group
 ;;;----------------------
@@ -542,8 +531,9 @@
         ;; but its more likely to be an edge than not        
         (knit-parens-into-neighbor left-neighbor paren-edge)))))
 
-;; no longer bind parentheticals to a variable on the preceding edge
-(defparameter *bind-parens-into-semantics* nil)
+
+(defparameter *bind-parens-into-semantics* nil
+  "If nil don't bind parentheticals to a variable on the preceding edge")
 
 (defun knit-parens-into-neighbor (left-neighbor paren-edge)
   (declare (special left-neighbor paren-edge))
@@ -576,9 +566,10 @@
        (when (and (individual-p paren-referent)
 		  (individual-p referent))
 	 (when *bind-parens-into-semantics*
-           (setq referent (bind-dli-variable (lambda-variable-named 'trailing-parenthetical) ;; obsolete in DLI case
-                                             paren-referent
-                                             referent))))
+           (setq referent (bind-variable (lambda-variable-named 'trailing-parenthetical)
+                                         ;;    obsolete in DLI case
+                                         paren-referent
+                                         referent))))
        
        ;;// now knit it in. A form rule would be best. It could handle the
        ;; binding as well, but j9 shows that the neighbor is not always
