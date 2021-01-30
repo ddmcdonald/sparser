@@ -167,6 +167,12 @@ like prepositional-phase (see syntax/syntactic-classes.lisp) |#
   ;; and "remained high" ==> "remained"
     nil 'top)
 
+(define-lambda-variable 'trailing-parenthetical
+  'parentheses ;; value restriction
+  category::top) ;; overly high type bound to.
+;; used by knit-parens-into-neighbor 
+
+
 ;;;-----------------------------
 ;;; enabling k-methods (or not)
 ;;;-----------------------------
