@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2003,2011-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2003,2011-2021 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "fsa digits"
 ;;;   Module:  "grammar;model:core:numbers:"
-;;;  Version:  November 2020
+;;;  Version:  January 2021
 
 ;; 5.0 (10/5 v2.3) rephrased the scan step to get subtler steps
 ;; 5.1 (9/14/93) updated the scanning calls, finished 9/16
@@ -55,9 +55,7 @@
 
 (in-package :sparser)
 
-#|
-
-We get here because the tokenizer, when it sees a contiguous sequence of digits,
+#| We get here because the tokenizer, when it sees a contiguous sequence of digits,
 marks the capitalization field (pos-capitalization) corresponding to the word
 it created as :digits.  This is picked up when the preterminals are being 
 introduced into the chart and reacted to by preterminals-for-unknown, under
@@ -70,9 +68,9 @@ whether or not the model is loaded.  The category digit-sequence has the fsa
 field of its rule set set to the Fsa-for-digits, defined here.  If it were
 a known word, the route would have been essentially the same, except that
 the fsa would be identified at the word level rather than the category level.
-
 |#
 
+;; (trace-digits-fsa)
 
 ;;;------------
 ;;; categories
@@ -102,37 +100,6 @@ the fsa would be identified at the word level rather than the category level.
 (add-fsa category::digit-sequence *fsa-for-digits*)
 
 
-
-;;;-------
-;;; trace
-;;;-------
-
-(defparameter *trace-digits-fsa* nil)
-(defun trace-digits-fsa ()
-  (setq *trace-digits-fsa* t))
-(defun untrace-digits-fsa ()
-  (setq *trace-digits-fsa* nil))
-
-(deftrace :digit-fsa-scanned (word function)
-  (when *trace-digits-fsa*
-    (trace-msg "[digits] scanned ~s in ~a" (word-pname word) function)))
-
-(deftrace :digit-fsa-returned-to-start (end-pos number-of-segments)
-  (when *trace-digits-fsa*
-    (trace-msg "[digits] Returned to make edge over ~a segements ~
-                ending at p~a" number-of-segments (pos-token-index end-pos))))
-
-(deftrace :digit-fsa-returning (reason function)
-  (when *trace-digits-fsa*
-    (trace-msg "[digits] returning from ~a~
-              ~%    because ~a"
-               function reason)))
-
-(deftrace :too-few-digits (digit-word next-position)
-  (when *trace-digits-fsa*
-    (trace-msg "[digits] too few digits in ~s at p~a"
-               (pname digit-word) (pos-token-index next-position))))
-
 ;;;-----------------
 ;;; state variables
 ;;;-----------------
@@ -148,6 +115,9 @@ the fsa would be identified at the word level rather than the category level.
 (defvar *period-at-front-of-digit-sequence* nil
   "For cases like '.3204' where the whole thing is after the
    period")
+
+(defvar *period-count* 0
+  "to help in identifying DOI sequences and other non-numbers")
 
 (defvar *hyphen-before-digit-sequence* nil
   "Marks that we have a negative number. There are 'hyphens' at
@@ -166,6 +136,7 @@ the fsa would be identified at the word level rather than the category level.
   (setq *period-within-digit-sequence* nil
         *multiple-periods-within-digit-sequence* nil
         *period-at-front-of-digit-sequence* nil
+        *period-count* 0
         *hyphen-before-digit-sequence* nil
         *too-few-digits-to-be-number* nil
         *pending-final-hyphen* nil
@@ -174,6 +145,7 @@ the fsa would be identified at the word level rather than the category level.
 
   
 (defun record-period-in-digit-sequence ()
+  (incf *period-count*)
   (cond
     ((null *period-within-digit-sequence*)
      (setq *period-within-digit-sequence* t))
@@ -195,6 +167,8 @@ the fsa would be identified at the word level rather than the category level.
 ;;;--------
 ;;; driver
 ;;;--------
+
+;; (trace-digits-fsa)
 
 (defun digit-FSA (treetop  ;; the digit-seq. word that triggered the fsas
                   starting-position)  ;; the position just before it
@@ -629,7 +603,14 @@ unknown---in any event, we're taking the first edge that is installed.
 
   (declare (special *the-punctuation-period*
                     *the-punctuation-hyphen*))
-  
+
+  ;; Check for conditions that signal we have something other than
+  ;; a regular number, e.g. doi.org/10.1101/2020.04.05.20054163
+  (when *multiple-periods-within-digit-sequence*
+    (make-edge-for-not-a-number starting-position ending-position
+                                number-of-segments digits-array)
+    (return-from span-digits-number nil))
+
   ;; Check for a leading period (indicating that we've got a decimal
   ;; value rather than one that starts as a regular (>1) number)
   ;; but don't back over newlines.
@@ -755,9 +736,6 @@ unknown---in any event, we're taking the first edge that is installed.
     ((and *period-at-front-of-digit-sequence* ; ".005"
           (= 1 number-of-segments))
      (construct-decimal-value (aref digits-array 0)))
-    (*period-at-front-of-digit-sequence* ; ".005"
-     (unless (= 1 number-of-segments) (break "Expected just one digit edge"))
-     nil)
     (*hyphen-before-digit-sequence*
      (construct-negative-number number-of-segments digits-array))
     (t

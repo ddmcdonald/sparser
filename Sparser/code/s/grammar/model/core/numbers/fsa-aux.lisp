@@ -38,9 +38,9 @@ completed a battery of items")
 
 |#
 
-;;;-------
-;;; trace
-;;;-------
+;;;--------------------
+;;; trace number words
+;;;--------------------
 
 ;; (setq *debug-numbers* t)
 
@@ -104,3 +104,34 @@ completed a battery of items")
   (when *trace-number-word-fsa*
     (trace-msg "[number-words] Made edge e~a over ~a"
                (edge-position-in-resource-array edge) value)))
+
+;;;--------------
+;;; trace digits
+;;;--------------
+
+(defparameter *trace-digits-fsa* nil)
+(defun trace-digits-fsa ()
+  (setq *trace-digits-fsa* t))
+(defun untrace-digits-fsa ()
+  (setq *trace-digits-fsa* nil))
+
+(deftrace :digit-fsa-scanned (word function)
+  (when *trace-digits-fsa*
+    (trace-msg "[digits] scanned ~s in ~a" (word-pname word) function)))
+
+(deftrace :digit-fsa-returned-to-start (end-pos number-of-segments)
+  (when *trace-digits-fsa*
+    (trace-msg "[digits] Returned to make edge over ~a segements ~
+                ending at p~a" number-of-segments (pos-token-index end-pos))))
+
+(deftrace :digit-fsa-returning (reason function)
+  (when *trace-digits-fsa*
+    (trace-msg "[digits] returning from ~a~
+              ~%    because ~a"
+               function reason)))
+
+(deftrace :too-few-digits (digit-word next-position)
+  (when *trace-digits-fsa*
+    (trace-msg "[digits] too few digits in ~s at p~a"
+               (pname digit-word) (pos-token-index next-position))))
+
