@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2015-2019 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2015-2021 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "rules"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: May 2020
+;;; version: January 2021
 
 ;; Initiated 1/16/15 by lifting from other files.
 ;;  1/19/2015 put in rule for (not adjective) -- but doesn't seem to be found -- need help from David
@@ -25,7 +25,8 @@
 (in-package :sparser)
 
 
-;; handle the general class of "anti-foo" as in "anti-MB antibody"
+;;--- handle the general class of "anti-foo" as in "anti-MB antibody"
+
 (def-cfr antibody (antibody protein)
   :form category::np
   :referent (:function make-antibody left-edge right-edge))
@@ -71,17 +72,9 @@
   )
 
 (defun make-similar-biological (-like biological)
-  (break))
+  (break "make-similar-biological"))
 
 
-
-  
-;;; 'free' variables
-
-(define-lambda-variable 'trailing-parenthetical
-  'parentheses ;; value restriction
-  category::top) ;; overly high type bound to.
-;; used by knit-parens-into-neighbor 
 
 #|
 (def-cfr phosphorylate (amino-acid phosphorylate)
@@ -97,7 +90,7 @@
   :referent (:function assimilate-object right-edge left-edge))
 |#
 
-;;--- interior quotations
+;;--- interior of quotations
 
 (define-interior-action category::s :quotation-marks 'handle-quoted-statement)
 
@@ -175,6 +168,7 @@
 
 |#
 
+;;--- in vitro
 
 (defun interpret-in-vivo-vitro (bio vitro-vivo)
   (when (itypep bio '(:or biological measurement))
@@ -183,7 +177,6 @@
 	(setq bio (bind-dli-variable 'context vitro-vivo bio))
 	(setq bio (bind-dli-variable 'predication vitro-vivo bio)))
     bio))
-
 
 
 (loop for vv in '((vp vp)
@@ -211,10 +204,8 @@
      :referent (:function interpret-in-vivo-vitro left-edge right-edge))))
 
 
+
 ;;--- amino acids
-; These are bare rules that could be converted to an ETF
-; (or several) that captures these composition possibilities
-; for a complex noun-headed phrase. 
 
 ;; Gly33
 (def-cfr residue-on-protein (amino-acid number)
@@ -281,7 +272,6 @@
   :form n-bar
   :referent (:function bind-amino-acid left-edge right-edge))
 
-;; "Lys residues"
 (def-cfr residue-on-protein (single-capitalized-letter residue-on-protein)
   :form n-bar
   :referent (:function bind-amino-acid left-edge right-edge))
@@ -340,6 +330,7 @@
       (setf (edge-category *right-edge-into-reference*) (itype-of replacement-amino-acid))
       (make-point-mutation original replacement-amino-acid residue-number))))
 
+
 (def-cfr point-mutation (number single-capitalized-letter)
   :form n-bar
   :referent (:function maybe-make-point-mutation-from-number-amino-acid left-edge right-edge))
@@ -348,9 +339,12 @@
   "Heuristically decide between a point-mutation and a two-part-label based on the
    length of the digit"
   (when *subcat-test*
-    (if (itypep number 'number-sequence) ;; "the addition of PI3,4,5P (0.5 μM)"
-      (return-from maybe-make-point-mutation-from-number-amino-acid nil)
-      t))
+    (let ((start-pos (pos-edge-starts-at (left-edge-for-referent))))
+      (if (or (itypep number 'number-sequence) ;; "the addition of PI3,4,5P (0.5 μM)"
+              (not (pos-preceding-whitespace start-pos))) ;; "known as CAL.20C"
+        (return-from maybe-make-point-mutation-from-number-amino-acid nil)
+        t)))
+    
   (let* ((digit-word (get-tag :digit-sequence number))
          (pname (when digit-word (pname digit-word))))
     (if (and pname (or (= 1 (length pname))
