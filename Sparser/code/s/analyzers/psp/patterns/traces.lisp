@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2021  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "traces"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  February 2019
+;;;  version:  January 2021
 
 ;; Broken out from driver 2/5/13. Added more cases 9/11/14. Imported
 ;; cases from traces/scan-patterns 7/21/15. 
@@ -51,10 +51,17 @@
     (trace-msg "[ns] Searching for where the ns-region starting a p~a ends"
                (pos-token-index pos))))
 
-(deftrace :ns-find-region-end/stops-at (pos)
+(deftrace :ns-end-check-next-pos (tt next-pos)
   ;; called from end-of-ns-region
   (when *trace-ns-sequences*
-    (trace-msg "[ns]   sequence stops at p~a" (pos-token-index pos))))
+    (trace-msg "[ns] next-pos  p~a: tt: ~a"
+               (pos-token-index next-pos) tt)))
+
+(deftrace :ns-find-region-end/stops-at (pos reason)
+  ;; called from end-of-ns-region
+  (when *trace-ns-sequences*
+    (trace-msg "[ns]   sequence stops at p~a - ~a"
+               (pos-token-index pos) reason)))
 
 (deftrace :ns-find-region-end/includes (pos)
   (when *trace-ns-sequences*

@@ -1,15 +1,77 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2015-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "scan-gophers"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  August 2019
+;;;  version:  January 2021
 
 ;; initiated 5/15/15 breaking out the region delimiter and pattern
 ;; reader from other files. 7/18/15 Fixed but in collection of
 ;; edges. 11/6/15 Got punct into correct order for return. 
 
 (in-package :sparser)
+
+#| In the original serious work on no-space sequences for Big Mechanism
+there was a stateful sweep of the chart ahead of the start position that 
+simultaneously looked for where the sequence ended and characterized
+the terms it was scanning over. 
+  Now (January 2021) that sweep is nowhere to be found.
+The functions at the top of this file are being used, word by word
+|#
+
+(defun punct-nospace-can-incorporate? (word)
+  "If there is a space after this it is punctuation.
+   If there's no space between it and the next then it's part
+   of the ns sequence"
+  (or (eq word *the-punctuation-period*)
+      (eq word *the-punctuation-question-mark*)
+      (eq word *the-punctuation-comma*)
+      (eq word *the-punctuation-semicolon*)))
+
+(defun punct-normally-in-ns? (word)
+  "These characters are normal in no-space sequences"
+  (or (eq word (punctuation-named #\-))
+      (eq word (punctuation-named #\/))
+      (eq word (punctuation-named #\@))
+      ;;(eq word (punctuation-named #\%))
+      (eq word (punctuation-named #\~))
+      (eq word (punctuation-named #\+))
+      (eq word *the-punctuation-rightwards-arrow*)
+      (eq word *the-punctuation-plus-minus*)))
+
+(defgeneric word-never-in-ns-sequence (word)
+  (:method ((e edge))
+    (word-never-in-ns-sequence
+     (pos-terminal (edge-starting-position e))))
+  (:method ((word word))
+    (declare (special ;;*the-punctuation-period* 
+                      *the-punctuation-question-mark*
+                      *the-punctuation-comma*
+                      *the-punctuation-semicolon*
+                      *the-punctuation-percent*
+                      *the-punctuation-prime*
+                      *the-punctuation-single-quote*
+                      *the-punctuation-double-quote*
+                      word::close-paren
+                      word::open-paren
+                      word::close-square-bracket
+                      word::open-square-bracket))
+    (when (punctuation? word)
+      (or ;;(eq word *the-punctuation-period*) ;; "known as CAL.20C"
+          (eq word  *the-punctuation-question-mark*)
+          (eq word *the-punctuation-comma*)
+          (eq word *the-punctuation-semicolon*)
+          (eq word *the-punctuation-percent*)
+          (eq word *the-punctuation-prime*)
+          (eq word *the-punctuation-single-quote*)
+          (eq word *the-punctuation-double-quote*)
+          (eq word word::close-paren)
+          (eq word word::open-paren)
+          (eq word word::open-square-bracket)
+          (eq word word::close-square-bracket)))))
+
+
+
 
 ;;;------------------------------
 ;;; delimiting the no-space span
@@ -40,38 +102,6 @@
 ;;; reasons to abort or get out of the loop
 ;;;-----------------------------------------
 
-(defgeneric word-never-in-ns-sequence (word)
-  (:method ((e edge))
-    (word-never-in-ns-sequence
-     (pos-terminal (edge-starting-position e))))
-  (:method ((word word))
-    (declare (special *the-punctuation-period*
-                      *the-punctuation-question-mark*
-                      *the-punctuation-comma*
-                      *the-punctuation-semicolon*
-                      *the-punctuation-percent*
-                      *the-punctuation-prime*
-                      *the-punctuation-single-quote*
-                      *the-punctuation-double-quote*
-                      word::close-paren
-                      word::open-paren
-                      word::close-square-bracket
-                      word::open-square-bracket))
-    (when (punctuation? word)
-      (or (eq word *the-punctuation-period*)
-          (eq word  *the-punctuation-question-mark*)
-          (eq word *the-punctuation-comma*)
-          (eq word *the-punctuation-semicolon*)
-          (eq word *the-punctuation-percent*)
-          (eq word *the-punctuation-prime*)
-          (eq word *the-punctuation-single-quote*)
-          (eq word *the-punctuation-double-quote*)
-          (eq word word::close-paren)
-          (eq word word::open-paren)
-          (eq word word::open-square-bracket)
-          (eq word word::close-square-bracket)))))
-
-
 (defun second-word-not-in-ns-sequence (word next-position)
   (declare (special *the-punctuation-period* *the-punctuation-comma*
                     *the-punctuation-semicolon* *end-of-source*
@@ -92,7 +122,7 @@
 ;;       t)
       (t nil))))
 
-
+;; 1/30/21 no callers. Tearing it appart for parts
 (defun punctuation-terminates-no-space-sequence (word position)
   (declare (special *the-punctuation-period* *the-punctuation-comma*
                     *the-punctuation-colon* *the-punctuation-semicolon*
@@ -126,7 +156,6 @@
     ;; Every other punctuation is declared to be a boundary
     (t (pushnew word *terminal-ns-punct-encountered*)
        t)))
-
 
 (defun sentence-final-punctuation-pattern? (position)
   (declare (special *source-exhausted* *end-of-source*))
