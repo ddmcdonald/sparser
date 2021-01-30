@@ -13,6 +13,13 @@
 ;;; Example texts
 ;;;---------------
 
+;; NYT CoV newsletter 1/29/21
+" Johnson & Johnson, the only major drugmaker developing a single-dose Covid vaccine, announced on Friday that its shot had provided strong protection in clinical trials.
+If the Food and Drug Administration grants the company an emergency authorization, it would expand the vaccine supply in the United States as the Biden administration seeks to immunize many more Americans.
+The results came with a significant cautionary note: In the U.S., the vaccine had an efficacy rate of 72 percent in clinical trials. But in South Africa, a country gripped by a new and more contagious variant, the efficacy rate dropped to just 57 percent.
+The variant, which has spread to at least 31 countries, including the United States, may also blunt the effectiveness of Covid vaccines made by Pfizer-BioNTech, Moderna and Novavax."
+
+
 ;; NYT Evening Briefing 1/20/21
 "A new variant of the coronavirus variant has emerged closer to home. The mutant, which belongs to a lineage known as CAL.20C, seemed to have popped up in California in July but lain low until November. The variant may be more transmissible; it showed up in more than half of samples tested last week by researchers in Los Angeles."
 
