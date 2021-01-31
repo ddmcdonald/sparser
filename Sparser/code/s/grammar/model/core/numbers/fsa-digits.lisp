@@ -291,8 +291,7 @@ the fsa would be identified at the word level rather than the category level.
                (continue-digit-sequence-after-comma
                 next-cell array next-position))
               
-              ((eq word-at-next-position *the-punctuation-period*)
-               (record-period-in-digit-sequence)
+              ((eq word-at-next-position *the-punctuation-period*)               
                (continue-digit-sequence-after-period
                 next-cell array next-position))
               
@@ -456,6 +455,7 @@ unknown---in any event, we're taking the first edge that is installed.
                     or larger"))
           (setf (aref array next-cell)
                 digits-edge)
+          (record-period-in-digit-sequence)
           (expect-digit-delimiter-as-next-treetop (1+ next-cell)
                                                   array
                                                   digits-edge))
