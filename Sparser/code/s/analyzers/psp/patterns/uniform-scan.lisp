@@ -266,8 +266,8 @@
          nil)
         (t
          (let ((reason (reason-to-not-span-ns pos-before next-position)))
-           (tr :not-reifying-because-there-was-a-reason)
            (when reason
+             (tr :not-reifying-because-there-was-a-reason reason)
              (throw :punt-on-nospace-without-resolution reason)))
 
          (unless *big-mechanism*

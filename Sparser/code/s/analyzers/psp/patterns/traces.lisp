@@ -552,10 +552,10 @@
                (pos-token-index start-pos)
                (pos-token-index end-pos))))
 
-(deftrace :not-reifying-because-there-was-a-reason ()
+(deftrace :not-reifying-because-there-was-a-reason (reason)
+  ;; called from reify-ns-name-and-make-edge
   (when *trace-ns-sequences*
-    (trace-msg "[ns] No pattern matched, but the edges in this span ~
-                are never part of a ns sequence.")))
+    (trace-msg "[ns] Not reifying this sequence because: ~a")))
 
 (deftrace :ns-made-approximation (number)
   ;; called from package-approximation-number 
