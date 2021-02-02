@@ -307,9 +307,10 @@
 (when *external-testing-files*
   (load *external-testing-files*))
 
-(gate-grammar *miscellaneous*
+(gate-grammar *miscellaneous* ;; a daughter of testing
   (lload "measuring;distance between brackets")
-  (lload "measuring;line count"))
+  (lload "measuring;line count")
+  (lload "gr-tests;analysis-quality"))
 
 (gate-grammar *citations*
   (lload "citation-code;loader"))
