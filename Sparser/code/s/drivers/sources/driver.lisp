@@ -257,7 +257,13 @@
 
 (defgeneric get-article (handle)
   (:method ((handle symbol))
+    (gethash handle *handles-to-articles*))
+  (:method ((handle string))
     (gethash handle *handles-to-articles*)))
+
+(defun initialize-article-saving ()
+  (clrhash *handles-to-articles*)
+  (setq *handles-analyzed* nil))
 
 
 ;;;--------------
