@@ -452,7 +452,7 @@ unknown---in any event, we're taking the first edge that is installed.
             (error "continue-digit-sequence-after-period got null edges"))
           (when (> next-cell 4)
             (error "No provision for digit-based numbers in the quadrillions ~
-                    or larger"))
+                    or larger: ~a" (current-string)))
           (setf (aref array next-cell)
                 digits-edge)
           (record-period-in-digit-sequence)
