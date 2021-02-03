@@ -13,6 +13,9 @@
 ;;; Example texts
 ;;;---------------
 
+;; The Guardian 2/1/21
+"A leading infectious diseases scientist said yesterday that a British strain of coronavirus, thought to be more contagious and more deadly, could hit the US like a “hurricane” in spring. Epidemiologist Michael Osterholm, a member of Joe Biden’s transition coronavirus advisory board, predicted that the variant could become the dominant strain of coronavirus in the US. It came as the US confirmed more than 26 million cases of coronavirus, and the death toll neared half a million."
+
 ;; NYT CoV newsletter 1/29/21
 " Johnson & Johnson, the only major drugmaker developing a single-dose Covid vaccine, announced on Friday that its shot had provided strong protection in clinical trials.
 If the Food and Drug Administration grants the company an emergency authorization, it would expand the vaccine supply in the United States as the Biden administration seeks to immunize many more Americans.
