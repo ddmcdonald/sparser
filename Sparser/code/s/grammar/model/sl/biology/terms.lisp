@@ -289,8 +289,17 @@
 
 
 
-
-
+(noun "lane" :super bio-mechanism)
+#| Given these citations, this is a lane on a difusion gradient
+  (wrong term).  This usage appropriates the similar notions
+  of lanes on a highway or runner lanes in on track. 
+  If we had to model such things we'd have a specific way to ground
+   them. But the idea of labeling a lane would carry over
+"heated for 10 min at 100°C, and 10 ng/lane "
+"the doublet in the even numbered lanes (Figure xref )."
+"(Figure xref , PBS, lane 1)."
+"compare lanes 4 and 5" ; aspp2 55
+"(Figure 4B, compare lanes 9 to 10)." ; aspp2 56 |#
 
 
            
