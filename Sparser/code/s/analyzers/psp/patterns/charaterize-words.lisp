@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2015-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "charaterize-words"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  January 2020
+;;;  version:  February 2021
 
 ;; initiated 5/15/15 breaking out the routines that look at the words
 ;; and characterize them as patterns to drive the matcher. Moved in
@@ -16,8 +16,8 @@
 ;;;------------------------------------------------
 
 (defun characterize-word-type (position word)
-  ;; return a indicator read by resolve-ns-pattern to identify
-  ;; a general pattern with an established interpretation. 
+  "return a indicator read by resolve-ns-pattern to identify
+   a general pattern with an established interpretation. "
   (let* ((caps (pos-capitalization position))
          (start-ev (pos-starts-here position))
          (top-edge (ev-top-node start-ev)))
@@ -59,7 +59,6 @@
   '(:single-digit :digits))
 
 
-
 (defun characterize-words-in-region  (start-pos end-pos)
   "Returns a pattern. Presumes that the whole region has been scanned,
    and that the edges are correctly ordered left to right."
@@ -74,14 +73,18 @@
                   (t (characterize-word-type pos tt))))))
 
 
+
 (defun sweep-ns-region (start-pos end-pos)
-  "Returns a pattern based on the words and edges over those words.
+  "Called from collect-no-space-segment-into-word to provide the
+   pattern that will be passed to ns-pattern-dispatch and control
+   the decisions by the different no-space files.
+   Returns a pattern based on the words and edges over those words.
    Knows a great deal about what kinds of edges are just mechanical
    and replaces those with a characterization of the word they're
    over to more easily fit into the pattern tests."
   ;;//// When we do a major revision of the style of NS revision
   ;; this should be merged somehow with characterize-words-in-region 
-  ;; so patterns can bernte put in the right form earlier -- like at top
+  ;; so patterns can be put in the right form earlier -- like at top
   ;; of ns-pattern-dispatch, though that wants the positions.
   (let ((pos-treetops (positions-and-treetops-between start-pos end-pos))
         pattern-elements )
@@ -95,6 +98,9 @@
              (let* ((label (when (and (edge-p item)
                                       (category-p (edge-category item)))
                              (cat-name (edge-category item))))
+                    (referent (when (and (edge-p item)
+                                         (individual-p (edge-referent item)))
+                                (edge-referent item)))
                     (word (if (and (edge-p item)
                                    ;; happens with A38G, where A38 is
                                    ;;  made into a residue-on-protein
@@ -108,6 +114,8 @@
                   (if (= 1 (length pname)) :single-digit :digits))
                  ((eq label 'bio-entity)
                   (characterize-word-type position word))
+                 ((itypep referent 'unit-of-measure)
+                  :unit-of-measure)
                  ((search (symbol-name '#:-kind) (symbol-name label))
                   (characterize-word-type position word))
                  ((itypep label 'protein)
@@ -120,7 +128,7 @@
                   (characterize-word-type position word))
                  ((edge-p item)
                   (intern (pname label) :keyword))
-                 ((null word) ;;
+                 ((null word)
                   nil)
                  ;;//// need to look for massive set of cases
                  ;; since we don't want to return something the

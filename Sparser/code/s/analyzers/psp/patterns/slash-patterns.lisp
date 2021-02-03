@@ -13,22 +13,27 @@
 ;;  (p "For example, SHOC2/Sur-8 bridges.")
 ;; "PI3K/AKT signaling"
 
-(defun resolve-slash-pattern (pattern pos-before pos-after)
+(defun resolve-slash-pattern (pattern edges pos-before pos-after)
   "Called from ns-pattern-dispatch when the salient punctuation is one or
    more slashes. Returns nil if it doesn't know what the pattern means
    and we go back to the dispatch."
-
   (if (null (member :forward-slash
                     (cdr (member :forward-slash pattern)))) ;; only one
-      (one-slash-ns-patterns pattern pos-before pos-after)
+      (one-slash-ns-patterns pattern edges pos-before pos-after)
       (divide-and-recombine-ns-pattern-with-slash pattern pos-before pos-after)))
 
-(defun one-slash-ns-patterns (pattern pos-before pos-after)
+
+(defun one-slash-ns-patterns (pattern edges pos-before pos-after)
   (cond   
    ((member :hyphen pattern)
     (divide-and-recombine-ns-pattern-with-slash pattern  pos-before pos-after))
+   
    ((equal pattern '(:protein :forward-slash :protein))
     (make-protein-collection pos-before pos-after))
+
+   ((equal pattern '(:unit-of-measure :forward-slash :unit-of-measure))
+    (make-edge-over-rate (first edges) (third edges) pos-before pos-after))
+   
    ((equal pattern '(:lower :forward-slash :lower))
     (or (reify-amino-acid-pair pos-before pos-after)
         (reify-ns-name-and-make-edge pos-before pos-after)))

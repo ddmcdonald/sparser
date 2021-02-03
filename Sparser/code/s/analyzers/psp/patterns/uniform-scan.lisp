@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2021 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  March 2019
+;;;  version:  February 2021
 
 ;; Broken out from driver 2/5/13. This code was developed with some
 ;; difficulty and confusion for the JTC/TRS project. Throwing out most
@@ -72,6 +72,7 @@
 ;; (trace-scan-patterns)  for large scale
 
 (defparameter *in-collect-no-space-segment-into-word* nil)
+
 (defun collect-no-space-segment-into-word (start-pos end-pos)
   "As called from do-no-space-collection At this point all of the
    words in the sentence have been spanned with unary edges, and there
@@ -197,7 +198,7 @@
                      (edge-starting-position (top-edge-at/ending start-pos))
                      (chart-position-before start-pos)))
              (setq pattern (sweep-ns-region start-pos end-pos)))
-           (or (resolve-slash-pattern pattern start-pos end-pos)
+           (or (resolve-slash-pattern pattern edges start-pos end-pos)
                (reify-ns-name-and-make-edge start-pos end-pos)))))
 
       ((and (member :hyphen pattern)
@@ -238,7 +239,6 @@
   (declare (special *categories-based-on-apostrophe*))
   (when (eq (pos-terminal pos-after)
             (punctuation-named #\'))
-    
     (let ((edges (treetops-between start-pos end-pos)))
       (when (null (cdr edges))
         (let* ((edge (car edges))
@@ -412,7 +412,8 @@
              when (edge-p e)
              collect (or (edge-form e)
                          ;; the only cases this happens seem to be
-                         ;;(PRONOUN/FEMALE APOSTROPHE-S SINGLE-QUOTE HYPHEN PERCENT-SIGN FORWARD-SLASH)
+                         ;;(PRONOUN/FEMALE APOSTROPHE-S SINGLE-QUOTE HYPHEN
+                         ;; PERCENT-SIGN FORWARD-SLASH)
                          (let* ((ec (edge-category e))
                                 (symbol
                                  (if (word-p ec)
@@ -422,7 +423,7 @@
                            ;;(pushnew symbol *no-form-cats*)
                            symbol))))
          (form-symbols (loop for l in form-labels
-                             when l collect (if (category-p l)(cat-symbol l) l))))
+                             when l collect (if (category-p l) (cat-symbol l) l))))
     (or (and (edge-p (car edges))
              (itypep (edge-referent (car edges)) 'year)
              (edge-p (second edges))
@@ -457,6 +458,10 @@
     ;;(lsp-break "is-pro")
     (when pro? (values pro? start end pro-cfr? sur-str))))
 
+;;;---------------------
+;;; specific edge types
+;;;---------------------
+
 (defun span-phosphorylated-protein (start end &optional cat form)
   (multiple-value-bind (protein start end cfr sur-string)
       (is-phosphorylated-protein? start end)
@@ -469,6 +474,21 @@
      :referent (make-phosphorylated-protein protein sur-string))
     end))
                             
+
+(defun make-edge-over-rate (e1 e2 start-pos end-pos)
+  "Called from one-slash-ns-patterns for rates, e.g. 'hours/day'.
+   Instantiates the rate and then makes an edge over the span"
+  (declare (special category::rate))
+  (let* ((unit (edge-referent e1))
+         (per-unit (edge-referent e2))
+         (i (make-a-rate unit per-unit)))
+    (make-edge-over-long-span
+     start-pos end-pos
+     category::rate
+     :form (category-named 'np)
+     :referent i
+     :rule 'make-edge-over-rate
+     :constituents (treetops-between start-pos end-pos))))
 
 
 ;;;------------------------------------

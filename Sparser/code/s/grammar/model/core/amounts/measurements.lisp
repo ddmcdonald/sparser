@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2000,2014-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2000,2014-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "measurements"
 ;;;   module:  "model;core:amounts:"
-;;;  Version:  November 2020
+;;;  Version:  February 2021
 
 ;; original version initiated 10/2/91
 ;; completely made over 9/18/93 in new semantics.  10/24/93 gave it rdata
@@ -120,6 +120,36 @@ and the word can stand by itself "that distance"
     which would be a process-result relationship")
 
 
+;;;-------
+;;; rate
+;;;-------
+
+(define-category rate
+  :specializes measurement
+  :binds ((units unit-of-measure)
+          (per-unit unit-of-measure))
+  :realization (:noun "rate")
+  :documentation "Wikipedia: 'a rate it the ratio between two related
+ quantities in different units'. It can be expressed using 'per' to
+ separate the units, or by using a slash.")
+
+#| Wikipedia: A rate defined using two numbers of the same units (such
+as tax rates) or counts (such as literacy rate) will result in a
+dimensionless quantity, which can be expressed as a percentage (for
+example, the global literacy rate in 1998 was 80%), fraction, or
+multiple. 
+   Often rate is a synonym of rhythm or frequency, a count per
+second (i.e., hertz); e.g., radio frequencies, heart rates, or sample
+rates |#
+
+(defgeneric make-a-rate (unit per-unit)
+  (:documentation "Find or make a rate. Paradigm case (so far) is the
+    slash pattern over time-units. Initially called from no-space
+    code: make-edge-over-rate")
+  (:method ((unit individual) (per-unit individual))
+    (define-or-find-individual 'rate
+        :units unit
+        :per-unit per-unit)))
 
 ;;;-------------------------
 ;;; rate of change measures
@@ -188,9 +218,6 @@ and the word can stand by itself "that distance"
       unit)))
 
 
-;;;-------
-;;; rates
-;;;-------
 
 (define-category rate-measurement
   :specializes measurement
