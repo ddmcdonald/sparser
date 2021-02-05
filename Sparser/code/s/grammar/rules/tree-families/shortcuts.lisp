@@ -301,7 +301,7 @@ see if there are issues"
 (defmacro noun (name
                 &key noun 
                      super specializes index
-                     binds realization
+                     binds realization documentation
                      instantiates mixins restrict rule-label 
 		  obo-id)
   (cond
@@ -333,6 +333,7 @@ see if there are issues"
          :super ',super ;;:specializes ',specializes no longer use this
 	 :index ',index
          :binds ',binds
+         :documentation ,documentation
          :realization ',realization
          :instantiates ',instantiates
          :mixins ',mixins
@@ -342,7 +343,7 @@ see if there are issues"
 ;;/// carbon copy of noun, but a function rather than a macro
 (defun np-head (name 
                 &key noun super specializes index
-                     binds realization
+                     binds realization documentation
                      instantiates mixins restrict rule-label 
 		  obo-id)
    (cond
@@ -360,6 +361,7 @@ see if there are issues"
          :super super ;;:specializes specializes
 	 :index index
          :binds binds :realization realization
+         :documentation documentation
          :instantiates instantiates :mixins mixins
          :restrict restrict :rule-label rule-label
          :obo-id obo-id))
@@ -369,7 +371,7 @@ see if there are issues"
                   &key noun
 		    super ;; specializes
 		    index
-		    binds realization
+		    binds realization documentation
 		    instantiates mixins 
 		    restrict rule-label obo-id)
   (declare (ignore rule-label instantiates index))
@@ -388,6 +390,7 @@ see if there are issues"
 	       ;;:index ,index
 	       :restrict ,restrict
 	       :mixins ,mixins
+               :documentation ,documentation
 	       :realization
 	       ,(if noun `(:noun ,(if (and (consp noun)
                                            (not (member :plural noun)))
