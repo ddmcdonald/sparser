@@ -395,7 +395,7 @@ in the scope of referent-from-rule.
 (defun edge-for-referent (ref)
   "We're in the middle of processing an interpretation. We have a value
    in our hand (so to speak) -- 'ref' -- and we want to know which
-   edge is is the referent of."
+   edge is it the referent of."
   (let* ((left-edge *left-edge-into-reference*)
          (left-ref (when (edge-p left-edge) (edge-referent left-edge)))
          (right-edge *right-edge-into-reference*)

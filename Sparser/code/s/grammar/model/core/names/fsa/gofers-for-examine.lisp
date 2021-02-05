@@ -78,7 +78,6 @@
              (ecase (cat-symbol (itype-of item1))
                (category::name-word
                 (value-of 'name item1)))))))
-
     (etypecase label-on-prior-item
       (word nil)
       (category
@@ -87,9 +86,6 @@
          (category::kind-of-company t)       ;; "Ministry"
          (otherwise nil))))))
         
-
-
-
 #| original that dispatches on length
     (cond
      ((> (length items) 2) nil)

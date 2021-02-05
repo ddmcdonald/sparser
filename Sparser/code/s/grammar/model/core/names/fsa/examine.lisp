@@ -1,10 +1,10 @@
 ;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1996,2011-2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2011-2021  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2008 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "examine"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  February 2019
+;;;  version:  February 2021
 
 ;; initiated 4/1/94 v2.3
 ;; 0.1 (4/23) fixed change of where :literal-in-a-rule is in Sort-out-multiple-
@@ -85,12 +85,12 @@
    so we see unexpected categories before they muck things up
    in unanticipated ways")
 
-(defvar *break-before-creating-name* nil
+(defparameter *break-before-creating-name* nil
   "Helpful in debugging PNF. Traps in categorize-and-form-name 
    before it's made any real mistakes and built something 
    we'll have to rip out.")
 
-(defvar *break-before-examining* nil
+(defparameter *break-before-examining* nil
   "Breaks just before we go into the loops that set the 
    internal state locals.")
 
@@ -447,7 +447,9 @@
       (loop
          ;; Loop over all the treetop constituents between the start and
          ;; end positions of this capitalized sequence that the scan phase
-         ;; delimited. 
+         ;; delimited. Determine what label to use for it (2d flet), then
+         ;; pass it through the 1st flet to set the flags that dictate
+         ;; how we will categorize this sequence.
          (if (position/>=  position ending-position)
            (return)
            (incf count))
@@ -525,8 +527,6 @@
             `(:not-a-name ,ending-position)))
 
          (when music-note
-          ;; "Ruby Tuesday", "April Wednesday" in PNF paper and such
-          ;; have to be coerced by external evidence.
           (throw :abort-examination-not-a-name
             `(:not-a-name ,ending-position)))
 
@@ -557,7 +557,8 @@
                                  koc? ordinal location-head hurricane
                                  other )
   (declare (special category::company-name category::person-name category::name
-                    category::location)
+                    category::location
+                    *break-before-creating-name*)
            (ignore hurricane name-state country))
 
   ;; Analyze the evidence and determine what sort of name this is
@@ -645,7 +646,6 @@
 
       ;;--- Make the name
       (tr :name-category-is category)
-
       (setq name
             (ecase (cat-symbol category)
               (category::name 
