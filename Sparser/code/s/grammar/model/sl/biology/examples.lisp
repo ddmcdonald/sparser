@@ -17,7 +17,7 @@
 "A leading infectious diseases scientist said yesterday that a British strain of coronavirus, thought to be more contagious and more deadly, could hit the US like a “hurricane” in spring. Epidemiologist Michael Osterholm, a member of Joe Biden’s transition coronavirus advisory board, predicted that the variant could become the dominant strain of coronavirus in the US. It came as the US confirmed more than 26 million cases of coronavirus, and the death toll neared half a million."
 
 ;; NYT CoV newsletter 1/29/21
-" Johnson & Johnson, the only major drugmaker developing a single-dose Covid vaccine, announced on Friday that its shot had provided strong protection in clinical trials.
+"Johnson & Johnson, the only major drugmaker developing a single-dose Covid vaccine, announced on Friday that its shot had provided strong protection in clinical trials.
 If the Food and Drug Administration grants the company an emergency authorization, it would expand the vaccine supply in the United States as the Biden administration seeks to immunize many more Americans.
 The results came with a significant cautionary note: In the U.S., the vaccine had an efficacy rate of 72 percent in clinical trials. But in South Africa, a country gripped by a new and more contagious variant, the efficacy rate dropped to just 57 percent.
 The variant, which has spread to at least 31 countries, including the United States, may also blunt the effectiveness of Covid vaccines made by Pfizer-BioNTech, Moderna and Novavax."
@@ -34,10 +34,10 @@ email 1/11/21 |#
 "In Ireland, cases are skyrocketing. Just weeks ago, the country was doing well compared with the rest of Europe. Now it has the highest number of per capita infections in the world."
 
 #| Lead paragraph in the Gardian online summary, 12/30/20
-https://www.theguardian.com/world/2020/dec/29/us-first-case-new-uk-covid-variant?utm_term=996b3518f208e4677edd57aa5463dd04&utm_campaign=USMorningBriefing&utm_source=esp&utm_medium=Email&CMP=usbriefing_email
+https://www.theguardian.com/world/2020/dec/29/us-first-case-new-uk-covid-variant?utm_term=996b3518f208e4677edd57aa5463dd04&utm_campaign=USMorningBriefing&utm_source=esp&utm_medium=Email&CMP=usbriefing_email|#
 
 "The US has reported its first case of the new strain of coronavirus spreading in the UK. A man in Colorado was identified as having the mutant form of the virus, known as B.1.1.7, which is thought to be more contagious than other strains. The circulation of the strain in the UK has triggered even stricter lockdown measures, and prompted other countries to restrict travel from the UK."
-|#
+
 
 
 #|
