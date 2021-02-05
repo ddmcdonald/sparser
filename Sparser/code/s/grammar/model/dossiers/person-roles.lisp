@@ -1,9 +1,9 @@
 ;;; -*- Mode: LISP; Syntax: Common-Lisp; Package: (SPARSER LISP) -*-
-;;; Copyright (c) 2020 Smart Information Flow Technologies
+;;; Copyright (c) 2021 Smart Information Flow Technologies
 ;;;
 ;;;     File:  "person-roles"
 ;;;   Module:  grammar/model/dossiers/
-;;;  Version:  September 2020
+;;;  Version:  February 2021
 
 (in-package :sparser)
 
@@ -11,6 +11,9 @@
   '(
 
     "entrepreneur"
+    "founder"
+    "co-founder"
+    "boss"
     
     "candidate"
     "individual"   ; "Individuals with HIV"
@@ -25,6 +28,10 @@
     "student"
     "undergraduate"
 
+    "scientist"
+    "epidemiologist"
+    "virologist"
+    
     ;; medical
     "patient"
     
@@ -32,8 +39,9 @@
     "nurse"
     "physician"
     "rehabilitation therapist"
-    "staff"
     "social worker"
+    "staff"
+
     ))
 
 #| These too? 

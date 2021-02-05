@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2020 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2020-2021 SIFT LLC. All Rights Reserved
 ;;;
 ;;;      File:   "medical-taxonomy"
 ;;;    Module:   "sl;disease:"
-;;;   version:   November 2020
+;;;   version:   February 2021
 
 ;; Broken out of bio;taxonomy 11/10/20 so we can modify it freely
 ;; to loosen the original type restrictions to apply to
@@ -13,8 +13,7 @@
 
 ;; NOT SURE WHERE ELSE THIS SHOULD GO
 (define-category severity :specializes scalar-attribute
-  :realization
-  (:noun "severity"))
+  :realization (:noun "severity"))
 
 
 ;;--- disease
@@ -48,7 +47,7 @@
 (noun "abnormality" :super medical-condition)
 (noun "disorder" :super medical-condition)
 (noun "symptom" :super medical-condition
-      :mixins (attribute)) ;; symptom of disease
+  :mixins (attribute)) ;; symptom of disease
 
 
 (define-category disease  :specializes medical-condition
@@ -138,3 +137,11 @@
 (noun "chemotherapy" :super medical-treatment)
 (noun "organ transplant" :super medical-treatment)
 (noun "therapeutic strategy" :super medical-treatment)
+
+(define-category injection :specializes medical-treatment
+  :binds ((content drug))
+  :realization (:noun "injection"
+                      :of drug))
+
+(def-synonym injection (:noun "shot"))
+;; Obvious homonym with the verb form
