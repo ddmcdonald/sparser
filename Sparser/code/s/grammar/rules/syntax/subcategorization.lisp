@@ -875,10 +875,12 @@
              (loop for head-elt in heads
                 collect (assimilate-subcat head-elt subcat-label
                                            (edge-referent item-edge)))))
-        (when (loop for i in interps always i)
-          (create-collection
-           interps
-           (itype-of (car heads))))))))
+        (when interps ;; has been nil - because of rule that shouldn't have fired
+          ;; It was operating on "Friday that ..."
+          (when (loop for i in interps always i)
+            (create-collection
+             interps
+             (itype-of (car heads)))))))))
 
 (defparameter *show-one-anaphora* nil)
 

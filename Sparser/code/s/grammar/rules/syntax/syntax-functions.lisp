@@ -2259,6 +2259,9 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
 
 (defun assimilate-clausal-comp (vg-or-np s-comp &optional (role :thatcomp))
   ;;(push-debug `(,vg-or-np ,s-comp)) (break "what's what?")
+  (when *subcat-test*
+    (when (itypep vg-or-np 'time) ; block "on [Friday]+[that ...]"
+      (return-from assimilate-clausal-comp nil)))
   (or
    (when (and (takes-wh-nominals? vg-or-np)
               (or (itypep s-comp 'wh-nominal)
