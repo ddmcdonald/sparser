@@ -797,6 +797,12 @@
            attach-proper-noun-comma-np-comma-as-appositive
            first second third fourth))
 
+(define-debris-analysis-rule attach-proper-name-comma-np-comma-as-appositive
+  :pattern ( proper-name "," np "," )
+  :action (:function
+           attach-proper-noun-comma-np-comma-as-appositive
+           first second third fourth))
+
 (defun attach-proper-noun-comma-np-comma-as-appositive (np1 comma-1 np2 comma-2)
   (attach-appositive-to-np np1 comma-1 np2 comma-2))
 
