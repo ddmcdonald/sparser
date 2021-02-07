@@ -44,26 +44,26 @@
       (check-for-extension-from-vertex vertex tt))))
 
 (defun check-for-extension-from-vertex (vertex tt)
-  "Continuation of get-next-treetop, called as entry point
+  "Continuation of get-next-treetop, and called as entry point
    for execute-da-trie and standalone-da-execution.
    Lookup the rightward extensions from this vertex, does a data
-   check, then calls the check function"
+   check, then calls the compare function"
   (tr :checking-extension-from vertex tt)
   (let ((arc-set (vertex-rightward-extensions vertex)))
     (unless (every #'da-arc-p arc-set)
       (push-debug `(,arc-set ,vertex ,tt))
       (error "rightward-extensions returned some non-vertexes ~
               from ~a on ~a" vertex tt))
-    (check-tt-against-arc-set tt arc-set vertex)))
+    (compare-tt-to-arc-set tt arc-set vertex)))
 
-(defun check-tt-against-arc-set (tt arc-set vertex)
+(defun compare-tt-to-arc-set (tt arc-set vertex)
   "Initialize the check state variables then compute how
    many arcs out of this vertex match the treetop.
    If more than one matches, then we need to loop
    back to try the next matching arc, 
    though we're greedy ???
    and accept the first matching terminal arc"
-  (setup-tt-type tt)
+  (setup-tt-type tt) ;; sets the descriptor parameters
   (let (  matches  )
     (dolist (arc arc-set)
       (when (arc-matches-tt? arc tt)

@@ -1,20 +1,20 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995,2011-2013,2020  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2011-2013,2020-2021  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "match"
 ;;;   Module:  "analyzers;DA:"
-;;;  Version:  October 2020
+;;;  Version:  February 2021
 
 ;; initiated 5/5/95.  Elaborated ..5/12. 11/3/11 Fixing match against
 ;; multiple words as tt.  7/17/13 Cleaning up, elaborating debugging.
-;; 9/19/13 Moed out look-under code to objects/chart/edge-vectors/peek.
+;; 9/19/13 Moved out look-under code to objects/chart/edge-vectors/peek.
 
 (in-package :sparser)
 
-(defparameter *edge-tt* nil)
-(defparameter *word-tt* nil)
-(defparameter *multiple-edges-over-word* nil)
-(defparameter *boundary-tt* nil)
+(defvar *edge-tt* nil)
+(defvar *word-tt* nil)
+(defvar *multiple-edges-over-word* nil)
+(defvar *boundary-tt* nil)
 
 (defun initialize-tt-state-description ()
   (setq *edge-tt* nil
@@ -23,6 +23,10 @@
         *boundary-tt* nil))
 
 (defun setup-tt-type (tt)
+  "Called by compare-tt-to-arc-set on the treetop that was passed to
+   it from get-next-treetop. That function uses next-treetop/rightward,
+   which notices whether the position has multiple-initial-edges.
+   If it does, it returns a list of the preterminal-edges on the position"
   (initialize-tt-state-description)
   (etypecase tt
     (edge (setq *edge-tt* tt))
@@ -46,7 +50,8 @@
 
 
 (defun arc-matches-tt? (arc tt)
-  ;; called from Check-for-extension-from-vertex
+  "Called from the compare-tt-to-arc-set function which determined
+   which arc to compare against this treetop"
   (declare (special *da-execution*))
   (tr :arc-matches-tt? arc tt)
   (when *trace-da-match*
@@ -57,81 +62,86 @@
             *edge-tt* *word-tt* *multiple-edges-over-word*
             *boundary-tt* arc (type-of arc) tt))
   ;; (push-debug `(,arc ,tt)) ;;(break "arc type")
-  ;; (setq arc (car *) tt (cadr *))
-
+  ;; (setq arc (car *) tt (cadr *))  
   (let ((match?
-         (typecase arc
-
-           (form-arc
-            (when *edge-tt*
-              (or (eq (edge-form tt) (arc-label arc))
-                  ;; a significant number of categories are have both
-                  ;; referential-category and form-category aspects,
-                  ;; e.g. number -- so check the category as well
-                  (eq (edge-category tt) (arc-label arc)))))
-
-           (label-arc
-            (when *edge-tt*
-              (if (eq (edge-category tt) (arc-label arc))
-                t
-                (da/look-under-edge tt (arc-label arc)))))
-
-           (morph-arc
-            (when *word-tt*
-              (eq (word-morphology tt) (arc-morph-keyword arc))))
-
-           (word-arc
-            (cond
-              (*word-tt*
-               (eq tt (arc-word arc)))
-              (*multiple-edges-over-word*
-               (let ((target-word (arc-word arc)))
-                 ;; ought to be cleaner than this, or find comparable
-                 ;; code elsewhere in DA
-                 (dolist (obj tt)
-                   (typecase obj
-                     (word (when (eq obj target-word)
-                             (return-from arc-matches-tt? obj)))
-                     (edge (when (eq (edge-category obj) target-word)
-                             (return-from arc-matches-tt? obj)))
-                     (otherwise
-                      (push-debug `(,obj ,tt))
-                      (error "Unexpected type in multiple edge tt: ~a"
-                             (type-of obj)))))))
-              (*edge-tt*
-               (let ((left-daughter (edge-left-daughter tt)))
-                 (when (word-p left-daughter)
-                   (eq left-daughter (arc-word arc)))))
-
-              (t nil)))
-
-           (polyword-arc
-            (when *edge-tt*
-              (eq (edge-category tt) (arc-polyword arc))))
-
-           (unknown-word/s-arc
-            (when *word-tt*
-              (or (= 1 (arc-number-of-words arc))
-                  (then
-                    (break "stub: arch for multiple unknown words")
-                    nil))))
-
-           (gap-arc
-            (push-debug `(,arc ,tt))
-            (break "stub: gap arc encountered"))
-
-           (otherwise
-            (push-debug `(,arc ,tt))
-            (error "Unknown type of DA arc: ~a~%  ~a"
-                   (type-of arc) arc) ))))
-
-    ;;(unless match? (break "no match"))
-
+         (cond (*multiple-edges-over-word*
+                (loop for e in *multiple-edges-over-word*
+                   when (test-arc-against-tt arc e)
+                   return t))
+               (t
+                (test-arc-against-tt arc tt)))))
     (if match?
       (tr :arc-matches-tt?/matches)
       (tr :arc-matches-tt?/no-match))
-
     match? ))
+
+
+(defun test-arc-against-tt (arc tt)
+  (typecase arc
+    
+    (form-arc
+     (when *edge-tt*
+       (or (eq (edge-form tt) (arc-label arc))
+           ;; a significant number of categories are have both
+           ;; referential-category and form-category aspects,
+           ;; e.g. number -- so check the category as well
+           (eq (edge-category tt) (arc-label arc)))))
+
+    (label-arc
+     (cond
+       (*edge-tt*
+        (eq (edge-category tt) (arc-label arc)))
+       (t
+        (da/look-under-edge tt (arc-label arc)))))
+
+    (morph-arc
+     (when *word-tt*
+       (eq (word-morphology tt) (arc-morph-keyword arc))))
+
+    (word-arc
+     (cond
+       (*word-tt*
+        (eq tt (arc-word arc)))
+       #+ignore(*multiple-edges-over-word*
+        (let ((target-word (arc-word arc)))
+          ;; ought to be cleaner than this, or find comparable
+          ;; code elsewhere in DA
+          (dolist (obj tt)
+            (typecase obj
+              (word (when (eq obj target-word)
+                      (return-from arc-matches-tt? obj)))
+              (edge (when (eq (edge-category obj) target-word)
+                      (return-from arc-matches-tt? obj)))
+              (otherwise
+               (push-debug `(,obj ,tt))
+               (error "Unexpected type in multiple edge tt: ~a"
+                      (type-of obj)))))))
+       (*edge-tt*
+        (let ((left-daughter (edge-left-daughter tt)))
+          (when (word-p left-daughter)
+            (eq left-daughter (arc-word arc)))))
+
+       (t nil)))
+
+    (polyword-arc
+     (when *edge-tt*
+       (eq (edge-category tt) (arc-polyword arc))))
+
+    (unknown-word/s-arc
+     (when *word-tt*
+       (or (= 1 (arc-number-of-words arc))
+           (then
+             (break "stub: arc for multiple unknown words")
+             nil))))
+
+    (gap-arc
+     (push-debug `(,arc ,tt))
+     (break "stub: gap arc encountered"))
+
+    (otherwise
+     (push-debug `(,arc ,tt))
+     (error "Unknown type of DA arc: ~a~%  ~a"
+            (type-of arc) arc) )))
 
 
 

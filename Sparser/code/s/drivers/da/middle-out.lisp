@@ -80,4 +80,4 @@
         (setq *da-next-position/leftwards* next-position)
 
         (tr :checking-extension-from vertex tt)
-        (check-tt-against-arc-set tt arcs vertex)))))
+        (compare-tt-to-arc-set tt arcs vertex)))))
