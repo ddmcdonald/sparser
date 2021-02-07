@@ -24,6 +24,8 @@
 
 (in-package :sparser)
 
+;; fractions is in loader-2
+
 (gload "numbers;object") 
 (gload "numbers;categories")
 (gload "numbers;form")
