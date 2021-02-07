@@ -162,6 +162,12 @@
   :binds ((path))
   :documentation "The direction or trajectory of movement.")
 
+(define-mixin-category with-role-or-purpose
+  :specializes thematic-role
+  :binds ((role-or-purpose))
+  :documentation "A description of the role or purpose of the object (or subject) -- 
+'he named John as the perpetrator', 'he appeared as a witness'")
+
 (define-mixin-category reflexive
   :specializes thematic-role
   :binds ((pronoun pronoun))
