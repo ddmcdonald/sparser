@@ -815,7 +815,14 @@ val-pred-var (pred vs modifier - left or right?)
                             :form (category-named 'wh-pronoun))
         i)))
     
-
+;; prototype-of rule
+(defun create-prototype-of-np (prototype-word of-pp)
+  (cond (*subcat-test* (not (eq (edge-form-name (right-edge-for-referent)) 'preposition)))
+        (t
+         (let* ((prototype-np (value-of 'pobj of-pp)))
+           (setq prototype-word (bind-variable 'prototype prototype-np prototype-word))
+           (revise-parent-edge :category (itype-of prototype-np))
+           (specialize-object prototype-word (itype-of prototype-np))))))
 ;;--- determiners
 
 (defparameter *dets-seen* nil "Keep track of what kinds of new 'determiners' we get")
@@ -2553,7 +2560,7 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
 ;;;----------------------
 
 (defun make-pp (prep pobj)
-  (declare (speial category::prepositional-phrase))
+  (declare (special category::prepositional-phrase))
   (if *subcat-test*
     (or (valid-method analyze-pp prep pobj) ; had been compose
         (not (itypep prep category::prepositional-phrase)))

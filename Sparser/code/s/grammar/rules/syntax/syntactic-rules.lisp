@@ -322,10 +322,14 @@
     :form adjp
     :referent (:function interpret-intensifier+adjective left-edge right-edge))
 
-  
+
+
 ;;;------------------
 ;;; NP postmodifiers
 ;;;------------------
+
+
+    
 
 (loop for nb in `(np ,@*n-bar-categories*)
       do
@@ -1445,6 +1449,12 @@ similar to an oncogenic RasG12V mutation (9)."))
 (def-cfr np (ones-number of)
   :form np
   :referent (:function create-partitive-np left-edge right-edge))
+
+;; another case of specialized handling of "of"
+(def-cfr np (takes-of-prototype-description of)
+  :form np
+  :referent (:function create-prototype-of-np left-edge right-edge)
+  )
 
 ;; And see above syntax rule (number ,nb) --> number-noun-compound
 
