@@ -918,6 +918,7 @@
 
 
 (defparameter *trivial-test-for-biological* nil)
+(defvar *subcat-accept-all-semantics* nil)
 
 (defun satisfies-subcat-restriction? (item pat-or-v/r)
   "Does the individual 'item' satisfy the type restriction specified in this
