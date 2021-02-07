@@ -1,8 +1,8 @@
-;;; Copyright (c) 2016-2020 SIFT LLC. All Rights Reserved.
+;;; Copyright (c) 2016-2021 SIFT LLC. All Rights Reserved.
 ;;;
 ;;;      File: "scripts"
 ;;;    Module: "init;loaders;"
-;;;   Version: September 2020
+;;;   Version: February 2021
 
 (in-package :sparser)
 
@@ -120,7 +120,7 @@ in conjunction with an early version of Hark. Notable for using the
    (*index-bindings-to-variables* nil)
    (*filter-vocabulary* :score))
   (:grammar-configuration "score-grammar")
-  (:switches bio-setting))
+  (:switches score-setting))
 
 (defscript fire ()
   "FIRE stands for 'Free-text Information and Relation Extraction'.
