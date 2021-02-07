@@ -26,7 +26,6 @@
   (def-synonym background (:noun "background"))
   (def-synonym beagle (:noun "beagle"))
   (def-synonym candidate (:noun "candidate" :adj "candidate")))
-(def-synonym category (:noun ("category" :plural "categories"))) 
 (def-synonym company (:noun ("company" :plural "companies"))) 
 (def-synonym comparative (:noun "comparative")) 
 (def-synonym conjunction (:noun "conjunction")) 

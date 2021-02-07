@@ -22,10 +22,60 @@
                 :of group-members))
 
 (define-category set :specializes group :realization (:noun "set"))
-
 (define-category family :specializes group :realization (:noun "family"))
+(define-category pool :specializes group :realization (:noun "pool"))
+(define-category portion :specializes group
+     :realization (:noun  "portion"))
 (define-category superfamily :specializes group :realization (:noun "superfamily"))
 (define-category cluster :specializes group :realization (:noun "cluster"))
+(define-category share-part :specializes group :realization (:noun  "share"))
+
+(define-category total :specializes group
+     :realization (:noun  "total"))
+
+;; Related to set and group, but not quite the same
+;;  these are properties of the specified prototype
+(define-category category-of :specializes takes-of-prototype-description
+  :realization (:noun ("category" :plural "categories")))
+
+(define-category nature :specializes takes-of-prototype-description
+  :realization
+    (:noun "nature")
+  )
+
+;;  these will create edges whose edge-category is the same as the itype-of the prototype
+
+(define-category type-cl-noun :specializes takes-of-prototype-description
+  :rule-label takes-of-prototype-description
+  :binds
+  ((INTO top)
+   (ONTO top)
+   (ON top))
+  :realization (:noun  "type" :into INTO :onto ONTO :on ON))
+
+(define-category strain :specializes takes-of-prototype-description
+  :rule-label takes-of-prototype-description
+  :realization
+  (:noun "strain")
+  )
+
+(define-category kind :specializes takes-of-prototype-description
+  :rule-label takes-of-prototype-description
+  :realization
+  (:noun "kind")
+  )
+
+(define-category version :specializes takes-of-prototype-description
+  :rule-label takes-of-prototype-description
+  :realization
+  (:noun "version")
+  )
+
+
+
+
+
+;;;;;;;;
 
 
 (define-category member
@@ -46,4 +96,6 @@
 (define-category  part :specializes component :realization (:noun "part"))
 (define-category fraction :specializes component :realization (:noun "fraction"))
 (define-category subset :specializes component :realization (:noun "subset"))
+
+
 
