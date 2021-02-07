@@ -75,6 +75,7 @@ was exceptional or ordinary.")
     
 
 
+#+ignore ;; now moved to model/core/mid-level/things.lisp
 (define-category evidence
   :specializes information
   :binds ((fact #|biological|#))
@@ -88,8 +89,7 @@ was exceptional or ordinary.")
            :for fact
            :of fact))
 
-(define-category observation :specializes evidence
-  :realization (:noun "observation"))
+
 
 
 

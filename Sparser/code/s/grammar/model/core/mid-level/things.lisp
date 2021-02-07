@@ -24,6 +24,7 @@
   :realization
   (:about concerning
    :regarding concerning
+   :of concerning
    :from source
    :with-regard-to concerning)
   :documentation "A mental-construction which is focused on some set of objects
@@ -51,7 +52,13 @@
 
 
 (define-category emotion :specializes mental-construction)
-
+(define-category appeal :specializes create-mental-construction-concerning :mixins (emotion)
+  :binds
+  ((ON top)
+   (FOR top)
+   (TO top))
+  :realization (:noun "appeal" :adj "appealing" :verb "appeal"
+                :on ON :for FOR :to TO))
 (define-category anxiety :specializes emotion :mixins (mental-construction-concerning)
   :realization (:noun "anxiety" :adj "anxious"))
 (define-category concern :specializes emotion :mixins (mental-construction-concerning)
@@ -61,9 +68,16 @@
 (define-category confusion :specializes create-mental-construction-concerning :mixins (emotion)
  :realization (:noun "confusion" :adj "confused" :verb "confuse" )) ;;:etf (svo-passive)
 (define-category distress :specializes emotion :mixins (mental-construction-concerning)
- :realization (:noun "distress"))
+  :realization (:noun "distress"))
+(define-category fear :specializes emotion
+     :binds
+      ((FOR top))
+     :realization (:verb  "fear" :s SUBJECT :o OBJECT :for FOR))
 (define-category fear :specializes emotion :mixins (mental-construction-concerning)
- :realization (:noun "fear" :adj "afraid"))
+ :binds ((fear-for top))
+  :realization (:noun "fear" :adj "afraid" :for fear-for)) ;; :for comes from COMLEX
+(define-category frustrate :specializes create-mental-construction-concerning
+     :realization (:verb  "frustrate" :noun "frustration" :s SUBJECT :o OBJECT))
 (define-category pessimism :specializes emotion :mixins (mental-construction-concerning)
  :realization (:noun "pessimism" :adj "pessimistic"))
 (define-category preoccupation :specializes emotion :mixins (mental-construction-concerning)
@@ -77,16 +91,17 @@
 (define-category loneliness :specializes emotion                 
  :realization (:noun "loneliness"))
 
-
+(define-category abuse :specializes create-mental-construction-concerning
+ :realization (:noun "abuse" :verb "abuse"))
 (define-category attention :specializes mental-construction-concerning
  :realization (:noun "attention" :to concerning))
-(define-category attitude :binds ((theme top)) :specializes mental-construction-concerning
- :realization (:noun "attitude" :toward theme :towards theme :to theme))
+(define-category attitude :specializes mental-construction-concerning
+ :realization (:noun "attitude" :toward concerning :towards concerning :to concerning))
 (define-category awareness :specializes mental-construction-concerning
  ;;/// second reading of "anxious" !
  :realization (:noun "awareness" :adj "anxious" :of concerning))
 (define-category belief :specializes create-mental-construction-concerning
- :realization (:noun "belief" :verb "believe" :in concerning))
+  :realization (:noun "belief" :verb "believe" :in concerning))
 (define-category coverage :specializes mental-construction-concerning ;;???? citation?
  :realization (:noun "coverage"))
 (define-category decision :specializes create-mental-construction-concerning
@@ -94,23 +109,31 @@
 (define-category disagree :specializes create-mental-construction-concerning
  :realization (:noun "disagreement" :verb "disagree"))
 (define-category disinformation :specializes mental-construction-concerning
- :realization (:noun "disinformation"))
+  :realization (:noun "disinformation"))
 (define-category fact :specializes mental-construction-concerning
  :realization (:noun "fact"))
 (define-category feeling :specializes mental-construction-concerning
   ;; :of is not quite 'concerning' but for the moment? DAVID
- :realization (:noun "feeling" :of concerning))
+  :realization (:noun "feeling" :of concerning))
+(define-category forecast :specializes  create-mental-construction-concerning
+  :binds
+  ((AT top)
+   (TO top))
+  :realization (:verb  "forecast" :s SUBJECT :o OBJECT :at AT :to TO :to-comp concerning))
 (define-category headline :specializes mental-construction-concerning
   :realization (:noun "headline"))
 (define-category implication :specializes mental-construction-concerning
  :realization (:noun "implication" :of concerning))
 
 (define-category insight :specializes mental-construction-concerning
- :realization (:noun "insight"))
+  :realization (:noun "insight"))
+(define-category interpretation :specializes create-mental-construction-concerning
+  :realization (:noun "interpretation" :verb "interpret"))
+
 (define-category intuition :specializes mental-construction-concerning
  :realization (:noun "intuition"))
 (define-category item :specializes mental-construction-concerning
- :realization (:noun "item"))
+                      :realization (:noun "item"))
 (define-category judgement :specializes mental-construction-concerning
  :realization (:noun ("judgement" "judgment")))
 (define-category learn :specializes  mental-construction-concerning
@@ -120,7 +143,7 @@
 (define-category opinion :specializes mental-construction-concerning
  :realization (:noun "opinion"))
 (define-category perception :specializes mental-construction-concerning
- :realization (:noun "perception" :of concerning))
+  :realization (:noun "perception" :of concerning))
 (define-category misperception :specializes mental-construction-concerning
  :realization (:noun "misperception"))
 (define-category misinformation :specializes mental-construction-concerning
@@ -132,13 +155,38 @@
   :binds ((WITH top))
   :realization (:verb "reason" :noun  "reason" :with WITH))
 
+(define-category publication :specializes create-mental-construction-concerning
+  :realization (:noun "publication" :verb "publish"))
+(define-category book :specializes mental-construction-concerning
+  :mixins (publication)
+  :realization (:noun "book"))
+(define-category book :specializes mental-construction-concerning
+  :mixins (publication)
+  :realization (:noun "handbook"))
+(define-category journal :specializes publication
+  :realization (:noun "journal" :VERB "journal"))
+
+
+(define-category focus-noun :specializes mental-construction-concerning
+     :binds
+      ((|OUT OF| top)
+       (IN top)
+       (INTO top))
+  :realization (:noun  "focus" :|OUT OF| |OUT OF| :in IN :into INTO))
+
+(define-category focus-verb :specializes create-mental-construction-concerning
+     :binds
+      ((AMONG top)
+       (IN top)
+       (UPON top)
+       (ON top))
+     :realization (:verb  ("focus"  :past-tense "focused" :past-participle "focused") :s SUBJECT :o OBJECT :among AMONG :in IN :upon UPON :on ON))
 
 ;; two verbs that are similar to "show" and are used in papers
 (define-category show :specializes create-mental-construction-concerning
   :mixins (thatcomp raising-to-object directed-action
             with-specified-location takes-wh-nominals)           
-  :restrict (;; (theme (:or be biological predication abstract))
-             (beneficiary interlocutor))
+  :restrict ((beneficiary interlocutor))
   :realization
   (:verb ("show" :past-tense "showed" :past-participle "shown")
          :etf (svo-passive)))
@@ -147,18 +195,37 @@
 (define-category demonstrate :specializes create-mental-construction-concerning
   :mixins (thatcomp raising-to-object directed-action
             with-specified-location takes-wh-nominals)           
-  :restrict (;; (theme (:or be biological predication abstract))
-             (beneficiary interlocutor))
+  :restrict ((beneficiary interlocutor))
   :realization
   (:verb "demonstrate"
          :noun "demonstration"
+   :etf (svo-passive)))
+
+(define-category endorsement :specializes create-mental-construction-concerning
+  :mixins (thatcomp)           
+  :realization
+  (:verb "endorse"
+         :noun "endorsement"
+   :etf (svo-passive)))
+
+(define-category estimation :specializes create-mental-construction-concerning
+  :mixins (thatcomp)           
+  :realization
+  (:verb "estimate"
+         :noun "estimation"
          :etf (svo-passive)))
+
+(define-category evaluation :specializes create-mental-construction-concerning
+  :mixins (thatcomp)           
+  :realization
+  (:verb "evaluate"
+         :noun "evaluation"
+   :etf (svo-passive)))
 
 (define-category exhibit :specializes create-mental-construction-concerning
   :mixins (thatcomp raising-to-object directed-action
            with-specified-location takes-wh-nominals)           
-  :restrict ( ;; (theme (:or be biological predication abstract))
-             (beneficiary interlocutor))
+  :restrict ((beneficiary interlocutor))
   ;; it was shown that
   :realization
   (:verb ("exhibit" :past-tense "exhibited" :past-participle "exhibited")
@@ -233,6 +300,11 @@ invites this reply: "What (else) do you need to know?"
   singing the Star Spangled Banner at ball games) but poor copies are
   still copies of the same information.")
 
+(define-category evidence :specializes information ;; moved from 
+  :realization (:noun "evidence":for concerning))
+(define-category observation :specializes evidence
+  :realization (:noun "observation"))
+
 #|
 "intent" is the 'result' of having an intention
    It's an 'intent' to do something
@@ -286,21 +358,24 @@ TRIPS: "enough" qua 'adequate' is a quantity-related-property-val
 ;; "question" (as noun & verb) is in bio;general-verbs
 
 (define-category literature
-    ;; from biocuration questions e.g.,
-    ;; "What factors from the literature regulate IL15 and IL2?"
+  ;; from biocuration questions e.g.,
+  ;; "What factors from the literature regulate IL15 and IL2?"
   :specializes information-container
   :mixins (mental-construction-concerning)
-    :instantiates self
+
+  :instantiates self
   :realization (:noun "literature"))
 
 
 (define-category database
-    ;; from biocuration questions e.g.,
-    ;; "What regulates GLUL from the GEO RNAi database?"
-    :specializes information-container
-    :mixins (has-UID mental-construction-concerning) ;; because of how we're defining the individuals
-    :instantiates self
-    :realization (:noun "database"))
+  ;; from biocuration questions e.g.,
+  ;; "What regulates GLUL from the GEO RNAi database?"
+  :specializes information-container
+  :mixins (mental-construction-concerning has-uid)
+
+  :mixins (has-UID ) ;; because of how we're defining the individuals
+  :instantiates self
+  :realization (:noun "database"))
 
 (define-category list-container :specializes information-container
   :restrict ((contents top))
@@ -466,9 +541,8 @@ Show sents:
   "supporting the model that"
   "in this model P" -- the contents of the model do P
   |#
-(define-category model
-  :specializes information-container
-  :mixins (predication artifact) ;; make "consistent"/bio-relation's theme v/r happy
+(define-category model :specializes information-container
+  :mixins (predication mental-construction-concerning) ;; not really always an 'artifact'
   :binds ((modeled-process perdurant)
           (modeled-object endurant))
   :realization (:noun "model"
@@ -477,7 +551,25 @@ Show sents:
                 :for modeled-process
                 :for modeled-object))
 
+#+ignore ;; COMLEX gives this 
+(define-category model-cl-noun :specializes comlex-noun
+     :binds
+      ((INTO top)
+       (IN top)
+       (FOR top)
+       (ON top))
+     :realization (:noun  "model" :into INTO :in IN :for FOR :on ON))
 
+(define-category model-cl-verb :specializes comlex-verb
+     :binds
+      ((INTO top)
+       (IN top)
+       (FOR top)
+       (ON top))
+     :realization (:verb ( "model"  :TENSED/SINGULAR "models" :PRESENT-PARTICIPLE ("modelling"
+                                                                                   "modeling") :PAST-TENSE ("modelled"
+                                                                                                            "modeled"))
+ :s SUBJECT :o OBJECT :into INTO :in IN :for FOR :on ON))
 
 ;;--- "contain" is also in general-verbs as a bio-relation
 #|
