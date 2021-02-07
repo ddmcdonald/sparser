@@ -221,15 +221,13 @@
  to be grounded.")
 
 
-(define-category of-prototype-description ;; terrible name -- David?
+(define-category with-prototype-description ;; terrible name -- David?
   :specializes requires-context
   :binds ((prototype top))
   :documentation "Intended for things like type (of), variant(of), ...
  whose category is unclear without either an explicit argument (of) or
  a context"
 )
-
-
 
 
 (define-category subcategorization-pattern
