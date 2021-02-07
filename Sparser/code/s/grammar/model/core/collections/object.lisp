@@ -84,7 +84,7 @@
   ;; only want "real" collections (conjunctive ones)
   (and (itypep item category::collection)
        ;; category::group is for things like "the set"
-       (not (itypep item category::group))))
+       (not (itypep item 'group))))
 
 (defun sequence-p (item)
   (itypep item category::sequence))
