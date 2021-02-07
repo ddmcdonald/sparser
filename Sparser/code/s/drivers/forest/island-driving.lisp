@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "island-driving"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  January 2021
+;;;  Version:  February 2021
 
 ;; Initiated 8/30/14. Controls the forest-level parsing under the
 ;; new 'whole sentence at a time, start anywhere' protocol.
@@ -88,13 +88,21 @@
         (repair-bad-composition sentence) ;; lifts-out predicted but smothered complements
         (make-this-a-question-if-appropriate sentence)
         (da-final-cycle sentence) ;; handle post-modifying subordinate conjunctions after questions
-        
-        (when *do-last-ditch-non-semantic-whacks*
-          ;; attach subjects and objects (and all other syntactically licensed items)
-          ;;  without checking semantic compatibility
-          (let ((*subcat-accept-all-semantics* t))
-            (declare (special *subcat-accept-all-semantics*))
-            (let ((triples-run (whack-a-rule-cycle sentence)))
-              ;; analyze this list to see what this pass gets
-              triples-run)))))))
+
+        (setq coverage (coverage-over-region start-pos end-pos))
+        (unless (eq coverage :one-edge-over-entire-segment)
+          (when *do-last-ditch-non-semantic-whacks*
+            (run-last-ditch-whack-cycle sentence)))
+        ))))
+
+
+(defun run-last-ditch-whack-cycle (sentence)
+  "Turn off the semantic compatibility checks and run a cycle of adjacency-
+   driven rules. Tends to attach subjects and objects that haven't been
+   explicitly licensed -- but probably should be"
+  (when *do-last-ditch-non-semantic-whacks*
+    (let ((*subcat-accept-all-semantics* t))
+      (declare (special *subcat-accept-all-semantics*))
+      (let ((triples-executed (whack-a-rule-cycle sentence)))
+        (tally-last-ditch-rules triples-executed)))))
 
