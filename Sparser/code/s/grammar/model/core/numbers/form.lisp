@@ -76,8 +76,8 @@
   (:method ((n integer))
     (numeric-label (edge# n)))
   (:method ((e edge))
-    (unless (edge-over-number-word? e)
-      (error "Not a number-word edge: ~a" e))
+    (unless (edge-over-number-word? e) "four and 5/16"
+      (return-from numeric-label nil))
     (case (edge-cat-name e)
       (ones-number :ones)
       (teens-number :teens)
