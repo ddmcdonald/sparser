@@ -484,9 +484,10 @@
                                                 (string-append stat "-value")
                                                 (string-append stat "- value")))))
     `(define-category ,measure-name
-                  :specializes ,measure-parent
-                  :rule-label ,rule-label
-                  :realization (:noun ,stat-names-expanded))))
+       :specializes ,measure-parent
+       :mixins (scalar-attribute)
+       :rule-label ,rule-label
+       :realization (:noun ,stat-names-expanded))))
 
 
 ;; descriptive stats
