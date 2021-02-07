@@ -171,8 +171,6 @@
          :of basis
          :for basis))
 
-(noun "consequence" :super attribute)
-
 (define-category equivalent :specializes bio-relation
   :realization
   (:adj "equivalent" :noun "equivalence"
