@@ -239,6 +239,7 @@
        (WITH top))
      :realization (:verb  "aid" :s SUBJECT :o OBJECT :in IN :with WITH))
 
+#+ignore
 (define-category aim :specializes comlex-verb
      :mixins (with-p-dir)
      :binds
@@ -338,16 +339,9 @@
 (define-category ape :specializes comlex-verb
      :realization (:verb  "ape" :s SUBJECT :o OBJECT))
 
-(define-category appal :specializes comlex-verb
-     :realization (:verb ( "appal"  :TENSED/SINGULAR "appals" :PRESENT-PARTICIPLE "appalling" :PAST-TENSE "appalled")
+(define-category appall :specializes comlex-verb
+     :realization (:verb ( "appall"  :TENSED/SINGULAR "appalls" :PRESENT-PARTICIPLE "appalling" :PAST-TENSE "appalled")
  :s SUBJECT :o OBJECT))
-
-(define-category appeal :specializes comlex-verb
-     :binds
-      ((ON top)
-       (FOR top)
-       (TO top))
-     :realization (:verb  "appeal" :s SUBJECT :o OBJECT :on ON :for FOR :to TO))
 
 (define-category appraise :specializes comlex-verb
      :realization (:verb  "appraise" :s SUBJECT :o OBJECT))
@@ -1253,7 +1247,10 @@
        (OVER top)
        (WITH top)
        (ON top))
-     :realization (:verb  "close" :s SUBJECT :o OBJECT :by BY :against AGAINST :behind BEHIND :in IN :to TO :at AT :over OVER :with WITH :on ON))
+  :realization (:verb  "close" :s SUBJECT :o OBJECT :by BY :against AGAINST :behind BEHIND :in IN :to TO :at AT :over OVER :with WITH :on ON
+                :noun "closure"
+                :of object)
+  )
 
 (define-category clot :specializes comlex-verb
      :binds
@@ -1791,12 +1788,6 @@
 
 (define-category cultivate :specializes comlex-verb
      :realization (:verb  "cultivate" :s SUBJECT :o OBJECT))
-
-(define-category cure :specializes comlex-verb
-     :binds
-      ((FROM top)
-       (OF top))
-     :realization (:verb  "cure" :s SUBJECT :o OBJECT :from FROM :of OF))
 
 (define-category curtail :specializes comlex-verb
      :realization (:verb  "curtail" :s SUBJECT :o OBJECT))
@@ -2789,9 +2780,6 @@
 
 ;;; found existing category EVIDENCE in #P"SPARSER:SCORE-STATS;EXPERIMENT-LANGUAGE.LISP"
 
-(define-category evidence-cl-verb :specializes comlex-verb
-     :realization (:verb  "evidence" :s SUBJECT :o OBJECT))
-
 (define-category evoke :specializes comlex-verb
      :binds
       ((FROM top)
@@ -3026,11 +3014,6 @@
        (OVER top))
      :realization (:verb  "favor" :s SUBJECT :o OBJECT :against AGAINST :over OVER))
 
-(define-category fear :specializes comlex-verb
-     :binds
-      ((FOR top))
-     :realization (:verb  "fear" :s SUBJECT :o OBJECT :for FOR))
-
 (define-category fee :specializes comlex-verb
      :realization (:verb ( "fee"  :TENSED/SINGULAR "fees" :PRESENT-PARTICIPLE "feeing")
  :s SUBJECT :o OBJECT))
@@ -3230,14 +3213,6 @@
      :realization (:verb ( "fly"  :TENSED/SINGULAR "flies" :PAST-TENSE "flew")
  :s SUBJECT :o OBJECT :behind BEHIND :from FROM :to TO :in IN :|CLOSE TO| |CLOSE TO| :above ABOVE :at AT :under UNDER))
 
-(define-category focus :specializes comlex-verb
-     :binds
-      ((AMONG top)
-       (IN top)
-       (UPON top)
-       (ON top))
-     :realization (:verb  ("focus"  :past-tense "focused" :past-participle "focused") :s SUBJECT :o OBJECT :among AMONG :in IN :upon UPON :on ON))
-
 (define-category fold :specializes comlex-verb
      :binds
       ((IN top)
@@ -3272,12 +3247,6 @@
        (UPON top))
      :realization (:verb  "force" :s SUBJECT :o OBJECT :from FROM :behind BEHIND :beyond BEYOND :in IN :into INTO :through THROUGH :to TO :toward TOWARD :|OUT OF| |OUT OF| :onto ONTO :on ON :upon UPON))
 
-(define-category forecast :specializes comlex-verb
-     :binds
-      ((AT top)
-       (TO top)
-       (ABOUT top))
-     :realization (:verb  "forecast" :s SUBJECT :o OBJECT :at AT :to TO :about ABOUT))
 
 (define-category forego :specializes comlex-verb
      :binds
@@ -3341,8 +3310,6 @@
        (TOWARD top))
      :realization (:verb  "front" :s SUBJECT :o OBJECT :for FOR :on ON :towards TOWARDS :toward TOWARD))
 
-(define-category frustrate :specializes comlex-verb
-     :realization (:verb  "frustrate" :s SUBJECT :o OBJECT))
 
 (define-category fry :specializes comlex-verb
      :binds
@@ -4767,7 +4734,7 @@
        (BY top)
        (WITH top))
      :realization (:verb ( "mean"  :TENSED/SINGULAR "means" :PAST-TENSE "meant")
- :s SUBJECT :o OBJECT :for FOR :to TO :by BY :with WITH))
+                   :s SUBJECT :o OBJECT :for FOR :to TO :by BY :with WITH))
 
 (define-category meet :specializes comlex-verb
      :binds
@@ -4871,17 +4838,6 @@
      :realization (:verb  "mix" :s SUBJECT :o OBJECT :into INTO :with WITH))
 
 ;;; found existing category MODEL in #P"SPARSER:MID-LEVEL;THINGS.LISP"
-
-(define-category model-cl-verb :specializes comlex-verb
-     :binds
-      ((INTO top)
-       (IN top)
-       (FOR top)
-       (ON top))
-     :realization (:verb ( "model"  :TENSED/SINGULAR "models" :PRESENT-PARTICIPLE ("modelling"
-                                                                                   "modeling") :PAST-TENSE ("modelled"
-                                                                                                            "modeled"))
- :s SUBJECT :o OBJECT :into INTO :in IN :for FOR :on ON))
 
 (define-category moderate :specializes comlex-verb
      :binds
@@ -6432,14 +6388,12 @@
        (ON top))
   :realization (:verb  "risk" :s SUBJECT :o OBJECT :for FOR :on ON))
 
-(define-category risk :specializes attribute
+(define-category risk :specializes related-thing
   :binds ((at-risk top)
           (risk-to top))
   :realization (:noun  "risk"
                 :for at-risk
                 :to risk-to))
-
-
 
 (define-category rival :specializes comlex-verb
      :binds
@@ -8039,6 +7993,7 @@
 
 ;;; found existing category TIME in #P"SPARSER:KINDS;PROCESSES.LISP"
 
+#+ignore
 (define-category time-cl-verb :specializes comlex-verb
      :binds
       ((AT top)
@@ -8117,15 +8072,6 @@
        (FOR top)
        (IN top))
      :realization (:verb  "train" :s SUBJECT :o OBJECT :on ON :to TO :for FOR :in IN))
-
-(define-category transmit :specializes comlex-verb
-     :binds
-      ((ACROSS top)
-       (OVER top)
-       (THROUGH top)
-       (TO top))
-     :realization (:verb ( "transmit"  :TENSED/SINGULAR "transmits" :PRESENT-PARTICIPLE "transmitting" :PAST-TENSE "transmitted")
- :s SUBJECT :o OBJECT :across ACROSS :over OVER :through THROUGH :to TO))
 
 (define-category travel :specializes comlex-verb
      :mixins (with-p-dir)
@@ -8217,7 +8163,7 @@
 (define-category twitter :specializes comlex-verb
      :realization (:verb  "twitter" :s SUBJECT :o OBJECT))
 
-(define-category type :specializes comlex-verb
+(define-category type-cl-verb :specializes comlex-verb
      :binds
       ((INTO top)
        (ONTO top)

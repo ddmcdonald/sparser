@@ -35,17 +35,11 @@
 (define-category advocate-cl-noun :specializes comlex-noun
      :realization (:noun  "advocate"))
 
-(define-category age-cl-noun :specializes comlex-noun
-     :realization (:noun  "age"))
-
 (define-category aggregate-cl-noun :specializes comlex-noun
      :realization (:noun  "aggregate"))
 
 (define-category aid-cl-noun :specializes comlex-noun
      :realization (:noun  "aid"))
-
-(define-category aim-cl-noun :specializes comlex-noun
-     :realization (:noun  "aim"))
 
 (define-category alarm-cl-noun :specializes comlex-noun
      :realization (:noun  "alarm"))
@@ -64,9 +58,6 @@
 
 (define-category ape-cl-noun :specializes comlex-noun
      :realization (:noun  "ape"))
-
-(define-category appeal-cl-noun :specializes comlex-noun
-     :realization (:noun  "appeal"))
 
 (define-category approach-cl-noun :specializes comlex-noun
      :realization (:noun  "approach"))
@@ -317,8 +308,7 @@
 (define-category click-cl-noun :specializes comlex-noun
      :realization (:noun  "click"))
 
-(define-category close-cl-noun :specializes comlex-noun
-     :realization (:noun  "close"))
+;; RARE (define-category close-cl-noun :specializes comlex-noun :realization (:noun  "close"))
 
 (define-category cloud-cl-noun :specializes comlex-noun
      :realization (:noun  "cloud"))
@@ -418,21 +408,11 @@
 (define-category cough-cl-noun :specializes comlex-noun
      :realization (:noun  "cough"))
 
-(define-category count-cl-noun :specializes comlex-noun
-     :realization (:noun  "count"))
-
 (define-category counterbalance-cl-noun :specializes comlex-noun
      :realization (:noun  "counterbalance"))
 
 (define-category couple-cl-noun :specializes comlex-noun
      :realization (:noun  "couple"))
-
-(define-category course-cl-noun :specializes comlex-noun
-     :binds
-      ((ON top)
-       (OFF top)
-       (IN top))
-     :realization (:noun  "course" :on ON :off OFF :in IN))
 
 (define-category cox-cl-noun :specializes comlex-noun
      :realization (:noun  "cox"))
@@ -465,9 +445,6 @@
 
 (define-category cue-cl-noun :specializes comlex-noun
      :realization (:noun  "cue"))
-
-(define-category cure-cl-noun :specializes comlex-noun
-     :realization (:noun  "cure"))
 
 (define-category curve-cl-noun :specializes comlex-noun
      :realization (:noun  "curve"))
@@ -511,9 +488,6 @@
 
 (define-category demand-cl-noun :specializes comlex-noun
      :realization (:noun  "demand"))
-
-(define-category design-cl-noun :specializes comlex-noun
-     :realization (:noun  "design"))
 
 (define-category desire-cl-noun :specializes comlex-noun
      :realization (:noun  "desire"))
@@ -634,10 +608,6 @@
      :realization (:noun ( "earth" )
 ))
 
-(define-category ease-cl-noun :specializes comlex-noun
-     :realization (:noun ( "ease" )
-))
-
 (define-category echo-cl-noun :specializes comlex-noun
      :realization (:noun ( "echo"  :PLURAL "echoes")
 ))
@@ -681,12 +651,6 @@
      :realization (:noun ( "esteem" )
 ))
 
-(define-category estimate-cl-noun :specializes comlex-noun
-     :binds
-      ((BY top)
-       (BEYOND top)
-       (|ACCORDING TO| top))
-     :realization (:noun  "estimate" :by BY :beyond BEYOND :|ACCORDING TO| |ACCORDING TO|))
 
 (define-category evidence-cl-noun :specializes comlex-noun
      :realization (:noun ( "evidence" )
@@ -738,9 +702,6 @@
 
 (define-category favor-cl-noun :specializes comlex-noun
      :realization (:noun  "favor"))
-
-(define-category fear-cl-noun :specializes comlex-noun
-     :realization (:noun  "fear"))
 
 (define-category fence-cl-noun :specializes comlex-noun
      :realization (:noun  "fence"))
@@ -1026,10 +987,6 @@
 
 (define-category incline-cl-noun :specializes comlex-noun
      :realization (:noun  "incline"))
-
-(define-category index-cl-noun :specializes comlex-noun
-     :realization (:noun ( "index"  :PLURAL ("indexes" "indices"))
-))
 
 (define-category input-cl-noun :specializes comlex-noun
      :realization (:noun  "input"))
@@ -1350,12 +1307,6 @@
 (define-category people-cl-noun :specializes comlex-noun
      :realization (:noun  "people"))
 
-(define-category phase-cl-noun :specializes comlex-noun
-     :binds
-      ((IN top)
-       (|OUT OF| top))
-     :realization (:noun  "phase" :in IN :|OUT OF| |OUT OF|))
-
 (define-category phone-cl-noun :specializes comlex-noun
      :binds
       ((BY top))
@@ -1405,14 +1356,8 @@
 (define-category poll-cl-noun :specializes comlex-noun
      :realization (:noun  "poll"))
 
-(define-category pool-cl-noun :specializes comlex-noun
-     :realization (:noun  "pool"))
-
 (define-category port-cl-noun :specializes comlex-noun
      :realization (:noun  "port"))
-
-(define-category portion-cl-noun :specializes comlex-noun
-     :realization (:noun  "portion"))
 
 (define-category pose-cl-noun :specializes comlex-noun
      :realization (:noun  "pose"))
@@ -1692,9 +1637,6 @@
 (define-category ripple-cl-noun :specializes comlex-noun
      :realization (:noun  "ripple"))
 
-(define-category risk-cl-noun :specializes comlex-noun
-     :realization (:noun  "risk"))
-
 (define-category rivet-cl-noun :specializes comlex-noun
      :realization (:noun  "rivet"))
 
@@ -1778,9 +1720,6 @@
 (define-category school-cl-noun :specializes comlex-noun
      :realization (:noun  "school"))
 
-(define-category score-cl-noun :specializes comlex-noun
-     :realization (:noun  "score"))
-
 (define-category screech-cl-noun :specializes comlex-noun
      :realization (:noun  "screech"))
 
@@ -1800,17 +1739,11 @@
       ((BY top))
      :realization (:noun  "segment" :by BY))
 
-(define-category sense-cl-noun :specializes comlex-noun
-     :realization (:noun  "sense"))
-
 (define-category service-cl-noun :specializes comlex-noun
      :realization (:noun  "service"))
 
 (define-category settle-cl-noun :specializes comlex-noun
      :realization (:noun  "settle"))
-
-(define-category sex-cl-noun :specializes comlex-noun
-     :realization (:noun  "sex"))
 
 (define-category shade-cl-noun :specializes comlex-noun
      :realization (:noun  "shade"))
@@ -1823,9 +1756,6 @@
 
 (define-category shape-cl-noun :specializes comlex-noun
      :realization (:noun  "shape"))
-
-(define-category share-cl-noun :specializes comlex-noun
-     :realization (:noun  "share"))
 
 (define-category shave-cl-noun :specializes comlex-noun
      :realization (:noun  "shave"))
@@ -1917,9 +1847,6 @@
 (define-category sound-cl-noun :specializes comlex-noun
      :realization (:noun  "sound"))
 
-(define-category source-cl-noun :specializes comlex-noun
-     :realization (:noun  "source"))
-
 (define-category spare-cl-noun :specializes comlex-noun
      :realization (:noun  "spare"))
 
@@ -1980,9 +1907,6 @@
      :binds
       ((IN top))
      :realization (:noun  "store" :in IN))
-
-(define-category strain-cl-noun :specializes comlex-noun
-     :realization (:noun  "strain"))
 
 (define-category strand-cl-noun :specializes comlex-noun
      :realization (:noun  "strand"))
@@ -2058,8 +1982,6 @@
 (define-category thread-cl-noun :specializes comlex-noun
      :realization (:noun  "thread"))
 
-(define-category threat-cl-noun :specializes comlex-noun
-     :realization (:noun  "threat"))
 
 (define-category thrill-cl-noun :specializes comlex-noun
      :realization (:noun  "thrill"))
@@ -2069,9 +1991,6 @@
 
 (define-category tide-cl-noun :specializes comlex-noun
      :realization (:noun  "tide"))
-
-(define-category time-cl-noun :specializes comlex-noun
-     :realization (:noun  "time"))
 
 (define-category tingle-cl-noun :specializes comlex-noun
      :realization (:noun  "tingle"))
@@ -2130,9 +2049,6 @@
 (define-category twitter-cl-noun :specializes comlex-noun
      :realization (:noun  "twitter"))
 
-(define-category type-cl-noun :specializes comlex-noun
-     :realization (:noun  "type"))
-
 (define-category underestimate-cl-noun :specializes comlex-noun
      :realization (:noun  "underestimate"))
 
@@ -2150,9 +2066,6 @@
 
 (define-category vacation-cl-noun :specializes comlex-noun
      :realization (:noun  "vacation"))
-
-(define-category value-cl-noun :specializes comlex-noun
-     :realization (:noun  "value"))
 
 (define-category vest-cl-noun :specializes comlex-noun
      :realization (:noun  "vest"))
@@ -2197,9 +2110,6 @@
 
 (define-category weekend-cl-noun :specializes comlex-noun
      :realization (:noun  "weekend"))
-
-(define-category weight-cl-noun :specializes comlex-noun
-     :realization (:noun  "weight"))
 
 (define-category welcome-cl-noun :specializes comlex-noun
      :realization (:noun  "welcome"))
@@ -2446,9 +2356,6 @@
 (define-category mistake-cl-noun :specializes comlex-noun
      :realization (:noun  "mistake"))
 
-(define-category model-cl-noun :specializes comlex-noun
-     :realization (:noun  "model"))
-
 (define-category net-cl-noun :specializes comlex-noun
      :realization (:noun  "net"))
 
@@ -2521,11 +2428,6 @@
 
 (define-category rim-cl-noun :specializes comlex-noun
      :realization (:noun  "rim"))
-
-(define-category rise-cl-noun :specializes comlex-noun
-     :binds
-      ((AT top))
-     :realization (:noun  "rise" :at AT))
 
 (define-category rival-cl-noun :specializes comlex-noun
      :realization (:noun  "rival"))
@@ -2612,9 +2514,6 @@
 (define-category spot-cl-noun :specializes comlex-noun
      :realization (:noun  "spot"))
 
-(define-category spread-cl-noun :specializes comlex-noun
-     :realization (:noun  "spread"))
-
 (define-category stand-cl-noun :specializes comlex-noun
      :realization (:noun  "stand"))
 
@@ -2689,8 +2588,7 @@
 (define-category tie-cl-noun :specializes comlex-noun
      :realization (:noun  "tie"))
 
-(define-category total-cl-noun :specializes comlex-noun
-     :realization (:noun  "total"))
+
 
 (define-category towel-cl-noun :specializes comlex-noun
      :realization (:noun  "towel"))
@@ -2737,16 +2635,6 @@
 
 (define-category counter-cl-noun :specializes comlex-noun
      :realization (:noun  "counter"))
-
-(define-category factor-cl-noun :specializes comlex-noun
-     :realization (:noun  "factor"))
-
-(define-category focus-cl-noun :specializes comlex-noun
-     :binds
-      ((|OUT OF| top)
-       (IN top)
-       (INTO top))
-     :realization (:noun  "focus" :|OUT OF| |OUT OF| :in IN :into INTO))
 
 (define-category marker-cl-noun :specializes comlex-noun
      :realization (:noun  "marker"))
@@ -3876,13 +3764,6 @@
 
 (define-category esteem-cl-noun :specializes comlex-noun
      :realization (:noun ( "esteem" )))
-
-(define-category estimate-cl-noun :specializes comlex-noun
-    :mixins (attribute)
-     :binds
-      ((FROM top)
-       (AT top))
-     :realization (:noun  "estimate" :from FROM :at AT))
 
 (define-category evidence-cl-noun :specializes comlex-noun
      :realization (:noun ( "evidence" )))
@@ -5609,13 +5490,6 @@
        (THROUGH top))
      :realization (:noun  "ripple" :with WITH :across ACROSS :through THROUGH))
 
-(define-category risk-cl-noun :specializes comlex-noun
-  :mixins (attribute)
-  :binds
-  ((FOR top)
-   (ON top))
-  :realization (:noun  "risk" :for FOR :on ON))
-
 (define-category rivet-cl-noun :specializes comlex-noun
      :binds
       ((WITH top))
@@ -5986,10 +5860,6 @@
        (THROUGH top))
      :realization (:noun  "sound" :against AGAINST :behind BEHIND :like LIKE :through THROUGH))
 
-(define-category source-cl-noun :specializes comlex-noun
-  :mixins (attribute)
-  :realization (:noun  "source"))
-
 (define-category spare-cl-noun :specializes comlex-noun
      :binds
       ((FOR top)
@@ -6279,10 +6149,6 @@
        (WITH top))
      :realization (:noun  "thread" :through THROUGH :with WITH))
 
-(define-category threat-cl-noun :specializes comlex-noun
-  :binds ((cause top))
-  :realization (:noun  "threat" :of cause))
-
 (define-category thrill-cl-noun :specializes comlex-noun
      :realization (:noun  "thrill"))
 
@@ -6409,14 +6275,6 @@
 
 (define-category twitter-cl-noun :specializes comlex-noun
      :realization (:noun  "twitter"))
-
-(define-category type-cl-noun :specializes comlex-noun
-  :mixins (attribute)
-  :binds
-  ((INTO top)
-   (ONTO top)
-   (ON top))
-  :realization (:noun  "type" :into INTO :onto ONTO :on ON))
 
 (define-category underestimate-cl-noun :specializes comlex-noun
   :realization (:noun  "underestimate"))
@@ -7175,14 +7033,6 @@
       ((FOR top))
      :realization (:noun  "mistake" :for FOR))
 
-(define-category model-cl-noun :specializes comlex-noun
-     :binds
-      ((INTO top)
-       (IN top)
-       (FOR top)
-       (ON top))
-     :realization (:noun  "model" :into INTO :in IN :for FOR :on ON))
-
 (define-category net-cl-noun :specializes comlex-noun
      :realization (:noun  "net"))
 
@@ -7781,11 +7631,6 @@
        (BETWEEN top))
   :realization (:noun  "tie" :about ABOUT :around AROUND :behind BEHIND :on ON :over OVER :with WITH :into INTO :in IN :to TO
                        :between between))
-
-(define-category total-cl-noun :specializes comlex-noun
-     :binds
-      ((TO top))
-     :realization (:noun  "total" :to TO))
 
 (define-category towel-cl-noun :specializes comlex-noun
      :realization (:noun  "towel"))
