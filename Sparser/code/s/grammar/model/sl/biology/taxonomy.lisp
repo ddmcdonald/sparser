@@ -967,8 +967,9 @@
          (site
           (:or protein-domain region-of-molecule))))
 
-(define-category molecule-load :specializes caused-bio-process
+(define-category load :specializes caused-bio-process
   :mixins (on-substrate)
+  :restrict ((object top))
   :realization
     (:verb "load"
      :etf (svo-passive)
