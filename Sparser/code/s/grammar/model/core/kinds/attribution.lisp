@@ -55,19 +55,24 @@ a 'subject', e.g. "southern Chinese girls are never tall"
 
 ;;--- "size", "color"
 ;;
-(define-category attribute
+(define-category related-thing :specializes quality ;; better name?
+  :documentation  "A relation between the 'owner' and some other entity or event (perdurant). 
+    The relation is typically specified with context, but can be temporally localized, or perhaps
+    spatially localized -- e.g. 'the risk of COVID-19 in Massachusetts in January 2021'"
+  :mixins (temporally-localized)
+  :binds ((owner))
+  :realization (:of owner)
+  )
+
+(define-category attribute :specializes related-thing
   :documentation "Represents the identity of the attribute
  as such. Corresponds to Dolce's 'quality type'. Refering to
  an attribute by name ('(its) size') will take us to a
  instance of this category. Provides a 'coat-hook'
  for recording ancilary information that helps in parsing,
- notably the variable.
- The 'owner' is the thing that has the attribute"
-  :specializes quality
-  :mixins (temporally-localized)
+ notably the variable."
   :binds ((var :primitive lambda-variable)
-          (owner))
-  :realization (:of owner))
+          ))
 
 (define-category scalar-attribute
   :specializes attribute
