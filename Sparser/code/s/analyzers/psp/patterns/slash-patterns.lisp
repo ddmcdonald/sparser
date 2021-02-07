@@ -38,6 +38,9 @@
     (or (reify-amino-acid-pair pos-before pos-after)
         (reify-ns-name-and-make-edge pos-before pos-after)))
 
+   ((equal pattern '(:single-digit :forward-slash :digits)) ; "5/16"
+    (make-edge-over-fraction (first edges) (third edges) pos-before pos-after))
+
    ((equal pattern '(:mixed :digits :forward-slash :capitalized :digits))
     ;; recombinant COT induced pThr202/Tyr204 phosphorylation of ERK1 
     ;; in December #46

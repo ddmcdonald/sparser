@@ -490,6 +490,20 @@
      :rule 'make-edge-over-rate
      :constituents (treetops-between start-pos end-pos))))
 
+(defun make-edge-over-fraction (over under  start-pos end-pos)
+  (let* ((upper-value (edge-referent over))
+         (lower-value (edge-referent under))
+         (i (define-or-find-individual 'fraction
+                :numerator upper-value
+                :denominator lower-value)))
+    (make-edge-over-long-span
+     start-pos end-pos
+     (category-named 'fraction)
+     :form (category-named 'np)
+     :referent i
+     :rule 'make-edge-over-fraction
+     :constituents (treetops-between start-pos end-pos))))
+
 
 ;;;------------------------------------
 ;;; saving examples to look at offline

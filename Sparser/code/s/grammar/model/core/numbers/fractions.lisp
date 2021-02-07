@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2021 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "fractions"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  December 1995
+;;;  Version:  February 2021
 
 ;; initiated 12/20/95
 
@@ -53,9 +53,6 @@ as the default since the generic case will presumably be marked.
           (denominator . number))
   :index (:sequential-keys denominator numerator))
 
-
-
-
 ;; This is for the fractional-portions. It is just the supercategory, 
 ;; "quarter" and "half" are specializations of it.  The analogy is
 ;; to 'measurements', which consist of a unit and a quantity.  Here the
@@ -68,7 +65,7 @@ as the default since the generic case will presumably be marked.
 ;; which is a dual notion similar to a collection in that it is primarily
 ;; a refence to a particular kind of stuff, but the individual is quantified
 ;; in a particular way that reflects that we are dealing with some amount
-;; of it.   The analogy doesn't really go through since here we have
+;; of it.  The analogy doesn't really go through since here we have
 ;; what's effectively a selector quantifier that is picking out a member
 ;; of an implicit set, but it is close enough to be a useful guide to
 ;; what sorts of objects we should have and how they should combine.
@@ -76,24 +73,62 @@ as the default since the generic case will presumably be marked.
 
 (define-category  fractional-term
   :specializes unit-of-measure
+  :binds ((multiplier :primitive number))
   :instantiates self )
 
+;; The word "quarter" also generates an edge as 'fiscal-quarter'
+;; from the rules in core/time/fiscal.lisp
 (define-category  quarter
   :specializes fractional-term
   :instantiates fractional-term
-  :binds ((name  :primitive word))
+  :bindings (multiplier .25)
   :index (:permanent :key name)
   :realization (:common-noun "quarter"))
 
 (define-category  half
   :specializes fractional-term
   :instantiates fractional-term
-  :binds ((name  :primitive word))
+  :bindings (multiplier .5)
   :index (:permanent :key name)
-  :realization (:common-noun "half"))  ;;/// !! needs specialization option for plural
+  :realization (:common-noun ("half" :plural "halves")))
 
 
+;;--- 'half a million'
 
+(define-early-pattern-rule half-an-illion
+  :pattern (half a number)
+  :action (:function make-fractional-of-illion first third))
+
+(defun make-fractional-of-illion (fraction illion)
+  "Should we return an expression, say an instance of a fraction
+   where the illion is the numerator divided by the fraction?
+   Or should we do the calculation here?"
+  (let ((number (edge-referent illion)))
+    ;;/// try the da/look-under-edge option in test-arc-against-tt
+    ;; to match on the 'multiplier' category of the left daughter
+    ;; of the number
+    (when (itypep number 'multiplier)
+      (let* ((base-number (value-of 'value number))
+             (type-of-fraction (itype-of (edge-referent fraction)))
+             (factor (value-of 'multiplier type-of-fraction)))
+        (let* ((net-value (* factor (integer-for-number base-number)))
+               (n (find-or-make-number net-value)))
+          (let ((edge-spec (make-edge-spec
+                            :category (category-named number)
+                            :form (category-named number)
+                            :referent n)))
+            edge-spec))))))
+             
+      
+
+
+;;---- 'second half' 'third quarter'
+
+;; Composition with "quarter" is presently subsumed by rules in
+;; time/fiscal.lisp where "second quarter" uses 'fiscal-quarter'
+;; rather than the factional term.  See note there about other
+;; portions of a year "second half", however, uses this category.
+;;
 (define-category  ordinal-fraction
   :specializes  measurement
   :instantiates self
@@ -127,3 +162,34 @@ as the default since the generic case will presumably be marked.
   :form np
   :referent (:daughter right-edge))
 
+#| grep on 2/5/21
+MacBook-Pro:s ddm$ grep ordinal-fraction  **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**/*.lisp
+grammar/model/core/finance/financial-data.lisp:(defun convert-ordinal-fraction-to-part-of-a-fiscal-year (left right)
+grammar/model/core/finance/financial-data.lisp:(def-csr ordinal-fraction  part-of-a-fiscal-year
+grammar/model/core/finance/financial-data.lisp:  :referent (:function convert-ordinal-fraction-to-part-of-a-fiscal-year
+grammar/model/core/numbers/fractions.lisp:(define-category  ordinal-fraction
+grammar/model/core/numbers/fractions.lisp:(def-cfr ordinal-fraction ("the" ordinal-fraction)
+grammar/model/core/time/amounts.lisp:  ;; by analogy to ordinal-fraction
+grammar/model/sl/ern/citations.lisp: is labeled as an 'ordinal-fraction' ("first quarter") so that is neutral
+grammar/model/sl/ern/citations.lisp:I constuct ordinal-fraction phrases as a 'ordinal' (e.g.,  ordinal -> "first")
+grammar/model/sl/ern/citations.lisp:  #<PSR340  ordinal-fraction -> part-of-a-fiscal-year / "in" ___>
+grammar/model/sl/ern/citations.lisp:  #<PSR339  ordinal-fraction -> part-of-a-fiscal-year / "for" ___>
+grammar/model/sl/ern/citations.lisp:  #<PSR338  ordinal-fraction -> part-of-a-fiscal-year / ___ financial-data>
+grammar/model/sl/ern/citations.lisp:  #<PSR337  ordinal-fraction -> part-of-a-fiscal-year / ___ of-fiscal-year>
+grammar/model/sl/ern/citations.lisp:  #<PSR336  ordinal-fraction -> part-of-a-fiscal-year / ___ ending-date>
+grammar/model/sl/ern/cs-rules.lisp:(def-csr ordinal-fraction  part-of-a-fiscal-year
+grammar/model/sl/ern/cs-rules.lisp:(def-csr ordinal-fraction  part-of-a-fiscal-year
+grammar/model/sl/ern/cs-rules.lisp:(def-csr  ordinal-fraction  part-of-a-fiscal-year
+grammar/model/sl/ern/cs-rules.lisp:(def-csr ordinal-fraction  part-of-a-fiscal-year
+grammar/model/sl/ern/cs-rules.lisp:(def-csr ordinal-fraction  part-of-a-fiscal-year
+grammar/model/sl/ern/cs-rules.lisp:(when-binding  ordinal-fraction selector part-of-a-fiscal-year
+grammar/model/sl/ern/financial-data.lisp:(defun convert-ordinal-fraction-to-part-of-a-fiscal-year (left right)
+grammar/model/sl/ern/financial-data.lisp:(def-csr ordinal-fraction  part-of-a-fiscal-year
+grammar/model/sl/ern/financial-data.lisp:  :referent (:function convert-ordinal-fraction-to-part-of-a-fiscal-year
+grammar/model/sl/ern/printers.lisp:(defun string/ordinal-fraction (of)
+grammar/model/sl/ern/stream-through-driver.lisp:    ,(category-named 'ordinal-fraction)
+grammar/model/sl/ern/stream-through-driver.lisp:          (so/pop-embedded-ordinal-fraction edge))
+grammar/model/sl/ern/stream-through-driver.lisp:(defun so/Pop-embedded-ordinal-fraction (part-of-fiscal-year-edge)
+grammar/model/sl/ern/stream-through-driver.lisp:  ;; ordinal-fractions are contextually reinterpreted as parts of 
+grammar/model/sl/ern/stream-through-driver.lisp:                  (category-named 'ordinal-fraction))
+|#
