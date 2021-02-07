@@ -20,10 +20,14 @@
     and what we record about their instances"))
 ;;// Move slots up when we see what generalizes
 
-(defclass prep-pattern (pattern-instance)
+(defclass binary-edge-strings (pattern-instance)
+  ((left-string :initarg :left-str :accessor left-string)
+   (right-string :initarg :right-str :accessor right-string))
+  (:documentation "Records the actual text strings from a specific
+    instance of some binary composition"))
+
+(defclass prep-pattern (binary-edge-strings)
   ((prep :initarg :p :accessor triggered-prep)
-   (left-string :initarg :left-str :accessor left-string)
-   (right-string :initarg :right-str :accessor right-string)
    (left-type :initarg :head-type :accessor head-type)
    (right-type :initarg :pobj-type :accessor pobj-type)
    ))
