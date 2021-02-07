@@ -113,14 +113,14 @@
 (include-grammar-module  *proper-names*)
 (include-grammar-module  *people*)
 
-#|(include-grammar-module  *companies*)
+(include-grammar-module  *companies*)
   (include-grammar-module  *company-core*)
   (include-grammar-module  *kinds-of-companies*)
   (include-grammar-module  *company-generalization-words*)
   (include-grammar-module  *company-activity-words*)
   (include-grammar-module  *generic-company-words*)
   (include-grammar-module  *company-activity-nominals*)
-  (include-grammar-module  *subsidiaries*) |#
+  (include-grammar-module  *subsidiaries*)
 
 (include-grammar-module  *numbers*)
 (include-grammar-module  *digits-fsa*)
