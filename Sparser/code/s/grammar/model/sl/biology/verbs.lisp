@@ -228,10 +228,9 @@
 
 
           
-(define-category feature :specializes  bio-rhetorical ;; not really -- but WHAT??
+(define-category feature-rhetorical :specializes  bio-rhetorical ;; not really -- but WHAT??
   :realization
-  (:verb "feature" :etf (svo-passive)
-         :noun "feature"))
+  (:verb "feature" :etf (svo-passive)))
 
 (define-category augment
   :specializes positive-bio-control
@@ -239,19 +238,6 @@
   (:verb "augment" :noun "augmentation"
    :etf (svo-passive)
    :with agent))    ;; by <entity>
-
-
-;; HOW TO DEAL WITH AMBIGUITY WITH PHYSICAL SUPPORT 
-;;  "a 3-fold alpha-helical bundle supporting a triple-stranded anti-parallel beta-sheet"
-(define-category argument-support :specializes bio-rhetorical
-  :binds ((argument (:or model statement)))
-  :realization
-  (:verb "support"
-         :etf (svo-passive)
-         :for argument))
-
-(def-synonym argument-support
-             (:noun "support"))
 
 
 (define-category bio-range :specializes bio-relation ;; REVIEW!!
@@ -355,16 +341,19 @@
 
 
 (define-category serve :specializes bio-act
+  :mixins (takes-as)
   :realization
   (:verb "serve"
          :etf sv))
 
 (define-category bio-function :specializes bio-act
+  :mixins (takes-as)
   :realization
   (:verb "function"
          :etf sv))
 
 (define-category bio-functionality :specializes bio-process
+  :mixins (takes-as)
   ;; bio-functionality takes none of the modifiers of bio-process except participant
   :restrict ((by-means-of blocked-category)
              (using blocked-category)
