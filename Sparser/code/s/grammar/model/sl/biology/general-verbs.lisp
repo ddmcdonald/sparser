@@ -156,6 +156,7 @@
 
 (define-category cause
   :specializes positive-bio-control
+  :mixins (related-thing)
   ;; 'cause <disease>' from caused-bio-process
   :realization
     (:verb "cause"
@@ -221,7 +222,7 @@
 	   :etf (svo-passive)))
 
 (define-category consider :specializes directed-activity-with-a-purpose
-    :mixins (bio-rhetorical raising-to-object)
+    :mixins (bio-rhetorical raising-to-object takes-as)
     :restrict ((theme (:or be biological))) ;; could be "the effects..."
     :realization
     (:verb ("consider" :present-participle "considering"
@@ -388,7 +389,7 @@
 |#
 
 (define-category describe :specializes bio-rhetorical
-    :mixins (attribute) ;; "description of ...
+    :mixins (related-thing) ;; "description of ...
     :realization
     (:verb "describe"
 	   :noun "description"
@@ -410,18 +411,19 @@
          :etf (svo-passive)))
 
 (define-category development
-    :specializes caused-bio-process
-    :bindings (uid "NCIT:C17770")
-    :binds ((treatment therapeutic-strategy)
-            (disease disease))
-    :realization
-    (:verb ("develop" :present-participle "developing" :past-tense "developed")
-           :etf (svo-passive)
-           :noun "development"
-           :adj "developmental"
-           :object treatment
-           :object disease
-           :of :object)) ;; note the colon on 'object' Tricky on NLG side
+  :specializes caused-bio-process
+  :mixins (related-thing)
+  :bindings (uid "NCIT:C17770")
+  :binds ((treatment therapeutic-strategy)
+          (disease disease))
+  :realization
+  (:verb ("develop" :present-participle "developing" :past-tense "developed")
+   :etf (svo-passive)
+   :noun "development"
+   :adj "developmental"
+   :object treatment
+   :object disease
+   :of :object)) ;; note the colon on 'object' Tricky on NLG side
 ;; DTDA: "What proteins might lead to the development of lung cancer?"
 
 (define-category diminish :specializes negative-bio-control
@@ -442,6 +444,7 @@
          :noun "display"))
 
 (define-category disrupt :specializes negative-bio-control
+  :mixins (related-thing)
   :realization
   (:verb "disrupt" :noun "disruption" 
          :etf (svo-passive)))
@@ -554,7 +557,8 @@
 
 
 (define-category establish :specializes bio-rhetorical 
-  :mixins (bio-whethercomp bio-thatcomp)
+                           :mixins (bio-whethercomp bio-thatcomp
+                                                    related-thing) ;; "establishment of"
   :binds ((to-be biological))
   :realization 
   (:verb "establish" 
@@ -801,6 +805,7 @@
 
 
 (define-category involve :specializes bio-relation
+  :mixins (related-thing)
   :binds ((object (:or bio-chemical-entity bio-organ bio-process bio-mechanism)))
   :restrict ((theme (:or bio-process bio-mechanism))
              (context (:or bio-context experiment-data)))
@@ -845,7 +850,7 @@
   :restrict ((agent (:or bio-process activity-with-a-purpose
                          bio-mechanism bio-relation
                          bio-entity ;; "KRAS leads to cancer"
-                         attribute)) ;; "these results led ..."
+                         related-thing)) ;; "these results led ..."
              (theme (:or biological bio-rhetorical)))
   :realization
     (:verb ("lead" :past-tense "led")
@@ -1170,7 +1175,8 @@
    :realization
           (:verb "question" ;; keyword: ENDS-IN-ED
            :noun "question"
-	   :etf (svo-passive)))
+	   :etf (svo-passive)
+           :of concerning))
 
 
 
@@ -1250,10 +1256,6 @@
 	   :etf (sv)
            :from participant 
 	   :in results-in))
-
-(define-category results :specializes attribute
-  :realization (:noun "result"))
-
 
 (define-category return :specializes caused-bio-process
  :binds ((state bio-state)
@@ -1394,6 +1396,20 @@
    :etf (sv)
    :in theme))
 
+;; have to generalize this
+
+;; HOW TO DEAL WITH AMBIGUITY WITH PHYSICAL SUPPORT 
+;;  "a 3-fold alpha-helical bundle supporting a triple-stranded anti-parallel beta-sheet"
+(define-category argument-support :specializes bio-rhetorical
+  :binds ((argument (:or model statement)))
+  :realization
+  (:verb "support"
+         :etf (svo-passive)
+         :for argument))
+
+(def-synonym argument-support
+             (:noun "support"))
+
 (define-category suggest :specializes bio-rhetorical
   :mixins (raising-to-object bio-thatcomp create-mental-construction-concerning)
   :restrict ((theme top)) ;; could be "the effects..."
@@ -1421,11 +1437,12 @@
 |#
 
 (define-category tend :specializes action-on-eventuality
-   ;; :mixins (bio-tocomp) working on this.. other comps not working.
-    :realization
-    (:verb "tend" ;; keyword: ENDS-IN-ED 
-	   :noun "tendency"
-     :etf (sv)))
+  ;; :mixins (bio-tocomp) working on this.. other comps not working.
+  :mixins (related-thing)
+  :realization
+  (:verb "tend" ;; keyword: ENDS-IN-ED 
+   :noun "tendency"
+   :etf (sv)))
 
 (define-category test :specializes bio-method
   :mixins (bio-whethercomp)
@@ -1448,6 +1465,7 @@
   (:verb ("think" :past-tense "thought") :etf (svo-passive)))
 
 (define-category treatment :specializes bio-method
+  :mixins (related-thing)
   :restrict ((object (:or organism cell-entity))) ;; the variable "disease" specializes "object" and has special prepositions
   :binds ((treatment biological)
 	  (disease disease)
@@ -1461,6 +1479,9 @@
    :for disease
    :of :object
    :with treatment))
+
+(define-category cure :specializes treatment
+  :realization (:noun "cure" :verb "cure"))
 
 
 (define-category underline :specializes bio-rhetorical
@@ -1497,6 +1518,7 @@
          :etf (svo-passive)
          :to used-to
          :for purpose ;; (p/s "what drug should I use for pancreatic cancer?")
+         :as purpose
          ))
 
 (define-category bio-utilize :specializes bio-method
