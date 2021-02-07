@@ -146,12 +146,3 @@ like any other rule.
             finally (return item))))
       ((or word polyword) ; (not strictly true as far as DA is concerned)
        nil))))
-
-
-(defun start-da-pattern (tt)
-  "Test function modeled on look-for-da-pattern in island-driving.
-   Assumes you've parsed a text and identified the edge (tt)
-   that should trigger a DA pattern"
-  (let ((da-node (trie-for-1st-item tt)))
-    (when da-node
-      (standalone-da-execution da-node tt))))
