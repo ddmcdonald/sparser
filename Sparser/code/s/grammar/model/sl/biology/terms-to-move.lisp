@@ -32,8 +32,8 @@ be biology specific, since they aren't. |#
 (noun "route" :super bio-mechanism)
 
 
-(noun "surface" :super bio-entity
-      :mixins (attribute))
+(noun "surface" :super bio-entity ;; should be more general
+      :mixins (related-thing))
 
 
 ;;/// move to quantifiers -- lesser/least
@@ -228,7 +228,7 @@ be biology specific, since they aren't. |#
 (noun "hint" :super bio-rhetorical)
 
 
-(define-category importance :specializes attribute
+(define-category importance :specializes related-thing
   ;; how should this be related to "important"
   :mixins (bio-rhetorical)
   :realization
@@ -238,14 +238,14 @@ be biology specific, since they aren't. |#
 (define-category of-interest :specializes bio-rhetorical
   :realization  (:adj "of interest"))
 
-(define-category significance :specializes attribute
+(define-category significance :specializes related-thing
   :mixins (bio-rhetorical)
   :realization
-    (:noun "significance"
-           :adj "significant"
-           :of agent))
+  (:noun "significance"
+   :adj "significant" ;;:of agent ;; huh?
+         ))
 
-(define-category possibility :specializes attribute
+(define-category possibility :specializes related-thing
   :mixins (bio-rhetorical bio-thatcomp)
   :realization
      (:noun "possibility"))
@@ -356,12 +356,13 @@ be biology specific, since they aren't. |#
 ;;---- other
 
 
-(define-category variant :specializes of-prototype-description
+(define-category variant :specializes takes-of-prototype-description
   ;; was "protein" which is not true, but the most common case
   ;; need to write rules that make the class of the result of "Pak variant"
   ;;  be the class of "Pak" bio-chemical-entity 
   ;; not sure this is the correct term, but intended for things like "forms of ras" 
   :instantiates :self
+  :rule-label takes-of-prototype-description
   :realization
     (:noun ("variant" "form")
 ))
