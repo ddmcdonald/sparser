@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1997,2011-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1997,2011-2021 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  April 2020
+;;;  Version:  February 2021
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -436,6 +436,15 @@
 
 (defun bio-setting ()
   "Used in the 'biology' configuration/script"
+  (bio-core-settings)
+  (let ((gmod (grammar-module-named '*biology*)))
+    (assert gmod () "The biology grammar module is not available")
+    (unmarked-category-makes-permanent-individuals gmod))
+  (setq *switch-setting* :biology))
+
+(defun bio-core-settings ()
+  "To let us experiment with what's in Score while keeping
+   biology in its original form."
   (declare (special *treat-single-capitalized-words-as-names*
                     *break-on-new-bracket-situations*))
   (revert-to-error-break) ;; also the loader default
@@ -475,14 +484,19 @@
   (turn-off-segment-analysis-settings) ;; except for ...
   (setq *new-segment-coverage* :trivial) ;; vs. :full or :none
   ;; Specify where we start (needed as switch settings change)
-  (do-strong-domain-modeling)
+  (do-strong-domain-modeling))
 
-  ;;(designate-paragraph-container :biology)
 
-  (let ((gmod (grammar-module-named '*biology*)))
-    (assert gmod () "The biology grammar module is not available")
-    (unmarked-category-makes-permanent-individuals gmod))
-  (setq *switch-setting* :biology))
+(defun score-setting ()
+  (bio-core-settings)
+  
+  ;; add PNF (goes with the extension of the grammar configuration)
+  (establish-pnf-routine :scan-classify-record)
+  (setq *arabic-names* t)
+
+  (setq *switch-setting* :score))
+
+
 
 
 (defun blocks-world-setting ()
