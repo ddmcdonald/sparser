@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2021  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "co activity nominals-er"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  January 1994
+;;;  version:  February 2021
 
 ;; initiated 1/20/94 v2.3
 
@@ -11,6 +11,7 @@
 
 (define-co-activity-nominal/er "contractor")
 (define-co-activity-nominal/er "developer")
+(define-co-activity-nominal/er "drugmaker")
 (define-co-activity-nominal/er "insurer")
 (define-co-activity-nominal/er "manufacturer" :abbrev '("mfg"))
 (define-co-activity-nominal/er "maker")
