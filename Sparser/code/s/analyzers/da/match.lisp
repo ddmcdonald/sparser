@@ -77,6 +77,8 @@
 
 
 (defun test-arc-against-tt (arc tt)
+  (declare (special *da-execution*))
+  
   (typecase arc
     
     (form-arc
@@ -92,7 +94,8 @@
        (*edge-tt*
         (eq (edge-category tt) (arc-label arc)))
        (t
-        (da/look-under-edge tt (arc-label arc)))))
+        (when *da-execution*
+          (da/look-under-edge tt (arc-label arc))))))
 
     (morph-arc
      (when *word-tt*
@@ -102,25 +105,10 @@
      (cond
        (*word-tt*
         (eq tt (arc-word arc)))
-       #+ignore(*multiple-edges-over-word*
-        (let ((target-word (arc-word arc)))
-          ;; ought to be cleaner than this, or find comparable
-          ;; code elsewhere in DA
-          (dolist (obj tt)
-            (typecase obj
-              (word (when (eq obj target-word)
-                      (return-from arc-matches-tt? obj)))
-              (edge (when (eq (edge-category obj) target-word)
-                      (return-from arc-matches-tt? obj)))
-              (otherwise
-               (push-debug `(,obj ,tt))
-               (error "Unexpected type in multiple edge tt: ~a"
-                      (type-of obj)))))))
        (*edge-tt*
         (let ((left-daughter (edge-left-daughter tt)))
           (when (word-p left-daughter)
             (eq left-daughter (arc-word arc)))))
-
        (t nil)))
 
     (polyword-arc

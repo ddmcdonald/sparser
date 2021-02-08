@@ -206,8 +206,10 @@
 
 
 (defun compare-trie-threading-with-pattern (vertex pattern)
-  (catch :da-pattern-clash-check
-    (match-trie-against-pattern-identity vertex pattern)))
+  (let ((*da-execution* nil))
+    (declare (special *da-execution*))
+    (catch :da-pattern-clash-check
+      (match-trie-against-pattern-identity vertex pattern))))
 
 (defun match-trie-against-pattern-identity (vertex pattern)
   ;; Called from Check-for-clash-with-other-da-rules.
