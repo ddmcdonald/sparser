@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1995,2013.2018-2020  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2013.2018-2021  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "scan"
 ;;;   Module:  "model;core:names:fsa:"
@@ -479,16 +479,16 @@
              ;; in this recursive call. Given "Mas'ud" the scan strands
              ;; that lowercase follow-on
              (cap-seq-continues-from-here? next-position))
+            
+            ((and previous-word ;; "Workers' Party"
+                  (word-ends-in-s previous-word))
+             (cap-seq-continues-from-here? next-position))
 
             ((capitalized (pos-terminal next-position))
-             (cap-seq-continues-from-here? position))
+             (cap-seq-continues-from-here? next-position))
 
             ((and (eq caps-state :lower-case)
                   *arabic-names*)
-             (cap-seq-continues-from-here? next-position))
-
-            ((and previous-word ;; "Workers' Party"
-                  (word-ends-in-s previous-word))
              (cap-seq-continues-from-here? next-position))
 
             (t
