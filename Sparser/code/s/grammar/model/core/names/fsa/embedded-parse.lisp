@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1995,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2013,2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "embedded parse"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  0.8 October 2013
+;;;  version:  February 2021
 
 ;; initiated 5/21/93 v2.3
 ;; 0.1 (6/9) revising the alg. because it's intended to be top-edges and
@@ -87,6 +87,12 @@
           ;; by the caller. 
           (setq *pnf-end-of-span* where-word-fsa-ends)
           :done )
+         (edge
+          ;; If it has an associated edge-fsa (such as appostrophe-s)
+          ;; then we have to back up one position to feed the fsa
+          ;; the right information.
+          (do-edge-level-fsas (list edge) (chart-position-before where-word-fsa-ends))
+          (pfwpnf where-word-fsa-ends final-pos))
          (t
           (pfwpnf where-word-fsa-ends final-pos))))
 
