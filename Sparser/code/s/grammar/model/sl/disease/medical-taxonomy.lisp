@@ -120,6 +120,11 @@
            ;; :for target
             ))
 
+(define-category dose-dependent :specializes :bio-predication
+  :realization
+  (:adj "dose-dependent"))
+(def-synonym dose-dependent (:adj "dose dependent"))
+
 
 ;;--- medical treatment
 

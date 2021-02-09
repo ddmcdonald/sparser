@@ -35,10 +35,6 @@
 ;;; bio-predications
 ;;;------------------------
 (adj "encapsulated" :super bio-predication) ;; about a virus
-(define-category dose-dependent :specializes :bio-predication
-  :realization
-  (:adj "dose-dependent"))
-(def-synonym dose-dependent (:adj "dose dependent"))
 
 (adj "-like" :super bio-predication) ;; as in "UBA (ubiquitin-associated)-like domains" where we don't combine the "-like"
 (adj "in excess" :super bio-predication)
