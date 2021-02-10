@@ -565,6 +565,8 @@ val-pred-var (pred vs modifier - left or right?)
     
     ((and qualifier head)
      (setq head (individual-for-ref head))
+     (when (eq 'possessive (edge-form-name (right-edge-for-referent)))
+       (revise-parent-edge :form (category-named 'possessive)))
      (cond
        ((valid-method compose qualifier head)
         ;; "left side" (etc. see core/places/methods.lisp)
@@ -719,16 +721,25 @@ val-pred-var (pred vs modifier - left or right?)
                ;; dropping it on the floor
                (individual-for-ref adjective)))))
        (setq head (bind-dli-variable 'predication predicate head))
+       (when (eq 'possessive (edge-form-name (right-edge-for-referent)))
+         (revise-parent-edge :form (category-named 'possessive)))
        head))))
 
 (defun adverb-noun-compound (adverb head)
   (cond
     (*subcat-test* t)
     ((valid-method compose adverb head)
+     (when (eq 'possessive (edge-form-name (right-edge-for-referent)))
+       (revise-parent-edge :form (category-named 'possessive)))
      (compose adverb head))
     ((itypep head 'takes-adverb)
+     (when (eq 'possessive (edge-form-name (right-edge-for-referent)))
+       (revise-parent-edge :form (category-named 'possessive)))
      (bind-variable 'adverb adverb head))
-    (t (bind-variable 'modifier adverb head))))
+    (t
+     (when (eq 'possessive (edge-form-name (right-edge-for-referent)))
+       (revise-parent-edge :form (category-named 'possessive)))
+     (bind-variable 'modifier adverb head))))
     
     
 
@@ -876,6 +887,8 @@ val-pred-var (pred vs modifier - left or right?)
                    (itypep head 'plural))
            (unless (value-of 'number head)
              (setq head (bind-variable 'number :plural head))))
+         (when (eq 'possessive (edge-form-name head-edge))
+           (revise-parent-edge :form (category-named 'possessive)))
          head)))))
 
 
@@ -978,6 +991,8 @@ val-pred-var (pred vs modifier - left or right?)
                        (retrieve-surface-string head)
                        "**MISSING**"))
         (setq head (bind-dli-variable 'quantifier quantifier head))))
+     (when (eq 'possessive (edge-form-name (right-edge-for-referent)))
+       (revise-parent-edge :form (category-named 'possessive)))
      head)))
 
 
@@ -997,11 +1012,15 @@ val-pred-var (pred vs modifier - left or right?)
      (setq head (individual-for-ref head))
      (when (or (individual-p head) (category-p head))
        (setq head (bind-dli-variable 'number number head)))
+     (when (eq 'possessive (edge-form-name (right-edge-for-referent)))
+       (revise-parent-edge :form (category-named 'possessive)))
      head)))
 
 
 
 (defun verb+ing-noun-compound (verb head)
+  (when (eq 'possessive (edge-form-name (right-edge-for-referent)))
+    (revise-parent-edge :form (category-named 'possessive)))
   (or (when (valid-method compose verb head)
         (compose verb head))
       (link-in-verb+ing verb head)))
@@ -1072,7 +1091,9 @@ there was an edge for the qualifier (e.g., there is no edge for the
                         (or (subcategorized-variable qualifier :object head)
                             (valid-method compose  qualifier head))))
     
-    (t (or (when (valid-method compose  qualifier head)
+    (t (when (eq 'possessive (edge-form-name (right-edge-for-referent)))
+         (revise-parent-edge :form (category-named 'possessive)))
+       (or (when (valid-method compose  qualifier head)
              (compose qualifier head))
 	   (link-in-verb qualifier head)
 	   (progn

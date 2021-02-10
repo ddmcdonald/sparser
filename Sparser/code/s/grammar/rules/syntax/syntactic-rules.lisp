@@ -71,6 +71,7 @@
 ;;; Rules for creating NPs by adding determiners or possessives
 
 (loop for nb in `(verb+ing ;; treat present-participles as noun-like
+                  possessive
 		  ,@*n-bar-categories*)
    do
      (eval
@@ -170,6 +171,7 @@
 ;;;  as well as simple adjectival post-modifiers like "in vivo", "offshore"
 
 (loop for nb in `(verb+ing ;; treat present-participles as noun-like
+                  possessive
 		  ,@*n-bar-categories*)
    do
      (eval 
@@ -405,6 +407,11 @@
   :referent (:function clause+pp left-edge right-edge))
 
 (def-syntax-rule (s than-np)
+  :head :left-edge
+  :form s
+  :referent (:function make-comparative-adjp-with-np left-edge right-edge))
+
+(def-syntax-rule (subordinate-s than-np)
   :head :left-edge
   :form s
   :referent (:function make-comparative-adjp-with-np left-edge right-edge))
@@ -998,6 +1005,11 @@
 (def-syntax-rule (np subordinate-np)
   :head :left-edge
   :form np
+  :referent (:function add-subordinate-np-as-adjunct left-edge right-edge))
+
+(def-syntax-rule (s subordinate-np)
+  :head :left-edge
+  :form s
   :referent (:function add-subordinate-np-as-adjunct left-edge right-edge))
 
 
