@@ -1597,6 +1597,18 @@
            s-comma-np-comma-and-np
            first second third fourth fifth sixth))
 
+(define-debris-analysis-rule s-comma-np-comma-and-np
+  :pattern ( pp "," np "," and np)  
+  :action (:function
+           s-comma-np-comma-and-np
+           first second third fourth fifth sixth))
+
+(define-debris-analysis-rule s-comma-np-and-np
+  :pattern ( pp "," np  and np)  
+  :action (:function
+           s-comma-np-comma-and-np
+           first second third  nil fifth sixth))
+
 (defun s-comma-np-comma-and-np ( s comma-1 np-1 comma-2 and-wd np-2)
   (declare (ignore comma-1 comma-2))
   (let* ((target (find-target-satisfying
