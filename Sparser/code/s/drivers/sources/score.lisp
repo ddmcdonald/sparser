@@ -196,7 +196,7 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
 
 
 
-(defun run-nth-score-article (n &key quiet show-sect stats)
+(defun run-nth-score-article (n &key quiet show-sect stats (skip-errors t))
   "Process the nth ('1' -> nth of 0) json article in the directory.
    Assemble paragraphs and sections from the blocks in the source JSON
    to make an article, then pass the article to the standard run-json-article
@@ -212,7 +212,7 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
     ;;   (format t "~&Ignoring bad file: ~a" filename)
     ;;   (return-from run-nth-score-article nil))
     (read-score-json-article
-     pathname :handle handle :n n :quiet quiet :show-sect show-sect :stats stats)))
+     pathname :handle handle :n n :quiet quiet :show-sect show-sect :stats stats :skip-errors skip-errors)))
 
 (defun run-score-json-file (namestring &key handle quiet show-sect stats)
   (let ((pathname (pathname namestring)))
@@ -226,7 +226,7 @@ Error during string-to-utf8: Unable to encode character 56319 as :utf-8.
 
 
 
-(defun read-score-json-article (pathname &key n handle style quiet show-sect stats (skip-errors nil))
+(defun read-score-json-article (pathname &key n handle style quiet show-sect stats (skip-errors t))
   (let ((filename (pathname-name pathname)))
     (format t "~&Reading ~a~%" filename)
     (let ((sexp (cl-json::decode-json-from-source pathname)))
@@ -680,6 +680,7 @@ parser will get to see them.
                         (sentence-string s)
                         s)))))
 
+
 ;;;--------------
 ;;; testing jigs
 ;;;--------------
@@ -732,7 +733,7 @@ parser will get to see them.
     p))
 
 
-(defun score-articles-timing-run (start-index last-index)
+(defun score-articles-timing-run (start-index last-index &key (skip-errors t))
   "Iterate over the articles from start to last, inhibiting most
    sources of status/error printing and providing a compact
    description of the timing status on each article.
@@ -747,7 +748,7 @@ parser will get to see them.
             (print (list n 'hhh))
             (force-output t)
             (ignore-errors
-               (run-nth-score-article n :quiet t :show-sect nil :stats nil)
+               (run-nth-score-article n :quiet t :show-sect nil :stats nil :skip-errors skip-errors)
                ;;(run-nth-score-article n :quiet nil :show-sect nil :stats nil)
               )
             (force-output t)))))
