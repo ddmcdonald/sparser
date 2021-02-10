@@ -504,6 +504,16 @@
      :rule 'make-edge-over-fraction
      :constituents (treetops-between start-pos end-pos))))
 
+(defun make-edge-over-fraction-of-illion (fraction illion
+                                          start-pos end-pos)
+  (let ((n (fraction-of-illion fraction illion)))
+    (make-edge-over-long-span
+     start-pos end-pos
+     (category-named 'number)
+     :form (category-named 'number)
+     :rule 'make-edge-over-fraction-of-illion
+     :referent n)))
+
 
 ;;;------------------------------------
 ;;; saving examples to look at offline
