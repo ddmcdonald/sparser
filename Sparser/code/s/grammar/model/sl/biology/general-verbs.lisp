@@ -41,15 +41,16 @@
   :documentation "compare with act as"
   :realization
   (:verb "act"
-	 :etf sv
-	 :noun "action"
-	 :with co-agent
-	 :at bio
-	 :as functionality
-	 :by process
-	 :on acted-on
-	 :through bio
-	 :via bio))
+   :etf sv
+   :noun "action"
+   :with co-agent
+   :at bio
+   :as functionality
+   :by process
+   :on acted-on
+   :through bio
+   :of agent
+   :via bio))
 
 (define-category addition :specializes caused-bio-process
   :mixins (bio-thatcomp)
@@ -86,7 +87,7 @@
 	   :etf (svo-passive)))
 
 (define-category analyze :specializes bio-method
-  :mixins (bio-whethercomp bio-ifcomp)
+  :mixins (bio-whethercomp bio-ifcomp related-thing)
   :restrict ((object top))
   :realization 
   (:verb "analyze" :noun ("analysis" :plural "analyses")
@@ -149,6 +150,7 @@
   :mixins (bio-whethercomp bio-ifcomp)
   :realization 
   (:verb "calculate" :noun "calculation"
+         :of :object
          :etf (svo-passive)))
 
 (define-category call :specializes bio-rhetorical
@@ -389,11 +391,11 @@
 |#
 
 (define-category describe :specializes bio-rhetorical
-    :mixins (related-thing) ;; "description of ...
-    :realization
-    (:verb "describe"
-	   :noun "description"
-	   :etf (svo-passive)))
+  :mixins (related-thing) ;; "description of ...
+  :realization
+  (:verb "describe"
+   :noun "description"
+   :etf (svo-passive)))
 
 (define-category detect :specializes immune-method ;; not only, but should allow for antibodies
     :realization
@@ -706,9 +708,10 @@
 (define-category incorporate :specializes bio-relation 
   :realization 
   (:verb "incorporate" :noun "incorporation"
-         :etf (svo-passive)
-         :o theme
-         :into participant))
+   :etf (svo-passive)
+   :o theme
+   :of :object
+   :into participant))
 
 (define-category indicate :specializes bio-rhetorical
     :mixins (bio-thatcomp)
@@ -1123,6 +1126,7 @@
     (:verb "propose"
      :noun "proposal"
      :etf (svo-passive)
+     :of :object
      :as to-be))
 
 
@@ -1226,15 +1230,6 @@
 	   :etf (svo-passive) 
            :from source))
 
-
-;;TO-DO -- fix this one
-(define-category represent :specializes bio-relation
-  :binds ((visual-presentation visual-presentation))
-  :realization
-  (:verb "represent" :noun "representation"
-         :etf (svo-passive)
-         :o theme
-         :in visual-presentation))
 
 (define-category require :specializes process-control-process
   :binds ((requirement (:or biological process)))
@@ -1446,17 +1441,18 @@
 
 (define-category test :specializes bio-method
   :mixins (bio-whethercomp)
-                      :binds ((object (:or bio-rhetorical biological))
+  :binds ((object (:or bio-rhetorical biological))
           (participant top) ;; "test X on <participant>"
           (presence-of biological))
   :realization
   (:verb "test" ;; keyword: ENDS-IN-ED
-         :noun "test"
-         :etf (svo-passive)
-         :for presence-of
-         :on participant
-         :in participant
-         :o object)) ;; seems to be needed to make use of changed definition of object -- TO-DO fisx handling of restrict
+   :noun "test"
+   :etf (svo-passive)
+   :for presence-of
+   :on participant
+   :in participant
+   :of :object
+   :o object)) ;; seems to be needed to make use of changed definition of object -- TO-DO fisx handling of restrict
 
 
 (define-category think :specializes bio-rhetorical
@@ -1501,7 +1497,7 @@
                    activity-with-a-purpose bio-rhetorical))) 
   :binds ((used-to biological)
           ;;(disease disease)
-          (purpose (:or treatment disease))
+          (purpose top) ;;(:or treatment disease) remove restrictions from R3/CLiC
           (object top ;; "use of ..." is very common
                   #+ignore
                   (:or bio-chemical-entity bio-organ bio-process bio-mechanism
@@ -1514,7 +1510,7 @@
   :realization ;; (p/s "use KRAS to treat pancreatic cancer")
         (:verb "use"
          :noun "use"
-         :of object ;; "Use of an embryonal lung fibroblast cell line"
+         :of :object ;; "Use of an embryonal lung fibroblast cell line"
          :etf (svo-passive)
          :to used-to
          :for purpose ;; (p/s "what drug should I use for pancreatic cancer?")

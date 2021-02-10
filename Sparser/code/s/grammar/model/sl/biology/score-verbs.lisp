@@ -5897,10 +5897,14 @@
      :realization (:verb  "receipt" :s SUBJECT :o OBJECT :for FOR))
 
 (define-category receive :specializes comlex-verb
-     :binds
-      ((FROM top)
-       (INTO top))
-     :realization (:verb  "receive" :s SUBJECT :o OBJECT :from FROM :into INTO))
+  :binds
+  ((FROM top)
+   (INTO top))
+  :realization
+  (:verb  "receive"
+   :noun "receipt"
+   :s SUBJECT :o OBJECT :from FROM :into INTO
+   :of :object))
 
 (define-category recommend :specializes comlex-verb
      :binds
