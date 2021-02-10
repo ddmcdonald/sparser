@@ -93,43 +93,60 @@ as the default since the generic case will presumably be marked.
   :realization (:common-noun ("half" :plural "halves")))
 
 
+;;;---------------------------------
+;;; expressions involving fractions
+;;;---------------------------------
+
+;;--- fractional amounts  "an eighth of the pie" (vs. "slice of...")
+
+(define-category fractional-amount
+  :specializes amount-of-stuff
+  :restrict ((measurement (:or ordinal fractional-term)))
+  )
+
 ;;--- 'half a million'
 
 (define-early-pattern-rule half-an-illion
   :pattern (half a number)
   :action (:function make-fractional-of-illion first third))
 
-(defun make-fractional-of-illion (fraction illion)
-  "Should we return an expression, say an instance of a fraction
-   where the illion is the numerator divided by the fraction?
-   Or should we do the calculation here?"
-  (let ((number (edge-referent illion)))
-    ;;/// try the da/look-under-edge option in test-arc-against-tt
-    ;; to match on the 'multiplier' category of the left daughter
-    ;; of the number
+(defgeneric fraction-of-illion (fraction illion)
+  (:documentation "Determine what interpretation we should give to
+ this composition. It supplies the referent to other routines that
+ do the packaging into an edge, depending on where it's detected.
+ Should we return an expression, say an instance of a fraction
+ where the illion is the numerator divided by the fraction?
+ Or should we do the calculation here? -- decided to go with
+ the calculation and returning a number")
+  (:method ((fraction edge) (illion edge))
+    (fraction-of-illion (edge-referent fraction) (edge-referent illion)))
+  (:method ((fraction individual) (number individual))
     (when (itypep number 'multiplier)
       (let* ((base-number (value-of 'value number))
-             (type-of-fraction (itype-of (edge-referent fraction)))
+             (type-of-fraction (itype-of fraction)) ; where number is stored
              (factor (value-of 'multiplier type-of-fraction)))
-        (let* ((net-value (* factor (integer-for-number base-number)))
-               (n (find-or-make-number net-value)))
-          (let ((edge-spec (make-edge-spec
-                            :category (category-named number)
-                            :form (category-named number)
-                            :referent n)))
-            edge-spec))))))
+        (let ((net-value (* factor (integer-for-number base-number))))
+          (find-or-make-number net-value))))))
+
+(defun make-fractional-of-illion (fraction illion)
+  (let ((n (fraction-of-illion fraction illion)))
+    (edge-spec (make-edge-spec
+                :category (category-named 'number)
+                :form (category-named 'number)
+                :referent n))))
+           
              
       
 
 
-;;---- 'second half' 'third quarter'
+;;--- Ordinal-fractions
 
 ;; Composition with "quarter" is presently subsumed by rules in
 ;; time/fiscal.lisp where "second quarter" uses 'fiscal-quarter'
 ;; rather than the factional term.  See note there about other
 ;; portions of a year "second half", however, uses this category.
 ;;
-(define-category  ordinal-fraction
+(define-category  ordinal-fraction ;; 'second half' 'third quarter'
   :specializes  measurement
   :instantiates self
   :binds ((selector . ordinal)
@@ -193,3 +210,6 @@ grammar/model/sl/ern/stream-through-driver.lisp:(defun so/Pop-embedded-ordinal-f
 grammar/model/sl/ern/stream-through-driver.lisp:  ;; ordinal-fractions are contextually reinterpreted as parts of 
 grammar/model/sl/ern/stream-through-driver.lisp:                  (category-named 'ordinal-fraction))
 |#
+
+
+

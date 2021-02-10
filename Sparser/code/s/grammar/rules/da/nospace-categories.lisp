@@ -113,29 +113,37 @@
   ;; called from nospace-hyphen-specialist or from
   ;; resolve-hyphen-between-two-words when it has no better 
   ;; idea for what to do.
-  (let ((i (find-or-make-individual 'hyphenated-pair
-             :left (maybe-make-individual (edge-referent left-edge))
-             :right (maybe-make-individual (edge-referent right-edge))))
-        (category
-         (ns-category-for-reifying category::hyphenated-pair)))
+  (let ((left (edge-referent left-edge))
+        (right (edge-referent right-edge))
+        (start-pos (pos-edge-starts-at left-edge))
+        (end-pos (pos-edge-ends-at right-edge)))
+    (cond
+      ((and (itypep left 'fractional-term) ; "quarter-million"s
+            (itypep right 'multiplier))
+       (make-edge-over-fraction-of-illion left right start-pos end-pos))
+      (t
+       (let ((i (find-or-make-individual 'hyphenated-pair
+                                         :left (maybe-make-individual left)
+                                         :right (maybe-make-individual right)))
+             (category
+              (ns-category-for-reifying category::hyphenated-pair)))
 
-    (when (eq (edge-category left-edge)
-              (edge-category right-edge))
-      ;;/// when does this ever happen? this happens when both edges are same type, e.g., "S1A-S1D"
-      (setq i (bind-variable
-               'type (edge-category left-edge) i category::sequence)))
-    
-    (let ((edge (make-ns-edge
-                 (pos-edge-starts-at left-edge)
-                 (pos-edge-ends-at right-edge)
-                 category
-                 :form (edge-form right-edge)
-                 :rule 'make-hyphenated-structure
-                 :referent i
-                 :constituents `(,left-edge ,right-edge))))
-      (revise-form-of-nospace-edge-if-necessary edge right-edge)
-      (tr :two-hyphen-default-structure i edge)
-      edge)))
+         (when (eq (edge-category left-edge)
+                   (edge-category right-edge))
+           ;;/// when does this ever happen? this happens when both edges are same type, e.g., "S1A-S1D"
+           (setq i (bind-variable
+                    'type (edge-category left-edge) i category::sequence)))
+         
+         (let ((edge (make-ns-edge
+                      start-pos end-pos                
+                      category
+                      :form (edge-form right-edge)
+                      :rule 'make-hyphenated-structure
+                      :referent i
+                      :constituents `(,left-edge ,right-edge))))
+           (revise-form-of-nospace-edge-if-necessary edge right-edge)
+           (tr :two-hyphen-default-structure i edge)
+           edge))))))
 
 
 (defun make-ns-pair (category-name left-edge right-edge pos-before pos-after)
@@ -237,9 +245,11 @@
           (or (eq (edge-cat-name right-edge) 'year)
               (eq (edge-cat-name right-edge) 'number)))
      (look-for-year-expression left-edge right-edge))
-    ((and (edge-over-number-word? left-edge)
+
+    ((and (edge-over-number-word? left-edge) ; "twenty-three"
           (edge-over-number-word? right-edge))
      (two-edge-number left-edge right-edge))
+
     (t (let* ((i (find-or-make-individual
                   'hyphenated-number
                   :left (find-or-make-number (edge-referent left-edge))
@@ -254,27 +264,7 @@
                      :constituents `(,left-edge ,right-edge)
                      :words `(,left-edge ,right-edge))))
          edge))))
-#+ignore
-  (if (and (eq (edge-cat-name left-edge) 'year)
-           (or (eq (edge-cat-name right-edge) 'year)
-               (eq (edge-cat-name right-edge) 'number)))
-    (look-for-year-expression left-edge right-edge)
-    (let* ((i (find-or-make-individual
-               'hyphenated-number
-               :left (find-or-make-number (edge-referent left-edge))
-               :right (find-or-make-number (edge-referent right-edge))))
-           (edge (make-ns-edge
-                  (pos-edge-starts-at left-edge)
-                  (pos-edge-ends-at right-edge)
-                  category::hyphenated-number
-                  :rule 'make-hyphenated-number
-                  :form category::number
-                  :referent i
-                  :constituents `(,left-edge ,right-edge)
-                  :words `(,left-edge ,right-edge))))
-      edge))
 
-      
 
 
 (defun make-hyphenated-triple (left-edge middle-edge right-edge)

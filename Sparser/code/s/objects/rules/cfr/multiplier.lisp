@@ -124,7 +124,7 @@ then we immediately return from the call without creating an edge.
     (ecase *filter-vocabulary*
       (:score
        (setq *rule-categories-to-ignore*
-             '(cellular-location cell-type
+             '(cellular-location cell-type cell-line
                protein transcription-factor ; protein
                protein-domain binding-domain ; protein-domain
                )))
