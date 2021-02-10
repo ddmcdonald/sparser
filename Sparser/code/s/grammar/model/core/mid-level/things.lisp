@@ -154,6 +154,17 @@
   :mixins (knowledge-verb)
   :binds ((WITH top))
   :realization (:verb "reason" :noun  "reason" :with WITH))
+;;TO-DO -- fix this one
+(define-category represent :specializes create-mental-construction-concerning
+  :binds ((visual-presentation visual-presentation))
+  :realization
+  (:verb "represent"
+   :noun "representation"
+   :adj "representative"
+   :etf (svo-passive)
+   :of :object
+   :o theme
+   :in visual-presentation))
 
 (define-category publication :specializes create-mental-construction-concerning
   :realization (:noun "publication" :verb "publish"))
