@@ -76,12 +76,14 @@
 
 (defun interpret-number-as-years-of-age (number)
   ;; called from cs rules
-  (let ((amt (define-or-find-individual 'amount-of-time
-                   :units (find-individual 'time-unit :name "year")
-                   :quantity number)))
-    (let ((age (define-or-find-individual 'age
-                 :age amt)))
-      age )))
+  (when (and (numberp (value-of 'value number))
+             (< (value-of 'value number) 150))
+    (let ((amt (define-or-find-individual 'amount-of-time
+                 :units (find-individual 'time-unit :name "year")
+                 :quantity number)))
+      (let ((age (define-or-find-individual 'age
+                   :age amt)))
+        age ))))
 
 
 (define-category amount-old
