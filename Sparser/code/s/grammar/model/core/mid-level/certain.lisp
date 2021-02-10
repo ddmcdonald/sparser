@@ -45,7 +45,7 @@
 (adv "possibly" :super certain)
 (adv "potentially" :super certain)
 (define-category likely-adj :specializes certain
-   :realization (:adj "likely"))
+  :realization (:adj "likely" :to-comp))
 ;; this is to handle uses like "it is likely that ..."
 
 (define-category unlikely
