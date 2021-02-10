@@ -72,8 +72,8 @@ and make that file easier to understand. |#
   "Actions taken by everything about the level of a paragraph"
   (summarize-parse-performance s)
   (aggregate-text-characteristics s)
-  (add-bio-term-counts s)
-  (sort-bio-terms s (contents s))
+  ;;(add-bio-term-counts s)
+  ;;(sort-bio-terms s (contents s))
   s)
 
 
