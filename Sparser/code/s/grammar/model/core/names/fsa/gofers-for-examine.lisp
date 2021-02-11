@@ -460,8 +460,6 @@
     (first edges)))
 
 
-
-
 (defun backoff-multiple-treetops-for-pnf (treetops)
   ;; This scheme will only work if we're spanning just one word
   (declare (special category::name-word category::proper-noun))
@@ -518,10 +516,6 @@
 
       
 
-
-
-
-
 (defun referents-of-list-of-edges (reversed-list-of-edges)
   ;; called by Examine-capitalized-sequence to make the item list
   ;; for Categorize-and-form-name. Returns a list of terms from
@@ -550,9 +544,10 @@
                       referent)
 
                      (otherwise
-                      (push-debug `(,referent ,item ,reversed-list-of-edges))
-                      (break "Unexpected type of edge referent: ~a~%~a"
-                             (type-of referent) referent))))))
+                      (when *debug-pnf*
+                        (push-debug `(,referent ,item ,reversed-list-of-edges))
+                        (break "Unexpected type of edge referent: ~a~%~a"
+                               (type-of referent) referent)))))))
                    
               (individual ;; e.g. the name-word that is made for
                ;; an unknown capitalized word
@@ -570,21 +565,24 @@
                     ;; capitalization correctly
                     (define-name-word/actual item))
                    (t
-                    (break "Unexpected threading: the word \"~A\" ~
+                    (when *debug-pnf*
+                      (break "Unexpected threading: the word \"~A\" ~
                            was passed in.~%Expected that it would ~
                            have already been redone as a name-word."
-                           item)))))
+                             item))))))
               
 	      (otherwise
-               (push-debug `(,item ,reversed-list-of-edges))
-	       (break "Unexpected type of item in list of 'edges' ~
-                       for a proper name: ~a~%~a"
-		      (type-of item) item))))
+               (when *debug-pnf*
+                 (push-debug `(,item ,reversed-list-of-edges))
+                 (break "Unexpected type of item in list of 'edges' ~
+                         for a proper name: ~a~%~a"
+                        (type-of item) item)))))
 
       (unless value
-        (push-debug `(,reversed-list-of-edges))
-        (break "No referent for item in PNF treetop sequence:~
-                ~%  ~A" item))
+        (when *debug-pnf*
+          (push-debug `(,reversed-list-of-edges))
+          (break "No referent for item in PNF treetop sequence:~
+                ~%  ~A" item)))
       (kpush value referents))
 
     referents ))

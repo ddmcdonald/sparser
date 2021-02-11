@@ -111,7 +111,8 @@
 (defun intro-edges-fwpnf (word pos-before next-pos final-pos)
   (install-terminal-edges word pos-before next-pos)
   (if (or (eq next-pos final-pos)
-          (eq word *newline*)) ;; shows up when doing paragraph marking by newlines
+          (eq word *newline*) ;; shows up when doing paragraph marking by newlines
+          (eq word *end-of-source*))
     :done
     (pfwpnf next-pos final-pos)))
 
@@ -156,7 +157,9 @@
                  (find 'category::person-prefix
                        edges
                        :key #'(lambda (e)
-                                (cat-symbol (edge-category e))))))
+                                (when (category-p (edge-category e))
+                                  ;; could be a polyword
+                                  (cat-symbol (edge-category e)))))))
             (or prefix
                 (city-vs-state edges) ;; returns the edge itself
                 (else

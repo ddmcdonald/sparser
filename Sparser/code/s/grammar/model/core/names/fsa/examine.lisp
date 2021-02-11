@@ -143,6 +143,15 @@
         ;; Check-cases is called after we've accumulated everything
         ((check-cases (tt label)
            (case label
+             (:polyword
+              ;; When this was designed there were no instances of polywords
+              ;; as the edge category in a treetop. That discipline has lapst,
+              ;; and it's not clear how to get classifying information from them.
+              ;; The only way to deal with them, really, is to fail the sequence
+              (tr :throwing-out-prefix tt)
+              (throw :abort-examination-not-a-name
+                `(:not-a-name ,ending-position)))
+             
              (:word
               (when (edge-p tt) 
                 ;; The scope on the flet's and their treatment of mutually
@@ -245,6 +254,7 @@
                               (kpush :words name-state))
                         (kpush :word name-state))
                       (kpush :word name-state)))))))
+
               
              ;;---- That was the end of the word cases, now we look at
              ;;  category edge labels
@@ -409,14 +419,14 @@
          (label-for (tt)
            (typecase tt 
              (edge
-              (if (or (word-p (edge-category tt))
-                      (polyword-p (edge-category tt)))
-                (then (setq edge-labeled-by-word tt
-                            tt (edge-category tt))
-                      ;;/// this set'ing of tt doesn't have any effect
-                      ;; in the outer flet.  ddm 6/21/07
-                      :word )
-                (else
+              (cond
+                ((word-p (edge-category tt))
+                 (setq edge-labeled-by-word tt
+                            tt-category (edge-category tt))
+                 :word)
+                ((polyword-p (edge-category tt))
+                 :polyword)
+                (t
                  (setq tt-category (edge-category tt))
                  (cat-symbol tt-category))))
                  

@@ -287,11 +287,11 @@
                                       (pos-edge-ends-at edge))))
            (word (resolve/make pw-string))) ;; "of Gwynedd"
       (etypecase word
-        #+ignore(word
+        (word
          (or (name-word-for-word word)
              (make-name-word-for/silent word (pos-edge-starts-at edge))))
         (polyword
-         (error "How did we already get a polyword under ~a" edge))))))
+         #+ignore(error "How did we already get a polyword under ~a" edge))))))
 
 
 
