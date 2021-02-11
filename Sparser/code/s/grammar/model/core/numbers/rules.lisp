@@ -21,13 +21,37 @@
 context -- age -- it's going to have to undergo a type elevation, which
 is easiest with a cs rule.  |#
 
-
 ;; this rule is not appropriate for biology
 (unless (eq script :biology)
   (def-cfr comma-number ( "," number )
     :form appositive-prefix
     :referent (:daughter right-edge)))
 
+
+;;;-----------------------------------------
+;;; np-prefixes -- "a quarter (of the pie)"
+;;;-----------------------------------------
+
+(def-cfr ordinal (a ordinal)
+  :form quantifier
+  :referent  (:daughter right-edge))
+
+(def-cfr ordinal (an ordinal)
+  :form quantifier
+  :referent  (:daughter right-edge))
+
+(def-cfr fractional-term (a fractional-term)
+ :form number
+ :referent  (:daughter right-edge))
+
+(def-cfr fractional-term (an fractional-term)
+ :form number
+ :referent  (:daughter right-edge))
+
+
+;;;--------
+;;; ranges
+;;;--------
 
 (def-cfr plus-minus-number ( plus-minus number )
     :form plus-minus-number
@@ -66,23 +90,35 @@ is easiest with a cs rule.  |#
      :form (category-named 'np)
      :referent i)))
 
-(defun make-relational-number (relation number &aux (num (if (edge-p number) (edge-referent number) number)))
+(def-k-method convert-hyphenated-number ((h category::hyphenated-number))
+  "Pull out the numbers and convert them to range.
+   Take the number to the left of the hyphen to be a the low value.
+   There are other interpretations, so this should be used when the
+   context implies this one."
+  (let ((low (value-of 'left h))
+        (high (value-of ''right h)))
+    (define-or-find-individual 'range
+        :low low
+        :high high)))
+
+
+(defun make-relational-number (relation number
+                               &aux (num (if (edge-p number) (edge-referent number) number)))
+  "To avoid error here handle both edges and semantics for the number.
+   It would be cleaner to change the callers, of course"
   (etypecase relation
     (cons (let ((rname (pname (car relation))))
             (cond ((member rname '("=" "COLON" ":") :test #'equal) num)
                   ((equal rname ">")
                    (define-or-find-individual 'range
                      :low num
-                     :includes-low nil
-                     ))
+                     :includes-low nil))
                   ((equal rname "<")
                    (define-or-find-individual 'range
                      :high num
-                     :includes-high nil
-                     )
-                   ))))
-    ;; (avoid error condition in make-relational-number (handle both edges and semantics for the number))
-    (edge (cond ((or (member (edge-cat-name relation) '(BE OF))
+                     :includes-high nil)))))
+
+    (edge (cond ((or (member (edge-cat-name relation) '(be of))
                      (equal (edge-category relation) word::colon))
                  num)))))
 
@@ -93,27 +129,13 @@ is easiest with a cs rule.  |#
 ;; # 95% CI [0.08, 0.10]
 ;; go with hyphenated then if we know it's range, convert it
 
-;;;---------------
-;;;  "8 million"
-;;;---------------
 
-;; Made obsolete by the rspec on illion
-;(def-cfr number  ( number multiplier ) 
-;  )
-#|
 
 ;;;-------------------------
 ;;; ordinal prefixes to NPs
 ;;;-------------------------
 
-(def-cfr ordinal ("a" ordinal)
-  :form adjective
-  :referent  (:daughter right-edge))
-
-(def-cfr ordinal ("an" ordinal)
-  :form adjective
-  :referent  (:daughter right-edge))
-
+#|
 (def-cfr ordinal ("the" ordinal)
   :form adjective
   :referent  (:daughter right-edge))

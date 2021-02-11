@@ -28,11 +28,23 @@
                     (base . units)
                     (result-type . :self))))
 
+
+
+(defun range-of-time (hyphenated-number time-unit)
+  ;; called from syntax-function so these are individuals
+  (let ((range (convert-hyphenated-number hyphenated-number)))
+    (define-or-find-individual 'amount-of-time
+        :units time-unit
+        :quantity range)))
+
+
 #| Is this really an NP?  Given "the six months ended Oct. 31, 1995"
  you have to worry about what the justification of that determiner is.
  If it is dependent on the participle (which defines a set that makes
  the amount specific), then how would we represent the intermediate
  state of that parse while waiting for the qualifier to show up? |#
+
+
 
 ;;///  these are too weak a representation
 (def-cfr amount-of-time ("the" amount-of-time)
