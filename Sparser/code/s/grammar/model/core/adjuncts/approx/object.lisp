@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-1995,2011-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1995,2011-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:adjuncts:approx:"
-;;;  version:  May 2020
+;;;  version:  February 2021
 
 ;; initiated 4/9/91 v1.8.2
 ;; 0.1 (12/7/92 v2.3) redone in the new semantics. 9/21/93 moved to [adjuncts]
@@ -33,8 +33,8 @@
 (define-mixin-category approximate
   :specializes adds-relation
   :binds ((qualifier))
-  :documentation "Provides a place to put approximators ans
- theire that indicate that a value is not exact. The identify
+  :documentation "Provides a place to put approximators and
+ to indicate that a value is not exact. The identify
  of the approximator is where to go to determine what this
  means in any given case. 
    Can be used simply as a mixin in a category definition
@@ -45,6 +45,11 @@
 ;;;----------------
 ;;; defining forms
 ;;;----------------
+#| The set of approximators in dossiers/modifiers.lisp will fall
+   into a number of semantically different camps. We should find
+   some use-cases where the differences carry fruitful consequences
+   for reasoning and then work that up as a set of subtype labels
+   on the amount individual or something similar. |#
 
 (defun define-approximator/determiner (string)
   (define-function-term string 'det
@@ -55,35 +60,33 @@
 
 (defun define-approximator/adverbial (string)
   (define-adverb string
-      :super-category 'approximator
-      :rule-label 'approximator))
+    :super-category 'approximator
+    :rule-label 'approximator))
 
 
 ;;;-------
 ;;; rules
 ;;;-------
 
-(def-cfr number (approximator number)
+(def-cfr number (approximator number) ; "at least 31 (countries)"
   :form number
   :referent (:function determiner-noun left-edge right-edge))
 
-(def-cfr number (approximator percent) ; "only 35% of the ISGs"
-  :form number
-  :referent (:function determiner-noun left-edge right-edge))
-
-
-(def-k-method compose ((approx category::approximator)
-                       (amount category::amount))
+(def-k-method apply-determiner ((approx category::approximator)
+                                (amount category::number))
   ;; Invoked from determiner-noun -- subcat test uses the
   ;; macro applicable-methods to find this method (or not)
-  "The set of approximators in dossiers/modifiers.lisp will fall
-   into a number of semantically different camps. We should find
-   some use-cases where the differences carry fruitful consequences
-   for reasoning and then work that up as a set of subtype labels
-   on the amount individual or something similar.
-     Until then we just cache it out as a modifier."
-  (let ((j (bind-variable 'modifier approx amount)))
-    j))
+  (declare (special *subcat-test*))
+  (if *subcat-test*
+    t
+    (let* ((i (specialize-object amount (category-named 'approximate)))
+           (j (bind-variable 'qualifier approx i)))
+      j)))
+
+(def-cfr number (approximator percent) ; "only 35% (of the ISGs)"
+  :form number
+  :referent (:function determiner-noun left-edge right-edge))
+
 
 ;;;---------
 ;;; Autodef
