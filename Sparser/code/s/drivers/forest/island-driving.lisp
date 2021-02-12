@@ -62,7 +62,7 @@
                     *edges-from-referent-categories* ;; repurpous
                     *do-last-ditch-non-semantic-whacks*
                     *trace-island-driving* *parse-edges* ;; trace flags
-                    *trace-whack-a-rule*
+                    *trace-whack-a-rule* *trace-debris-sweep*
                     *trace-conjunction-hook*)
            (ignore layout))
   (tr :island-driven-forest-parse start-pos end-pos)
@@ -92,8 +92,14 @@
         (setq coverage (coverage-over-region start-pos end-pos))
         (unless (eq coverage :one-edge-over-entire-segment)
           (when *do-last-ditch-non-semantic-whacks*
-            (run-last-ditch-whack-cycle sentence)))
-        ))))
+            (run-last-ditch-whack-cycle sentence))
+
+          (unless (eq :one-edge-over-entire-segment
+                      (coverage-over-region start-pos end-pos))
+            (when *trace-debris-sweep*
+              (format t "~%Treetops when all is done")
+              (tts))
+            (sweep-debris-in-sentence sentence)))))))
 
 
 (defun run-last-ditch-whack-cycle (sentence)
