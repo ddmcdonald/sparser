@@ -834,8 +834,6 @@ val-pred-var (pred vs modifier - left or right?)
            (setq prototype-word (bind-variable 'prototype prototype-np prototype-word))
            (revise-parent-edge :category (itype-of prototype-np))
            (specialize-object prototype-word (itype-of prototype-np))))))
-
-
 ;;--- determiners
 
 (defparameter *dets-seen* nil "Keep track of what kinds of new 'determiners' we get")
@@ -1003,27 +1001,20 @@ val-pred-var (pred vs modifier - left or right?)
   ;; endurant we can bind. Going forward we should automatically
   ;; make a composite individual using a collection.
   ;; See notes on forming plurals in tree-families/morphology.lisp
-  (if *subcat-test*
-    (and number
-         head ;; J34: "Histone 2B"
-         ;; we get a bunch of number-sequence items for referents
-         ;; e.g. "...3CLpro and PLpro.12,13 PLpro also behaves..."
-         (not (itypep number 'number-sequence))
-         (not (itypep head 'single-capitalized-letter))
-         (not (itypep head 'year))) ;; "December 4 2017"
-    (cond
-      ((and (itypep number 'hyphenated-number)
-            (itypep head 'time-unit))
-       ;;/// if we want another of these, move to k-methods
-       (revise-parent-edge :category (category-named 'amount-of-time))
-       (range-of-time number head))
-      (t
-       (setq head (individual-for-ref head))
-       (when (or (individual-p head) (category-p head))
-         (setq head (bind-variable 'number number head)))
-       (when (eq 'possessive (edge-form-name (right-edge-for-referent)))
-         (revise-parent-edge :form (category-named 'possessive)))
-       head))))
+  (cond
+    (*subcat-test* (and number head ;; J34: "Histone 2B"
+                        ;; we get a bunch of number-sequence items for referents
+                        ;; e.g. "...3CLpro and PLpro.12,13 PLpro also behaves..."
+                        (not (itypep number 'number-sequence))
+                        (not (itypep head 'single-capitalized-letter))
+                        (not (itypep head 'year)))) ;; "December 4 2017"
+    (t
+     (setq head (individual-for-ref head))
+     (when (or (individual-p head) (category-p head))
+       (setq head (bind-dli-variable 'number number head)))
+     (when (eq 'possessive (edge-form-name (right-edge-for-referent)))
+       (revise-parent-edge :form (category-named 'possessive)))
+     head)))
 
 
 
@@ -1709,15 +1700,18 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
               (collect-subcat-statistics np prep-word variable-to-bind pp)
               (setq np (bind-dli-variable variable-to-bind pobj-referent np))
               np)
-             
              ((and (eq prep-word of)
                    (itypep np 'of-prototype-description)) ;; "variant of MEK"
               (setq np (bind-variable 'prototype pobj-referent np))
               (loop for pobj-ref-type in (indiv-type pobj-referent)
                     do (setq np (specialize-object np pobj-ref-type)))
               np)             
-             
              ((and (eq prep-word of)
+                   (itypep np 'attribute)) ;; "color of the block"
+              (find-or-make-individual 'quality-predicate
+                                       ;;:attribute (itype-of np) :item pobj-referent
+                                       :attribute np
+                                       :item pobj-referent))((and (eq prep-word of)
                    (itypep np 'attribute)) ;; "color of the block"
               (find-or-make-individual 'quality-predicate
                                        ;;:attribute (itype-of np) :item pobj-referent
@@ -2021,7 +2015,7 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                               (rebind-value copula-val (edge-referent copula-val-edge) copula))
            (edge-referent copula-edge))
           (t
-           (warn-or-error  "interpret-control-copula fails with subj=~s, copula=~s in ~s~%"
+           (warn  "interpret-control-copula fails with subj=~s, copula=~s in ~s~%"
                    subj copula
                    (current-string))
            nil))))
@@ -2225,7 +2219,9 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                  (assimilate-indirect-object vg obj))
                 (t (if obj-is-oc
                      (assimilate-object-comp vg obj)
-                     (assimilate-subcat vg :object obj))))))
+                     (assimilate-subcat vg :object obj)
+                     ;;(assimilate-object vg obj)
+                     )))))
     (cond
       (*subcat-test* result)
       (result
@@ -2247,9 +2243,8 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                         ((vp+ing vg+ing) category::vp+ing)
                         ((vp+ed vg+ed vp+past) category::vp+past)
                         ((to-comp) category::to-comp)
-                        (t (warn-or-error
-                            "bad verb form in assimilate-np-to-v-as-object -- interpreting as an NP? in ~s!"
-                            (current-string))
+                        (t (warn "bad verb form in assimilate-np-to-v-as-object -- interpreting as an NP? in ~s!"
+                                 (current-string))
                            category::n-bar)))
               :referent result)))
        result))))
@@ -2284,6 +2279,7 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
   (assimilate-clausal-comp vg-or-np thatcomp :thatcomp))
 
 (defun assimilate-clausal-comp (vg-or-np s-comp &optional (role :thatcomp))
+  ;;(push-debug `(,vg-or-np ,s-comp)) (break "what's what?")
   (when *subcat-test*
     (when (itypep vg-or-np 'time) ; block "on [Friday]+[that ...]"
       (return-from assimilate-clausal-comp nil)))
@@ -2440,6 +2436,29 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
        ;; composition do what it would otherwise normally do.
        predicate)
       
+      #+ignore
+      ((itypep wh-obj category::wh-question)
+       (let* ((wh (value-of 'wh wh-obj))
+              (wh-name (cat-symbol wh))
+              (open-var (open-core-variable predicate))
+              (default (value-of 'variable wh)))
+         ;;(lsp-break "open-var?")
+         (let ((q (extend-wh-object wh-obj :statement predicate)))
+           (when open-var
+             ;; This is essentially what the compose method call below
+             ;; is doing in the wh-pronoun case
+             (setq q (extend-wh-object q :variable open-var)))
+           (tr :wh-compose-wh-with-vp q)
+           (cond
+             #+ignore
+             ((not (preposed-aux?))
+              ;; On "Why the NH 2 terminal sequence can substitute" making this
+              ;; change blows out the stack, probably within reinterp-mention-using-bindings
+              (revise-left-edge-into-rule :form category::np))
+             ((top-level-wh-question?)
+              (revise-parent-edge :form category::question)))
+           q)))
+      
       ((itypep wh-obj 'wh-pronoun)
        ;; "which", "who", "where", ... See syntax/wh-word-semantic.lisp
        ;; which also has the relevant compose method.
@@ -2462,7 +2481,7 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
        ;; is unpredictable. Parent edge type is unchanged subj relative.
        predicate)
       
-      (t (warn-or-error "New type of wh-obj in compose-wh-with-vp: ~a~
+      (t (warn "New type of wh-obj in compose-wh-with-vp: ~a~
                 in~%~s" (itype-of wh-obj) (current-string))
          predicate))))
 
@@ -2494,6 +2513,11 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                            to-left))
              (prep-word (identify-preposition (parent-edge-for-referent)))
              (wh-obj (cond
+                       #+ignore
+                       ;; not sure why this was supposed to help
+                       ;; (make-wh-object wh) needs a :statement
+                       ((itypep wh 'wh-pronoun) ;; which
+                        (make-wh-object wh))
                        ((itypep wh 'partitive-relativizer) ;; each of which
                         wh)
                        (t wh))))
@@ -2615,9 +2639,7 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
     ;; e.g. "cancer patients who may not have been at risk themselves"
     (setq copular-pp (value-of 'statement copular-pp)))
   (cond ((null copular-pp)
-         ;; happens in "This analysis identified a group of tumours
-         ;; with good prognosis, almost all of which were of low grade
-         ;; and metastasis-free up to 5 years ( xref )."
+         ;; happens in "This analysis identified a group of tumours with good prognosis, almost all of which were of low grade and metastasis-free up to 5 years ( xref )."
          nil)
         ((is-basic-collection? copular-pp)
          (if *subcat-test*
@@ -2731,11 +2753,21 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
        (or variable
            (when obj (takes-adj? obj adjp t))))
       (t
+       ;;(push-debug `(,vp ,adjp)) (break "assimilate ~a" variable)
        (cond
          (variable  ;; prefer the verb binding
           (bind-variable variable adjp vp))
          (obj ;; there is an object to attach the adjp to
           (cond
+            #+ignore
+            ((itypep adjp 'attribute-value)
+             ;; Ignoring this because the has-attribute that it
+             ;; makes is not properly integrated
+             ;;
+             ;; adj-noun-compound will look up the variable for
+             ;; the attribute and bind it. We're simply predicating it.
+             (attribute-value-of-object adjp obj)
+             vp)
             ((takes-adj? obj adjp t)
              (let ((mod-obj (adj-noun-compound adjp obj (right-edge-for-referent))))
                (if mod-obj
@@ -2775,12 +2807,19 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
   ;; Otherwise we check for some anticipated cases and then
   ;; default to binding it to the variable modifier.
   (declare (special category::adjp-pp category::comparative))
+
+  ;;(push-debug `(,adjp ,pp)) (break "adjoin-pp-to-adjp")
   (unless (and adjp pp)
     (return-from adjoin-pp-to-adjp nil))
   (when (itypep pp 'collection)
     (warn-or-error "Adjoining adjp to a pp that is a collection")
     ;; See treatment in adjoin-pp-to-vg
     (return-from adjoin-pp-to-adjp nil))
+
+  #+ignore(format t "~&rule: ~a~%adjp edge: ~a~%pp edge: ~a~%"
+          (rule-being-interpreted)
+          (left-edge-for-referent)
+          (right-edge-for-referent))
   
   (let* ((adjp-edge (left-edge-for-referent))
          (adjp-form (edge-form adjp-edge))
@@ -2791,7 +2830,8 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                           prep-word
                           *pobj-edge*)
         (variable-to-bind-pp-to-head (right-edge-for-referent) adjp)
-      
+      ;;(push-debug `(,variable-to-bind ,pobj-referent ,prep-word ,*pobj-edge*))
+
       (let ((of (word-named "of"))
             (*in-scope-of-np+pp* prep-word))
         (declare (special *in-scope-of-np+pp*))
@@ -2803,6 +2843,7 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                    (or (itypep adjp-ref 'quantifier) ; "most of"
                        (itypep adjp-ref 'attribute)
                        ))
+              #+ignore(break "What licenses ~a and ~a" adjp pp) )
           
           (cond
             (variable-to-bind
@@ -2822,7 +2863,18 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
 
             ((and (eq prep-word of)
                   (itypep adjp-ref 'attribute))
-             (bind-variable 'owner pobj-referent adjp-ref)))))))))
+             (bind-variable 'owner pobj-referent adjp-ref))
+
+            #+ignore
+            (t ;;(break "no handler for ~a + ~a" adjp pp)
+             (let ((i (make-simple-individual category::adjp-pp
+                                              `((adjp ,adjp)
+                                                (pp ,pp)))))
+               (when (memq (form-cat-name adjp-form)
+                           '(comparative-adjective superlative-adjective
+                             comparative-adjp superlative-adjp))
+                 (setq i (specialize-object i category::comparative)))
+               i))))))))
 
 
 
@@ -2839,7 +2891,7 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
   (cond (*subcat-test*
          (not (eq (edge-rule (left-edge-for-referent)) 'adverb-comma)))
         (t (when *show-adverb-attachment-to-PPs*
-             (warn-or-error "after ~s attaching adverb ~s to PP ~s~%"
+             (warn "after ~s attaching adverb ~s to PP ~s~%"
                    (retrieve-surface-string (edge-just-to-left-of (left-edge-for-referent)))
                    (retrieve-surface-string adverb)
                    (retrieve-surface-string pp)))
@@ -2924,7 +2976,7 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                        (search-tree-for-referent (left-edge-for-referent) comp-indiv)))
                   (unless edge-over-comparative
                     ;; usually due to an sdm-span-segment constituent with :long-edge
-                    (warn-or-error "Could not locate edge over ~a under ~a in~% ~s"
+                    (warn-or-break "Could not locate edge over ~a under ~a in~% ~s"
                           comp-indiv (left-edge-for-referent)
                           (current-string))
                     (return-from maybe-extend-comparative-with-than-np nil))
