@@ -33,7 +33,5 @@ values of the parameters
 
 
 (defun operations-after-phase-one (sentence)
-  (sweep-debris-in-sentence sentence)
-  (when *introduce-likely-prep-args*
-    )
-  )
+  (experimental-settings)
+  (when *introduce-likely-prep-args* ))
