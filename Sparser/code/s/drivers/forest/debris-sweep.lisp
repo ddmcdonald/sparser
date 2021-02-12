@@ -17,12 +17,11 @@
 (defun sweep-debris-in-sentence (sentence)
   "Runs the debris sweeper over this sentence and integrates
    it into the paragraph level state layout"
-  ;;/// one step at a time
   (declare (special *trace-debris-sweep*))
   (sweep-debris-treetops sentence)
   (when *trace-debris-sweep*
-    (format t "~&~%")) ;; formatting the repl
-  )
+    (format t "~&~%"))) ;; formatting the repl
+  
 
 (defgeneric sweep-debris-treetops (sentence)
   (:method ((sentence sentence))
