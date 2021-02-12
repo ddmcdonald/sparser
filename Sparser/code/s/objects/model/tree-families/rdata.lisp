@@ -213,6 +213,7 @@ Should mirror the cases on the *single-words* ETF."
     :away\ from
     :as\ to
     :atop
+    :based\ on
     :behind
     :beneath
     :beyond
@@ -235,6 +236,7 @@ Should mirror the cases on the *single-words* ETF."
     :per
     :p-dir
     :pending
+    :prior\ to
     :regarding
     :relative\ to
     :till
