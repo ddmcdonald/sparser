@@ -478,15 +478,16 @@ some subcategory of the category 'name'
 
 (define-category name-something
   :specializes achievement
-  :mixins (attributing-verb) ;; actor, patient, attribute
-  :restrict ((attribute endurant)) ;; should be 'name' but "Daniel"=>bio-entity
+  ;;:mixins (attributing-verb) ;; actor, patient, attribute
+  ;;:restrict ((attribute endurant)) ;; should be 'name' but "Daniel"=>bio-entity
   :documentation "If there's an agent it's the entity
     that assigned the name to the patient (e.g. a parent
     or an NIH committee). The attribute per se is 'name'
     and with particular names ('RAS', 'David') as the
     values of the attribute."
   :realization  (:verb "name"
-                 ;; :etf (svoa) -- have to fix the realization scheme
+                       ;; :etf (svoa) -- have to fix the realization scheme
+                       :oc 
                        )) ;;-- need scheme for v+ed-a "called Daniel"
 ;; :eft svoa ;; subject,verb,object,a value -- like "paint them red"
 #| inherited from attributing-verb
