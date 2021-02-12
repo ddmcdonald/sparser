@@ -44,7 +44,9 @@
   (:s agent
    :by agent
    :to-comp result-or-purpose
-   :for result-or-purpose))
+   :for result-or-purpose
+   :based\ on reason
+))
 
 (define-category directed-activity-with-a-purpose
   :specializes activity-with-a-purpose
