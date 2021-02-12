@@ -453,10 +453,12 @@
               (:or bio-entity cell-entity molecular-location
                    disease
                    ;;measurement
-                   scalar-attribute
+                   ;;scalar-attribute
+                   related-thing
                    )))
   :realization
   (:o affected-process
+   :o affected-other
    :o object
    :o comlex-object
    :of affected-process
