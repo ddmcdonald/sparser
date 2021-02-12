@@ -287,11 +287,6 @@
        (TO top))
      :realization (:verb  "allocate" :s SUBJECT :o OBJECT :amongst AMONGST :among AMONG :for FOR :to TO))
 
-;;; found existing category ALTER in #P"SPARSER:BIO;TAXONOMY.LISP"
-
-(define-category alter-cl-verb :specializes comlex-verb
-     :realization (:verb  "alter" :s SUBJECT :o OBJECT))
-
 (define-category alternate :specializes comlex-verb
      :binds
       ((BETWEEN top)
