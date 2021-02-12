@@ -62,6 +62,7 @@
      :on timeperiod
      :over timeperiod
      :upon following
+     :prior\ to before
      ))
 
 
