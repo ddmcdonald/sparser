@@ -126,7 +126,7 @@ syntactic properties of three types.
           ;;"as well as"
           "as a consequence"
           "as though"
-          "based on"
+          ;;"based on" preposition, not conjunction
           "because"
           "because of"
           "besides"
@@ -161,7 +161,6 @@ syntactic properties of three types.
           "on the grounds that"
           "once"
           "otherwise"
-          "prior to"
           "rather than"
           "since"
           "so"

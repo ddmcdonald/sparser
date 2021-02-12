@@ -128,7 +128,7 @@ these are really prepositions, and should function as such
 (define-preposition "away from")
 (define-preposition "bar")
 (define-preposition "barring")
-
+(define-preposition "based on") ;; not a subordinating conjunction
 ;; (define-preposition "besides") -> subordinating conjunction
 (define-preposition "but not" )
 (define-preposition "by" )
@@ -217,6 +217,7 @@ these are really prepositions, and should function as such
 (define-preposition "pending")
 (define-preposition "per")
 (define-preposition "plus")
+(define-preposition "prior to")
 (define-preposition "preliminary to")
 (define-preposition "preparatory to")
 (define-preposition "previous to")
