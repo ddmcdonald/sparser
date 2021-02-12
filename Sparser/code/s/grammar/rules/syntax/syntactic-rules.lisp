@@ -1517,3 +1517,9 @@ similar to an oncogenic RasG12V mutation (9)."))
   :referent (:head right-edge
                    :function check-passive-and-add-tense/aspect left-edge right-edge))
 
+;;;;;;; "There is <np>"
+
+(def-form-rule (there-exists np)
+  :form s
+  :referent (:function create-there-is left-edge right-edge))
+

@@ -3052,3 +3052,9 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
              (itypep quant '(:or both all)))
     (or *subcat-test*
         (bind-dli-variable 'quantifier quant n))))
+
+;;;;;;;; "There is <np>"
+
+(defun  create-there-is (there-is np)
+  (or *subcat-test*
+      (bind-variable 'value np there-is)))
