@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2012-2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2012-2021  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "articles"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  December 2019
+;;;  Version:  February 2021
 
 ;; initiated 10/25/92 w/ mixin.  Given some content 5/17/95.  Added np cases
 ;; 4/1/05. Added common-noun 4/12/09. 10/14/12 Removed the 'that' rules 
@@ -153,22 +153,22 @@
 
 (defgeneric definite-np? (np)
   (:method ((e edge))
-    (let ((referent (edge-referent e)))
-      (when (individual-p referent)
-        (or
-         (and (value-of 'has-determiner referent)
-              (definite-determiner? (value-of 'has-determiner referent)))
-         (itypep referent 'these)
-         (itypep referent 'those)
-         (itypep referent 'pronoun/plural) ;; "they" "them"
-         ))))
+    (definite-np? (edge-referent e)))
+  (:method ((referent individual))
+    (or
+     (and (value-of 'has-determiner referent)
+          (definite-determiner? (value-of 'has-determiner referent)))
+     (itypep referent 'these)
+     (itypep referent 'those)
+     (itypep referent 'pronoun/plural) ;; "they" "them"
+     ))
   (:method ((m discourse-mention))
     (definite-np? (mention-source m))))
 
 (defgeneric indefinite-np? (np)
   (:method ((e edge))
     (and (individual-p (edge-referent e))
-         (value-of 'has-determiner (edge-referent e))
+         (value-of 'hsas-determiner (edge-referent e))
          (indefinite-determiner? (value-of 'has-determiner (edge-referent e)))))
   (:method ((m discourse-mention))
     (indefinite-np? (mention-source m))))
