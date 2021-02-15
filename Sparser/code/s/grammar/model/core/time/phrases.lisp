@@ -25,15 +25,15 @@
 (define-category prep-time
   :specializes time
   :instantiates time
-  :binds ((prep . (:primitive word))
+  :binds ((prep) ;:primitive word -- it's now a preposition
           (time . (:or time-unit weekday month year time date)))
   :realization ((:tree-family content-pp
                  :mapping ((type . :self)
                            (articulator . prep)
                            (item . time)
                            (pp . :self)
-                           (preposition . ("at" "by" "for" "in" "on"
-                                           "over")) 
+                           (preposition . (at by for in on
+                                           over)) 
                            (complement . (time-unit numeric-time amount-of-time ;month weekday
                                           year time date
                                           day-of-the-month month-of-the-year))))))
