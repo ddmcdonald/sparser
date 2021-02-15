@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1995,2013-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2013-2021  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "multiplier"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   3.4 March 2013
+;;;   Version:   February 2021
 
 ;; 3.0 (9/4/92 v2.3) Tweeked things to appreciate form rule ids
 ;;     (10/12) fixed typos
@@ -127,9 +127,13 @@ then we immediately return from the call without creating an edge.
              '(cellular-location cell-type cell-line
                protein transcription-factor ; protein
                protein-domain binding-domain ; protein-domain
+               fiscal-quarter ; core/time/fiscal
                )))
       (:nothing
        (setq *rule-categories-to-ignore* nil)))))
+
+;; (setup-vocabulary-suppression)
+;;   Re-run this function if you make a change during a session
 
 
 
