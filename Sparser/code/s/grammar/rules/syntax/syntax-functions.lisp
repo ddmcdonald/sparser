@@ -1686,8 +1686,6 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                         (or (itypep np 'measurement) ; "42% of all new cases"
                             (itypep np 'number) ; "two of them"
                             (itypep np 'quantifier)) ; "all of them" "the majority of them"
-                        (or (itypep np 'fractional-term) ; "half of them"
-                            (itypep np 'ordinal)) ; "a seventh of the pie"
                         (and (itypep np 'object-dependent-location)
                              (itypep pobj-referent 'partonomic))
                         (and (itypep np 'partonomic)
@@ -1736,16 +1734,8 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                    (or (itypep np 'measurement) ;; "42% of all new cases"
                        (itypep np 'number) ;; "two of them"
                        (itypep np 'quantifier))) ;; "all of them"
-              (if (definite-np? pobj-referent)
-                (partitive-check-and-swap np pp)
-                (define-or-find-individual 'amount-of-stuff
-                    :measurement np :stuff pobj-referent)))
+              (partitive-check-and-swap np pp))
 
-             ((and (eq prep-word of)
-                   (or (itypep np 'fractional-term) ; "half of them"
-                       (itypep np 'ordinal)))
-              (define-or-find-individual 'amount-of-stuff
-                  :measurement np :stuff pobj-referent))
 
              ((when (valid-method compose np pp)
                 ;; e.g. has-location + location : "the block at the left end of the row"
@@ -2838,14 +2828,10 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                           prep-word
                           *pobj-edge*)
         (variable-to-bind-pp-to-head (right-edge-for-referent) adjp)
-
+      
       (let ((of (word-named "of"))
             (*in-scope-of-np+pp* prep-word))
         (declare (special *in-scope-of-np+pp*))
-
-        #+ignore(format t "~&~%test? ~a variable: ~a~%left: ~a~%right: ~a~%"
-                *subcat-test* variable-to-bind
-                (left-edge-for-referent) (right-edge-for-referent))
         
         (if *subcat-test*
           (or variable-to-bind
