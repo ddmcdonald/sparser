@@ -1001,20 +1001,20 @@ val-pred-var (pred vs modifier - left or right?)
   ;; endurant we can bind. Going forward we should automatically
   ;; make a composite individual using a collection.
   ;; See notes on forming plurals in tree-families/morphology.lisp
-  (cond
-    (*subcat-test* (and number head ;; J34: "Histone 2B"
-                        ;; we get a bunch of number-sequence items for referents
-                        ;; e.g. "...3CLpro and PLpro.12,13 PLpro also behaves..."
-                        (not (itypep number 'number-sequence))
-                        (not (itypep head 'single-capitalized-letter))
-                        (not (itypep head 'year)))) ;; "December 4 2017"
-    (t
-     (setq head (individual-for-ref head))
-     (when (or (individual-p head) (category-p head))
-       (setq head (bind-dli-variable 'number number head)))
-     (when (eq 'possessive (edge-form-name (right-edge-for-referent)))
-       (revise-parent-edge :form (category-named 'possessive)))
-     head)))
+    (and number
+         head ;; J34: "Histone 2B"
+         ;; we get a bunch of number-sequence items for referents
+         ;; e.g. "...3CLpro and PLpro.12,13 PLpro also behaves..."
+         (not (itypep number 'number-sequence))
+         (not (itypep head 'single-capitalized-letter))
+         (not (itypep head 'year))) ;; "December 4 2017"
+      (t
+       (setq head (individual-for-ref head))
+       (when (or (individual-p head) (category-p head))
+         (setq head (bind-variable 'number number head)))
+       (when (eq 'possessive (edge-form-name (right-edge-for-referent)))
+         (revise-parent-edge :form (category-named 'possessive)))
+       head))))
 
 
 
@@ -1686,6 +1686,8 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                         (or (itypep np 'measurement) ; "42% of all new cases"
                             (itypep np 'number) ; "two of them"
                             (itypep np 'quantifier)) ; "all of them" "the majority of them"
+                        (or (itypep np 'fractional-term) ; "half of them"
+                            (itypep np 'ordinal)) ; "a seventh of the pie"
                         (and (itypep np 'object-dependent-location)
                              (itypep pobj-referent 'partonomic))
                         (and (itypep np 'partonomic)
@@ -1734,8 +1736,16 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                    (or (itypep np 'measurement) ;; "42% of all new cases"
                        (itypep np 'number) ;; "two of them"
                        (itypep np 'quantifier))) ;; "all of them"
-              (partitive-check-and-swap np pp))
+              (if (definite-np? pobj-referent)
+                (partitive-check-and-swap np pp)
+                (define-or-find-individual 'amount-of-stuff
+                    :measurement np :stuff pobj-referent)))
 
+             ((and (eq prep-word of)
+                   (or (itypep np 'fractional-term) ; "half of them"
+                       (itypep np 'ordinal)))
+              (define-or-find-individual 'amount-of-stuff
+                  :measurement np :stuff pobj-referent))
 
              ((when (valid-method compose np pp)
                 ;; e.g. has-location + location : "the block at the left end of the row"
@@ -2015,7 +2025,7 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                               (rebind-value copula-val (edge-referent copula-val-edge) copula))
            (edge-referent copula-edge))
           (t
-           (warn  "interpret-control-copula fails with subj=~s, copula=~s in ~s~%"
+           (warn-or-error  "interpret-control-copula fails with subj=~s, copula=~s in ~s~%"
                    subj copula
                    (current-string))
            nil))))
@@ -2219,9 +2229,7 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                  (assimilate-indirect-object vg obj))
                 (t (if obj-is-oc
                      (assimilate-object-comp vg obj)
-                     (assimilate-subcat vg :object obj)
-                     ;;(assimilate-object vg obj)
-                     )))))
+                     (assimilate-subcat vg :object obj))))))
     (cond
       (*subcat-test* result)
       (result
@@ -2243,8 +2251,8 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                         ((vp+ing vg+ing) category::vp+ing)
                         ((vp+ed vg+ed vp+past) category::vp+past)
                         ((to-comp) category::to-comp)
-                        (t (warn "bad verb form in assimilate-np-to-v-as-object -- interpreting as an NP? in ~s!"
-                                 (current-string))
+                            "bad verb form in assimilate-np-to-v-as-object -- interpreting as an NP? in ~s!"
+                            (current-string))
                            category::n-bar)))
               :referent result)))
        result))))
@@ -2830,11 +2838,14 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                           prep-word
                           *pobj-edge*)
         (variable-to-bind-pp-to-head (right-edge-for-referent) adjp)
-      ;;(push-debug `(,variable-to-bind ,pobj-referent ,prep-word ,*pobj-edge*))
 
       (let ((of (word-named "of"))
             (*in-scope-of-np+pp* prep-word))
         (declare (special *in-scope-of-np+pp*))
+
+        #+ignore(format t "~&~%test? ~a variable: ~a~%left: ~a~%right: ~a~%"
+                *subcat-test* variable-to-bind
+                (left-edge-for-referent) (right-edge-for-referent))
         
         (if *subcat-test*
           (or variable-to-bind
@@ -2842,8 +2853,7 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
               (and (eq prep-word of) ; partitive and component readings
                    (or (itypep adjp-ref 'quantifier) ; "most of"
                        (itypep adjp-ref 'attribute)
-                       ))
-              #+ignore(break "What licenses ~a and ~a" adjp pp) )
+                       )))
           
           (cond
             (variable-to-bind
