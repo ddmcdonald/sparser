@@ -94,7 +94,8 @@
      :in whole))
 
 (define-category  part :specializes component :realization (:noun "part"))
-(define-category fraction :specializes component :realization (:noun "fraction"))
+(define-category fraction-of :specializes component :realization (:noun "fraction")
+  :documentation "This is 'faction-of' to distinguish it from the number 'fraction'")
 (define-category subset :specializes component :realization (:noun "subset"))
 
 
