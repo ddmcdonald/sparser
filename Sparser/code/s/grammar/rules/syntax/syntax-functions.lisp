@@ -1001,6 +1001,7 @@ val-pred-var (pred vs modifier - left or right?)
   ;; endurant we can bind. Going forward we should automatically
   ;; make a composite individual using a collection.
   ;; See notes on forming plurals in tree-families/morphology.lisp
+  (if *subcat-test*
     (and number
          head ;; J34: "Histone 2B"
          ;; we get a bunch of number-sequence items for referents
@@ -1008,13 +1009,13 @@ val-pred-var (pred vs modifier - left or right?)
          (not (itypep number 'number-sequence))
          (not (itypep head 'single-capitalized-letter))
          (not (itypep head 'year))) ;; "December 4 2017"
-      (t
-       (setq head (individual-for-ref head))
-       (when (or (individual-p head) (category-p head))
-         (setq head (bind-variable 'number number head)))
-       (when (eq 'possessive (edge-form-name (right-edge-for-referent)))
-         (revise-parent-edge :form (category-named 'possessive)))
-       head))))
+    (else
+      (setq head (individual-for-ref head))
+      (when (or (individual-p head) (category-p head))
+        (setq head (bind-variable 'number number head)))
+      (when (eq 'possessive (edge-form-name (right-edge-for-referent)))
+        (revise-parent-edge :form (category-named 'possessive)))
+      head)))
 
 
 
@@ -2227,24 +2228,25 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
          ;; Revise the parent edges to reflect what we've observed
          (if (and (typep *current-chunk* 'chunk)
                   (member 'ng (chunk-forms *current-chunk*)))
-             (revise-parent-edge :category (itype-of obj)
-                                 :form category::n-bar
-                                 :referent result)
-             (revise-parent-edge
-              :category (if (itype vg 'collection)
-                                               (value-of 'type vg)
-                                               (itype-of vg))
-              :form (if (or indirect-object? oc-follows)
-                      category::vg
-                      (case (form-cat-name (parent-edge-for-referent))
-                        ((vg vp) category::vp)
-                        ((vp+ing vg+ing) category::vp+ing)
-                        ((vp+ed vg+ed vp+past) category::vp+past)
-                        ((to-comp) category::to-comp)
-                            "bad verb form in assimilate-np-to-v-as-object -- interpreting as an NP? in ~s!"
-                            (current-string))
-                           category::n-bar)))
-              :referent result)))
+           (revise-parent-edge :category (itype-of obj)
+                               :form category::n-bar
+                               :referent result)
+           (revise-parent-edge
+            :category (if (itype vg 'collection)
+                        (value-of 'type vg)
+                        (itype-of vg))
+            :form (if (or indirect-object? oc-follows)
+                    category::vg
+                    (case (form-cat-name (parent-edge-for-referent))
+                      ((vg vp) category::vp)
+                      ((vp+ing vg+ing) category::vp+ing)
+                      ((vp+ed vg+ed vp+past) category::vp+past)
+                      ((to-comp) category::to-comp)
+                      (t (warn-or-error 
+                          "bad verb form in assimilate-np-to-v-as-object.~
+                           interpreting as an NP? in ~s!" current-string)
+                         category::n-bar)))
+            :referent result)))
        result))))
 
 
@@ -2433,30 +2435,7 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
        ;; so instead we drop the relativizer on the floor and let the np + relative
        ;; composition do what it would otherwise normally do.
        predicate)
-      
-      #+ignore
-      ((itypep wh-obj category::wh-question)
-       (let* ((wh (value-of 'wh wh-obj))
-              (wh-name (cat-symbol wh))
-              (open-var (open-core-variable predicate))
-              (default (value-of 'variable wh)))
-         ;;(lsp-break "open-var?")
-         (let ((q (extend-wh-object wh-obj :statement predicate)))
-           (when open-var
-             ;; This is essentially what the compose method call below
-             ;; is doing in the wh-pronoun case
-             (setq q (extend-wh-object q :variable open-var)))
-           (tr :wh-compose-wh-with-vp q)
-           (cond
-             #+ignore
-             ((not (preposed-aux?))
-              ;; On "Why the NH 2 terminal sequence can substitute" making this
-              ;; change blows out the stack, probably within reinterp-mention-using-bindings
-              (revise-left-edge-into-rule :form category::np))
-             ((top-level-wh-question?)
-              (revise-parent-edge :form category::question)))
-           q)))
-      
+            
       ((itypep wh-obj 'wh-pronoun)
        ;; "which", "who", "where", ... See syntax/wh-word-semantic.lisp
        ;; which also has the relevant compose method.
@@ -2813,11 +2792,6 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
     (warn-or-error "Adjoining adjp to a pp that is a collection")
     ;; See treatment in adjoin-pp-to-vg
     (return-from adjoin-pp-to-adjp nil))
-
-  #+ignore(format t "~&rule: ~a~%adjp edge: ~a~%pp edge: ~a~%"
-          (rule-being-interpreted)
-          (left-edge-for-referent)
-          (right-edge-for-referent))
   
   (let* ((adjp-edge (left-edge-for-referent))
          (adjp-form (edge-form adjp-edge))
@@ -2864,22 +2838,8 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
 
             ((and (eq prep-word of)
                   (itypep adjp-ref 'attribute))
-<<<<<<< HEAD
-             (bind-variable 'owner pobj-referent adjp-ref))
-
-            #+ignore
-            (t ;;(break "no handler for ~a + ~a" adjp pp)
-             (let ((i (make-simple-individual category::adjp-pp
-                                              `((adjp ,adjp)
-                                                (pp ,pp)))))
-               (when (memq (form-cat-name adjp-form)
-                           '(comparative-adjective superlative-adjective
-                             comparative-adjp superlative-adjp))
-                 (setq i (specialize-object i category::comparative)))
-               i))))))))
-=======
              (bind-variable 'owner pobj-referent adjp-ref))))))))
->>>>>>> e04411313... added missing close paren
+
 
 
 
