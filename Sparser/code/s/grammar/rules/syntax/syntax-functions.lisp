@@ -2832,6 +2832,11 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
       (let ((of (word-named "of"))
             (*in-scope-of-np+pp* prep-word))
         (declare (special *in-scope-of-np+pp*))
+
+        #+ignore
+        (format t "~&~%subcat-test? ~a variable: ~a~%left: ~a~%right: ~a~%"
+                *subcat-test* variable-to-bind
+                (left-edge-for-referent) (right-edge-for-referent))
         
         (if *subcat-test*
           (or variable-to-bind
@@ -2859,6 +2864,7 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
 
             ((and (eq prep-word of)
                   (itypep adjp-ref 'attribute))
+<<<<<<< HEAD
              (bind-variable 'owner pobj-referent adjp-ref))
 
             #+ignore
@@ -2871,6 +2877,9 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                              comparative-adjp superlative-adjp))
                  (setq i (specialize-object i category::comparative)))
                i))))))))
+=======
+             (bind-variable 'owner pobj-referent adjp-ref))))))))
+>>>>>>> e04411313... added missing close paren
 
 
 
