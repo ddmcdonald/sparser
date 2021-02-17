@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1995,2013-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1995,2013-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "grammar;model:core:adjuncts:sequence:"
-;;;  version:  March 2019
+;;;  version:  February 2021
 
 ;; initiated 4/9/91 v1.8.2
 ;; 0.1 (12/15/92 v2.3) setting up for new semantics
@@ -32,9 +32,9 @@
   :index (:key name :permanent)
   :realization (:word name))
 
-;;;---------------
-;;; defining form
-;;;---------------
+;;;----------------
+;;; defining forms
+;;;----------------
 
 #| For the purpose of introducing brackets we need to subcategorize
    these into two sorts, roughly determiners and prepositions. |#
@@ -50,10 +50,10 @@
     :tree-families '(generic-np-premodifier)))
 
 
+;;--- prepositions
+
 ;; 10/11/16 moved rules to syntax/syntactic-rules.lisp
 ;; for "before", "after" as bare categories
-
-;;--- prepositions
 
 (defun define-sequencer/preposition (string)
   "Define a specialization of sequencer for this case. But just
@@ -82,6 +82,19 @@
         (make-corresponding-mumble-resource word :preposition object)
         (add-rule cfr object)
         object ))))
+
+
+;;--- semantically special prepositions
+
+(define-category relative-position
+  :specializes sequencer
+  :documentation "Tagging categoy These operate more like subordinate conjunctions in that they are operators
+ refering to the time of the perdurant in a clause ('before it gets too dark')
+ or over time-oriented NPs ('before lunch'). QPLS 9.38 & 14.12 ")
+
+(defun define-relative-position-preposition (string)
+  (define-function-term string 'preposition
+    :super-category 'relative-position))
 
 
 ;;;----------

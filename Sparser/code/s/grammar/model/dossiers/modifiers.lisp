@@ -261,6 +261,7 @@
 
 ;; initiated 5/27/94 v2.3
 
+;; See def. form: these are now adjectives
 (define-sequencer/determiner "last")
 (define-sequencer/determiner "previous")
 (define-sequencer/determiner "next") ;; adv? "next to"
@@ -272,9 +273,9 @@
   (define-sequencer/determiner "subsequent")
   (define-sequencer/determiner "following"))
 
-(define-sequencer/preposition "after")
-(define-sequencer/preposition "before")
-(define-sequencer/preposition "during")
+(define-relative-position-preposition "after")
+(define-relative-position-preposition "before")
+(define-relative-position-preposition "during")
 
 
 ;;;-----------
