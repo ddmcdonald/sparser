@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994-2005,2011-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2005,2011-2021 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "operations"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  September 2020
+;;;  version:  February 2021
 
 ;; initiated 9/28/94 v2.3.  Added Super-categories-of 3/3/95
 ;; Added Compute-daughter-relationships 6/21.  Added Super-category-has-variable-named
@@ -32,7 +32,7 @@
 ;;      category being identical to the supercategory. Same as super-categories of.
 ;; 1.2 (11/9/13) Added mixins check to the supercategory sweep. 
 ;;     (1/13/14) added it to category-inherits-type?
-;;     (3/3/14) Fixed bug where mixins on super-categories were being misseed and
+;;     (3/3/14) Fixed bug where mixins on super-categories were being missed and
 ;;      started caching superc's on the category's plist.
 ;;     (5/22/14) Wrote display-category-tree and some ancilary routines to print
 ;;      the whole set of categories nicely. 
@@ -58,13 +58,11 @@
     (referential-category item)
     (category item)))
 
-
 (defgeneric base-category-of-lp (lp)
   (:method ((lp lattice-point))
     (base-category-of-lp (lp-top-lp lp)))
   (:method ((lp top-lattice-point))
     (lp-category lp)))
-
 
 (defun corresponding-lattice-point (unit)
   (typecase unit
@@ -118,7 +116,7 @@
 (defun immediate-supers (c)
   "Return a category's super-catgory and mixins, reading only
    from the category object."
-  (let* ((lp (cat-lattice-position c)) ; 
+  (let* ((lp (cat-lattice-position c))
          (mixins (cat-mix-ins c)))
     (if (and (lattice-point-p lp)
              (lp-super-category lp))
@@ -221,7 +219,6 @@
              ;; we have a subtle bug with PARAGRAPH being the interpretation
              ;;  of a word, and also a form-category
              (not (member category::form-category category-list)))
-    
     ;; can be null with mixins
     (let ((top *top-of-category-tree*)) ;; shorten the name
       (assert (memq top category-list) ()
@@ -234,8 +231,8 @@
              
 (defun super-categories-of-list-type (category-list)
   "For each category in the list, append its super-categories.
-   Note that super-categories-of will include the category
-   itself as the first element of the list that it returns."
+   Note that super-categories-of will include the category itself
+   as the first element of the list that it returns."
   (loop for category in category-list
      append (super-categories-of category) into supers
      finally (return supers)))
@@ -248,21 +245,20 @@
    as they return."
   (let* ((mixins (cat-mix-ins c))
          
-         ;; Get the super categories of each local mixin
-         (mixin-supers
+         (mixin-supers ;; Get the super categories of each local mixin
           (when mixins ;; if there's one there will likely be several
             (super-categories-of-list-type mixins)))
-
-         ;; Does c have a super-category? This is the category
-         ;; directly above c. This line is single inheritance
+         
          (immediate-super-category
+          ;; Does c have a super-category? This is the category
+          ;; directly above c. This line is single inheritance
           (lp-super-category lp))
-
-         ;; If the supercategory of c has mixins we collect their
-         ;; supercategoies now, though we only fold them into
-         ;; the full list of supercategories after we've done
-         ;; the collection of the main line of inheritance.
+         
          (mixins-of-immediate-super-category
+          ;; If the supercategory of c has mixins we collect their
+          ;; supercategoies now, though we only fold them into
+          ;; the full list of supercategories after we've done
+          ;; the collection of the main line of inheritance.
           (when immediate-super-category
             (when (cat-mix-ins immediate-super-category)
               (super-categories-of-list-type
@@ -365,34 +361,9 @@
   mixins those are traversed independently."
   (when (null category) (error "Illegal null category."))
   (if (eq category reference-category)
-      t
+    t
+    (memq reference-category (super-categories-of category))))
 
-      (not (null (memq reference-category (super-categories-of category))))
-      #+ignore
-      (let* ((lp (cat-lattice-position category))
-             (super-category
-              ;; SBCL caught application of lp-super-category to non lattice point --
-              ;;  form categories are not in a lattice...
-              (when (lattice-point-p lp)
-                (lp-super-category lp)))
-             (mixins (cat-mix-ins category)))
-        (or
-         (when super-category
-           (when (eq category super-category)
-             (format t "~%~%The category ~a  has itself as a supercategory.~
-                     ~%Probably clobbered by an imported word with that spelling~%~%"
-                     category)
-             (return-from category-inherits-type? nil))
-           (if (eq super-category reference-category)
-               t
-               (category-inherits-type? super-category reference-category)))
-
-         (when mixins
-           (or (memq reference-category mixins)
-               (loop for m in mixins
-                     when (category-inherits-type? m reference-category)
-                     return m
-                     finally (return nil))))))))
 
 
 ;;;--------------------------------------------
@@ -441,10 +412,10 @@
           (break "Looked for a reclaim operation on the category that ~A~
                   ~%inherits from, ~A, but it doesn't have one either."
                  base-category superc)))
-; Letting it leak while we think of a better scheme as part of
-; integrating CLOS into the operations.
-;      (break "There is no reclaim operation defined for ~A~
-;              ~%and does not inherit from any other category" base-category)
+;; Letting it leak while we think of a better scheme as part of
+;; integrating CLOS into the operations.
+;;      (break "There is no reclaim operation defined for ~A~
+;;              ~%and does not inherit from any other category" base-category)
       )))
 
 
@@ -462,12 +433,10 @@
 (defun set-categorys-daughters (c daughters)
   (setf (gethash c *category->daughters*) daughters))
 
-
 (defun compute-daughter-relationships (list-of-categories)
   "When called from Sort-referential-categories-hierarchically it is
-  ;; taking the entire set of categories and making a pairwise record
-  ;; of each category's daughters.
-"
+   taking the entire set of categories and making a pairwise record
+   of each category's daughters."
   (let ( superc  toplevel-categories )
     (dolist (c list-of-categories)
       (setq superc (cat-lattice-position c))
@@ -476,27 +445,51 @@
         (push c toplevel-categories)))
     toplevel-categories ))
 
-
 (defun re-compute-daughter-relationships (list-of-categories)
-  (setq *category->daughters* (make-hash-table :test #'eq))
+  "Intended to be called by-hand to reset the table"
+  (clrhash *category->daughters*)
   (compute-daughter-relationships list-of-categories))
 
-;;;-------------------------------------------------------------
-;;------ recomputing daughter (subcategory) info down from top
-;; This old scheme is flawed in non-obvious way. 
 
-(defgeneric subcategories-of (category))
 
-(defmethod subcategories-of ((name symbol))
-  (subcategories-of (category-named name :break-if-none)))
+(defgeneric subcategories-of (category)
+  (:documentation "Use the lattice structure to return the immediate
+   subcategories (if any) of the category")
+  (:method ((name symbol))
+    (subcategories-of (category-named name :break-if-none)))
+  (:method ((c category))
+    (let ((lp (cat-lattice-position c)))
+      ;;(unless lp (error "No lattice point on ~a" c))
+      (when lp
+        (let ((pairs (lp-subtypes lp)))
+          ;; (<category> <its lattice point>)
+          (loop for pair in pairs collect (car pair)))))))
 
-(defmethod subcategories-of ((c category))
-  (let ((lp (cat-lattice-position c)))
-    ;;(unless lp (error "No lattice point on ~a" c))
-    (when lp
-      (let ((pairs (lp-subtypes lp)))
-        ;; (<category> <its lattice point>)
-        (loop for pair in pairs collect (car pair))))))
+
+;;--- leaves -- daughters without daughters
+
+(defun identify-the-leaf-categories ()
+  (let ((accumulator
+         (loop for c in *referential-categories*
+            when (null (subcategories-of c))
+            collect c)))
+    (setq *the-leaf-categories* (sort-categories accumulator))
+    (length accumulator)))
+
+(defgeneric leaf-category? (item)
+  (:documentation "Is it included on *the-leave-categories* list")
+  (:method ((cat-name symbol))
+    (leaf-category? (category-named cat-name :break-if-none)))
+  (:method ((c category))
+    (when (memq c *the-leaf-categories*)
+      c)))
+  
+
+
+;;;--------------------------
+;;; displaying category tree
+;;;--------------------------
+;; See also save-subcat-tree-to-file in interface/grammar/display-ontology.lisp
 
 (defvar *category-was-displayed* (make-hash-table :size 600)
   "Check list used by display-category-tree")
@@ -539,7 +532,6 @@
                      (member (get-tag :source c) '(:comlex :morphology))))
           (initialize-indentation)
           (display-with-subcs c stream depth max-width with-parens  with-vars))))))
-
 
 
 (defun display-with-subcs (category stream
