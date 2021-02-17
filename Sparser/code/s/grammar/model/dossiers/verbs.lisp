@@ -102,7 +102,18 @@ come
                             (part adval
                              (along in about around back over out to up))
                             (intrans)))))
-|#
+ |#
+
+(define-category arrive
+  :specializes move
+  :mixins (basic-intransitive) ; subject is patient
+  :binds ((on top)
+          (from top)
+          (at top)
+          (in top))
+  :realization (:verb "arrive"
+                :on on :from from :at at :in in))
+
   
 
 (define-category ask

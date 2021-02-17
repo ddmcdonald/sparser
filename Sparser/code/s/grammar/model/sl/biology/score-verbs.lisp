@@ -407,6 +407,7 @@
       ((FOR top))
      :realization (:verb  "arrange" :s SUBJECT :o OBJECT :for FOR))
 
+#+ignore ;; made a proper definition in the verbs dossier
 (define-category arrive :specializes comlex-verb
      :binds
       ((ON top)
