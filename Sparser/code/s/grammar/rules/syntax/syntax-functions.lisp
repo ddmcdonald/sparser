@@ -1805,16 +1805,18 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
 (defparameter *warn-about-optional-objects* nil
   "Set to T to show cases where we have a parse in which a supposed transitive verb has no parsed object.")
 
-;;////// adapt to encountering a subordinate-clause individual
-;;  instead of a variable binding
+;;===========================================================
 (defun assimilate-subject-to-subordinate-clause (subj vp)
-  ;;(print `(subordinate-conjunction it ,(value-of 'subordinate-conjunction vp)))
+  ;; target of np + subordinate-clause
   (if (or (null  (value-of 'subordinate-conjunction vp))
           (not (member (pname (value-of 'word (value-of 'subordinate-conjunction vp)))
-                  '("moreover" "neither" "since" "then" "therefore" "thus")
-                  :test #'equal)))
-      nil
-      (assimilate-subject subj vp)))
+                       '("moreover" "neither" "since" "then" "therefore" "thus")
+                       :test #'equal)))
+    nil
+    (cond
+      ((plausible-time+event? subj vp)
+       (break "plausible"))
+      (t (assimilate-subject subj vp)))))
 
 (defun likely-wh-aux-inversion? (subj vp)
   (and (or (itypep subj '(:or what where when how why))
@@ -2565,13 +2567,14 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
   (if *subcat-test*
     (or (valid-method analyze-pp prep pobj) ; had been compose
         (not (itypep prep category::prepositional-phrase)))
-    (else
+    (unless (itypep prep 'relative-position) ; "before" "after"
+      ;; Relative-positions want to form subordinate clauses.
       (setq prep (individual-for-ref prep))
       (or (apply-valid-method analyze-pp prep pobj) ; vs. compose
           (make-simple-individual
            category::prepositional-phrase
            `((prep ,prep) (pobj ,pobj)))))))
-  
+
 
 
 (defun make-prep-comp (prep complement)
