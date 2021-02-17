@@ -20,6 +20,7 @@
 (in-package :sparser)
 
 ;;(lload "categories;structure")
+;;(lload "categories;ops structure")
 ;;  already loaded by [model;] level
 
 (lload "categories;printing")
