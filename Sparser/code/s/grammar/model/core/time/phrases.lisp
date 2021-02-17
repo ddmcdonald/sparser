@@ -66,10 +66,3 @@
     :head :left-edge
     :referent (:function add-time-to-event left-edge right-edge))
 
-
-;;;----------
-;;; oddities
-;;;----------
-
-(def-cfr time (time "ago"))
-
