@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993,2010-2011,2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993,2010-2011,2018-2011 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "relative moments"
 ;;;   Module:  "model;core:time:"
-;;;  version:  March 2018
+;;;  version:  February 2021
 
 ;; initiated 7/8/93 v2.3.
 ;; 0.1 (5/24/94) redid the rdata as 'time-deictic'. 6/26 fixed omission of
@@ -19,9 +19,10 @@
 ;;; object
 ;;;--------
 
-;; These are variations on the pure temporal anaphors defined in [time;anaphors].
-;; Those are standalone, these form up into phrases or if they do appear by themselves
-;; there is an implicit complement accessible from the context.  
+;; These are variations on the pure temporal anaphors defined in
+;; [time;anaphors] which are standalone, these adverbs form up into
+;; phrases, and if they do appear by themselves there is an implicit
+;; complement accessible from the context.
 
 
 ;; These take complements
@@ -41,7 +42,7 @@
 
 ;; These are the phrases formed from the adverbs
 ;;
-(define-category  relative-time
+(define-category  relative-time ;; "next month"
   :instantiates time
   :specializes time
   :binds ((relativizer (:or relative-time-adverb approximator sequencer))
@@ -66,7 +67,31 @@
     :reference-time reference))
 
 
-#| being overhauled 5/30/14
+;;--- times relative to an event
+
+;; "seven days before he arrives"
+(define-category offset-time
+  :instantiates time
+  :specializes time
+  :binds ((offset amount-of-time)
+          (relation) ;/// refine the sequencers to this set
+          (reference-event))
+  :documentation "Picks out a point or an interval in time
+ depending on the identity of the relation (before, during) and
+ the eventuality that it is relative to ('before I get to Phoenix')")
+
+(defun plausible-time+event? (time event)
+  (when (or (itypep time 'amount-of-time) ; "seven days"
+            (itypep time 'time-unit)) ; "the week"
+    (when (itypep event 'subordinate-clause)
+      (let ((operator (value-of :conj event)))
+        (define-or-find-individual 'offset-time
+            :offset time
+            :relation operator
+            :reference-event event)))))
+
+
+#| Calculation -- needs sancition, or an additional 'value' slot
 (def-cfr time (sequencer/determiner  ;; e.g. "next"
                weekday)
   :form np
@@ -80,6 +105,7 @@
 ;;; Computing position in temporal sequences
 ;;;------------------------------------------
 
+;;/// No callers s
 (defun relative-time-value (category before/after)
   ;; The day after today -- the unit after current
   ;; or before, or two days before, ...
@@ -94,7 +120,6 @@
          (reference
           (time-current-value index category-name)))
     (push-debug `(,index ,before/after ,reference ,cycle-length))
-
     ;; That gives us an individual, e.g., month
     ;; and we need is position in its sequence.
     ;;/// perhaps collapse all variables that bind ordinals
@@ -105,8 +130,6 @@
              (category::month
               (value-of 'position-in-year reference)))))
       (push-debug `(,ordinal ,sequence))
-
-
       (break "next"))))
 
 
