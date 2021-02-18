@@ -28,6 +28,7 @@
 (define-category  country
   :instantiates  self
   :specializes geographical-region
+  :mixins (related-thing)
   :lemma (:common-noun "country")
   :binds ((name :primitive word)
           (adjective-form  :primitive word)
