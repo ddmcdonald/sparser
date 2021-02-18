@@ -2567,8 +2567,7 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
   (if *subcat-test*
     (or (valid-method analyze-pp prep pobj) ; had been compose
         (not (itypep prep category::prepositional-phrase)))
-    (unless (itypep prep 'relative-position) ; "before" "after"
-      ;; Relative-positions want to form subordinate clauses.
+    (else
       (setq prep (individual-for-ref prep))
       (or (apply-valid-method analyze-pp prep pobj) ; vs. compose
           (make-simple-individual
