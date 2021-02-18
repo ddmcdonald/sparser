@@ -2372,11 +2372,13 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
 
 
 ;;  in what+s where+S, when+S, etc.
+;;=====================================
 
+;;=================================================
 (defun make-subordinate-clause (conj clause)
   (declare (special category::pp conj clause))
   (if *subcat-test*
-    ;; some subordinate conjunctions like SO cannot apply between subject and vp
+    ;; some subordinate conjunctions like "so" cannot apply between subject and vp
     (not (and (member (form-cat-name (right-edge-for-referent))
                       '(vp+ed vg+ed vp vg))
               (member (edge-cat-name (left-edge-for-referent))
