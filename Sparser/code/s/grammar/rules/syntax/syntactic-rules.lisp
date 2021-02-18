@@ -628,6 +628,12 @@
        `(def-syntax-rule (,n subordinate-clause)
 	   :head :right-edge
 	   :form subordinate-clause
+	   :referent (:function assimilate-subject-to-subordinate-clause left-edge right-edge)))
+
+     (eval
+       `(def-syntax-rule (,n subordinate-s)
+	   :head :right-edge
+	   :form subordinate-clause
 	   :referent (:function assimilate-subject-to-subordinate-clause left-edge right-edge))))
 
 
