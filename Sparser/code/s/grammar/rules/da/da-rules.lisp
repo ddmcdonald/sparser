@@ -24,7 +24,9 @@
   ;; a compact encoding of edge construction and handling
   ;; decoded by standardized-apply-da-function-action the master
   ;; action handler
-  category form referent target dominating direction preposed)
+  category form referent target dominating direction preposed
+  function ;; used when there are two ways to interpret the result of a da-rule
+  )
 
 (defun display-edge-spec (spec &optional (stream *standard-output*))
   (format stream "~&edge-spec~

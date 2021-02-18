@@ -420,6 +420,7 @@
               :form (edge-form edge-taking-adjunct)
               :target edge-taking-adjunct
               :direction :right
+              :function 'add-adjunctive-pp
               :referent (bind-dli-variable 'adjunctive-modifier
                                            pobj-referent
                                            (edge-referent edge-taking-adjunct)
