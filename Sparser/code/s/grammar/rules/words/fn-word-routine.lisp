@@ -161,7 +161,8 @@
             ((superlative superlative-adjective)
              *comparative-brackets*)
             ((adjective spatial-adjective temporal-adjective) *adjective-brackets*)
-            ((det approximator sequencer quantifier)
+            ((det approximator sequencer quantifier
+              subordinate-conjunction)
              *default-determiner-brackets*)
             (standalone *standalone-brackets*)
             ((preposition #|spatial-preposition spatio-temporal-preposition|#)
