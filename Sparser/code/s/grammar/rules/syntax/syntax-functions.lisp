@@ -1808,15 +1808,17 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
 ;;===========================================================
 (defun assimilate-subject-to-subordinate-clause (subj vp)
   ;; target of np + subordinate-clause
-  (if (or (null  (value-of 'subordinate-conjunction vp))
-          (not (member (pname (value-of 'word (value-of 'subordinate-conjunction vp)))
+  (if *subcat-test*
+    (and (value-of 'subordinate-conjunction vp)
+         (not (member (pname (value-of 'word (value-of 'subordinate-conjunction vp)))
                        '("moreover" "neither" "since" "then" "therefore" "thus")
                        :test #'equal)))
-    nil
     (cond
       ((plausible-time+event? subj vp)
-       (break "plausible"))
+       (make-offset-time subj vp))
       (t (assimilate-subject subj vp)))))
+
+
 
 (defun likely-wh-aux-inversion? (subj vp)
   (and (or (itypep subj '(:or what where when how why))

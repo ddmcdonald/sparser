@@ -73,7 +73,7 @@
 (define-category offset-time
   :instantiates time
   :specializes time
-  :binds ((offset amount-of-time)
+  :binds ((offset (:or amount-of-time time-unit))
           (relation) ;/// refine the sequencers to this set
           (reference-event))
   :documentation "Picks out a point or an interval in time
@@ -83,12 +83,15 @@
 (defun plausible-time+event? (time event)
   (when (or (itypep time 'amount-of-time) ; "seven days"
             (itypep time 'time-unit)) ; "the week"
-    (when (itypep event 'subordinate-clause)
-      (let ((operator (value-of :conj event)))
-        (define-or-find-individual 'offset-time
-            :offset time
-            :relation operator
-            :reference-event event)))))
+    (value-of 'subordinate-conjunction event)))
+
+(defun make-offset-time (time event)
+  (let ((operator (value-of 'subordinate-conjunction event))
+        (i (copy-indiv-minus-variable event 'subordinate-conjunction)))
+    (define-or-find-individual 'offset-time
+        :offset time
+        :relation operator
+        :reference-event i)))
 
 
 #| Calculation -- needs sancition, or an additional 'value' slot
