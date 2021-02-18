@@ -28,6 +28,7 @@
      :realization (:noun  "portion"))
 (define-category superfamily :specializes group :realization (:noun "superfamily"))
 (define-category cluster :specializes group :realization (:noun "cluster"))
+(define-category combination :specializes group :realization (:noun "combination"))
 (define-category share-part :specializes group :realization (:noun  "share"))
 
 (define-category total :specializes group
