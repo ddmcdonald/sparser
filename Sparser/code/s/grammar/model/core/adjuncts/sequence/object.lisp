@@ -88,12 +88,23 @@
 
 (define-category relative-position
   :specializes sequencer
-  :documentation "Tagging categoy These operate more like subordinate conjunctions in that they are operators
- refering to the time of the perdurant in a clause ('before it gets too dark')
- or over time-oriented NPs ('before lunch'). QPLS 9.38 & 14.12 ")
+  :documentation "Tagging category. These operate more like subordinate conjunctions
+ in that they are operators refering to the time of the perdurant in a clause
+ ('before it gets too dark') or over time-oriented NPs ('before lunch').
+ The temporal force of the category is the same in both cases (or close enough)
+ and substantive question is where and how these two kinds of constructions
+ (pp vs subordinate-clause) are sorted out. We could try disambiguating two edges
+ over the word, or we could get tricky in the rule competition, or we could
+ come up with a new part of speech label and adjust the rules to fix.
+ See QPLS 9.38 & 14.12 for the discussion of the grammar")
 
 (defun define-relative-position-preposition (string)
-  (define-function-term string 'preposition
+  "Among those choices this is opting to pin the terms to one reading (the one
+   that wants to front clauses). It is implicitly demanding that we state the
+   pp-forming cases with a new set of rules. In both cases the complements
+   are associated with time and sequence, and anything that shunts them through
+   that sort of check would be a good thing."
+  (define-function-term string 'subordinate-conjunction
     :super-category 'relative-position))
 
 
