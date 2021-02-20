@@ -11,6 +11,8 @@
 
 (in-package :sparser)
 
+(defun define-roles ()) ; for meta-dot
+
 (define-mixin-category with-agent
   :specializes thematic-role
   :binds ((agent (:or physical-agent social-agent)))

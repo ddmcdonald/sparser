@@ -14,17 +14,13 @@ be biology specific, since they aren't. |#
 
 (define-adverb "a bit more")
 (define-adverb "even")
-(define-adverb "primarily") ;; keyword: ENDS-IN-LY
 
 
-
-(define-adverb "in part")
 (define-adverb "namely")
 
 
 
 (define-adverb "readily")
-(define-adverb "pretty" :super-category 'intensifier)
 
 ;; want to force the super-category of "linguistic" to NOT be MODIFIER
 (adj "linguistic" :super abstract)
@@ -297,10 +293,7 @@ be biology specific, since they aren't. |#
 (adj "further" :super bio-predication)
 (define-adverb "further")
 
-(define-category bio-initial :specializes bio-predication
-   :realization (:adj "initial"))
-;; Avoid smashing the category 'initial' in core/names/initials.lisp
-;; Usage in bio appears to be as a sequencer: first vs. subsequent
+
 
 (adj "least" :super bio-predication)
 

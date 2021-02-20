@@ -128,6 +128,7 @@ then we immediately return from the call without creating an edge.
                protein transcription-factor ; protein
                protein-domain binding-domain ; protein-domain
                fiscal-quarter ; core/time/fiscal
+               amino-acid ; "his"
                )))
       (:nothing
        (setq *rule-categories-to-ignore* nil)))))

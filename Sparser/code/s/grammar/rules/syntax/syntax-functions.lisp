@@ -782,6 +782,16 @@ val-pred-var (pred vs modifier - left or right?)
 
 ;;--- partitives
 
+#| An essential semantic fact about the partitive construction
+ is that it doesn't change the type of the item it's applied to.
+ "a cup of sugar" is still sugar, it's not some sort of cup.
+ Since this construction typically appears as np+of-pp, which is
+ headed by the np, we have to swap the head to the complement of
+ the preposition ('swap-rule-head').  These constructions also
+ interact a great deal with other sorts of specifiers, we can need
+ to do some tailored arrangement ('sort-out-specifier/of').
+|#
+
 (defun partitive-check-and-swap (spec right-daughter)
   "The essential operation of installing a partitive, particularly swapping
    what the head is. The right side will start as a pp, the right-daughter
@@ -812,6 +822,7 @@ val-pred-var (pred vs modifier - left or right?)
             ;; (break "create-partitive spec = ~a" spec) 
             (partitive-check-and-swap spec right-daughter))))))))
 
+
 (defun create-partitive-wh-relativizer (quantifier of-pp)
   ;; e.g. "three of which"  of-pp should be a relativized-prepositional-phrase
   ;; and the quantifier is a quantifier or a number
@@ -826,7 +837,8 @@ val-pred-var (pred vs modifier - left or right?)
                             :form (category-named 'wh-pronoun))
         i)))
     
-;; prototype-of rule
+;;---- prototype-of rule
+
 (defun create-prototype-of-np (prototype-word of-pp)
   (cond (*subcat-test* (not (eq (edge-form-name (right-edge-for-referent)) 'preposition)))
         (t
@@ -834,6 +846,8 @@ val-pred-var (pred vs modifier - left or right?)
            (setq prototype-word (bind-variable 'prototype prototype-np prototype-word))
            (revise-parent-edge :category (itype-of prototype-np))
            (specialize-object prototype-word (itype-of prototype-np))))))
+
+
 ;;--- determiners
 
 (defparameter *dets-seen* nil "Keep track of what kinds of new 'determiners' we get")
@@ -1686,7 +1700,10 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                         (itypep np 'of-prototype-description)
                         (or (itypep np 'measurement) ; "42% of all new cases"
                             (itypep np 'number) ; "two of them"
-                            (itypep np 'quantifier)) ; "all of them" "the majority of them"
+                            (itypep np 'quantifier) ; "all of them" "the majority of them"
+                            (itypep np 'fractional-term) ; "half of them"
+                            (itypep np 'ordinal) ; "a seventh of the pie"
+                            (itypep np 'amount-of-time)) ; "40 days of rain"
                         (and (itypep np 'object-dependent-location)
                              (itypep pobj-referent 'partonomic))
                         (and (itypep np 'partonomic)
@@ -1701,24 +1718,20 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
               (collect-subcat-statistics np prep-word variable-to-bind pp)
               (setq np (bind-dli-variable variable-to-bind pobj-referent np))
               np)
+             
              ((and (eq prep-word of)
                    (itypep np 'of-prototype-description)) ;; "variant of MEK"
               (setq np (bind-variable 'prototype pobj-referent np))
               (loop for pobj-ref-type in (indiv-type pobj-referent)
                     do (setq np (specialize-object np pobj-ref-type)))
-              np)             
+              np)
+             
              ((and (eq prep-word of)
                    (itypep np 'attribute)) ;; "color of the block"
               (find-or-make-individual 'quality-predicate
-                                       ;;:attribute (itype-of np) :item pobj-referent
-                                       :attribute np
-                                       :item pobj-referent))((and (eq prep-word of)
-                   (itypep np 'attribute)) ;; "color of the block"
-              (find-or-make-individual 'quality-predicate
-                                       ;;:attribute (itype-of np) :item pobj-referent
                                        :attribute np
                                        :item pobj-referent))
-
+             
              ((and (eq prep-word of)
                    (itypep np 'object-dependent-location)
                    (itypep pobj-referent 'partonomic)) ;; "bottom of the stack"
@@ -1735,8 +1748,18 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                    (or (itypep np 'measurement) ;; "42% of all new cases"
                        (itypep np 'number) ;; "two of them"
                        (itypep np 'quantifier))) ;; "all of them"
-              (partitive-check-and-swap np pp))
+              (if (definite-np? pobj-referent)
+                (partitive-check-and-swap np pp)
+                (make-an-amount-of-stuff np pobj-referent)))
 
+             ((and (eq prep-word of)
+                   (or (itypep np 'fractional-term) ; "half of them"
+                       (itypep np 'ordinal))) ; "a seventh of the pie"
+              (make-an-amount-of-stuff np pobj-referent))
+
+             ((and (eq prep-word of)
+                   (itypep np 'amount-of-time))
+              (make-temporal-amount-of-stuff np pobj-referent))
 
              ((when (valid-method compose np pp)
                 ;; e.g. has-location + location : "the block at the left end of the row"
@@ -1757,7 +1780,7 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
              
              ((maybe-extend-premod-adjective-with-pp np pp))
              
-             (t ;;(break "fell through")
+             (t (break "fell through")
               (when *force-modifiers*
                 (setq np (bind-variable 'modifier pobj-referent np)))
               np ))))))))
@@ -1805,7 +1828,6 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
 (defparameter *warn-about-optional-objects* nil
   "Set to T to show cases where we have a parse in which a supposed transitive verb has no parsed object.")
 
-;;===========================================================
 (defun assimilate-subject-to-subordinate-clause (subj vp)
   ;; target of np + subordinate-clause
   (if *subcat-test*
@@ -2374,9 +2396,8 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
 
 
 ;;  in what+s where+S, when+S, etc.
-;;=====================================
 
-;;=================================================
+
 (defun make-subordinate-clause (conj clause)
   (declare (special category::pp conj clause))
   (if *subcat-test*

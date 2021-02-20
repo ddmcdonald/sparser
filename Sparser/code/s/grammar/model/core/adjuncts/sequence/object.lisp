@@ -39,9 +39,9 @@
 #| For the purpose of introducing brackets we need to subcategorize
    these into two sorts, roughly determiners and prepositions. |#
 
-;;--- determiners
+;;--- determiners (now actually adjectives
 
-(defun define-sequencer/determiner (string) ;; no longer make it a determiner
+(defun define-sequencer/determiner (string &key category documentation)
   (define-function-term string 'adjective
     :super-category 'sequencer
     :rule-label 'sequencer

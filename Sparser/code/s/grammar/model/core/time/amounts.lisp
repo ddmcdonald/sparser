@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994-1996,2018  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2018-2021  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "amounts"
 ;;;   Module:  "model;core:time:"
-;;;  version:  March 2018
+;;;  version:  February 2021
 
 ;; initiated 4/27/94 v2.3. 1/1/96 Added fractions and a few explicit rules.
 ;; 2/10/10 Something has changed such that the period => "period" rule is
@@ -15,6 +15,7 @@
 
 (define-category amount-of-time   ;; "three months"
   :specializes amount-of-stuff
+  :mixins (time)
   :instantiates self
   :binds ((units . time-unit)
           (quantity  :or quantity number))
@@ -29,13 +30,52 @@
                     (result-type . :self))))
 
 
-
 (defun range-of-time (hyphenated-number time-unit)
   ;; called from syntax-function so these are individuals
   (let ((range (convert-hyphenated-number hyphenated-number)))
     (define-or-find-individual 'amount-of-time
         :units time-unit
         :quantity range)))
+
+
+;;;----------------------
+;;; fractions of amounts
+;;;----------------------
+
+(define-category fraction-of-amount-of-time  ;; "the first three months"
+  ;; by analogy to ordinal-fraction
+  :specializes amount-of-time
+  :instantiates self
+  :binds ((selector . ordinal)
+          (portion . amount-of-time))
+  :index (:sequential-keys portion selector))
+
+(def-cfr fraction-of-amount-of-time (ordinal amount-of-time)
+  :form n-bar
+  :referent (:instantiate-individual fraction-of-amount-of-time
+             :with (selector left-edge
+                    portion right-edge)))
+
+
+;;;----------------------------------
+;;; temporally specified quantities
+;;;----------------------------------
+
+(define-category temporal-amount-of-stuff
+  :specializes amount-of-stuff
+  ;;  ?? :mixins (time)
+  :instantiates self
+  :restrict ((measurement amount-of-time))
+  :documentation "Just like ordinary measurement of stuff
+    except we're measuring with time.")
+
+(defun make-temporal-amount-of-stuff (time stuff)
+  "Abstracting the creation of this to accomodate conceptual sifts"
+  (define-or-find-individual 'temporal-amount-of-stuff
+      :measurement time
+      :stuff stuff))
+
+
 
 
 #| Is this really an NP?  Given "the six months ended Oct. 31, 1995"
@@ -62,24 +102,4 @@
 ;  :form np-head
 ;  :referent amount-of-time )
 
-
-
-
-;;;----------------------
-;;; fractions of amounts
-;;;----------------------
-
-(define-category fraction-of-amount-of-time  ;; "the first three months"
-  ;; by analogy to ordinal-fraction
-  :specializes amount-of-time
-  :instantiates self
-  :binds ((selector . ordinal)
-          (portion . amount-of-time))
-  :index (:sequential-keys portion selector))
-
-(def-cfr fraction-of-amount-of-time (ordinal amount-of-time)
-  :form n-bar
-  :referent (:instantiate-individual fraction-of-amount-of-time
-             :with (selector left-edge
-                    portion right-edge)))
 

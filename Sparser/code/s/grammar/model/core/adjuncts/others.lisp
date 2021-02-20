@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994-1997,2013-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1997,2013-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "others"
 ;;;    Module:  "grammar;model:core:adjuncts:"
-;;;   version:  February 2017
+;;;   version:  February 2021
 
 ;; initiated 1/18/13. Goes with the modifiers file in dossiers in that it
 ;; provides def-forms for all the other sorts of standard modifiers that
@@ -47,12 +47,38 @@
 ;; a verb. Imposes a reading on the verb's event that it denotes 
 ;; a process.
 
-(defun define-position-in-process (string)
-  (define-function-term string 'adverb
-    :super-category 'adverbial
-    :brackets '( ].adverb  adverb.[ )
-    :tree-families '(pre-verb-adverb post-verb-adverb sentence-adverb)))
+(defun define-position-in-process (string &key
+                                            ((:adj string-for-adjective))
+                                            form
+                                            super-category documentation)
+  "If there is both a adverb and an adjective, drop out of the function-term
+   machinery and do it by hand. ///If we do a lot of this sort of thing
+   we should adapt the mechinery to accomodate it."
+  (if (null string-for-adjective)
+    (define-adverb string 
+        :form (or form 'adverb)
+        :super-category (or super-category 'sequencer)
+        :documentation documentation)
 
+    (let* ((category-name (merged-adj-adv-cat-name string-for-adjective))
+           (superc (or super-category 'modifier))
+           (form `(define-category ,category-name
+                     :specializes ,superc
+                     :instantiates :self
+                     :realization (:adj ,string-for-adjective
+                                   :adv ,string)))
+           (category (eval form)))
+      ;; That creates rules for both forms, with the constructed
+      ;; category as their referents. It doesn't create tailored individuals
+      ;; to use as the rule referents.
+      ;;    (break "look around: ~a" category)
+      category)))
+
+(defun merged-adj-adv-cat-name (adj-string)
+  (intern (string-append (string-upcase adj-string) ':-ness)
+          (find-package :sparser)))
+
+      
 
 ;;;---------------
 ;;; reflection on 

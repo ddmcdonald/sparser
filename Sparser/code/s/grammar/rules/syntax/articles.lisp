@@ -153,9 +153,11 @@
 
 (defgeneric definite-np? (np)
   (:method ((e edge))
-    (definite-np? (edge-referent e)))
+    (or (eq (form-cat-name e) 'possessive) ; "his", "Boston's"
+        (definite-np? (edge-referent e))))
   (:method ((referent individual))
     (or
+     (value-of 'genitive referent) ; "all the king's horses"
      (and (value-of 'has-determiner referent)
           (definite-determiner? (value-of 'has-determiner referent)))
      (itypep referent 'these)

@@ -33,6 +33,15 @@
           (time-period))
   :documentation "")
 
+
+(defgeneric make-an-amount-of-stuff (measurement stuff)
+  (:documentation "Uniform method for creating these even
+    if the details change at some point")
+  (:method ((measurement individual) (stuff individual))
+    (define-or-find-individual 'amount-of-stuff
+        :measurement measurement
+        :stuff stuff)))
+
 #| and so are active in catalytic amounts.
 the amount of α-catenin
 the total amounts of α-catenin ;; similar, same, initial

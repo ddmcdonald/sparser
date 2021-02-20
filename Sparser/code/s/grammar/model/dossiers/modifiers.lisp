@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "modifiers"
 ;;;    Module:   "model;dossiers:"
-;;;   Version:   November 2020
+;;;   Version:   February 2021
 
 ;; Created 1/4/13 to group together comparatives, approximators, etc in
 ;; one place so they're easier to keep track of. (1/9/13) Moved in all
@@ -226,18 +226,16 @@
 ;;;---------------------------
 ;;; position within a process
 ;;;---------------------------
-; These can be positioned sentence initial or final as well
-; a pre-verb, so they need bracketing that can indicate
-; segment starts too.
+;; As adverbs, these can be positioned sentence initial or final
+;; as well as pre-verb, so they need bracketing that can indicate
+;; segment starts too.  If there's an equivalent adjective form
+;; we give them a common referent
 
-(define-position-in-process "eventually")
-(define-position-in-process "finally")
-(define-position-in-process "first") ;; "it was first rinsed ..."
-(define-position-in-process "initially")
-(define-position-in-process "subsequently")
-(define-position-in-process "ultimately")
-(define-position-in-process "next") ;; We next considered ...
-
+(define-position-in-process "eventually" :adj "eventual" :form 'temporal-adjective)
+(define-position-in-process "initially" :adj "initial")
+(define-position-in-process "finally" :adj "final")
+(define-position-in-process "subsequently" :adj "subsequent")
+(define-position-in-process "ultimately" :adj "ultimate")
 
 
 ;;;----------
@@ -258,13 +256,12 @@
 ;;;------------
 ;;; Sequencers
 ;;;------------
-
-;; initiated 5/27/94 v2.3
-
 ;; See def. form: these are now adjectives
+
+(define-sequencer/determiner "first") ;; "it was first rinsed ..."
 (define-sequencer/determiner "last")
 (define-sequencer/determiner "previous")
-(define-sequencer/determiner "next") ;; adv? "next to"
+(define-sequencer/determiner "next") ;; We next considered ...
 
 (define-sequencer/determiner "former")
 (define-sequencer/determiner "latter")
@@ -495,6 +492,7 @@
 (define-adverb "in stark contrast")
 (define-adverb "in fact")
 (define-adverb "in general")
+(define-adverb "in part")
 (define-adverb "in large part")
 (define-adverb "in one way or another")
 (define-adverb "in turn") ;; imposes relationship between events
@@ -597,6 +595,8 @@
 (define-adverb "preferentially")
 (define-adverb "prematurely")
 (define-adverb "presumably")
+(define-adverb "pretty" :super-category 'intensifier)
+(define-adverb "primarily")
 (define-adverb "privately")
 (define-adverb "progressively")
 (define-adverb "properly")
@@ -814,7 +814,7 @@
 (define-adjective "environmental")
 
 (define-adjective "evasive")
-(define-adjective "eventual" :form 'temporal-adjective)
+
 (define-adjective "excessive")
 (define-adjective "experimental")
 (define-adjective "extensive")
