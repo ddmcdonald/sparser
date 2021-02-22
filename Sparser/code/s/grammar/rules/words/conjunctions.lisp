@@ -106,9 +106,16 @@ syntactic properties of three types.
 
 (mapcar #'define-conjunction
         '("neither" ;; "nor" handle neither/nor by da rules?
-          "if" "then" 
+          "if"  
           ))
 
+
+
+;;;------ subordinate conjunctions that also function as adverbs
+
+(define-simultaneous-adverb-subord-conj "then")
+(define-simultaneous-adverb-subord-conj "therefore") ;; "we therefore tested whether ..."
+(define-simultaneous-adverb-subord-conj "thus") ;; "we thus tested whether ..."
 
 
 ;;;------ subordinating conjunctions
@@ -169,11 +176,11 @@ syntactic properties of three types.
           "such that"
 	  ;; "surprisingly" use the adverb
           "than" ;; much better than we could have expected
-          "therefore"
+          ;; "therefore" --------- now with adverb
           "though"
           "till" ;; short for 'until' takes range of complements
           "thereby"
-          "thus"  
+          ;; "thus" --------- now with adverb
           "to this end"
 	  ;; "unexpectedly" go with 'intensifier' reading as an adverb
           "until"
