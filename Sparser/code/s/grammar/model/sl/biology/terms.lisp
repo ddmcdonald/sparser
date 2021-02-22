@@ -241,10 +241,12 @@
 
 ;; not sure why this was marked as bio-relation? -- has no object
 (adj "effective" :super bio-predication
+     :mixins (activity-with-a-purpose)
      :realization 
           (:against theme
            :in theme
-	   :on theme))
+	   :on theme
+           :in result-or-purpose))
 
 ;; SEQUENTIAL is a key CORE mixin, and does not take an AUX
 
