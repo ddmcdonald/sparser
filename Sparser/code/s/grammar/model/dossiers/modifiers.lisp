@@ -20,6 +20,13 @@
 
 (in-package :sparser)
 
+
+;; DAVID -- please figure out where you want these to go as adverbs
+(define-adverb "thus") ;; "we thus tested whether ..."
+(define-adverb "therefore") ;; "we therefore tested whether ..."
+(define-adverb "next") ;; "Next, we tested whether ..."
+
+
 ;;;----------------------
 ;;; Discourse adverbials
 ;;;----------------------
@@ -302,6 +309,7 @@
 (define-relative-time-adverb "soon")
 (define-relative-time-adverb "still") ;; not just for time, though "still others" "standing still"
 (define-relative-time-adverb "thereafter") ;; "immediately thereafter" ?
+(define-relative-time-adverb "then") 
 (define-relative-time-adverb "yet") 
 
 
