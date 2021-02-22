@@ -2401,33 +2401,33 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
 (defun make-subordinate-clause (conj clause)
   (declare (special category::pp conj clause))
   (if *subcat-test*
-    ;; some subordinate conjunctions like "so" cannot apply between subject and vp
-    (not (and (member (form-cat-name (right-edge-for-referent))
-                      '(vp+ed vg+ed vp vg))
-              (member (edge-cat-name (left-edge-for-referent))
-                      '(so))))
-    (let ((cl
-           (or
-            (when (valid-method compose conj clause)
-              (compose conj clause))
+      ;; some subordinate conjunctions like "so" cannot apply between subject and vp
+      (not (and (member (form-cat-name (right-edge-for-referent))
+                        '(vp+ed vg+ed vp vg))
+                (member (edge-cat-name (left-edge-for-referent))
+                        '(so))))
+      (let ((cl
+              (or
+               (when (valid-method compose conj clause)
+                 (compose conj clause))
            
-            ;;in the case without methods, we simply want to put the
-            ;; subordinate conjunction in a well-defined slot
-            ;; without modifying semantics of the clause
-            ;; because we may end up adding a subject and don't need
-            ;; another layer to get in the way.
-            (bind-variable 'subordinate-conjunction conj clause))))
+               ;;in the case without methods, we simply want to put the
+               ;; subordinate conjunction in a well-defined slot
+               ;; without modifying semantics of the clause
+               ;; because we may end up adding a subject and don't need
+               ;; another layer to get in the way.
+               (bind-variable 'subordinate-conjunction conj clause))))
       
-      (when (and cl
-                 (not (and (category-p conj)
-                           (member (cat-name conj)
-                                   '(who what where when why))))
-                 (right-edge-for-referent)
-                 (eq (edge-referent (right-edge-for-referent)) clause)
-                 (member (form-cat-name (right-edge-for-referent))
-                         '(s subordinate-s)))
-        (revise-parent-edge :form category::subordinate-s))
-      cl)))
+        (when (and cl
+                   (not (and (category-p conj)
+                             (member (cat-name conj)
+                                     '(who what where when why))))
+                   (right-edge-for-referent)
+                   (eq (edge-referent (right-edge-for-referent)) clause)
+                   (member (form-cat-name (right-edge-for-referent))
+                           '(s subordinate-s)))
+          (revise-parent-edge :form category::subordinate-s))
+        cl)))
 
 (defun make-subordinate-np (conj np)
   (declare (special category::pp conj clause))
