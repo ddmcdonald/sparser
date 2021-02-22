@@ -41,7 +41,7 @@
 
 ;;--- determiners (now actually adjectives
 
-(defun define-sequencer/determiner (string &key category documentation)
+(defun define-sequencer/adjective (string &key category documentation)
   (define-function-term string 'adjective
     :super-category 'sequencer
     :rule-label 'sequencer
@@ -106,36 +106,4 @@
    that sort of check would be a good thing."
   (define-function-term string 'subordinate-conjunction
     :super-category 'relative-position))
-
-
-;;;----------
-;;; auto-def
-;;;----------
-
-(define-autodef-data 'sequencer
-  :module *sequencers*
-  :display-string "sequencers"
-  :not-instantiable t 
-  :description "a modifier that says where something lies in within a sequence"
-  :examples "\"before\" \"next\"" )
-
-
-(define-category sequencer/determiner)
-(define-category sequencer/preposition)
-
-(define-autodef-data 'sequencer/determiner
-  :display-string "acting like determiners"
-  :form 'define-sequencer/determiner
-  :dossier "dossiers;sequencers"
-  :module *sequencers*
-  :description "a sequencer that functions syntactically like a determiner"
-  :examples "\"next\" \"subsequent\"" )
-
-(define-autodef-data 'sequencer/preposition
-  :display-string "acting like prepositions"
-  :form 'define-sequencer/preposition
-  :dossier "dossiers;sequencers"
-  :module *sequencers*
-  :description "a sequencer that functions syntactically like a preposition by being followed by a full noun phrase"
-  :examples "\"before\"" )
 
