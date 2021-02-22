@@ -239,8 +239,8 @@
 (adj "reliable" :super bio-predication)
 
 
-
-(adj "effective" :super bio-relation
+;; not sure why this was marked as bio-relation? -- has no object
+(adj "effective" :super bio-predication
      :realization 
           (:against theme
            :in theme
