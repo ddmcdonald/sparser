@@ -377,6 +377,27 @@ come
    (:mumble ("suggest" svscomp :s ? :o statement))))
 |#
 
+
+(define-category take
+  :specializes achievement
+  :mixins (simple-action)
+  :realization (:verb ("take" :past-tense "took")
+                 )     
+  :documentation "Comlex also has a noun entry, as in 'the take'. And it lists
+ the zillion other prepositions and constructions it participates in")
+#| (comlex-entry "take")
+((verb (:tensed/singular "takes" :infinitive "take" :past-tense "took")
+  (:features ((vveryving :pastpart t)) :subc
+   ((part-np-as-np :adval ("along" "back" "on" "over")) (extrap-np-s)
+    (p-ing-sc :pval ("to")) (part-np-pp :adval ("up") :pval ("with"))
+    (part-pp :adval ("out" "off" "up") :pval ("into" "for" "on" "with" "to"))
+    (part-np :adval
+     ("along" "away" "back" "down" "on" "off" "over" "up" "out"))
+    (part :adval ("off" "over")) (pp :pval ("into" "on" "after" "to"))
+    (np-to-inf-oc) (np-advp) (np-adjp) (np-to-np) (np-as-np) (np-tobe)
+    (intrans) (np) (np-pp :pval ("before" "for" "p-dir" "upon" "at")))))
+ (noun (:features ((countable))))) |#
+
 ;;sp> (comlex-entry "tell")
 ;;((verb (:tensed/singular "tells" :infinitive "tell" :past-tense "told")
 
