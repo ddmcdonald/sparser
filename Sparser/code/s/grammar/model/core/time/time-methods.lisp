@@ -26,7 +26,7 @@
 
 
 
-(def-k-method modifier+noun ((next category::next-sequence)
+(def-k-method modifier+noun ((next category::next)
                              (unit category::time-unit))
   "For phrases like '(the) next day' or 'next month'. Time units
    aren't naturally members of a sequence in the way that specific
