@@ -316,6 +316,16 @@
   :pattern ( s "," s )
   :action (:function interpret-s-comma-s first third))
 
+;; NOT SURE THIS IS CORRECT -- does it take into account the conjunction?
+
+(define-debris-analysis-rule interpret-s-comma-and-s
+  :pattern ( s "," "and" s )
+  :action (:function interpret-s-comma-s first fourth))
+
+(define-debris-analysis-rule interpret-s-comma-but-s
+  :pattern ( s "," "but" s )
+  :action (:function interpret-s-comma-s first fourth))
+
 (defun interpret-s-comma-s (s1 s2)
   (make-edge-spec
    :category (edge-category s1)
