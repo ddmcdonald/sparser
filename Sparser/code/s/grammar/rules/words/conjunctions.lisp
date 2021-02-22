@@ -92,6 +92,8 @@ syntactic properties of three types.
 
 (define-conjunction "instead of"  :form 'conjunction)
 (define-conjunction "as well as"  :form 'conjunction)
+(define-conjunction "but"  :form 'conjunction) ;; not a subordihnate conjunction
+  ;; see "ERK Nuclear Translocation Is Dimerization-independent but Controlled by the Rate of Phosphorylation."        
 
 
 
@@ -130,7 +132,6 @@ syntactic properties of three types.
           "because"
           "because of"
           "besides"
-          "but"
           "but also"
           "but rather"
 	  "by contrast"
