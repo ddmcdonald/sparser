@@ -78,7 +78,9 @@ demonstratives.)
              (if existing-value ;; concatenate them for this level
                (cons selector existing-value)
                (list selector))))
-        (bind-variable 'selector value np-head)))))
+        ;; nb. need to include the optional 'category' parameter
+        ;;  to ensure that 'selector' isn't assumed to be anonymous
+        (bind-variable 'selector value np-head category::endurant)))))
 
 
 ;;;------------------------
