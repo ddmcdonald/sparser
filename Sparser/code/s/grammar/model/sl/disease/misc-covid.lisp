@@ -17,7 +17,9 @@
                               "covid19" "COVID19" "COVID-19" "covid-19"
                               "Corona Virus Disease 2019" "Coronavirus Disease-2019"
                               "COVID-9" "COVID" "COVD-19" "COVDI-19" "COVID-2" "COVID-2019" "COVID- 19"
-                              "covid" "Cov-19" "CoV-19" "COV-2" "CoV-2")))
+                              "covid" "Cov-19" "CoV-19"
+                              ;;"COV-2" "CoV-2" these are viruses, not diseases
+                              )))
 ;;(def-synonym COVID-19 (:noun 
 
 

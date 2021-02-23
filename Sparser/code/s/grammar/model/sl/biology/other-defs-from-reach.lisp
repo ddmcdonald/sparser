@@ -1214,7 +1214,7 @@
 (def-indiv-with-id molecule "BHBA" "PUBCHEM:441") 
 (def-indiv-with-id molecule "BCNU" "PUBCHEM:2578") 
 ;(def-indiv-with-id molecule "BCL2 inhibitor" "PUBCHEM:11228183") compositional
-(def-indiv-with-id molecule "BaS" "PUBCHEM:6857597") 
+(def-indiv-with-id molecule "BaS" "PUBCHEM:6857597" :no-plural t :maintain-case t) 
 (def-indiv-with-id molecule "BAY-11-7082" "PUBCHEM:5353431") 
 (def-indiv-with-id molecule "Az" "PUBCHEM:6293") 
 (def-indiv-with-id molecule "Av" "PUBCHEM:96799") 
