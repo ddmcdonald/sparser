@@ -629,7 +629,7 @@
 	   :head :right-edge
 	   :form subordinate-clause
 	   :referent (:function assimilate-subject-to-subordinate-clause left-edge right-edge)))
-
+     #+ignore ;; subordinate-s should include a subject, so shouldn't take a subject
      (eval
        `(def-syntax-rule (,n subordinate-s)
 	   :head :right-edge
