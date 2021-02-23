@@ -442,54 +442,7 @@ see if there are issues"
        :realization ',realization
        :documentation ,documentation))
 
-#+ignore  `(adj/expr ',name
-        :adj ',adj
-        :super ',super ;; :specializes ',specializes
-        :binds ',binds :realization ',realization
-        :instantiates ',instantiates :mixins',mixins
-        :restrict ',restrict :rule-label ',rule-label
-        :obo-id ,obo-id)
 
-#+ignore ;; original -- circa early 2015
-(defun adj/expr (name
-                 &key adj
-		   super specializes 
-		   binds realization
-		   instantiates mixins
-		   restrict rule-label obo-id)
-  (declare (ignore rule-label instantiates))
-  (unless (or super specializes)
-    (setq specializes (super-category-for-POS :adjective)))
-  (when binds
-    (unless realization
-      (error "Variables were specified (:binds) but not a realization")))
-  ;; (when realization
-  ;;   (unless (or binds 
-  ;;               ;; should actually check for inherited categories as well
-  ;;               (and super (cat-slots (category-named super)))
-  ;;               (and specializes (cat-slots (category-named specializes))))
-  ;;     (error "A realization was specified but no variables"))
-  ;;   (setq realization
-  ;;         (cons :adj (cons adj realization))))
-  (let* ((form
-	  `(define-category ,name
-	       :specializes ,super
-	       :binds ,binds
-	       :restrict ,restrict
-	       :mixins ,mixins
-	       :realization
-	       ,(if adj `(:adj ,(if (consp adj) (car adj) adj)
-			  ,.realization)
-		    realization)))
-	 (category (eval form)))
-    (when obo-id
-      (setq category (bind-dli-variable 'uid obo-id category)))
-    (dolist (string (when (consp adj)(cdr adj)))
-      (let ((rule-form `(def-cfr/expr ',(cat-name category) '(,string)
-			  ;; can we guess it's a common noun for form?
-			  :referent ,category)))
-	(eval rule-form)))
-    category))
 
 
 (defmacro adv (name
@@ -582,8 +535,19 @@ see if there are issues"
         ;; and they do the bracket assignment. 
         (make-rules-for-head :adjective adj category category)
         (make-rules-for-head :adverb adv category category)
-        
-        category))))
+
+        #+ignore ;; call to define-individual can't find a 'word'
+        ;;  variable on the constructed category
+        (let* ((instance-form `(define-individual ',name
+                                   :word ,adj)) ; arbitrary choice
+               (i (eval instance-form))
+               (rules (get-rules category)))
+          (break "rules: ~a" rules)
+          (loop for r in rules
+             do (setf (cfr-referent r) i))
+          category)))))
+
+
 
 (defun define-simultaneous-adjective-adverb (string
                                              &key super-category)
