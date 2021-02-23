@@ -56,13 +56,14 @@ a 'subject', e.g. "southern Chinese girls are never tall"
 ;;--- "size", "color"
 ;;
 (define-category related-thing :specializes quality ;; better name?
-  :documentation  "A relation between the 'owner' and some other entity or event (perdurant). 
-    The relation is typically specified with context, but can be temporally localized, or perhaps
-    spatially localized -- e.g. 'the risk of COVID-19 in Massachusetts in January 2021'"
+  :documentation "A relation between the 'owner' and some other entity
+    or event (perdurant).  The relation is typically specified with
+    context, but can be temporally localized, or perhaps spatially
+    localized -- e.g. 'the risk of COVID-19 in Massachusetts in
+    January 2021'"
   :mixins (temporally-localized)
   :binds ((owner))
-  :realization (:of owner)
-  )
+  :realization (:of owner))
 
 (define-category attribute :specializes related-thing
   :documentation "Represents the identity of the attribute
@@ -71,8 +72,7 @@ a 'subject', e.g. "southern Chinese girls are never tall"
  instance of this category. Provides a 'coat-hook'
  for recording ancilary information that helps in parsing,
  notably the variable."
-  :binds ((var :primitive lambda-variable)
-          ))
+  :binds ((var :primitive lambda-variable)))
 
 (define-category scalar-attribute
   :specializes attribute
@@ -83,8 +83,8 @@ a 'subject', e.g. "southern Chinese girls are never tall"
           (per-grouping top)
           (by-grouping top))
   :realization (:for for-grouping
-               :per per-grouping
-               :by by-grouping)
+                :per per-grouping
+                :by by-grouping)
   :documentation "Calling this 'scalar' is to say that
  its values are arranged along some dimension, in this
  case the dimention is determined by the attribute")
