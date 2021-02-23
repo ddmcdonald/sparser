@@ -1512,6 +1512,10 @@
   :pattern (transitive-clause-without-object pp)
   :action (:function add-adjunctive-pp first second))
 
+(define-debris-analysis-rule adjunctive-pp-on-vp
+  :pattern (vp pp)
+  :action (:function add-adjunctive-pp first second))
+
 #+ignore ;; needs to be folded into the rule above
 (define-debris-analysis-rule adjunctive-pp-on-np
   :pattern (np pp)
