@@ -82,7 +82,7 @@
   :specializes predicate
   :mixins (with-theme)
   :realization (:s theme)
-  :documentation "Modifier is the defauqlt super class of all
+  :documentation "Modifier is the default super class of all
  adjectives (see define-adjective). One of the principle
  ways that adjectives enter into predications is in copular
  constructions, e.g. 'the block is red' where the color attribute
