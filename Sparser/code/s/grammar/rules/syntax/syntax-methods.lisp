@@ -60,6 +60,13 @@
    a dispatch point for more specific binary compostions. Intended to be
    the most generic way to compose the referents of two edges."))
 
+
+(def-k-function compose-of (left right)
+  (:documentation "So far only called in interpret-pp-adjunct-to-np where
+   combinations with 'of' account for most of the cases. Rolls the force
+   of the 'of' into the relation it creates."))
+
+
 ;;--- copula
 
 (def-k-function apply-copula (subject copular-predicate)

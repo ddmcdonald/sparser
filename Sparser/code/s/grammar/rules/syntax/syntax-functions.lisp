@@ -1694,6 +1694,7 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                (maybe-extend-premod-adjective-with-pp np pp)
                (and *force-modifiers* 'modifier)
                (applicable-method compose np pp)
+               (applicable-method compose-of np pobj-referent)
                (is-domain-adjunctive-pp? np (right-edge-for-referent))
                (and (eq prep-word of)
                     (or (itypep np 'attribute)
@@ -1769,8 +1770,8 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                     result))))
 
              ((when (and (eq prep-word of)
-                         (valid-method compose np pobj-referent))
-                (let ((result (compose np pobj-referent)))
+                         (valid-method compose-of np pobj-referent))
+                (let ((result (compose-of np pobj-referent)))
                   (when result
                     (tr :compose-other-of np pobj-referent result)
                     result))))

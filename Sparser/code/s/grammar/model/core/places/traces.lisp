@@ -128,10 +128,17 @@
   (when *trace-referent-creation*
     (trace-msg "modifier+noun: modifier+t")))
 
-;;--- time/time-methods.lisp modifier+noun
+
+;;--- time/time-methods.lisp
+ 
 (deftrace :next+month (month)
+  ;; in modifier+noun method
   (when *trace-referent-creation*
     (trace-msg "Method call: next + ~a" month)))
+
+(deftrace :phase+time (phase time)
+  (when *trace-methods*
+    (trace-msg "Compose-of: i~a + i~a" phase time)))
 
 
 

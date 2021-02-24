@@ -1,20 +1,24 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; Copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
-;;; copyright (c) 2013,2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013,2016,2012 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "time-of-day"
 ;;;   Module:  "model;core:time:"
-;;;  version:  July 2016
+;;;  version:  February 2021
+
+;; The dossier for these is time-of-day.lisp
 
 ;; initiated 8/27/08 (CG). 9/23/13 Adding and revising a lot.
 ;; 4/1/16 Added specialization
 
 (in-package :sparser)
 
-;;;------------------
-;;; phase of the day;;;------------------
 
-(define-category phase-of-day
+;;;------------------
+;;; phase of the day
+;;;------------------
+
+(define-category phase-of-day ;; morning, night
   :instantiates  self
   :specializes  time-interval
   :binds ((name :primitive word))
@@ -150,7 +154,8 @@ timezone.  |#
 
 #| This old scheme of Charlie G's calls into rollout-naries-from-the-left
    and then hits a gratuitous duplication on the second rule because it
-   shares a prefix with the first
+   shares a prefix with the first.
+   To revive it, these patterns should be recast as early DA rules
 ;;;-----------------------
 ;;; offsets from Coordinated Universal Time
 ;;;-----------------------
@@ -177,4 +182,21 @@ timezone.  |#
 ;;;------------
 ;;  which will extend to timezone (with offsets) and seconds
 
+;;;-------------------------------------------------------------------------
+;;; shift from generic time periods to actual ones grounded in the calendar
+;;;-------------------------------------------------------------------------
 
+(define-category particular-time-of-day
+  :specializes time-interval
+  :binds ((phase (:or phase-of-day time-of-day))
+          (grounding time))
+  :documentation "This represents situating a general phase on
+ a specific time. Shifts from the generic concept of, e.g., 'morning'
+ to the actual time 'morning of March 5th'")
+
+(defun make-particular-time-of-day (phase time)
+  "Called from compose-of method in time-methods by way of
+   interpret-pp-adjunct-to-np"
+  (define-or-find-individual 'particular-time-of-day
+      :phase phase
+      :grounding time))

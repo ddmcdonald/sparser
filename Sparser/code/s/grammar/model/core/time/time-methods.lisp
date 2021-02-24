@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "time-methods"
 ;;;    Module:   "grammar/model/core/time/"
-;;;   Version:   April 2018
+;;;   Version:   February 2021
 
 ;; created 6/1/14 to load preposition and sequencer methods after the dossiers
 ;; that load them. 
@@ -25,7 +25,7 @@
       :modifier sequencer))
 
 
-
+;; "next year"
 (def-k-method modifier+noun ((next category::next)
                              (unit category::time-unit))
   "For phrases like '(the) next day' or 'next month'. Time units
@@ -34,8 +34,6 @@
    time unit against the current time and get a sequence from
    there."
   (tr :next+month unit)
-
-
   (let ((c (etypecase unit
              (category unit)
              (individual (itype-of unit)))))
@@ -45,3 +43,10 @@
       
       ;; otherwise we make a relative time
       (make-a-relative-time next unit))))
+
+
+;; "the evening of January 5"
+(def-k-method compose-of ((phase category::phase-of-day)
+                          (time category::time))
+  (tr :phase+time phase time)
+  (make-particular-time-of-day phase time))
