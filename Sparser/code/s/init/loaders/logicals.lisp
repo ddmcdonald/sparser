@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER) -*-
-;;; copyright (c) 1992-1999,2010-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2010-2021 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "logicals"
 ;;;   Module:  "init;loaders;"
-;;;  version:  August 2018
+;;;  version:  February 2021
 
 ;; 4/21/92 added new,  5/10 broke apart CA/HA,  7/18 promoted all the
 ;; directories under "names;" up to "core;",  7/23 added tools;time
@@ -289,8 +289,9 @@
 (def-logical-pathname "ern;"          "sl;ERN;")
 (def-logical-pathname "disease;"      "sl;disease;")
 (def-logical-pathname "bio;"          "sl;biology;")
-(def-logical-pathname "bio-not-loaded;"          "sl;biology-not-loaded;")
-(def-logical-pathname "score-stats;"          "sl;score-stats;")
+(def-logical-pathname "bio-not-loaded;"  "sl;biology-not-loaded;")
+(def-logical-pathname "score;"        "sl;score;")
+(def-logical-pathname "score-stats;"  "sl;score-stats;")
 (def-logical-pathname "hurricanes;"   "sl;hurricanes;")
 (def-logical-pathname "blocks;"       "sl;blocks-world;")
 (def-logical-pathname "biocuration;"  "sl;biocuration;")
