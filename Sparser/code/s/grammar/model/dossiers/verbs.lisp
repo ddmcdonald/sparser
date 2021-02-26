@@ -193,8 +193,15 @@ come
 (define-category fail
   :specializes process ;; acomplishment?
   :mixins (action-on-eventuality)
-  :realization 
-    (:verb "fail"))
+  :realization (:verb "fail"))
+
+(define-category feed
+  :specializes process
+  :mixins (simple-action) ; agent & theme
+  :realization (:verb ("feed" :present-participle "feeding" :past-tense "fed")
+                ) ;; noun -- what it is we supply: 'chicken feed'
+  :documentation "Should try to capture the relationship to the noun")
+
 
 (define-category find ;; see bio;harvard-terms: bio-find
   :specializes process
