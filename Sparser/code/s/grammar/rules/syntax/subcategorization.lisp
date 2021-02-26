@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2021 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "subcategorization"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  December 2018
+;;;  Version:  February 2021
 
 ;; Initiated 9/11/14 to organize information about subcategorization patterns
 ;; Working on it through 9/15/14. 11/20/14 hacked up a treatment of multiple
@@ -27,26 +27,35 @@
   (adjective 
     (:subc ((adj-pp :pval ("for" "to"))
             (extrap-adj-for-to-inf))
-     :features ((gradable))))) |#
+           :features ((gradable))))) |#
 
-(defmethod comlex-entry ((pname string))
-  "Just return the subcagegorization expression if there is one.
-   It will be an alist on part of speech."
-  (declare (special *comlex-words-primed* *primed-words*))
-  (when *comlex-words-primed*
-    (let ((full-entry (gethash pname *primed-words*)))
-      (when full-entry
-        (cddr full-entry)))))
+(defgeneric comlex-entry (word)
+  (:documentation "returns the subcagegorization expression if there is one.
+   It will be an alist on part of speech. Also returns nil if comlex
+   has not been loaded.")
+  (:method ((w word))
+    (comlex-entry (word-pname w)))
+  (:method ((name symbol))
+    (comlex-entry (string-downcase (symbol-name name))))
+  (:method ((pname string))
+    (declare (special *comlex-words-primed* *primed-words*))
+    (when *comlex-words-primed*
+      (let ((full-entry (gethash pname *primed-words*)))
+        (when full-entry
+          ;; strip off the ':comlex <pname>' from the actual entry
+          (cddr full-entry))))))
 
-(defmethod comlex-subcategorization ((w word) (pos symbol))
-  (comlex-subcategorization (word-pname w) pos))
-
-(defmethod comlex-subcategorization ((pname string) (pos symbol))
-  (declare (special *comlex-words-primed*))
-  (when *comlex-words-primed*
-    (let ((entry (comlex-entry pname)))
-      (when entry
-        (assq pos entry)))))
+(defgeneric comlex-subcategorization (word pos)
+  (:documentation "Access the Comlex entry for the word and then
+    return the subentry for that part of speech (given as a symbol)")
+  (:method  ((w word) (pos symbol))
+    (comlex-subcategorization (word-pname w) pos))
+  (:method ((pname string) (pos symbol))
+    (declare (special *comlex-words-primed*))
+    (when *comlex-words-primed*
+      (let ((entry (comlex-entry pname)))
+        (when entry
+          (assq pos entry))))))
 
 
 (defun add-specific-subcategorization-facts (category word pos)
