@@ -2244,8 +2244,7 @@
 (define-category equal-cl-noun :specializes comlex-noun
      :realization (:noun  "equal"))
 
-(define-category fall-cl-noun :specializes comlex-noun
-     :realization (:noun  "fall"))
+;; "fall" -- comlex ntime1, is already defined as a season
 
 (define-category fee-cl-noun :specializes comlex-noun
      :realization (:noun  "fee"))
