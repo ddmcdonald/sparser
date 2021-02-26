@@ -1,10 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2010-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2010-2021 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "decode"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  April 2019
+;;;  version:  February 2021
+
+#| These are the functions that interpret binding expressions. 
+ They check whether the value to be bound meets the value restrictions
+ on the variable. |#
 
 ;; pulled from [find] 5/25/93 v2.3
 ;; 0.1 (9/18) added referential-categories to the options for decoding
@@ -51,7 +55,7 @@
   (decode-category-specific-binding-instr-exps category binding-plist t))
 
 ; 2/7/05 The individual side of the fence seems to prefer working with
-; an alist, while the psi side prefers plists. A extense maintainence pass,
+; an alist, while the psi side prefers plists. A extensive maintainence pass,
 ; were one ever warrented, would be needed to sort it out.
 
 (defun decode-category-specific-binding-instr-exps (category
@@ -158,6 +162,7 @@
      (v/r-violation "The type of the individual given as the value,~
                          ~%   ~A~%does not match the value restriction ~A"
                     exp category))
+    
     (individual
      (cond ((itypep exp category)
             exp)
@@ -169,6 +174,7 @@
             (v/r-violation "The type of the individual given as the value,~
                          ~%   ~A~%does not match the value restriction ~A"
                            exp category))))
+    
     ((or referential-category ;; e.g. 1st
          mixin-category)
      (if (itypep exp category) ;; (category-inherits-type? exp category)
@@ -176,6 +182,15 @@
          (v/r-violation "The type of the category given as the value,~
                          ~%   ~A~%does not match the value restriction ~A"
                         exp category)))
+
+    (symbol
+     ;; Makes sense if it's the name of a category
+     (let ((c (category-named exp :error)))
+       (if (itypep c category)
+         c
+         (v/r-violation "The type of the category given as the value,~
+                         ~%   ~A~%does not match the value restriction ~A"
+                        exp category))))
 
     (string
      ;; the definition has presumably come from a file rather
