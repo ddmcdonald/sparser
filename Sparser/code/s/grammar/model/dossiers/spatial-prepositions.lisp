@@ -87,7 +87,9 @@
 (define-preposition "through" :form 'spatial-preposition)
 (define-preposition "toward")
 (define-preposition "towards")
+
 (define-preposition "under" :form 'spatial-preposition)
+(define-preposition "underneath" :form 'spatial-preposition)
 
 (define-preposition "up" )
 (define-preposition "up against") ;; do it compositionally?
