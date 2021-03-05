@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; copyright (c) 2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013,2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "time of day"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  September 2013
+;;;  version:  February 2021
 ;;;   author:  Charlie Greenbacker 8/08, completely revised by ddm 9/13
 
 ;; initiated 8/26/08. 9/23/13 Total makeover since there are no referents
@@ -71,7 +71,10 @@
 ;(def-cfr time-of-day (sequencer "noon"))
 
 (define-time-of-day "dawn")
+(define-time-of-day "daybreak")
 (define-time-of-day "dusk")
+(define-time-of-day "sunrise")
+(define-time-of-day "sunset")
 
 
 (define-phase-of-day "morning")
