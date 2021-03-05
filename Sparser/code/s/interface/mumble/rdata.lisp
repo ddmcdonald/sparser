@@ -559,71 +559,74 @@ have been filled in if the rdata includes an etf and a word.
         
         (let ((new-rdata (m::copy-instance inherited-rdata))
               (local-head-data (rdata-head-words local-rdata)))
-          (unless local-head-data (error "Why isn't there a head word for ~a" category))
-        
-          (labels ((change-linked-category (mdata category)
-                     (etypecase mdata
-                       (m::mumble-rdata (setf (m::linked-category mdata) category))
-                       (m::multi-subcat-mdata
-                        (loop for pair in (m::mdata-pairs mdata)
-                           as embedded-mdata = (m::mpair-mdata pair)
-                           do (change-linked-category embedded-mdata category))))))
-            (change-linked-category new-rdata category))
           
-          (let* ((pos (car local-head-data))
-                 (mpos (mumble-pos pos))
-                 (s-word (cadr local-head-data))
-                 (m-word (get-mumble-word-for-sparser-word s-word mpos)))
+          (when local-head-data
+            ;; Used to signal an error if there wasn't a head, but the more abstract
+            ;; categories will draw on proper subcat-mixins without yet suppling a verb
 
-            (flet ((lexicalize (phrase m-word)
-                     ;; Could be all the cases in make-resource-for-sparser-word
-                     ;; in principle, but rather than refactor just putting in the
-                     ;; one's being used so far
-                     (ecase pos
-                       (:verb (m::verb m-word phrase))
-                       (:common-noun (m::noun m-word phrase))
-                       (:adjective (m::adjective m-word phrase))
-                       (:preposition (m::prep m-word))))
+            (labels ((change-linked-category (mdata category)
+                       (etypecase mdata
+                         (m::mumble-rdata (setf (m::linked-category mdata) category))
+                         (m::multi-subcat-mdata
+                          (loop for pair in (m::mdata-pairs mdata)
+                             as embedded-mdata = (m::mpair-mdata pair)
+                             do (change-linked-category embedded-mdata category))))))
+              (change-linked-category new-rdata category))
+            
+            (let* ((pos (car local-head-data))
+                   (mpos (mumble-pos pos))
+                   (s-word (cadr local-head-data))
+                   (m-word (get-mumble-word-for-sparser-word s-word mpos)))
 
-                   ;;////////////////////////////////// will already be excised?
-                   (replace-map-self-values (clp)
-                     (let ((map (m::parameter-variable-map clp)))
-                       (assert map)
-                       (loop for pvp in map
-                          as variable = (m::corresponding-variable pvp)
-                          when (category-p variable)
-                          do (error "self category still in map")
-                            #+ignore(setf (m::corresponding-variable pvp) m-word)))))         
+              (flet ((lexicalize (phrase m-word)
+                       ;; Could be all the cases in make-resource-for-sparser-word
+                       ;; in principle, but rather than refactor just putting in the
+                       ;; one's being used so far
+                       (ecase pos
+                         (:verb (m::verb m-word phrase))
+                         (:common-noun (m::noun m-word phrase))
+                         (:adjective (m::adjective m-word phrase))
+                         (:preposition (m::prep m-word))))
 
-              ;; Modify (on the copy -- new-rdata) the head word and lp.
-              ;; Store the new lp on the category. Also revise the maps
-              ;; to ensure that self nodes (which show up as categories)
-              ;; are replaced with the (mumble) head word.
-              (etypecase new-rdata
-                (m::mumble-rdata
-                 (multiple-value-bind (lp)
-                     (lexicalize (m::linked-phrase new-rdata) m-word)
-                   (setf (m::head-word new-rdata) m-word)
-                   (setf (m::linked-phrase new-rdata) lp)
-                   (replace-map-self-values new-rdata)
-                   (m::record-lexicalized-phrase category lp mpos)))
-                
-                (m::multi-subcat-mdata
-                 ;; (push-debug `(,new-rdata)) (lsp-break "1")
-                 (dolist (pair (m::mdata-pairs new-rdata))
-                   ;; pull out the phrase and lexicalize it
-                   (let* ((mdata (m::mpair-mdata pair))
-                          (phrase (m::linked-phrase mdata)))
-                     (assert (typep phrase 'm::phrase)) ;; indicates +abstract
-                     (multiple-value-bind (lp)
-                         (lexicalize phrase m-word)
-                       (setf (m::head-word mdata) m-word)
-                       (setf (m::linked-phrase mdata) lp)
-                       (replace-map-self-values mdata)
-                       (m::record-lexicalized-phrase category lp mpos))))))
+                     ;;////////////// will already be excised?
+                     (replace-map-self-values (clp)
+                       (let ((map (m::parameter-variable-map clp)))
+                         (assert map)
+                         (loop for pvp in map
+                            as variable = (m::corresponding-variable pvp)
+                            when (category-p variable)
+                            do (error "self category still in map")
+                              #+ignore(setf (m::corresponding-variable pvp) m-word)))))         
 
-              (setf (mumble-rdata local-rdata) new-rdata) ;; belt & suspenders for now
-              (setf (get-tag :mumble category) new-rdata))))))))
+                ;; Modify (on the copy -- new-rdata) the head word and lp.
+                ;; Store the new lp on the category. Also revise the maps
+                ;; to ensure that self nodes (which show up as categories)
+                ;; are replaced with the (mumble) head word.
+                (etypecase new-rdata
+                  (m::mumble-rdata
+                   (multiple-value-bind (lp)
+                       (lexicalize (m::linked-phrase new-rdata) m-word)
+                     (setf (m::head-word new-rdata) m-word)
+                     (setf (m::linked-phrase new-rdata) lp)
+                     (replace-map-self-values new-rdata)
+                     (m::record-lexicalized-phrase category lp mpos)))
+                  
+                  (m::multi-subcat-mdata
+                   ;; (push-debug `(,new-rdata)) (lsp-break "1")
+                   (dolist (pair (m::mdata-pairs new-rdata))
+                     ;; pull out the phrase and lexicalize it
+                     (let* ((mdata (m::mpair-mdata pair))
+                            (phrase (m::linked-phrase mdata)))
+                       (assert (typep phrase 'm::phrase)) ;; indicates +abstract
+                       (multiple-value-bind (lp)
+                           (lexicalize phrase m-word)
+                         (setf (m::head-word mdata) m-word)
+                         (setf (m::linked-phrase mdata) lp)
+                         (replace-map-self-values mdata)
+                         (m::record-lexicalized-phrase category lp mpos))))))
+
+                (setf (mumble-rdata local-rdata) new-rdata) ;; belt & suspenders for now
+                (setf (get-tag :mumble category) new-rdata)))))))))
 
 
 (defgeneric abstract-mdata? (mdata)
