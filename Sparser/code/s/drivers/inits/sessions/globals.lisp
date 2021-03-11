@@ -138,7 +138,7 @@
   "Set as part of the switch settings.
    Read within Consider-morphology-based-edges.")
 
-(defparameter *introduce-brackets-for-unknown-words-from-their-suffixes* nil
+(defparameter *introduce-brackets-for-unknown-words-from-their-suffixes* t
   "Set as part of the switch settings.
    Read within make-word/all-properties to gate actions by Introduce-
    morph-brackets-from-unknown-word.")
