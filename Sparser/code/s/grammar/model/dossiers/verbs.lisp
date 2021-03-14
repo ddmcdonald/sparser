@@ -285,6 +285,7 @@ come
  (prep)
  (adjective (:features ((gradable)))))  |#
 
+
 (define-category look-up
   :specializes process
   :mixins (action-verb)
@@ -302,6 +303,12 @@ come
     (:verb ("make" :past-tense "made")
            :mumble ("make" svo :a agent :o patient)))
 
+(define-category make-decision
+  :specializes decide
+  ;;/// The use of a light verb with the nominal form of a verb is so common
+  ;; that it should be abstracted into a synonym-generating operator
+  :realization (:verb ("make" :phrase decision)))
+
 (define-category make-up
     ;; in the sense of "compose" "the residues make up the binding site"
   :specializes process
@@ -309,7 +316,7 @@ come
   :restrict ((patient endurant))
   :documentation "Handles both transitive and svo-adj. Should it?"
   :realization
-    (:verb ("make" :past-tense "made" :prep "up") ))
+    (:verb ("make" :prep "up") ))
 
 (define-category play
   :specializes process
@@ -573,6 +580,7 @@ come
 
 
 ;; "work on measures 1 and 2"
+;;
 (define-category work-on
   :specializes process
   :mixins (simple-action)
