@@ -1156,7 +1156,7 @@
 
 (define-category put-forward :specializes bio-rhetorical
    :realization
-   (:verb ("put" :prep ("forward" "put" put-forward))
+   (:verb ("put" :prep "forward")
     :etf (svo-passive)))
 
 
