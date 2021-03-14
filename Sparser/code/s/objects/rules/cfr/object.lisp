@@ -259,6 +259,8 @@ This sorts out what to use as the category in the unusual cases."
 (defgeneric find-single-unary-cfr (word)
   (:documentation "Return the first unary rule for this word if there is one.
    Ignores the possibility of there being more than one rule.")
+  (:method ((pname string))
+    (find-single-unary-cfr (resolve pname)))
   (:method ((word word))
     (when (rule-set-for word)
       (find-single-unary-cfr (rule-set-for word))))
