@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "forest-gophers"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  January 2021
+;;;  Version:  March 2021
 
 ;; Initiated 8/30/14. To hold predicates and other little computations
 ;; done by the forest-level sweeping and island-driving. Also a good
@@ -26,13 +26,22 @@
    edges for different interpretations of the verb. That means
    that we can't set main-verb-seen? until we've looped around
    and encountered an edge that isn't a verb")
+(defvar nps-seen nil
+  "Initialized in clear-sweep-sentence-tt-state-vars, contains the edge
+   for each np (each type of form listed in the sweep leading to
+   the catalog NP call, particularly pronouns) along with the set of
+   properties we can deduce about them.")
+(defvar count-past-verb nil
+  "draft way to see how many constituents past the verb
+   the next tt is")
 
 (defun clear-sweep-sentence-tt-state-vars ()
   (declare (special nps-seen)) ; in sweep.lisp
   (setq subject-seen? nil
         main-verb-seen? nil
         waiting-for-non-verb nil
-        nps-seen nil))
+        nps-seen nil
+        count-past-verb nil))
 
 ;;;----------------------------------------
 ;;; setting and getting fields of a layout
@@ -99,6 +108,11 @@
       unless (edge-used-in edge)
       collect edge)))
 
+(defun push-post-verb-tt (tt)
+  (push tt (post-verb-tt (layout))))
+
+(defun post-mvb-tt ()
+  (post-verb-tt (layout)))
 
 (defun push-verb-phrase (tt)
   (push tt (verb-phrases (layout))))

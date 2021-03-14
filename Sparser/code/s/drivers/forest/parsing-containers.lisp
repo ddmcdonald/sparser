@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "parsing-containers"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  January 2021
+;;;  Version:  March 2021
 
 ;; Initiated 8/6/14 to hold the new class of containers to support
 ;; analysis and discourse structure to go with the new forest protocol
@@ -48,6 +48,9 @@
    (vps :initform nil :accessor verb-phrases
     :documentation "The edges over verb phrases,
       normally only makes sense on a second pass.")
+   (post-mvb-tt :initform nil :accessor post-verb-tt
+    :documentation "Records what treetop immmediately followed
+      the main verb")
    (loose-nps :initform nil :accessor loose-nps
     :documentation "NPs that don't fall into an immediately
       obvious syntactic relationship to the clause.")
