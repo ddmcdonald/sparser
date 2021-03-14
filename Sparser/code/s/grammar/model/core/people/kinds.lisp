@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "kinds"
 ;;;    Module:   "model;core:people:"
-;;;   version:   September 2019
+;;;   version:   February 2021
 
 ;; initiated 12/27/07. Relabeled 'person' for parsing 3/6/13.
 ;; 3/25/13 converted it all to inherit from person-type.
@@ -15,27 +15,30 @@
   :instantiates person
   :specializes person-type
   :rule-label person
-  ;;/// How do we index this sort of thing?
+  :bindings (gender 'female)
   :realization (:common-noun "girl"))
 
 (define-category  boy
   :instantiates person
   :specializes person-type
   :rule-label person
+  :bindings (gender 'male)
   :realization (:common-noun "boy"))
 
 (define-category  man
   :instantiates person
   :specializes person-type
   :rule-label person
-  :bindings (uid "NCIT:C14366")
+  :bindings (uid "NCIT:C14366"
+             gender 'male)
   :realization (:common-noun ("man" :plural "men")))
 
 (define-category  woman
   :instantiates person
   :specializes person-type
   :rule-label person
-  :bindings (uid "NCITC14284")
+  :bindings (uid "NCITC14284"
+             gender 'female)
   :realization (:common-noun ("woman" :plural "women")))
 
 (define-category  people ;; don't clash with the 'person' category
@@ -51,6 +54,22 @@
   :rule-label person
   :realization (:common-noun "human"))
 
+
+;;/// these should differentiated in some semantic fields
+
+(define-category god
+   :instantiates person
+  :specializes person-type
+  :rule-label person
+  :bindings (gender 'male)
+  :realization (:common-noun "god"))
+
+(define-category goddess
+   :instantiates person
+  :specializes person-type
+  :rule-label person
+  :bindings (gender 'female)
+  :realization (:common-noun "goddess"))
 
 
 ;;--- Relational terms
@@ -70,12 +89,14 @@
   :instantiates person
   :specializes family-member
   :rule-label person
+  :bindings (gender 'male)
   :realization (:common-noun "father"))
 
 (define-category  mother
   :instantiates person
   :specializes family-member
   :rule-label person
+  :bindings (gender 'female)
   :realization (:common-noun "mother"))
 
 
@@ -86,31 +107,33 @@
   :rule-label person
   :realization (:common-noun "parent"))
 
-
-
 ;; make son/daughter a type of child?
 (define-category  son
   :instantiates person
   :specializes family-member
   :rule-label person
+  :bindings (gender 'male)
   :realization (:common-noun "son"))
 
 (define-category  daughter
   :instantiates person
   :specializes family-member
   :rule-label person
+  :bindings (gender 'female)
   :realization (:common-noun "daughter"))
 
 (define-category  sister
   :instantiates person
   :specializes family-member
   :rule-label person
+  :bindings (gender 'female)
   :realization (:common-noun "sister"))
 
 (define-category  brother
   :instantiates person
   :specializes family-member
   :rule-label person
+  :bindings (gender 'male)
   :realization (:common-noun "brother"))
 ;; want to count "brethren" as a plural?
 
@@ -121,17 +144,18 @@
   :rule-label person
   :realization (:common-noun "sibling"))
 
-
 (define-category  aunt
   :instantiates person
   :specializes family-member
   :rule-label person
+  :bindings (gender 'female)
   :realization (:common-noun "aunt"))
 
 (define-category  uncle
   :instantiates person
   :specializes family-member
   :rule-label person
+  :bindings (gender 'male)
   :realization (:common-noun "uncle"))
 
 
