@@ -760,9 +760,14 @@
     (trace-msg "~%Trying to extend ~a leftwards" edge)))
 
 (deftrace :look-for-prep-binders ()
-  ;; called from island-driven-forest-parse
+  ;; called from pass-one
   (when *trace-island-driving*
     (trace-msg "~%Looking for binders of prepositions")))
+
+(deftrace :looking-at-what-after-the-verb ()
+  ;; called from pass-one
+  (when *trace-island-driving*
+    (trace-msg "~%Looking at whats after the verb")))
 
 (deftrace :try-to-compose-instances-of-of ()
   ;; called from island-driven-forest-parse
@@ -936,6 +941,29 @@
   (when *trace-island-driving*
     (trace-msg "[islands] ~a does not subcategorize for ~s"
                left-neighbor (word-pname preposition))))
+
+
+;;--- phrasal verbs
+
+(deftrace :goes-with-phrase (verb phrase edge)
+  ;; called from look-for-phrasal-verb
+  (when *trace-island-driving*
+    (trace-msg "[phrasal] verb at e~a takes e~a to make ~a"
+               (edge-position-in-resource-array verb)
+               (edge-position-in-resource-array phrase)
+               edge)))
+
+(deftrace :does-not-go-with-phrase (verb phrase)
+  ;; called from look-for-phrasal-verb
+  (when *trace-island-driving*
+    (trace-msg "[phrasal] verb e~a does not take e~a"
+               (edge-position-in-resource-array verb)
+               (edge-position-in-resource-array phrase))))
+
+(deftrace :not-a-phrasal-verb (verb)
+  ;; called from look-for-phrasal-verb
+  (when *trace-island-driving*
+    (trace-msg "[phrasal] ~a doesn't take phrases" verb)))
 
 
 ;;--- PPs

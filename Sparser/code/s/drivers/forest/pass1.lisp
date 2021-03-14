@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "pass1"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  January 2021
+;;;  Version:  March 2021
 
 ;; Broken out of island-driving 10/23/14.
 ;; RJB 12/14/2014 -- simple fix to prevent failure in simple-subject-verb when subject is a pronoun -- need to treat pronouns better <<DAVID>>
@@ -21,7 +21,7 @@
 ;; driver
 ;;--------
 
-(defun pass-one (sentence) ;;layout)
+(defun pass-one (sentence)
   "Makes a couple of layout-mediated special checks before and
    after its main operation of running the whack-a-rule-cycle
    to walk through pairs of constituents."
@@ -30,7 +30,8 @@
     (tr :handle-parentheses)
     (handle-parentheses))
   
-  ;;(Overnight 1 (p "Ras, like all GTPases, cycles between an inactive GDP-bound state and  an active GTP-bound state.")) 
+  #|Overnight 1 (p "Ras, like all GTPases, cycles between an inactive
+      GDP-bound state and an active GTP-bound state.") |#
   (when (there-are-conjunctions?)
     (tr :looking-for-short-conjuncts)
     (let ((*allow-form-conjunction-heuristic* nil))
@@ -40,6 +41,10 @@
   (when (there-are-prepositions?)
     (tr :look-for-prep-binders)
     (look-for-prep-binders))
+
+  (when (post-mvb-tt)
+    (tr :looking-at-what-after-the-verb)
+    (look-for-phrasal-verb))
   
   (when (there-are-conjunctions?) 
     ;; Originally inserted this call for conjunctions to merge
@@ -298,8 +303,25 @@
                      left-neighbor
                      prep-edge
                      rule)))))) )))))
-     
 
+(defun look-for-phrasal-verb ()
+  "Modeled directly on look-for-prep-binders."
+  (let* ((post-mvb-edges (post-mvb-tt)) ;; returns a list of edges
+         (post-mvb-edge (car post-mvb-edges))
+         (left-neighbor (left-treetop-at/edge post-mvb-edge))
+         (verb?
+          (when (and left-neighbor ;; could be sentence-initial
+                     (not (word-p left-neighbor))) ;; treetop could be a word
+            (vg-category? left-neighbor))))
+    (when verb?
+      (if (phrasal-verb? left-neighbor)
+        (let ((edge (check-one-one left-neighbor post-mvb-edge)))
+          (if edge
+            (tr :goes-with-phrase left-neighbor post-mvb-edge edge)
+            (tr :does-not-go-with-phrase left-neighbor post-mvb-edge))
+          edge)
+        (tr :not-a-phrasal-verb left-neighbor)))))
+    
  
 ;;;-----------------------------------------------
 ;;; leading prepositional adjunct, p ossible comma

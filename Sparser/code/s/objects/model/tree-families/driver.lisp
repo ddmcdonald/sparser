@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2011-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2021 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  December 2020
+;;;  version:  March 2021
 
 ;; initiated 8/4/92, fleshed out 8/27, elaborated 8/31
 ;; fixed a bug in how lists of rules were accumulated 11/2
@@ -130,14 +130,23 @@
 ;;;-----------------
 
 (defun make-rules-for-rdata (category rdata)
+  "Called from make-realization-data (from within setup-redata). It takes
+   the realization-data record ('rdata') produced there and determines
+   what rules should be created. In particular is starts the method chain
+   of make-rules-for-head (in rules/tree-families/morphology.lisp)
+      For some realization verb constructs we do not make the rules
+   for the head. This is done by taking the alternate route through
+   handle-prep-if-necessary"
   (declare (special *head-rules-already-created*
                     *inhibit-construction-of-systematic-semantic-rules*))
   (check-type category category)
   (when rdata
     (check-type rdata realization-data)
-    (flet ((add-rules (rules) (add-rules rules category)))
-      (unless *head-rules-already-created*
-        (add-rules (make-rules-for-head t rdata category category)))
+    (flet ((add-rules (rules)
+             (add-rules rules category)))
+      (or (handle-prep-if-necessary category rdata)
+          (unless *head-rules-already-created* ;; (break "usual route")
+            (add-rules (make-rules-for-head t rdata category category))))
       (unless *inhibit-construction-of-systematic-semantic-rules*
         (with-slots (etf mapping locals) rdata
           (dolist (schema (and etf (filter-schemas (etf-cases etf))))
@@ -145,6 +154,35 @@
           (dolist (schema locals)
             (add-rules (instantiate-rule-schema schema mapping category
                                                 :local-cases? category))))))))
+
+(defun handle-prep-if-necessary (category rdata)
+  "There are realization constructs that -reuse- a verb's rule rather than
+   create them. They are checked for and handles here as an alternative to
+   calling make-rules-for-head. This returns t when either of the defined
+   off main path constructs is present -and- the verb already has rules,
+   which cuts off the call to make-rules-for-head, ensuring the the rules
+   for verb by itself have the correct category."
+  ;; (:verb (#<word "make"> :prep #<word "up">))
+  (let ((full-exp (rdata-head-words rdata)))
+    (when (and (eq :verb (car full-exp)) ; never in other POS
+               (consp (cadr full-exp))) ; it's not simply the verb
+      (let* ((data-exp (second full-exp))
+             (verb (car data-exp))
+             (prep (cadr (memq :prep data-exp)))
+             (phrase (cadr (memq :phrase data-exp))))
+        ;; We have relevant constructs, and the verb has already been
+        ;; independently defined
+        (when (and (or prep phrase)
+                   (has-rules? verb))
+          ;; We have one of therelevant constructs, and the verb
+          ;; has already been independently defined
+          (cond
+            (prep (setup-bound-preposition verb prep category))
+            (phrase (setup-phrasal-verb verb phrase category)))
+          t)))))
+
+
+            
 
 
 ;;;---------------------------

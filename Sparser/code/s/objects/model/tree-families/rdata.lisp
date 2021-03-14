@@ -332,7 +332,7 @@ Should mirror the cases on the *single-words* ETF."
 (defun setup-word-data (word pos category)
   "For adverbs, adjectives, and anything else whose realization
    is made by rule rather than the interpretation of an rdata
-   expression. The call oridinates in define-function-term, where
+   expression. The call originates in define-function-term, where
    the category will be based on the word."
   (declare (special *build-mumble-equivalents*))
   (when *build-mumble-equivalents*
@@ -536,18 +536,32 @@ Should mirror the cases on the *single-words* ETF."
   "Recursively replace symbols with variables and strings with words."
   (etypecase word
     ((or word polyword keyword) word)
-    (string (resolve-string-to-word/make word))
+    (string (or (resolve-string-to-word word)
+                (resolve-string-to-word/make word)))
     (symbol (or (find-variable-for-category word category)
                 (when (string-equal (symbol-name word)
                                     (symbol-name (cat-name category)))
                   category)
+                (category-named symbol) ; for :phrase case
                 (error "The symbol ~a does not correspond to a variable of ~a."
                        word category)))
-    (cons (mapcar (lambda (word) (deref-rdata-word word category))
-                  word))))
+    (cons
+     (let* ((sexp word) ; rename for clarity
+            (phrase-exp (when (memq :phrase sexp)
+                          (cadr (memq :phrase sexp)))))
+       (when phrase-exp ;; remove it, then splice it back at the end
+         (setq sexp (delete :phrase sexp))
+         (setq sexp (delete phrase-exp sexp)))
+       (let ((replacement-sexp
+              (loop for term in sexp collect (deref-rdata-word term category))))
+         (when phrase-exp
+           (setq replacement-sexp
+                 (append replacement-sexp (list :phrase phrase-exp))))
+         replacement-sexp)))))
 
 (defun decode-rdata-heads (rdata category)
-  "Return a plist of specified head words in the realization data."
+  "Return a plist of specified head words in the realization data.
+   Called from setup-rdata as part of making the realization-data object."
   (loop for (key value) on rdata by #'cddr
         as alias = (assoc key *head-aliases*)
         if alias do (setq key (cdr alias))
