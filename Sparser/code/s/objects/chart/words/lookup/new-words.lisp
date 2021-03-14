@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2011-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2011-2021 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "new words"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:  March 2018
+;;;  Version:  March 2021
 
 ;; 4.0 (9/28/92 v2.3) accomodates changes to tokenizer
 ;; 4.1 (7/16/93) updated field name
@@ -24,16 +24,49 @@
 (in-package :sparser)
 
 
-;;;-----------------------------------------
-;;; Cases for what-to-do-with-unknown-words
-;;;-----------------------------------------
-
-(defparameter *word-to-be-defined?* nil
+(defvar *word-to-be-defined?* nil
   "Provides a pointer for recording routines to notice")
 
 (defparameter *show-word-defs* nil
   "Controls whether we announce when a word goes through make-word
    routine. Only unknown words do that, so it can be a useful trace")
+
+;;;----------------------------------------
+;;; programmatic word-to-category creation
+;;;----------------------------------------
+
+(defun create-category-from-word (word &key pos)
+  "Invoke the morphology and Comlex information to setup a category
+   for this word just as though we were going through one of the
+   following routines for establishing unknown words but already
+   have the word to hand."
+  (declare (special *introduce-brackets-for-unknown-words-from-their-suffixes*
+                    *edge-for-unknown-words*))
+  (unless (and *introduce-brackets-for-unknown-words-from-their-suffixes*
+               *edge-for-unknown-words*)
+    (error "Category-creating machinery is deliberately turned off"))
+  
+  (let ((*complain-about-words-missing-from-comlex* t))
+    (declare (special *complain-about-words-missing-from-comlex*))
+    (setq *word-to-be-defined?* word)
+    (unless pos (setq pos 'noun))
+    
+    (let ((comlex-clause (comlex-subcategorization word pos)))
+      (if comlex-clause
+        (case pos
+          ;;/// ignore the pre-check in is-known-definition? 
+          ;; and invoke the setup routine directly.
+          (noun (setup-common-noun word comlex-clause nil))
+          (otherwise
+           (break "pos = ~a  Not set up yet to handle it" pos)))
+        (let ((morph-keyword (word-morphology word)))
+          (unless morph-keyword ;; move earlier in the chain
+            (setf (word-morphology word) (affix-checker (word-pname word))))                                 
+          (assign-morph-brackets-to-unknown-word word morph-keyword))))))
+
+;;;-----------------------------------------
+;;; Cases for what-to-do-with-unknown-words
+;;;-----------------------------------------
 
 (defun make-word/all-properties/or-primed (character-type 
                                            &optional existing-word)
