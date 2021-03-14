@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; Copyright (c) 2010-2017 David D. McDonald
+;;; Copyright (c) 2010-2021 David D. McDonald
 ;;;
 ;;;     File: "comlex-unpacking"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  January 2017
+;;;  Version:  March 2021
 
 ;; Extracted from one-offs/comlex 12/3/12. Adding cases through 2/22/13
 ;; and put in the ambiguous flag. 3/14/13 moved edge flag to globals.
@@ -90,8 +90,7 @@ places. ]]
     (declare (special *source-of-unknown-words-definition*))  
     (let* ((instance-string (word-pname instance-word))
            (lemma-string (cadr entry))
-           (lemma-word (if (string= (word-pname instance-word)
-                                   lemma-string)
+           (lemma-word (if (string= (word-pname instance-word) lemma-string)
                           instance-word
                           (resolve-string-to-word/make lemma-string)))
            (clauses (cddr entry)))
@@ -108,20 +107,6 @@ places. ]]
       (push instance-word *comlex-primed-words*)
       (add-new-word-to-catalog lemma-word :comlex instance-string)
       instance-word )))
-
-(defun is-known-definition? (lemma-word clause)
-  ;; we had a case where "relative" was a known ADJECTIVE
-  ;;  and the corpus had "relatives" as a lexical item
-  ;; We want to get only the NOUN reading from COMLEX, not the ADJECTIVE
-  ;; (which has already been defined)
-  (let ((known-categories (loop for cfr in (find-unary-rules lemma-word)
-                                collect (cat-name (cfr-form cfr)))))
-    (case (car clause)
-      (adjective (member 'adjective known-categories))
-      (noun (member 'common-noun known-categories))
-      (verb (member 'verb known-categories))
-      (adverb (member 'adverb known-categories))
-      (t nil))))
 
 (defgeneric standalone-lexicon-unpacker (word)
   (:documentation "Used when we need to get the benefit of
@@ -197,9 +182,6 @@ places. ]]
          nil))
 
       (setf (get-tag :comlex lemma) properties))))
-
-
-(defvar *word-to-be-defined?* nil)
 
 
 (defmethod ambiguous-comlex-primed-decoder ((lemma word) clauses)
@@ -358,6 +340,19 @@ places. ]]
         (record-inflections clause-plural/s lemma :noun)
         clause-plural/s))))
 
+(defun is-known-definition? (lemma-word clause)
+  ;; we had a case where "relative" was a known ADJECTIVE
+  ;;  and the corpus had "relatives" as a lexical item
+  ;; We want to get only the NOUN reading from COMLEX, not the ADJECTIVE
+  ;; (which has already been defined)
+  (let ((known-categories (loop for cfr in (find-unary-rules lemma-word)
+                                collect (cat-name (cfr-form cfr)))))
+    (case (car clause)
+      (adjective (member 'adjective known-categories))
+      (noun (member 'common-noun known-categories))
+      (verb (member 'verb known-categories))
+      (adverb (member 'adverb known-categories))
+      (t nil))))
 
 (defun maybe-setup-adjective (lemma clauses ambiguous)
   (unless (is-known-definition? lemma (assoc 'adjective clauses) )
@@ -370,11 +365,11 @@ places. ]]
         (setup-adverb lemma))))
 
 (defun maybe-setup-common-noun (lemma clauses ambiguous)
-    (unless (is-known-definition?  lemma (assoc 'noun clauses))
-      (setup-common-noun lemma clauses ambiguous)))
+  (unless (is-known-definition?  lemma (assoc 'noun clauses))
+    (setup-common-noun lemma clauses ambiguous)))
 
 (defun maybe-setup-verb (lemma clauses &optional ambiguous)
-  (unless (is-known-definition?  lemma (assoc 'verb clauses))
+  (unless (is-known-definition? lemma (assoc 'verb clauses))
     (if ambiguous
         (setup-verb lemma clauses ambiguous)
         (setup-verb lemma clauses))))
@@ -392,7 +387,7 @@ places. ]]
 
 (defun lift-special-case-form-from-comlex-clause (clause)
   ;; if the word is unambigously a verb then there is a single clause
-  ;; otherwise there's a list of clauses. one for eacu POS.
+  ;; otherwise there's a list of clauses. one for each POS.
   ;; Called from setup-verb
   (flet ((launder-verb-keywords (plist)
            ;; Make any needed changes so that the keywords supplied by
@@ -402,34 +397,34 @@ places. ]]
              (setq plist (subst :past-participle :pastpart plist)))
            plist))
     (when clause ;; "burnt" hack in Grok -- want another way.
-    (push-debug `(lift-special-case ,clause))
-    (let ((verb-clause
-           (if (consp (car clause)) ;; multiple clauses
-             (assq 'verb clause)
-             clause)))
-      (unless (eq 'verb (car verb-clause))
-        (push-debug `(,verb-clause))
-        (error "Expected a verb clause and didn't get one"))
-      (let* ((2d-expr (cadr verb-clause))
-             ;; Information about irregulars is invariably here, but if there
-             ;; aren't any, then one of the other properties such as :features
-             ;; or subcategorization will be there, so we block them. 
-             (result
-              (case (car 2d-expr)
-                ((or :infinitive :tensed/singular :past-tense
-                     :present-participle :pastpart)
-                 (launder-verb-keywords 2d-expr))
-                (:subc nil)
-                (:features nil)
-                (otherwise
-                 (push-debug `(,2d-expr ,verb-clause))
-                 (error "New case in what's 2d in a verb clause")))))
-        (when (memq :subc result)
-          ;; Seen this with "prove", which had two past participles:
-          ;; (verb (:pastpart ("proved" "proven") :subc ... )
-          (let ((clipped (cdr (memq :subc (reverse result)))))
-            (setq result (reverse clipped))))
-        result)))))
+      (push-debug `(lift-special-case ,clause))
+      (let ((verb-clause
+             (if (consp (car clause)) ;; multiple clauses
+               (assq 'verb clause)
+               clause)))
+        (unless (eq 'verb (car verb-clause))
+          (push-debug `(,verb-clause))
+          (error "Expected a verb clause and didn't get one"))
+        (let* ((2d-expr (cadr verb-clause))
+               ;; Information about irregulars is invariably here, but if there
+               ;; aren't any, then one of the other properties such as :features
+               ;; or subcategorization will be there, so we block them. 
+               (result
+                (case (car 2d-expr)
+                  ((or :infinitive :tensed/singular :past-tense
+                       :present-participle :pastpart)
+                   (launder-verb-keywords 2d-expr))
+                  (:subc nil)
+                  (:features nil)
+                  (otherwise
+                   (push-debug `(,2d-expr ,verb-clause))
+                   (error "New case in what's 2d in a verb clause")))))
+          (when (memq :subc result)
+            ;; Seen this with "prove", which had two past participles:
+            ;; (verb (:pastpart ("proved" "proven") :subc ... )
+            (let ((clipped (cdr (memq :subc (reverse result)))))
+              (setq result (reverse clipped))))
+          result)))))
 
 
 ;;--- for debugging / understanding word sources
