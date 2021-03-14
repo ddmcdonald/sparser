@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2013-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2013-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "generic"
 ;;;    Module:   "objects;rules;rule links;"
-;;;   Version:   September 2020
+;;;   Version:   March 2021
 
 ;;  1.1  (v1.5)  cat-rules -> cat-rule-set
 ;;  1.2  (3/20/91 v1.8.1)  Changed Establish-rule-set-for to look for an
@@ -58,8 +58,9 @@
         (unless no-warn
           (format t "~s does not have a rule-set" (pname w))))))
   (:method ((rs rule-set) &key no-warn)
-    (values (rs-backpointer rs)
-            (rs-single-term-rewrites rs))))
+    (when (rs-single-term-rewrites rs)
+      (values (rs-backpointer rs)
+              (rs-single-term-rewrites rs)))))
 
 (defun single-term-rewrite? (item &key no-warn)
   (multiple-value-bind (word rule) (rule-for item :no-warn no-warn)
@@ -89,3 +90,26 @@
   (setq rules (loop for r in rules when r collect r)) ;; has nil in redefines
   (assert (every #'cfr-p rules) (rules) "Invalid rule list.")
   (nconcf (get-rules obj) (set-difference rules (get-rules obj))))
+
+
+;;;-------------------------------
+;;; generic test for having rules
+;;;-------------------------------
+
+(defgeneric has-rules? (item)
+  (:documentation "Generalizes over words and categories, which store
+ their rules in different ways. Used for querying whether categories
+ are known, which comes down to whether they'll add an edge to the
+ chart.")
+  (:method ((w word))
+    (rule-for w))
+  (:method ((pw polyword))
+    (rule-for pw))
+  (:method ((c category))
+    (get-rules c))
+  (:method ((pname string))
+    (let ((word (resolve pname)))
+      (when word (has-rules? word))))
+  (:method ((name symbol))
+    (let ((c (category-named name)))
+      (when c (has-rules? c)))))
