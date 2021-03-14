@@ -232,7 +232,7 @@
 (defun show-new-verb-definitions ()
   (setq *show-R3-new-verb-definitions* t))
 (defun dont-show-new-verb-definitions ()
-  (setq *show-R3-new-verb-definitions* t))
+  (setq *show-R3-new-verb-definitions* nil))
 
 (defun setup-verb (word &optional comlex-clause ambiguous?)
   (declare (special *big-mechanism* *unknown-word*
