@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:people:"
-;;;  version:  January 2021
+;;;  version:  February 2021
 
 ;; initiated 6/8/93 v2.3
 ;; 0.1 (1/7/94) redesigned not to pre-index
@@ -32,6 +32,7 @@
   :mixins (has-uid)
   :binds ((name . person-name)
           (age . age)
+          (gender . gender)
           (position . (:or title position-at-co))
           (nationality . country)
           (origin top)) ;; simplistic
@@ -82,6 +83,8 @@
 (define-category family-member
   :instantiates person
   :specializes person-type
+  :binds ((relative . person))
+  :realization (:of relative)
   :documentation "Its worth separating out these cases
     since they take possessives ('my mother is turning 92')
     and have nice inter-relationships if we want to model them.")
@@ -96,8 +99,7 @@
   :index (:key role)  ;; should these be permanent?
   :binds ((role . title))
   :documentation "Virtually any job title can be used to refer
- to people who hold that position, 
-")
+ to people who hold that position, ")
 
 (define-category role-based-person
   :instantiates person
@@ -120,7 +122,7 @@
  the role at some time, should have person-name objects in their
  name file.")
 
-;; instances in dossiers/
+;; instances in dossiers/person-roles.lisp
 (define-type-instance-constructor role-based-person)
 
 ;;;------------
