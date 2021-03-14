@@ -1871,8 +1871,7 @@
       ((TO top))
      :realization (:verb  "decelerate" :s SUBJECT :to TO))
 
-(define-category decide :specializes comlex-verb
-     :realization (:verb  "decide" :s SUBJECT))
+;; get "decide" from things
 
 (define-category declare :specializes comlex-verb
      :realization (:verb  "declare" :s SUBJECT :o OBJECT))
@@ -2984,7 +2983,25 @@
        (UPON top)
        (|OFF OF| top))
      :realization (:verb ( "fall"  :TENSED/SINGULAR "falls" :PAST-TENSE "fell")
- :s SUBJECT :o OBJECT :to TO :with WITH :on ON :in IN :at AT :before BEFORE :under UNDER :for FOR :among AMONG :upon UPON :|OFF OF| |OFF OF|))
+                         :s SUBJECT :o OBJECT :to TO :with WITH :on ON :in IN :at AT :before BEFORE
+                         :under UNDER :for FOR :among AMONG :upon UPON :|OFF OF| |OFF OF|))
+#|
+sp> (find-simple-comlex-prepositions "fall")
+("before" "under" "for" "among" "p-dir" "upon" "off of")
+
+sp> (comlex-entry "fall")
+((verb (:tensed/singular "falls" :infinitive "fall" :past-tense "fell")
+  (:subc
+   ((nunitp-to-range) (extrap-to-np-s)
+    (part :adval
+     ("to" "through" "behind" "apart" "back" "off" "out" "over" "open"))
+    (part-pp :adval ("forward" "down" "in" "out" "back" "behind" "apart") :pval
+     ("to" "with" "on" "in" "at"))
+    (intrans) (np-pred) (adjp-pred)
+    (pp :pval ("before" "under" "for" "among" "p-dir" "upon" "off of")))
+   :features ((vmotion))))
+ (noun (:features ((ntime1)))))
+|#
 
 (define-category fashion :specializes comlex-verb
      :binds
@@ -5317,12 +5334,12 @@
 (define-category plague :specializes comlex-verb
      :realization (:verb  "plague" :s SUBJECT :o OBJECT))
 
+
 (define-category plan :specializes comlex-verb
-     :binds
-      ((ON top)
-       (FOR top))
-     :realization (:verb ( "plan"  :TENSED/SINGULAR "plans" :PRESENT-PARTICIPLE "planning" :PAST-TENSE "planned")
- :s SUBJECT :o OBJECT :on ON :for FOR))
+     :binds ((on top)
+             (for top))
+     :realization (:verb ( "plan"  :tensed/singular "plans" :present-participle "planning" :past-tense "planned")
+                   :s subject :o object :on on :for for))
 
 ;;; found existing category PLAY in #P"SPARSER:DOSSIERS;VERBS.LISP"
 
