@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2010-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2010-2021 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "morphology"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  December 2020
+;;;  version:  February 2021
 
 ;; initiated 8/31/92 v2.3, fleshing out verb rules 10/12
 ;; 0.1 (11/2) fixed how lists of rules formed with synonyms
@@ -127,7 +127,10 @@
       (t (make-rules-for-head pos (getf (rdata-head-words rdata) pos) category referent))))
   
   (:method ((pos (eql t)) (word cons) category referent &rest special-cases)
-    "Handle a generic head-word specification list, e.g., (:verb ...)"
+    "Handle a generic head-word specification list, e.g., (:verb ...).
+     At this stage the 'word' is a list. We pull off the pos keyword and head word
+     (car & cadr), package the remainder of the list (cddr) as 'special-cases'
+     for the next method to handle"
     (check-type (car word) keyword)
     (check-type (cadr word) (or list word polyword lambda-variable))
     (check-irregular-word-markers (cddr word))
@@ -182,7 +185,7 @@
 
 
 (deftype irregular-keyword ()
-  '(member :plural :prep
+  '(member :plural :prep :phrase
            :nominalization :past-tense
            :present-participle :past-participle
            :third-singular :third-plural))
@@ -311,7 +314,7 @@
                          past-tense         ;; "they gave"
                          past-participle    ;; "they have given"
                          present-participle ;; "they are giving"
-                         prep
+                         prep  phrase
                          nominalization)
   "Standalone entry point developed in the early 1990s. Can be very lightweight
 because the referent can be trivial. Provides overrides to make-verb-rules."
@@ -319,6 +322,7 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
                                   category referent
                                   :nominalization nominalization
                                   :prep prep
+                                  :phrase phrase
                                   :present-participle present-participle
                                   :past-participle past-participle
                                   :past-tense past-tense
@@ -329,7 +333,7 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
 (defmethod make-rules-for-head ((pos (eql :verb)) word category referent
                                 &key
                                   nominalization
-                                  prep
+                                  prep  phrase
                                   past-tense past-participle present-participle
                                   third-singular third-plural
                                   (s-form third-singular)
@@ -430,7 +434,10 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
             (rule-macro past-participle category::verb+ed)) 
 
           (when prep
-            (setup-bound-preposition prep category referent))
+            (setup-bound-preposition word prep category))
+
+          (when phrase
+            (setup-phrasal-verb word phrase category))
 
           (nreverse rules)))))))
 
