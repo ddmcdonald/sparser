@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2012,2021  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2008 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;; 
 ;;;     File:  "def form"
 ;;;   Module:  "objects;words:"
-;;;  Version:  0.2 March 2012
+;;;  Version:  March 2021
 
 ;; broken out on its own 1/92
 ;; (5/24/93 v2.3) added a data-check
@@ -34,9 +33,11 @@
 ;;;----------------------
 
 (defun define-word/expr (string &optional override-duplicate-check?)
-  (unless (stringp string)
-    (error "The argument to Define-word has to be a string~
-            ~%~A is a ~A" string (type-of string)))
+  "Handles all of the mechanics of creating the word object
+ for a particular string. Emulates what happens when a word is pulled out of
+ the character string through the word lookup buffer by the tokenizing machinery.
+ Creates the object, computes its properties (capitalization and basic
+ morphology), creates its canonical form (if it is capitalized), and catalogs it."
 
   (when *force-case-shift*
     (setq string (force-case-of-word-string string)))
