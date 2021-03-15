@@ -219,6 +219,7 @@ Should mirror the cases on the *single-words* ETF."
     :beyond
     :beside
     :close\ to
+    :for
     :in\ excess\ of
     :in-excess-of
     :in\ favor\ of
