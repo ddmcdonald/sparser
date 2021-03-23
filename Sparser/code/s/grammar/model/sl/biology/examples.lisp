@@ -13,6 +13,9 @@
 ;;; Example texts
 ;;;---------------
 
+;; NYT CoV newsletter 3/19/21
+"Kyiv, the Ukrainian capital, is about to become the latest European city to go into lockdown. Just 0.2 percent of Ukraine’s population has been inoculated."
+
 ;; The Guardian 2/1/21
 "A leading infectious diseases scientist said yesterday that a British strain of coronavirus, thought to be more contagious and more deadly, could hit the US like a “hurricane” in spring. Epidemiologist Michael Osterholm, a member of Joe Biden’s transition coronavirus advisory board, predicted that the variant could become the dominant strain of coronavirus in the US. It came as the US confirmed more than 26 million cases of coronavirus, and the death toll neared half a million."
 
