@@ -223,17 +223,20 @@
 
 ;;--- countries
 
-(defun double-country-check (country-tt items count)
+(defun double-country-check (country-tt items count end-pos)
+  "This is called from the check-cases sweep in examine-capitalized-sequence
+   if a country is encountered and there already has been one.
+   e.g. 'the Irish Coast Guard and Irish Lighthouses'
+   If this is a list of countries it should be left for
+   the conjunction routine to sweep up, not coerced into 
+   a name, though if they are adjectives that's ok" 
   (push-debug `(,country-tt ,items ,count))
-  ;; If this is a list of countries it should be left for
-  ;; the conjunction routine to sweep up, not coerced into 
-  ;; a name, though if they are adjectives that's ok
   ;; FIXME -- should loop through the items, expecting just
-  ;; countries and probably the word "and".  If all the countries
+  ;; countries and probably the word "and". If all the countries
   ;; are proper-adjective's then we may leave them in,
   ;; and if some other word is involved that would be odd too
   (throw :abort-examination-not-a-name
-         `(:not-a-name ,(pos-edge-ends-at country-tt))))
+         `(:not-a-name ,(pos-edge-ends-at end-pos))))
 
 (defun only-country-in-items (items start-pos end-pos)
   (declare (special category::country word::hyphen)(ignore start-pos end-pos))

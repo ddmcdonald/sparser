@@ -354,7 +354,7 @@
                
              (category::country  ;; "American National Standards Institute"
               (if country
-                (double-country-check tt items count)
+                (double-country-check tt items count ending-position)
                 (setq country `(,count . ,(edge-referent tt)))))
 
              (category::hurricane  ;; "Hurricane Adrian"
