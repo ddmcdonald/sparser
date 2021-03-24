@@ -1301,7 +1301,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
 (defun interpret-adverb+verb (adverb vg-phrase)
   (declare (special category::pp category::hyphenated-pair
                     category::hyphenated-triple))
-  ;; (push-debug `(,adverb ,vg)) (break "look at adv, vg")
+  ;; (push-debug `(,adverb ,vg-phrase)) (break "look at adv, vg")
   (if (word-p vg-phrase)
       (then (format t "vg-phrase ~s is not a category or an individual,~
                      ~% probably defined by morphology, can't attach adverb~%"
@@ -1310,6 +1310,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
       (let* ((vg (individual-for-ref vg-phrase))
              (variable-to-bind
               (subcategorized-variable vg :adv adverb)))
+
         #| Really should diagnose among
         (time) (location) (purpose) (circumstance) (manner) |#
         (cond
@@ -1321,6 +1322,9 @@ there was an edge for the qualifier (e.g., there is no edge for the
            (cond
              (variable-to-bind t)
              ((has-adverb-variable? vg vg-phrase adverb) t)
+             ((and (itypep adverb 'approximator)
+                   (itypep vg 'takes-adverb)) ; any perdurant
+              t)
              ((and (is-basic-collection? vg)
                    ;; saw an error in  "phase–contrast only"
                    ;; where "phase-contrast" was treated as a verb
@@ -1350,6 +1354,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
                 'adverb)
             adverb
             vg))
+          ((itypep adverb 'approximator)
+           (bind-variable 'adverb adverb vg))
           ((has-adverb-variable? vg vg-phrase adverb)
            (setq vg (bind-dli-variable 'adverb adverb vg)))
           (t vg)))))

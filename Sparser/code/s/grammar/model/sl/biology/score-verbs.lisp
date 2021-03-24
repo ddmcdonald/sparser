@@ -1444,8 +1444,10 @@
        (INTO top))
      :realization (:verb  "compound" :s SUBJECT :o OBJECT :with WITH :into INTO))
 
-(define-category comprehend :specializes comlex-verb
-     :realization (:verb  "comprehend" :s SUBJECT :o OBJECT))
+(define-category comprehend
+ :specializes perdurant
+ :mixins (comlex-verb)
+ :realization (:verb  "comprehend" :s subject :o object))
 
 (define-category comprise :specializes comlex-verb
      :binds
