@@ -3,19 +3,20 @@
 ;; Note on Sparser code tracing system
 ;; version of 9/15/14
 
-Sparser has a system for conditional traces. They are defined
-by a special form called deftrace. These forms are stored in
-files according to their function. For example the file
-objects/traces/pronouns.lisp contains all of the traces that
-track what's happening with pronouns. All trace functions
-share a standard pattern, e.g. 
+Sparser has a system for creating conditional traces. They are defined
+by a special form called deftrace. These forms are stored in files
+according to their function.
+
+For example the file objects/traces/pronouns.lisp contains all of the
+traces that track what's happening with pronouns. All trace functions
+share a standard pattern, e.g.
 
 (deftrace :decoding-definite-reference-to (head)
   ;; called from dereference-DefNP
   (when *tracing-pronouns*
     (trace-msg "[defNP] Looking for a ~a" head)))
 
-The trace-msg form is basically just a format statement 
+The trace-msg function is basically just a format statement 
 that takes arguments in the normal way while adding
 a ~& and ~% around your string so that messages prints
 on its own line. 
@@ -33,7 +34,7 @@ functions that turn it on or off.
 
 You invoke these function from the listener as a normal
 function call, and you only do it when you're debugging and
-want to see what's going on.
+want to see what's going on. Some traces are quite verbose.
 
 Trace functions are relatively low overhead check, just an
 access to a global variable to see whether it is nil or not.
@@ -56,7 +57,7 @@ cases too: (trace-composition).
 
 ## unknown words -- trace-unknowns
 (trace-unknowns) is a composite of the traces for words introduced
-by their morphological structure, the reports from find-word
+by their morphological structure, the reports from find-word,
 and the handling unknown words, particularly looking them up in
 Comlex.
 
@@ -106,13 +107,14 @@ sp> (p "Three camels coming for grass under the bed every January 5th")
                     source-start
 e31   CAMEL         1 "Three camels coming for grass under the bed every January " 11
 e32   ORDINAL       11 "5th" 13
-                    end-of-source
+end-of-source
+
 
 
 ## Rules -- trace-multiply
 The core of applying any sort of rule in the 'multiply-edges' function
 that accesses the rule index that binary rules of every sort are
-mapped into. A rule you think should have run might not actually exist
+mapped into. A rule you think should have run may not actually exist
 or may have been blocked on semantic or formal grounds.
 
 Given "... [every January] [5th] ..." as edges 23 and 21
@@ -136,6 +138,10 @@ No form rule
  it's not valid
 nil
 
+That means that there is a syntactic rule that could apply, but the check
+in the syntax function allowable-post-quantifier that ruled it out. The actual
+fix was adding a semantic rule for days of the month that explicitly looked
+for ordinals like "5th".
 
 
 ## Miscellaneous
@@ -167,7 +173,7 @@ that defines the trace and then any arguments the trace wants.
 For example, I did this
 ? (trace-pronouns)
 t
-? (cells-defNP)
+? (cells-defNP) ; a predefined example
 [braf][ is not active] and [ is not required] for [ mek/erk activation]
 in [ ras mutant cells]
 [nevertheless], [ braf inhibitors][ hyperactivate][ craf and mek] 
@@ -194,4 +200,5 @@ replace the initial colon with the string "trace-"
 
 That gives you the name of the actual function which you can access 
 via meta-. in the usual way. /// 6/18/19 -- actually it doesn't.
-The macro has to be rewritten to make that possible.
+The macro has to be rewritten to make that possible. The only reliable
+way of finding them right now is using grep.
