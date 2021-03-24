@@ -520,7 +520,8 @@
   (:method ((e edge))
     (let* ((label (edge-category e))
            (sc (get-subcategorization label)))
-      (linked-phrases sc))))
+      (when sc ;; The apostrophe-re in "they're .."
+        (linked-phrases sc)))))
                   
 
 
