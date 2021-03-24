@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "examine"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  February 2021
+;;;  version:  March 2021
 
 ;; initiated 4/1/94 v2.3
 ;; 0.1 (4/23) fixed change of where :literal-in-a-rule is in Sort-out-multiple-
@@ -220,7 +220,6 @@
                    ;; label on an edge
                    (cond
                     ((only-known-as-a-name tt))
-                      
                     (edge-labeled-by-word
                      (cond ((edge-for-literal? edge-labeled-by-word)
                             (when (eq (edge-category edge-labeled-by-word)
@@ -234,15 +233,16 @@
                            (t 
                             (break "New case for a word labeling an edge in a ~
                                     capitalized sequence:~%~A" tt))))
-                      
                     ((function-word? tt))
-                      
-                    (t
+                    (t 
                      (when *break-on-new-categories-in-cap-seq*
                        (break "New case for a known word in a capitalized ~
                                sequence:~%~A" tt))))
                      
-                     
+                   ;; If we are running in any modern configuration (~ after 2017)
+                   ;; there will never be an unknown word. Every word gets some
+                   ;; sort of interpretation even if it's just a default.
+
                    ;; new word because it doesn't have a rules field.
                    (else
                     (setq already-pushed? t)
@@ -412,6 +412,9 @@
                       ;; Want to be able to provide these words with another
                       ;; reading as a name-word. Record the treetop edge rather
                       ;; than just the category so we can get the needed information.
+                      ;; The conversion is done by referents-of-list-of-edges when
+                      ;; it is going through the list of items in the call here
+                      ;; to categorize-and-form-name and the bottom of this function.
                       (setq other (cons count tt))))))))
          
          ;; That was the end of check-cases flet function,
@@ -577,7 +580,7 @@
   ;; classify-&-record-span using the fn do-referent-and-edge  
 
   (when *break-before-creating-name*
-    (push-debug `(,items)) ;; more flags?
+    (push-debug `(,items)) ;; include more flags?
     (break "Look at the locals in categorize-and-form-name~
           ~%  items = ~a" items))
 

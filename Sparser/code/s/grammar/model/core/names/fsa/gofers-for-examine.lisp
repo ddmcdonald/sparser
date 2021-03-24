@@ -1,8 +1,9 @@
-;;; Copyright (c) 2013-2016 David D. McDonald all rights reserved
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
+;;; Copyright (c) 2013-2021 David D. McDonald all rights reserved
 ;;;
 ;;;      File: "gofers-for-examine"
 ;;;    Module: model/core/names/fsa/
-;;;   Version: February 2018
+;;;   Version: March 2021
 
 ;; Initiated 3/28/13 by pulling out the odd tests and checks 
 ;; from examine. 
@@ -517,12 +518,18 @@
                 (setf (edge-category edge) category::name-word)
                 edge )))))))
 
-      
+
+#| According to make-name-word-for-unknown-word-in-name, it was called
+when the Examine sweep encountered an unknown word, i.e. a word without
+a rule-set. Now (May 2020) that will never happen since we always create
+a minimal category and rule set for every word.
+|#
 
 (defun referents-of-list-of-edges (reversed-list-of-edges)
-  ;; called by Examine-capitalized-sequence to make the item list
-  ;; for Categorize-and-form-name. Returns a list of terms from
-  ;; the model to put into the name object
+  "Called by Examine-capitalized-sequence to make the item list
+   for Categorize-and-form-name. Returns a list of terms from
+   the model to put into the name object. Expects name-words rather
+   than raw individuals. Makes them when it's clear how to do it."
   (let ( value  referents )
     (dolist (item reversed-list-of-edges)
       ;; Collect one item per pass through this loop and
@@ -536,7 +543,8 @@
                  (if (null referent)
                    (get-name-referent-of-odd-edge item :pnf)
                    (typecase referent
-                     (individual  referent)
+                     (individual
+                      (find/make-silent-nw-for-word-under-edge item))
 
                      ((or referential-category category mixin-category)
                       (find/make-silent-nw-for-word-under-edge item))
@@ -547,17 +555,22 @@
                       referent)
 
                      (otherwise
-                      (when *debug-pnf*
+                       (when *debug-pnf*
                         (push-debug `(,referent ,item ,reversed-list-of-edges))
                         (break "Unexpected type of edge referent: ~a~%~a"
                                (type-of referent) referent)))))))
                    
               (individual ;; e.g. the name-word that is made for
                ;; an unknown capitalized word
-               item)
+               (if (itypep item 'name-word)
+                 item
+                 (else
+                   (when *debug-pnf* ; otherwise drop it
+                     (push-debug `(,item ,reversed-list-of-edges))
+                     (break "Loose individual in the item list. ~
+                             Expected a name-word:~%~a" item)))))
 
-              (word ;(or (name-word-for-word item)
-               ;    (make-name-word-for/silent item))
+              (word
                (let ((nw (name-word-for-word item)))
                  (cond
                    (nw nw)
@@ -586,7 +599,8 @@
           (push-debug `(,reversed-list-of-edges))
           (break "No referent for item in PNF treetop sequence:~
                 ~%  ~A" item)))
-      (kpush value referents))
+      (when value ;; raw individuals are dropped if we're not debugging
+        (kpush value referents)))
 
     referents ))
 
@@ -597,7 +611,7 @@
 (defun populate-categories-that-appear-in-names ()
   (declare (special category::phase-of-day))
   (setq *categories-that-appear-in-names*
-        (list category::phase-of-day  ;; "Morning", in a newspape's name
+        (list category::phase-of-day  ;; "Morning", in a newspaper's name
         )))
 
 (defun get-name-referent-of-odd-edge (edge purpose)
