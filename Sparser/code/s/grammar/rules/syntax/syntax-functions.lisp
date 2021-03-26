@@ -1751,6 +1751,15 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
               (tr :np-pp-of-np-partonomic np pobj-referent)
               (setq np (bind-variable 'parts pobj-referent np)))
 
+             ((and (eq prep-word of)  ;; "thousands of years"
+                   (itypep np 'number)
+                   (itypep pobj-referent 'time-unit))
+              (make-amount-of-time np pobj-referent))
+
+             ((and (eq prep-word of)
+                   (itypep np 'amount-of-time))
+              (make-temporal-amount-of-stuff np pobj-referent))
+
              ((and (eq prep-word of)
                    (or (itypep np 'measurement) ;; "42% of all new cases"
                        (itypep np 'number) ;; "two of them"
@@ -1763,10 +1772,6 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                    (or (itypep np 'fractional-term) ; "half of them"
                        (itypep np 'ordinal))) ; "a seventh of the pie"
               (make-an-amount-of-stuff np pobj-referent))
-
-             ((and (eq prep-word of)
-                   (itypep np 'amount-of-time))
-              (make-temporal-amount-of-stuff np pobj-referent))
 
              ((when (valid-method compose np pp)
                 ;; e.g. has-location + location : "the block at the left end of the row"

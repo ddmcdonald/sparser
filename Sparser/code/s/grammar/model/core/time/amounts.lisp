@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "amounts"
 ;;;   Module:  "model;core:time:"
-;;;  version:  February 2021
+;;;  version:  March 2021
 
 ;; initiated 4/27/94 v2.3. 1/1/96 Added fractions and a few explicit rules.
 ;; 2/10/10 Something has changed such that the period => "period" rule is
@@ -29,13 +29,20 @@
                     (base . units)
                     (result-type . :self))))
 
-
 (defun range-of-time (hyphenated-number time-unit)
   ;; called from syntax-function so these are individuals
   (let ((range (convert-hyphenated-number hyphenated-number)))
     (define-or-find-individual 'amount-of-time
         :units time-unit
         :quantity range)))
+
+
+(defun make-amount-of-time (amount unit)
+  "Called from the of-handler in interpret-pp-adjunct-to-np,
+   could have been done by a method invoked from there"
+  (define-or-find-individual 'amount-of-time
+      :units unit
+      :quantity amount))
 
 
 ;;;----------------------

@@ -25,8 +25,9 @@
   :specializes abstract ;; delimits a region in a quantity space
   :instantiates self
   :index (:temporary :sequential-keys stuff measurement)
-  :binds ((measurement (:or measurement 
-                            fractional-term ordinal))
+  :binds ((measurement (:or measurement
+                            number ; subsumes ordinal, fractional-term 
+                            ))
           (stuff)
           ;; adjuncts that can be expected
           (alternative-amount)
