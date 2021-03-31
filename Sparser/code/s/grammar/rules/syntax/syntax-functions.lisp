@@ -528,7 +528,6 @@ val-pred-var (pred vs modifier - left or right?)
   ;; and {common-noun} → n-bar common-noun
   ;; or {proper-noun} → np proper-noun>
   ;; Also n-bar → {np n-bar}
-;;#####################################################################  
   (cond
     (*subcat-test*
      (let ((left-edge (left-edge-for-referent))
@@ -1773,6 +1772,8 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                        (itypep np 'ordinal))) ; "a seventh of the pie"
               (make-an-amount-of-stuff np pobj-referent))
 
+             ;;########################################333
+
              ((when (valid-method compose np pp)
                 ;; e.g. has-location + location : "the block at the left end of the row"
                 (let ((result (compose np pp)))
@@ -1792,9 +1793,12 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
              
              ((maybe-extend-premod-adjective-with-pp np pp))
              
-             (t (break "fell through")
-              (when *force-modifiers*
-                (setq np (bind-variable 'modifier pobj-referent np)))
+             (t
+              (if *force-modifiers*
+                (setq np (bind-variable 'modifier pobj-referent np))
+                (break "No analysis for ~s + ~s"
+                       (string-for-edge (left-edge-for-referent))
+                       (string-for-edge (right-edge-for-referent))))
               np ))))))))
 
 
