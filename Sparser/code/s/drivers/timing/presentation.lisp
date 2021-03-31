@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2014-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2014-2020-2021 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "presentation"
 ;;;   Module:  "drivers;timing:"
-;;;  Version:  October 2020
+;;;  Version:  March 2021
 
 ;; file created 2/91. Given content 1/6/95
 ;; Added Time decoded 1/23. 10/2/07 Extended and added Allegro variation.
@@ -16,6 +16,21 @@
 ;;;-------------------------------
 ;;; reporting timer elapsed times
 ;;;-------------------------------
+
+#| SBCL 1.3.2
+sp> internal-time-units-per-second
+1000
+
+sp> (time (f "/Users/ddm/ws/nlp snapshot/ddm/corpus/walks-in-Wales/Beartown-state-forest.lisp" :quiet t))
+ 604 words  time to parse: 53 msec  11,396,226.0 words/second
+Evaluation took:
+  0.053 seconds of real time
+  0.053206 seconds of total run time (0.052724 user, 0.000482 system)
+  100.00% CPU
+  38 forms interpreted
+  153,984,128 processor cycles
+  4,907,888 bytes consed
+|#
 
 (defun report-timer-value (symbol)
   "Returns the value of the timer symbol as a string"
@@ -38,9 +53,12 @@
   "Invoked from run-json-article as alternative the full statistics when :stats
    parameter is nil"
   (declare (special *time-to-read-document*))
-  (let* ((word-count (token-count article))
+  (let* ((units (ecase internal-time-units-per-second
+                  (1000 :msec)
+                  (1000000 :microsec)))
+         (word-count (token-count article))
          (wps-string (compute-words-per-second
-                      word-count *time-to-read-document* :microsec)) ;; :msec
+                      word-count *time-to-read-document* units))
          (total-time *time-to-read-document*))
     (format stream "~& ~a words  time to parse: ~a msec  ~a~%"
             ;; (name article) "Parsing article: ~s,"
@@ -105,7 +123,7 @@
 (defun time-analysis (input-string)
   (with-inessentials-turned-off
     (let* ((trace-string (make-string-output-stream))
-             (*trace-output* trace-string))
+           (*trace-output* trace-string))
         (time (analyze-text-from-string input-string))
         (analyze-and-report-timing-data
          (get-output-stream-string trace-string)))))
