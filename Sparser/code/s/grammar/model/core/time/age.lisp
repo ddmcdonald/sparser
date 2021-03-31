@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1994,2016-2020  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2016-2021  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "age"
 ;;;   Module:  "model;core:time:"
-;;;  version:  August 2020
+;;;  version:  March 2021
 
 ;; 0.1 (7/18 v1.8.6) Flushed the CA routines as redundant w/ the CS rules
 ;; 0.2 (4/16/92 v2.2) added two more rules to handle "60-year-old"
@@ -20,7 +20,7 @@
 
 (define-category has-age
   :specializes adds-relation
-  :binds ((age age))
+  :binds (age age)
   :documentation "Everything that can be construed as alive
     has an age: people, legislation, houses, ... This provides
     an age variable to record it. Note that the two 'age' in
@@ -40,7 +40,7 @@
 
 (define-category qualitative-age
   :specializes attribute-value
-  :bindings (attribute 'age)
+  :binds (attribute 'age)
   :rule-label age
   :realization (:adjective name))
 
