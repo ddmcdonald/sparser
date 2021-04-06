@@ -1413,7 +1413,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
        (cond
          (variable-to-bind t)
          ((and (itypep adverb 'intensifier) ;; compose will apply
-               (itypep adj-phrase 'qualifiable)) t)
+               (itypep adj-phrase 'qualifiable))
+          t)
          ((has-adverb-variable? adj adj-phrase adverb) t)
          ((and (is-basic-collection? adj)
                (value-of 'items adj) ;; is null for hyphenated-triple
@@ -1664,6 +1665,9 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
 (defparameter *in-scope-of-np+pp* nil
   "Flag to provide context for relative-location methods and others")
 
+(defparameter *suppress-pp-adjunct-to-np-gaps* t
+  "The error is ubiquitous in a long run. This converts it a format statement")
+
 (defun interpret-pp-adjunct-to-np (np pp)
   (cond
     ((null np) 
@@ -1772,7 +1776,7 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                        (itypep np 'ordinal))) ; "a seventh of the pie"
               (make-an-amount-of-stuff np pobj-referent))
 
-             ;;########################################333
+             ;;########################################
 
              ((when (valid-method compose np pp)
                 ;; e.g. has-location + location : "the block at the left end of the row"
@@ -1796,9 +1800,12 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
              (t
               (if *force-modifiers*
                 (setq np (bind-variable 'modifier pobj-referent np))
-                (break "No analysis for ~s + ~s"
-                       (string-for-edge (left-edge-for-referent))
-                       (string-for-edge (right-edge-for-referent))))
+                (let ((pattern (format nil "No analysis for ~s + ~s"
+                                       (string-for-edge (left-edge-for-referent))
+                                       (string-for-edge (right-edge-for-referent)))))
+                  (if *suppress-pp-adjunct-to-np-gaps*
+                    (format t "~&~a~%" pattern)
+                    (break "~a" pattern))))
               np ))))))))
 
 
