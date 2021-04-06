@@ -291,6 +291,11 @@
    flag is up, it calls the appropriate 'setup' routine to have a category
    constructed to go with the word."
   (declare (special *edge-for-unknown-words*))
+
+  (when (eq form-category category::ends-in-s)
+    ;; They punted. Somebody needs to decide plural noun vs. verb
+    ;; /// default w/o thinking
+    (setq form-category category::noun))
   
   (let* ((edge (make-edge-over-unknown-word
                 word pos-before pos-after
