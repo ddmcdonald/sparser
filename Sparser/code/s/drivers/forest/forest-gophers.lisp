@@ -395,6 +395,18 @@
               left-daughter))))))
 
 
+(defun find-word-under (edge)
+  "We have an edge, and we want the word that led to it, which could
+   be daughter edges removed. We walk down left-daughter's until
+   we get to a word. Motivating case is abbreviations: 'Inc.'"
+  (etypecase edge
+    (word edge)
+    (polyword edge)
+    (edge (let ((daughter (edge-left-daughter edge)))
+            (find-word-under daughter)))))
+            
+
+
 (defun walk-down-right-headline (edge)
   "Given an edge, presumed to be the result of a binary composition,
    walk down its right-daughter chain until you reach a edge that
