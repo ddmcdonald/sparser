@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2019-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2019-2021 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "prescan"
 ;;;   Module:  "analyzers;char-level:"   ("character level processing")
-;;;  Version:   November 2020
+;;;  Version:   April 2021
 
 ;; Initiated 4/16/19 -- Before doing any analysis, sweep through the input
 ;; text at the character level to normalize newlines (paragraphs), convert
@@ -20,7 +20,7 @@ analyze-text-from-file
      ;; opens the file, sets *filepos-at-beginning-of-source*
   -> (establish-character-source/open-file file-stream)
      ;; sets the buffer globals (see analyzers/char-level/state.lisp)
-     ;; designated *first-character-input-buffer* as the buffer to fill
+     ;; designates *first-character-input-buffer* as the buffer to fill
      ;; Calls read-chars-into-buffer/maximum-count to fill the buffer
      ;; Returns the buffer (which is all nulls (^@) after the ^B)
 
@@ -66,12 +66,14 @@ scan-name-position -> add-terminal-to-chart
 ;;--- driver
 
 (defparameter *post-hyphen-chars* nil)
+
+
 (defun scan-and-swap-character-buffer (&key (echo nil))
   "Character-level preprocessor -- Called by one of the text staging
  functions (analyze-text-from-file or analyze-text-from-string) when
  the flag *prescan-character-input-buffer* is up. Copies the just-populated
  character buffer in use to the alternative buffer, character by character
- and normalizing it, e.g., multiple newlines are reduced to just one,
+ while normalizing it, e.g., multiple newlines are reduced to just one,
  leading spaces are removed, quotation marks and punctuation are flipped,
  html character-coding escape strings decoded, ..."
 
@@ -84,7 +86,7 @@ scan-name-position -> add-terminal-to-chart
            (source-exhausted nil)
            (pending-newline? nil)
            char  replacement-char )
-      ;;(push-debug `(,source ,sink)) (break "cntrl-A there?")
+
       (labels ((push-char (c)
                  "Copy the character to the sink buffer and bump
                   both indicies."
@@ -97,8 +99,7 @@ scan-name-position -> add-terminal-to-chart
                    (incf index-into-source)
                    (else (push-char c)
                          (when echo (write-char #\newline))
-                         (setq pending-newline? t))))
-               )
+                         (setq pending-newline? t)))))
 
         (until source-exhausted (swap-in-sink-buffer sink)
           ;; Loop until the 'source-exhausted' flag is non-nil,
@@ -237,7 +238,8 @@ scan-name-position -> add-terminal-to-chart
          (encoding (when index-of-semicolon
                      (subseq source (1+ index) index-of-semicolon))))
     (if (and encoding
-               (< (length encoding) 7)) ;;/// lookup the spec
+             (not (string= encoding "")) ;; it's not listed or it's bad syntax
+             (< (length encoding) 7)) ;;/// lookup the spec
       (let ((replacement (cadr (assoc encoding *html-char-encodings* :test #'string=))))
         (unless replacement
           (if (eql (aref encoding 0) #\#)
