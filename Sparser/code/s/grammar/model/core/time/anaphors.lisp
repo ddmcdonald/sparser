@@ -80,22 +80,12 @@
       (add-rule rule category::calculated-day)
       (values rule i))))
       
-      
 
 
 ;;;---------
 ;;; phrases
 ;;;---------
-
-(def-cfr time (this month) ;; "this December"
-  :form np
-  :referent (:method identify-this-time-unit left-edge right-edge))
-
-(def-cfr time ("this" time-unit) ;; "this month"
-  :form np
-  :referent (:method identify-this-time-unit left-edge right-edge))
-
-
+ 
 (define-category proxal-moment  ;; "this minute", "this December"
   :specializes calculated-time
   :instantiates time
@@ -110,24 +100,31 @@
 (define-category distal-moment ;; "that minute", "that December"
     :specializes proxal-moment)
 
+(def-cfr time (this month) ;; "this December"
+  :form np
+  :referent (:method identify-this-time-unit left-edge right-edge))
+
+(def-cfr time (this time-unit) ;; "this month"
+  :form np
+  :referent (:method identify-this-time-unit left-edge right-edge))
+
 
 (def-k-function identify-this-time-unit (determiner time-unit)
   (:documentation "Uses the temporal-index to identify the
      current month or year, etc. Assemble a proxil/distal-moment
      individual and compute the extension relative to 'today'.")
-  (:method ((this (eql word::|this|)) (unit category::time-unit))
+  (:method ((this category::this) (unit category::month))
     (let ((i (define-or-find-individual 'proxal-moment
                  :unit unit))
           (j (value-of-current-time unit)))
       (when j (setq i (bind-variable 'extension j i)))
       i))
-  (:method ((that (eql word::|that|)) (unit category::time-unit))
+  (:method ((that (eql category::that)) (unit category::time-unit))
     (let ((i (define-or-find-individual 'distal-moment
                  :unit unit))
           (j (value-of-current-time unit)))
       (when j (setq i (bind-variable 'extension j i)))
       i)))
-
 
 (def-k-function value-of-current-time (unit)
   (:documentation "Use the current-temporal-index to lookup the
@@ -139,7 +136,7 @@
       (case symbol
         (word::|year| (current-year index))
         (word::|month| (current-month index))
-        (word::|week| (current-month index)) ; <=== fix!
+        (word::|week| (current-month index)) ; <=== Explicitly represent weeks
         (word::|day| (today))
         ((or word::|hour| word::|minute| word::|second|)
          ;;//// pull out the rest of the 'now' data, on the fly?
@@ -149,7 +146,6 @@
          (break "What's the right default for 'this ~a'" unit)))))
   (:method ((m category::month))
     ;; Lookup the month in this year
-    (break "this month")
     nil)
   (:method ((dow category::weekday))
     ;; lookup the day in the current week ///represent weeks
