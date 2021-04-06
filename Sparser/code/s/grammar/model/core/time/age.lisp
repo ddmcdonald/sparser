@@ -20,7 +20,7 @@
 
 (define-category has-age
   :specializes adds-relation
-  :binds (age age)
+  :binds ((age age))
   :documentation "Everything that can be construed as alive
     has an age: people, legislation, houses, ... This provides
     an age variable to record it. Note that the two 'age' in
@@ -40,7 +40,7 @@
 
 (define-category qualitative-age
   :specializes attribute-value
-  :binds (attribute 'age)
+  :binds ((attribute age))
   :rule-label age
   :realization (:adjective name))
 
