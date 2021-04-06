@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1993-1997,2012-2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1997,2012-2021  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  Version:  July 2019
+;;;  Version:  April 2021
 
 ;; initiated 5/15/93 v2.3, added traces 5/26
 ;; 0.1 (12/9) Added pre-emptive state variable
@@ -71,32 +71,32 @@
   "Read in checkout-single-quote-for-capseq to permit any lowercase
    continuation after an appostrophe.")
 
+(defvar *text-span-of-pnf-analysis* nil
+  "When we have delimited the start and end positions, this will be
+   dynamically bound to the text in that region to help debugging")
+
 
 ;;;----------------------
 ;;; parameterized driver
 ;;;----------------------
 
 (defun establish-pnf-routine (keyword &optional fn-name)
-  (case keyword
-    (:scan-classify-record
-     (setf (symbol-function 'pnf)
-           (symbol-function 'pnf/scan-classify-record)))
-    (:scan/ignore-boundaries
-     (setf (symbol-function 'pnf)
-           (symbol-function 'pnf/scan/ignore-boundaries)))
-    (otherwise
-     (unless fn-name
-       (break "The keyword ~A is not a predefined option~
-               for the~%PNF routine, but no function name ~
-               argument was supplied" keyword))
-     (setf (symbol-function 'pnf)
-           (symbol-function fn-name))))
   (setq *pnf-routine* keyword))
 
 
 (defun pnf (starting-position)
-  (declare (ignore starting-position))
-  (break "No definition for the PNF routine has been established"))
+  "Invoked from word-level-fsa-sweep when pnf is loaded,
+   *pnf-routine* has been given a value, and the
+   word that the sweep has reached is capitalized. "
+  (unless *pnf-routine*
+    (error "no value supplied for the PNF routine"))
+  (ecase *pnf-routine*
+    (:scan-classify-record
+     (pnf/scan-classify-record starting-position))
+    (:scan/ignore-boundaries
+     (pnf/scan/ignore-boundaries starting-position))
+    (:scan/ignore-boundaries/initials-ok
+     (pnf/scan/ignore-boundaries/initials-ok starting-position))))
 
 
 ;;;-----------------
@@ -129,9 +129,13 @@
           (*pnf-scan-starts-here* starting-position)
           (*pnf-scan-respects-segment-boundaries* t))
 
-      (let ((*pnf-end-of-span*
-             (cap-seq-continues-from-here? (chart-position-after
-                                            starting-position))))
+      (let* ((*pnf-end-of-span*
+              (cap-seq-continues-from-here? (chart-position-after
+                                             starting-position)))
+             (*text-span-of-pnf-analysis*
+              (extract-characters-between-positions *pnf-scan-starts-here*
+                                                    *pnf-end-of-span*)))
+        (declare (special *text-span-of-pnf-analysis*))
 
         (tr :pnf/sequence-ended *pnf-end-of-span*)
 
@@ -152,8 +156,6 @@
           (if edge
             *pnf-end-of-span*
             nil)))))))
-
-;(establish-pnf-routine :scan-classify-record)
 
 
 
