@@ -1356,7 +1356,9 @@ similar to an oncogenic RasG12V mutation (9)."))
    `(def-syntax-rule (,(car vv) as-comp)
         :head :left-edge
         :form ,(second vv)
-        :referent (:function adjoin-ascomp-to-adjp left-edge right-edge)))
+        :referent (:function adjoin-ascomp-to-vg left-edge right-edge)))
+   ;;/// this used to call adjoin-ascomp-to-adjp but that function
+   ;; is no longer defined. The -to-vp function looks reasonable if short
 
   (eval
    `(def-syntax-rule (,(car vv) prep-comp)
