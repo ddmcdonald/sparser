@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1994,2013,2018-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2013,2018-2021 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "file"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:   November 2020
+;;;  Version:   March 2021
 
 ;; initiated 2/91, added Analyze-text-from-file/at-filepos 12/14/94
 ;; 2/15/13 Folded in initializations from do-document-as-stream-of-files,
@@ -26,14 +26,14 @@
                                       quiet
                                       ((:skip ignore-errors?) t))
 
-  "Opens the indicated file an passes it to analysis-core for parsing.
-     :paragraph signals that the file you be interpreted as a multi-paragraph
+  "Opens the indicated file an passes it to analysis-core to be parsed.
+     :paragraph signals that the file should be interpreted as a multi-paragraph
    document, where paragraph breaks are signaled by newlines. For the details,
    read the documentation on new-ortho-paragraph (objects/doc/paragraphs.lisp)
      :prescan gates a procedure that runs before any parsing to apply a
    set of character-level transformation to the input before it is passed
-   to the parsing engine: collapse multiple newlines, move puntuation outside
-   a final quotation make, and translate html escape strings.
+   to the parsing engine: collapse multiple newlines, move punctuation outside
+   a final quotation mark, and translate html escape strings.
      :echo is passed to the character-level transducer so we can see what
    its doing.
      :trace gates the display of a set of per-paragraph stats, notably this
@@ -41,7 +41,7 @@
      :quiet turns off all normal during-parse printing such as segment
    boundaries. Overrides trace so that end-of-paragraph printing is off.
      :skip enables the alternate parsing path for sentences that traps and
-   reports errors when they occur rather than bring up the debugger."
+   reports errors when they occur rather than bringing up the debugger."
   
   (declare (special *open-stream-of-source-characters* *paragraphs-from-orthography*
                     *prescan-character-input-buffer*))
@@ -54,6 +54,8 @@
     (unless (probe-file pathname)
       (format t "~&~a~%No such file~%" pathname)
       (return-from analyze-text-from-file nil))
+
+    (start-timer '*time-to-read-document*)
 
     (set-initial-state :name file-name :location pathname)
 
@@ -73,7 +75,9 @@
         (analysis-core)))
 
     (when *open-stream-of-source-characters*
-      (close-character-source-file))))
+      (close-character-source-file))
+
+    (article) ))
 
 
 
