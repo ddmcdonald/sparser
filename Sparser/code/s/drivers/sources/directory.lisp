@@ -1,6 +1,6 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1990-1991  Content Technologies Inc.
-;;; copyright (c) 1992,2013,2020-20201 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992,2013,2020-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "directory"
 ;;;   Module:  "drivers;sources:"
@@ -21,11 +21,12 @@
                                   ((:paragraph orthographic-paragraphs) t) ; *paragraphs-from-orthography*
                                   ((:prescan prescan-buffer?) t) ; *prescan-character-input-buffer*
                                   ((:trace run-traces) t)
+                                  quiet
                                   ((:skip ignore-errors?) t))
                                   
   "Collect the files in the directory then analyze each one in sequence.
    Most of the keyword arguments are for use by analyze-text-from-file
-   which is the ultimate driver"
+   which is used to process the individual files"
   (let* ((pathname (decode-file-expression/pathname directory))
          (wildcard-namestring (string-append pathname "*" file-extension)))
     (push-debug `(,wildcard-namestring))
@@ -40,5 +41,6 @@
                                       :paragraph orthographic-paragraphs
                                       :prescan prescan-buffer?
                                       :trace run-traces
-                                      :skip ignore-errors?))))))
+                                      :skip ignore-errors?
+                                      :quiet quiet))))))
 
