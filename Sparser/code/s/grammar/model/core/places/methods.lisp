@@ -122,9 +122,9 @@
 
 
 
-;; "at the end"
-(def-k-method compose ((operator category::relative-location)
-                       (place category::location))
+;; "at the end"  "past the forest boundary"
+(def-k-method analyze-pp ((operator category::relative-location)
+                          (place category::location))
   (declare (special *subcat-test*))
   (unless (itypep place 'bio-location) ; aspp2 #16, dry-run #30
     (if *subcat-test*
