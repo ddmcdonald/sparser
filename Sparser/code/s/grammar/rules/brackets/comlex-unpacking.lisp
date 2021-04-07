@@ -3,7 +3,7 @@
 ;;;
 ;;;     File: "comlex-unpacking"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  March 2021
+;;;  Version:  April 2021
 
 ;; Extracted from one-offs/comlex 12/3/12. Adding cases through 2/22/13
 ;; and put in the ambiguous flag. 3/14/13 moved edge flag to globals.
@@ -22,7 +22,7 @@ if it has several parts of speech. We do NOT get brackets off these
 rules, the brackets always come from the words per se. Fine-grained
 form information goes on the rule/edge where its accessible to the
 segmentation judgements. This goes under a switch so that we can turn
-if off. 
+it off. 
 
 We create a category for each word to serve as the locus of its
 meaning, again based on its part of speech. Words with multiple parts
@@ -57,35 +57,35 @@ places. ]]
 ;;; 'Activating' the primed words at parse-time
 ;;;---------------------------------------------
 
-;; This is where we get when what-to-do-with-unknown-words
+(defparameter *comlex-primed-words* nil)
+
+;; This is where we end up when what-to-do-with-unknown-words
 ;; (in objects/chart/words/lookup/switch-new1) is set to
 ;; :check-for-primed (vs. e.g. :ignore). That function switch
 ;; sets the function establish-unknown-word to the function
 ;; look-for-primed-word-else-all-properties (in objects/chart/
 ;; words/lookup/new-words4).
 
-
-(defparameter *comlex-primed-words* nil)
-
 (defun unpack-primed-word (word symbol entry)
   ;; Called from look-for-primed-word-else-all-properties when
   ;; what-to-do-with-unknown-words is set to :check-for-primed.
   ;; The lookup is (gethash (symbol-name symbol) *primed-words*)
   ;; where the symbol is pulled out of the lookup buffer.
-  ;; Has to return a suitably annotated word.
   (unless (and (listp entry) (eq (car entry) :comlex))
     (push-debug `(,symbol ,entry))
     (error "Ill-formed entry:~%  ~a" entry))
   (add-new-word-to-catalog word :comlex)
-  
-  ;; All of the morphological variants of the lemma get the
-  ;; same entry. If we see any one of them we fire up the
-  ;; entire set (simpler that way). The 'instance' is what
-  ;; we've just seen, and the 'lemma' is the head word of
-  ;; the entry.
   (continue-unpacking-lexical-entry word entry))
 
+
 (defun continue-unpacking-lexical-entry (instance-word entry)
+  "All of the morphological variants of the lemma get the
+   same entry. If we see any one of them we fire up the
+   entire set (simpler that way). The 'instance' is what
+   we've just seen, and the 'lemma' is the head word of
+   the entry. The 'clauses' of the entry (cddr) are for 
+   each of the different parts of speech for the lemma that
+   the lexicon records."
   (let ((*source-of-unknown-words-definition* :comlex))
     (declare (special *source-of-unknown-words-definition*))  
     (let* ((instance-string (word-pname instance-word))
@@ -207,14 +207,14 @@ places. ]]
      ((equal combinations '(adjective verb))
       (when *edge-for-unknown-words*
         (maybe-setup-adjective lemma clauses :ambiguous)
-        (maybe-setup-verb lemma clauses :ambiguous))
+        (maybe-setup-verb lemma clauses :ambiguous t))
       (brackets-for-adjective-verb lemma))
      
      ((equal combinations '(adjective noun verb))
       (when *edge-for-unknown-words*
         (maybe-setup-adjective lemma clauses :ambiguous)
         (maybe-setup-common-noun lemma clauses :ambiguous)
-        (maybe-setup-verb lemma clauses :ambiguous))
+        (maybe-setup-verb lemma clauses :ambiguous t))
       (assign-noun-verb-brackets lemma clauses))
      
      ((equal combinations '(adjective adverb noun))
@@ -346,7 +346,7 @@ places. ]]
   ;; We want to get only the NOUN reading from COMLEX, not the ADJECTIVE
   ;; (which has already been defined)
   (let ((known-categories (loop for cfr in (find-unary-rules lemma-word)
-                                collect (cat-name (cfr-form cfr)))))
+                             collect (cat-name (cfr-form cfr)))))
     (case (car clause)
       (adjective (member 'adjective known-categories))
       (noun (member 'common-noun known-categories))
@@ -371,7 +371,7 @@ places. ]]
 (defun maybe-setup-verb (lemma clauses &optional ambiguous)
   (unless (is-known-definition? lemma (assoc 'verb clauses))
     (if ambiguous
-        (setup-verb lemma clauses ambiguous)
+        (setup-verb lemma clauses :ambiguous t)
         (setup-verb lemma clauses))))
 
 

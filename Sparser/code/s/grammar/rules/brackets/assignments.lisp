@@ -234,7 +234,8 @@
 (defun dont-show-new-verb-definitions ()
   (setq *show-R3-new-verb-definitions* nil))
 
-(defun setup-verb (word &optional comlex-clause ambiguous?)
+(defun setup-verb (word comlex-clause &key ambiguous)
+  ;; Add more keys to parameterize more of the options
   (declare (special *big-mechanism* *unknown-word*
                     *break-on-pattern-outside-coverage?*))
   (mark-definition-source word)
@@ -242,7 +243,7 @@
     (then
       (when *show-R3-new-verb-definitions*
         (format t "~&--------DEFINING NEW VERB ~s-- using svo/bio, ~
-                 assuming ~s is a bio-verb~&" word (or *unknown-word* word)))
+          assuming ~s is a bio-verb~&" word (or *unknown-word* word)))
       ;; n.b. svo/bio/expr will check for already used categories
       ;; and specialize the category name accordingly
       (svo/bio/expr word comlex-clause))
@@ -254,7 +255,7 @@
                (lift-special-case-form-from-comlex-clause comlex-clause)))
             (category-name (name-to-use-for-category word))
             (super-category (super-category-for-POS :verb)))
-        (when ambiguous?
+        (when ambiguous
           (setq category-name
                 (construct-disambiguating-category-name
                  category-name super-category)))
