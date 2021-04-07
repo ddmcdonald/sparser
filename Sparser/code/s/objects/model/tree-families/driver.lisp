@@ -145,7 +145,7 @@
     (flet ((add-rules (rules)
              (add-rules rules category)))
       (or (handle-prep-if-necessary category rdata)
-          (unless *head-rules-already-created* ;; (break "usual route")
+          (unless *head-rules-already-created*
             (add-rules (make-rules-for-head t rdata category category))))
       (unless *inhibit-construction-of-systematic-semantic-rules*
         (with-slots (etf mapping locals) rdata
@@ -156,7 +156,7 @@
                                                 :local-cases? category))))))))
 
 (defun handle-prep-if-necessary (category rdata)
-  "There are realization constructs that -reuse- a verb's rule rather than
+  "There are realization constructs that -reuse- a verb's rules rather than
    create them. They are checked for and handles here as an alternative to
    calling make-rules-for-head. This returns t when either of the defined
    off main path constructs is present -and- the verb already has rules,
@@ -168,18 +168,19 @@
                (consp (cadr full-exp))) ; it's not simply the verb
       (let* ((data-exp (second full-exp))
              (verb (car data-exp))
+             (rule-set? (rule-set-for verb))
              (prep (cadr (memq :prep data-exp)))
              (phrase (cadr (memq :phrase data-exp))))
-        ;; We have relevant constructs, and the verb has already been
-        ;; independently defined
-        (when (and (or prep phrase)
-                   (has-rules? verb))
-          ;; We have one of therelevant constructs, and the verb
-          ;; has already been independently defined
-          (cond
-            (prep (setup-bound-preposition verb prep category))
-            (phrase (setup-phrasal-verb verb phrase category)))
-          t)))))
+        (when (or prep phrase) ; We have one of the relevant constructs
+          (unless rule-set? ; compare to really-known-word?
+            ;; we have to define the verb and a category for it
+            (setq verb (create-category-from-word verb :pos 'verb)))
+          (when (has-rules? verb)
+            ;; the verb has already been independently defined
+            (cond
+              (prep (setup-bound-preposition verb prep category))
+              (phrase (setup-phrasal-verb verb phrase category)))
+            t))))))
 
 
             
