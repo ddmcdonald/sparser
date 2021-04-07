@@ -273,7 +273,11 @@
    (e.g. the 'ball' in 'George K. Ball')"
   (if (one-word-long? edge)
     
-    (let ((word (edge-left-daughter edge)))
+    (let* ((daughter (edge-left-daughter edge)) ; "Market News Publishing Inc."
+           (word (typecase daughter
+                   (word daughter)
+                   (edge (find-word-under daughter)))))
+
       (or (name-word-for-word word)
           (make-name-word-for/silent word (pos-edge-starts-at edge))))
 

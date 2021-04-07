@@ -600,7 +600,8 @@ a minimal category and rule set for every word.
           (break "No referent for item in PNF treetop sequence:~
                 ~%  ~A" item)))
       (when value ;; raw individuals are dropped if we're not debugging
-        (kpush value referents)))
+        (unless (eq value :drop)
+          (kpush value referents))))
 
     referents ))
 
@@ -640,6 +641,11 @@ a minimal category and rule set for every word.
                                  words))
              (sequence (define-sequence name-words)))
         sequence))
+
+     ((eq label category::apostrophe-s)
+      ;; It's a possessive that wasn't recognized as such.
+      ;;  "Guinness' international affiliates"
+      :drop)
 
      ((memq label *categories-that-appear-in-names*)
       (let ((ref (edge-referent edge)))
