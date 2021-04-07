@@ -69,6 +69,10 @@
         (break "Stub: Multiple words start at p~A:~%  ~A"
                (pos-array-index pos-before) word)
         (setq word (first word))))
+    ;; That dropped multiple words down to the just first one, but word might still
+    ;; be a list of a word and a position
+    (when (consp word)
+      (setq word (first word)))
 
     (let ((where-word-fsa-ends
                (do-word-fsas/only-known word pos-before))
