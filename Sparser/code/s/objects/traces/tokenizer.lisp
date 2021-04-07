@@ -47,6 +47,9 @@
   (untrace-find-word)
   (untrace-unknown-words))
 
+
+;;--- *trace-find-word*
+
 (deftrace :fw-no-rule-set (word)
   ;; in find-word
   (when *trace-find-word*
@@ -114,6 +117,8 @@
 
 
 
+;;--- *trace-delay-unknown-judgment*
+
 (deftrace :storing-unknown-for-later (word pos-before)
   ;; called from store-word-and-handle-it-later
   (when *trace-delay-unknown-judgment*
@@ -148,6 +153,18 @@
   (when *trace-delay-unknown-judgment*
     (trace-msg "[unknown]   Some edge covers it.")))
 
+(deftrace :unknown-word-to-bio-entity (word)
+  ;; called from handle-unknown-word-as-bio-entity
+  (when *trace-delay-unknown-judgment*
+    (trace-msg "[unknown] Defining ~s as a bio-entity" (pname word))))
+
+(deftrace :unknown-word-bio-edge (edge)
+  ;; called from handle-unknown-word-as-bio-entity
+  (when *trace-delay-unknown-judgment*
+    (trace-msg "[unknown] Put edge over unknown word: ~a" edge)))
+
+
+;;--- *show-word-defs*
 
 (deftrace :make-word/entry-and-properties (morph-keyword entry)
   ;; called from make-word/all-properties/or-primed
@@ -166,17 +183,20 @@
   (when *show-word-defs*
     (trace-msg "[unknown] morph-keyword: ~a" morph-keyword)))
 
+(deftrace :verb+prep (verb prep)
+  ;; setup-bound-preposition
+  (when *show-word-defs*
+    (trace-msg "Created ~s + ~s" (pname verb) (pname prep))))
 
-(deftrace :unknown-word-to-bio-entity (word)
-  ;; called from handle-unknown-word-as-bio-entity
-  (when *trace-delay-unknown-judgment*
-    (trace-msg "[unknown] Defining ~s as a bio-entity" (pname word))))
+(deftrace :required-verb (word category)
+  ;; called from setup-word-based-verb-category
+  (when *show-word-defs*
+    (trace-msg "Created needed verb ~s as a ~a"
+               (word-pname word) (cat-name category))))
+    
 
-(deftrace :unknown-word-bio-edge (edge)
-  ;; called from handle-unknown-word-as-bio-entity
-  (when *trace-delay-unknown-judgment*
-    (trace-msg "[unknown] Put edge over unknown word: ~a" edge)))
 
+;;--- *trace-morphology*
 
 (deftrace :defining-unknown-word-from-morph (word morph-keyword)
   ;; called from assign-morph-brackets-to-unknown-word
