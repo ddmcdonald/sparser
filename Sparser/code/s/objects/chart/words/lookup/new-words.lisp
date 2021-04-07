@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "new words"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:  March 2021
+;;;  Version:  April 2021
 
 ;; 4.0 (9/28/92 v2.3) accomodates changes to tokenizer
 ;; 4.1 (7/16/93) updated field name
@@ -23,14 +23,6 @@
 
 (in-package :sparser)
 
-
-(defvar *word-to-be-defined?* nil
-  "Provides a pointer for recording routines to notice")
-
-(defparameter *show-word-defs* nil
-  "Controls whether we announce when a word goes through make-word
-   routine. Only unknown words do that, so it can be a useful trace")
-
 ;;;----------------------------------------
 ;;; programmatic word-to-category creation
 ;;;----------------------------------------
@@ -38,16 +30,18 @@
 (defun create-category-from-word (word &key pos)
   "Invoke the morphology and Comlex information to setup a category
    for this word just as though we were going through one of the
-   following routines for establishing unknown words but already
+   standard routines for establishing unknown words but already
    have the word to hand."
   (declare (special *introduce-brackets-for-unknown-words-from-their-suffixes*
-                    *edge-for-unknown-words*))
+                    *edge-for-unknown-words* *source-of-unknown-words-definition*))
   (unless (and *introduce-brackets-for-unknown-words-from-their-suffixes*
                *edge-for-unknown-words*)
     (error "Category-creating machinery is deliberately turned off"))
   
-  (let ((*complain-about-words-missing-from-comlex* t))
-    (declare (special *complain-about-words-missing-from-comlex*))
+  (let ((*complain-about-words-missing-from-comlex* t)
+        (*source-of-unknown-words-definition* :computed))                    
+    (declare (special *complain-about-words-missing-from-comlex*
+                      *source-of-unknown-words-definition*))
     (setq *word-to-be-defined?* word)
     (unless pos (setq pos 'noun))
     
@@ -57,6 +51,7 @@
           ;;/// ignore the pre-check in is-known-definition? 
           ;; and invoke the setup routine directly.
           (noun (setup-common-noun word comlex-clause nil))
+          (verb (setup-word-based-verb-category word comlex-clause))
           (otherwise
            (break "pos = ~a  Not set up yet to handle it" pos)))
         (let ((morph-keyword (word-morphology word)))
@@ -64,9 +59,29 @@
             (setf (word-morphology word) (affix-checker (word-pname word))))                                 
           (assign-morph-brackets-to-unknown-word word morph-keyword))))))
 
+(defun setup-word-based-verb-category (word comlex-verb-entry)
+  "Given that this feeds handle-prep-if-necessary we have to return the
+   verb, which will now have a minimal, capital-letter-semantics style
+   category backing it. Uses the same amount of comlex information as
+   unambiguous-comlex-primed-decoder does."
+  ;;/// Next: get transitivity information from the entry
+  (let ((category (setup-verb word comlex-verb-entry)))
+    (tr :required-verb word category)
+    word))
+
+
+
 ;;;-----------------------------------------
 ;;; Cases for what-to-do-with-unknown-words
 ;;;-----------------------------------------
+
+(defvar *word-to-be-defined?* nil
+  "Provides a pointer for recording routines to notice")
+
+(defparameter *show-word-defs* nil
+  "Controls whether we announce when a word goes through make-word
+   routine. Only unknown words do that, so it can be a useful trace")
+
 
 (defun make-word/all-properties/or-primed (character-type 
                                            &optional existing-word)
