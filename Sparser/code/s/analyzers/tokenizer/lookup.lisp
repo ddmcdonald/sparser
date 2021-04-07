@@ -78,40 +78,8 @@
         (tr :fw-no-symbol)
         (establish-unknown-word char-type)))))
 
-#+ignore ;; original
-  (handler-case
-      (let ((symbol (lookup-word-symbol))) ;; pull it from the buffer
-        (if symbol
-          (if (boundp symbol)
-            (let ((word (symbol-value symbol)))
-              (cond
-                ((not (word-p word))
-                 ;; this should not occur
-                 (error "The symbol '~a' in package ~a~
-                   ~%was returned from the tokenizer's lookup buffer~
-                   ~%but is a ~a rather than a word."
-                        symbol (symbol-package symbol)
-                        (type-of word)))
-                (*edge-for-unknown-words*
-                 ;; mostly concerned with portions of polywords
-                 (really-known-word? word char-type))
-                (t
-                 ;; We're not making edges over unknown words
-                 word)))
 
-            ;; Symbol exists but isn't bound
-            (else
-              (tr :fw-symbol-unbound symbol)
-              (establish-unknown-word char-type)))
-
-          ;; There's no symbol
-          (else
-            (tr :fw-no-symbol)
-            (establish-unknown-word char-type))))
-   
-    (error (e) (resolve/make "UnknownWord")))
-
-
+ 
 
 (defun really-known-word? (word &optional char-type)
   "This is a subroutine of find-word, where we've established
