@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "shortcuts"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  February 2021
+;;;  version:  April 2021
 
 
 ;; Started 4/3/09. Modeled on [model;core:kinds:object] Modified
@@ -715,29 +715,18 @@ see if there are issues"
 
 
 
-;;//// 9/14/14 This scheme doesn't work. The bracket judgements
-;; completely close off the verb on an mvb, which hides it from
-;; the check on occurances prepositions
 (defun sv-prep (verb preposition)
   "Intransitive with an associated preposition, e.g. 'move along'"
   (unless (and (stringp verb) (stringp preposition))
-    (error "Arguments must be string giving the base for of words"))
+    (error "Arguments must be strings giving the base for of words"))
   (let* ((name (name-to-use-for-category 
 		(string-append verb "/" preposition)))
          (form
           `(define-category ,name
              :instantiates :self ;; place for generalization
              :specializes perdurant
-             :binds ((subject . individual))
-             :realization
-             (:tree-family intransitive-with-preposition
-	      :mapping ((s . process)
-                        (vp . process)
-                        (vg . :self)
-                        (np/subject . endurant)
-                        (prep . ,preposition)
-                        (agent . subject))
-              :verb ,verb)))
+             :mixins (basic-intransitive)
+             :realization (:verb (,verb :prep ,preposition))))
          (category (eval form)))
     category))
 
