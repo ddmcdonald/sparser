@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "scan"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  Version:  February 2020
+;;;  Version:  April 2021
 
 ;; initiated 5/15/93 v2.3 on a few pieces of names:fsa:fsa8
 ;; 5/21 fixed a bug, 5/26 added traces
@@ -459,18 +459,24 @@
   ;; In all these cases we just pass judgement on whether to continue
   ;; the sequence -- handling the meaning of these cases is left to
   ;; classification.
+  ;;   Good list of chars in word-never-in-ns-sequence
   (declare (special *lc-person-words*))
 
   (let ((next-position (chart-position-after position)))         
     (unless (has-been-status? :scanned next-position)
       (scan-next-position))
-
+;;#########################################################################
     (let ((next-word (pos-terminal next-position))
           (previous-word (pos-terminal (chart-position-before position)))
           (caps-state (pos-capitalization next-position)))
 
-      (cond ((or (eq word::\s (pos-terminal next-position))
-                 (eq word::|ll| (pos-terminal next-position)))
+      (cond ((or (eq next-word word::\s) ;(pos-terminal next-position)
+                 (eq next-word word::|ll|) ; (pos-terminal next-position)
+                 (eq next-word word::\,) ;; "the 'Sunday Independent',"
+                 (eq next-word word::open-paren) ;; "the 'Manchester Guardian'(as it then was)"
+                 (eq next-word word::close-paren) ;; "a book ('Synopsis Stirpium Hibernicarum')"
+                 (eq next-word word::open-square-bracket)
+                 (eq next-word word::close-square-bracket))
              ;; leave the "'s" to be gotten later as a concatenation
              position)
 
