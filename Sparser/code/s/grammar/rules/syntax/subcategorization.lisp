@@ -17,7 +17,6 @@
 
 (in-package :sparser)
 
-
 ;;;--------------------------------------
 ;;; Comlex subcategorization information
 ;;;--------------------------------------
@@ -427,6 +426,7 @@
                    :form category::vg
                     :referent target-category)))
       (add-rule rule target-category)
+      (tr :verb+prep verb prep)
       (values rule sc))))
 
 ;; Strange case -- "treated with or without ..." in ASPP2
