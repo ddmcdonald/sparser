@@ -111,7 +111,7 @@ painstaking care to route everything through a realization schema.
 If a purely analysis-driven project requires being more ad-hoc,
 then this switch will gate those rules.")
 
-(defvar *incorporate-generic-lexicon* nil
+(defvar *incorporate-generic-lexicon* t
   "When non-nil, we finish off the loading of the grammar by including
 almost purely lexical knowledge about a horde of words.")
 

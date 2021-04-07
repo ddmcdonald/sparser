@@ -37,7 +37,9 @@
   (unless (and *introduce-brackets-for-unknown-words-from-their-suffixes*
                *edge-for-unknown-words*)
     (error "Category-creating machinery is deliberately turned off"))
-  
+  (unless *comlex-words-primed*
+    (error "Comlex is not loaded"))
+
   (let ((*complain-about-words-missing-from-comlex* t)
         (*source-of-unknown-words-definition* :computed))                    
     (declare (special *complain-about-words-missing-from-comlex*

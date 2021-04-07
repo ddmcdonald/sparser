@@ -289,6 +289,9 @@ omitted and then run (perhaps) after the image has been launched."
   (gload "words;frequency")
   (gload "words;porter-stemmer")
   (gload "one-offs;loader")
+  
+  (when *incorporate-generic-lexicon*
+    (prime-comlex))
 
   (gload "dossiers;loader") ; n.b. includes verbs
   
@@ -309,9 +312,6 @@ omitted and then run (perhaps) after the image has been launched."
   (gate-grammar *time*
     (late-time-files) ;; time-methods
     (make-temporal-sequences))
-
-  (when *incorporate-generic-lexicon*
-    (prime-comlex))
 
   (gate-grammar *score-stats*
         (gload "score-stats;loader"))
