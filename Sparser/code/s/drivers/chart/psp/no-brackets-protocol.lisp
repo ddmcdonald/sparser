@@ -162,7 +162,7 @@
    Handles both reading document text and reading directly from strings
    or files.
    N.b. The initialization routines created a sentence already."
-  (declare (special *reading-populated-document*
+  (declare (special *reading-populated-document* *paragraphs-from-orthography*
                     *sentence-making-sweep* *new-sentence* *current-paragraph*)
            (optimize debug))
   (scan-next-position) ;; pull the source-start word into the chart
