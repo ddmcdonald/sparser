@@ -53,13 +53,12 @@
 (def-cfr "George"  ("Geo."))       |#
 
 (defun handle-period-as-initial (pos-before)
-  "Called from period-hook in the case where it's determined
-   that the period is not marking end of sentence.
-   Our charge is to cover the period with an edge if we can
-   give it a reasonable interpretation as an initial.
-   European names often have non-ascii initials in them, so if
-   we need to dynamically extend the set of letters that
-   for initials we do."
+  "Called from period-hook or scan-sentences-and-pws-to-eos in the
+   case where it's determined that the period is not marking end of
+   sentence.  Our charge is to cover the period with an edge if we can
+   give it a reasonable interpretation as an initial.  European names
+   often have non-ascii initials in them, so if we need to dynamically
+   extend the set of letters that for initials we do."
   ;;/// This is for species names like "M. tuberculosis".
   ;; It would be better to make initials actually run,
   ;; but that doesn't look possible in a R3 configuration.
