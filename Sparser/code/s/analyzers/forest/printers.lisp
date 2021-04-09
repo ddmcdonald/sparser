@@ -754,11 +754,18 @@ there were ever to be any.  ///hook into final actions ??  |#
 
             (cond ((eq end ending-position)
                    (return))
+                  ((eq (pos-terminal end) *end-of-source*)
+                   ;; the final period might be in an abbreviatoin
+                   (return))
                   ((> (pos-token-index end)
                       (pos-token-index ending-position))
                    (error "Treetops-in-segment: the last edge ~
                            overshoots the ending-position"))
-                  (t (setq start end)))))
+                  (t (setq start end)))
+
+            ;; (p "Inc.")
+            (when (eq (pos-terminal start) *end-of-source*)
+              (return))))
 
         (nreverse tts)))))
 
