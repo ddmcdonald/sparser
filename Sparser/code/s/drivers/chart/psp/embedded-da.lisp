@@ -118,7 +118,8 @@ like any other rule.
           (else ; 3b
             (apply-debris-analysis-to-region next-pos end))))
       (else ; 3b
-        (apply-debris-analysis-to-region next-pos end)))))
+        (unless (eq (pos-terminal next-pos) *end-of-source*)
+          (apply-debris-analysis-to-region next-pos end))))))
 
 
 (defun triggers-trie? (tt)
