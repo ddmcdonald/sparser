@@ -142,6 +142,10 @@ extrap-adj-for-to-inf-np-omit -- pg.45  allows the logical object of the embeded
 ;; cadr is the entire entry -- (VERB (:SUBC ... ) ) or
 ;;                             (VERB (:TENSED ... (:SUBC ... ) ) )
 ;; cdadr is the list of lists beginning with keywords
+(defun entry-body (entry)
+  (cdadr entry))
+
+
 
 (defmacro cls (v)
   "get comlex subcat for a given verb"
@@ -205,7 +209,7 @@ extrap-adj-for-to-inf-np-omit -- pg.45  allows the logical object of the embeded
      (comlex-subcategorization
       ,entry
       'verb))
-     :subc))
+    :subc))
 
 (defmacro noun-subcat-from-entry (entry)
   `(getf
@@ -228,7 +232,8 @@ extrap-adj-for-to-inf-np-omit -- pg.45  allows the logical object of the embeded
       
 (defun not-in-comlex (word-list)
   (loop for word in word-list
-       if (null (subcat-from-word word)) collect word))
+     if (null (comlex-entry word))
+     collect word))
 
 ;; words in *word-list* that don't have comlex entries
 ;; many are not being recognized because of affixes
@@ -322,7 +327,7 @@ extrap-adj-for-to-inf-np-omit -- pg.45  allows the logical object of the embeded
     
 
 
-
+;;/// subcat-from-word is gone -- what was it??
 (defun def-cl-verb-form (word)
   "Collects the data that goes into a define-category form as in
    score-verbs.lisp"
