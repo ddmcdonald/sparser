@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2014-2018  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2014-2021  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "abbreviations"
 ;;;   Module:  "grammar;rules:FSAs:"
-;;;  Version:  January 2018
+;;;  Version:  April 2021
 
 ;; 2.0 (11/11/92 v2.3) new design to go with new style of caps fsa
 ;;     (5/22/93) finishing the job
@@ -17,7 +17,6 @@
 
 (in-package :sparser)
 
-
 ;;;-------
 ;;; table
 ;;;-------
@@ -27,14 +26,21 @@
    they are abbreviations for.")
 
 
-
 ;;;----------
 ;;; def-form
 ;;;----------
 
 (defun define-abbreviation (full-word-string abbrev-string
                             &optional name-prefix? )
-  (let* ((full-word (define-word/expr full-word-string))
+  "The standard move of respanning an initial with its full length word
+   is elegant, but that edge can lead to clashes with other categories
+   that are realized by that word ('incorporated'), so if the first argument
+   is given as a symbol, we interpret that as the name of a category
+   and use it instead as the label on the edge over the abbreviation.
+   The work is done by the abbreviation fsa function."
+  (let* ((full-word (etypecase full-word-string
+                      (string (define-word/expr full-word-string))
+                      (symbol (category-named full-word-string :error))))
          (abbrev-word (define-word/expr abbrev-string))
          (rs (establish-rule-set-for abbrev-word)))
 
@@ -124,7 +130,16 @@
     (scan-next-position))
 
   (let ( split-off-the-period )
+    #+ignore
     (when (word-at-this-position-is-capitalized? end-pos)
+      ;; When this code was written, it was important to carefully
+      ;; keep track of what periods should be left "exposed" so we
+      ;; could see them in an incremental sweep while we make decisions
+      ;; about sentence boundaries. Now we settle on sentence boundaries
+      ;; as on of the very first operations -- long before this code
+      ;; is invoked. Incorporating the period in the edge over the
+      ;; abbreviations simplifies matters for the scan operations
+      ;; in PNF.
       (unless (abbreviation-is-a-prefix? abbreviation)
         ;; That notes cases like "Sen. Kennedy" where the period doesn't
         ;; signal an end-of-sentence.
@@ -241,6 +256,11 @@
 ;;;-----------------------------------------------------------------
 
 (defun abbreviation (abbrev-word position-before-word)
+  "Generic fsa that abbreviations trigger. Assigned to the abbreviated
+   word in define-abbreviation. When word-level-fsa-sweep or another 
+   abbreviation-checking reaches it we look up the label that is the
+   expansion of the abbreviated word span it and the perior with an edge
+   with that label."
   (when *trace-fsas*
     (format t "~&Starting FSA for the abbreviation ~A at p~A~%"
             abbrev-word
