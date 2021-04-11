@@ -29,9 +29,8 @@
            :features ((gradable))))) |#
 
 (defgeneric comlex-entry (word)
-  (:documentation "returns the subcagegorization expression if there is one.
-   It will be an alist on part of speech. Also returns nil if comlex
-   has not been loaded.")
+  (:documentation "returns the clauses of the word's Comlex entry.
+    Returns nil if Comlex has not been loaded ('*comlex-words-primed*)")
   (:method ((w word))
     (comlex-entry (word-pname w)))
   (:method ((name symbol))
@@ -46,7 +45,7 @@
 
 (defgeneric comlex-subcategorization (word pos)
   (:documentation "Access the Comlex entry for the word and then
-    return the subentry for that part of speech (given as a symbol)")
+    return the subentry for the indicated part of speech (given as a symbol)")
   (:method  ((w word) (pos symbol))
     (comlex-subcategorization (word-pname w) pos))
   (:method ((pname string) (pos symbol))
