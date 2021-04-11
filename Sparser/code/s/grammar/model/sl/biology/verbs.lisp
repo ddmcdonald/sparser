@@ -77,14 +77,13 @@
 (defmacro svo/bio (verb)
   `(svo/bio/expr ,verb))
 
-(defparameter *show-bio-verbs* nil)
 
+(defparameter *show-bio-verbs* nil)
 (defparameter *show-new-svo/bio-definitions* nil)
 (defparameter *comlex-category-names* nil)
-(defparameter *new-bio-processes* nil)
+(defparameter *new-bio-processes* nil) 
 
-(define-mixin-category comlex-derived :specializes abstract
-                       :documentation "Marker that this category was produced to hold a word that is only known through COMLEX")
+;; define-mixin-category comlex-derived moved to upper-model
 
 (defun svo/bio/expr (verb &optional comlex-clause)
   (declare (special category::bio-process))

@@ -251,6 +251,12 @@
  haven't worked that out yet.")
 
 
+(define-mixin-category comlex-derived
+  :specializes linguistic
+  :documentation "Marker to record that a category was produced to hold a
+  word that is only known through COMLEX")
+
+
 ;;;---------------------------------------
 ;;; names -- simple and root of real ones
 ;;;---------------------------------------
