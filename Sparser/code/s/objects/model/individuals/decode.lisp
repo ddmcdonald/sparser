@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "decode"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  February 2021
+;;;  version:  March 2021
 
 #| These are the functions that interpret binding expressions. 
  They check whether the value to be bound meets the value restrictions
@@ -47,20 +47,26 @@
 
 
 ;;;-------------------------------------------------------------
-;;; translating expressions to objects for Binding Instructions
+;;; Translating expressions to objects for Binding Instructions
 ;;;-------------------------------------------------------------
 
 (defun decode-category-specific-binding-instr-exps/plist (category
                                                           binding-plist)
   (decode-category-specific-binding-instr-exps category binding-plist t))
 
-; 2/7/05 The individual side of the fence seems to prefer working with
-; an alist, while the psi side prefers plists. A extensive maintainence pass,
-; were one ever warrented, would be needed to sort it out.
+;; 2/7/05 The individual side of the fence seems to prefer working with
+;; an alist, while the psi side prefers plists. A extensive maintainence pass,
+;; were one ever warrented, would be needed to sort it out.
 
 (defun decode-category-specific-binding-instr-exps (category
                                                     binding-plist
                                                     &optional plist?)
+  "Walk through the pairs of binding instructions. Look up the variable
+   and use it to determine how to interpret the variable's value.
+   Decode-value-for-variable does the heaving lifting. Here we're just
+   concerned with identifying the value and some syntax checking.
+   This function is 
+"
   (let ( instructions variable value )
 
     (do ((var-name  (car binding-plist) (car rest))
@@ -91,15 +97,16 @@
             (unless variable
               ;; We're calling this decoder because we're defining an individual.
               ;; The arguments to these individuals are rarely wrong (e.g. that
-              ;; the presume there is a 'name' variable somewhere up the superc
-              ;; chain. If they fail is can be because the cache is out of date.
+              ;; they presume there is a 'name' variable somewhere up the superc
+              ;; chain. If they fail it can be because the cache is out of date.
               (cache-variable-lookup)
               (setq variable (find-variable-for-category var-name category)))
 
             (unless variable
               (push-debug `(,var-name ,category))
               (error "Can't locate a variable named \"~A\" ~
-                    for the category ~A" var-name category))
+                    for the category ~A~%in the sentence ~s"
+                     var-name category (current-string)))
 
             (setq value (decode-value-for-variable value-exp variable)))))
 
@@ -119,18 +126,21 @@
 ;;;-----------------------
 
 (defun decode-value-for-variable (value-exp variable)
+  "Checks for the possibility that there is no value restriction
+   on the variable or the value is nil and passes the other cases
+   on to the check. If there is no restriction we have no basis
+   to decode the expression and just pass back what  sent in."
   (let ((v/r (var-value-restriction variable)))
     (if (or (null v/r)
             (null value-exp))
-      ;; There's no restriction, so we have no basis to decode
-      ;; and just pass back what they sent in.  Ditto if the
-      ;; exp is nil, which can occur in some standard code that
-      ;; sets up a maximal set of bindings even when some won't
-      ;; have values. 
       value-exp
       (decode/check-value value-exp v/r variable))))
 
 (defun decode/check-value (value-exp v/r variable)
+  "Dispatch on the type of the value expression and capture the
+   result. The result can actually be signalling an problem that
+   the decode step found, in which case we call error on the string
+   that was passed back with the :violation flag."
   (let ((result
          (typecase v/r
            (list (decode-value-for-var/list
@@ -142,7 +152,10 @@
 		   (type-of v/r) v/r)))))
     (when (consp result)
       (when (eq (car result) :violation)
-        (error "~a" (cdr result))))
+        (let ((sentence-string (current-string)))
+          (if sentence-string
+            (error "~a~%in ~s" (cdr result) sentence-string)
+            (error "~a" (cdr result))))))
     result ))
 
 
