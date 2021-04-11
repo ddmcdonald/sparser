@@ -120,6 +120,7 @@
     (trace-msg "PNF:    there is no initial in front of it")))
 
 (deftrace :pnf/initial (pos)
+  ;; checkout-period-for-capseq
   (when *trace-pnf*
     (trace-msg "PNF:    and there is an initial in front of it.~
               ~%     continuing the scan with p~A"
@@ -130,6 +131,7 @@
     (trace-msg "PNF:    but there was an abbreviation")))
 
 (deftrace :pnf/no-abbreviation ()
+  ;; in checkout-period-for-capseq
   (when *trace-pnf*
     (trace-msg "PNF:    nor was there an abbreviation~
               ~%   Ending the scan")))
@@ -198,7 +200,10 @@
   (when *trace-pnf*
     (trace-msg "PNF Abbreviation check:~
               ~%       \"~A\" is an abbreviation for \"~A\""
-               (word-pname abbrev) (word-pname full))))
+               (word-pname abbrev)
+               (etypecase full
+                 (word (word-pname full))
+                 (category (cat-name full))))))
 
 
 (deftrace :abbrev-check-found-nothing (non-abbrev-word)
