@@ -18,7 +18,7 @@
 (define-individual 'inc-term  :name "g.m.b.h.")
 
 (define-individual 'inc-term  :name "incorporated")
-(define-abbreviation "incorporated" "inc")
+(define-abbreviation 'inc-term "inc")
 
 (define-individual 'inc-term  :name "ixl")
 
