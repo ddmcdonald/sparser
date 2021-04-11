@@ -397,6 +397,10 @@ places. ]]
              (setq plist (subst :past-participle :pastpart plist)))
            plist))
     (when clause ;; "burnt" hack in Grok -- want another way.
+      (when (eq (car clause) :comlex)
+        ;; we've come in through a route like setup-verb where
+        ;; we have the full entry rather than just its clauses
+        (setq clause (cddr clause)))
       (push-debug `(lift-special-case ,clause))
       (let ((verb-clause
              (if (consp (car clause)) ;; multiple clauses

@@ -235,11 +235,14 @@
   (setq *show-R3-new-verb-definitions* nil))
 
 (defun setup-verb (word comlex-clause &key ambiguous)
-  ;; Add more keys to parameterize more of the options
-  (declare (special *big-mechanism* *unknown-word*
+  ;; Add more keys to parameterize more of the options. Could define
+  ;; some of them schematically and start this setup operation
+  ;; with a dispatch
+  (declare (special *big-mechanism* *unknown-word* *sparser-loaded*
                     *break-on-pattern-outside-coverage?*))
   (mark-definition-source word)
-  (if *big-mechanism*
+  (if (and *big-mechanism*
+           *sparser-loaded*)
     (then
       (when *show-R3-new-verb-definitions*
         (format t "~&--------DEFINING NEW VERB ~s-- using svo/bio, ~
@@ -493,3 +496,4 @@
                 "a valid marked-irregulars expression")
     (check-irregular-word-markers (cdr exp))
     (name-to-use-for-category (car exp))))
+

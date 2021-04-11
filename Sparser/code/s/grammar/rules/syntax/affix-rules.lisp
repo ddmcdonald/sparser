@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1995,2014-2020  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2014-2021  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "affix rules"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  December 2020
+;;;  Version:  April 2021
 
 ;; moved over from preterminals code 5/11/93, v2.3
 ;; 0.1 (3/28/94) changed the 'rule' on these edges from :known-affix to
@@ -60,14 +60,16 @@
 
 ;; (trace-morphology)
 
-(defun assign-morph-brackets-to-unknown-word (word morph-keyword)
+(defun assign-morph-brackets-to-unknown-word (word morph-keyword
+                                              &optional comlex-entry)
   "Called from make-word/all-properties, which is itself called
    on the way back from the tokenizer."
   (declare (special *show-sentence-for-early-errors*))
   (tr :defining-unknown-word-from-morph word morph-keyword)
 
   (let ((*source-of-unknown-words-definition* :morphology)
-        (entry (gethash (pname word) *primed-words*)) ; Comlex
+        (entry (or comlex-entry
+                   (comlex-entry word)))
         (*unknown-word* word))
     (declare (special *source-of-unknown-words-definition* *unknown-word*))
 
@@ -121,7 +123,7 @@
               (tr :defining-lemma-as-given-morph lemma 'verb)
               (if *edge-for-unknown-words*
                 (or (when *block-verbification* (block-verbified-nouns lemma))
-                    (else (setup-verb lemma)
+                    (else (setup-verb lemma entry)
                           (sanity-check-word-formation word lemma :ed)))
                 (assign-brackets-as-a-main-verb lemma))))
 
@@ -130,7 +132,7 @@
               (tr :defining-lemma-as-given-morph lemma 'verb)
               (if *edge-for-unknown-words*
                 (or (when *block-verbification* (block-verbified-nouns lemma))
-                    (let ((category (setup-verb lemma)))
+                    (let ((category (setup-verb lemma entry)))
                       #+ignore(when already-exists?
                                 (reconcile-lemma-and-original category already-exists? :ing))
                       (sanity-check-word-formation word lemma :ing)))

@@ -145,7 +145,7 @@
              (store-word-and-handle-it-later word))
             (morph-keyword
              (assign-morph-brackets-to-unknown-word
-              word morph-keyword))
+              word morph-keyword entry))
             (entry
              (unpack-primed-word word symbol entry))
             (*big-mechanism*
