@@ -119,12 +119,24 @@
   "Set in sweep-successive-sentences-from and retains its value
    until the next time that's called. Not dynamically bound.")
 
+(defparameter *truncate-current-string-at* 150)
+
 (defun current-string ()
-  (or (let ((s (identify-current-sentence :no-break)))
-        (when s (sentence-string s)))
-      *current-sentence-string*
-      *string-from-analyze-text-from-string*
-      ""))
+  "Return the string for the sentence we are currently analyzing.
+   Used principally to provide context in error messages.
+   If we're parsing a document where 'sentences' are not identifiable
+   or not even a sensible notion we can get unusably long error
+   strings, so check for that and truncate the really long ones"
+  (let* ((string
+          (or (let ((s (identify-current-sentence :no-break)))
+                (when s (sentence-string s)))
+              *current-sentence-string*
+              *string-from-analyze-text-from-string*
+              ""))
+         (length (length string)))
+    (if (> length *truncate-current-string-at*)
+      (string-append (subseq string 0 *truncate-current-string-at*) "...")
+      string)))
 
 (defun identify-current-sentence (&optional no-break)
   "Identify and return the sentence that the parser is operating in

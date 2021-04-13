@@ -275,6 +275,12 @@ places. ]]
         (maybe-setup-adverb lemma clauses :ambiguous)
         (maybe-setup-common-noun lemma clauses :ambiguous))
       (brackets-for-adverb-noun lemma))
+
+     ((equal combinations '(adverb noun prep)) ;; "behind" (from "behinds")
+      (when *edge-for-unknown-words*
+        (maybe-setup-adverb lemma clauses :ambiguous)
+        (maybe-setup-common-noun lemma clauses :ambiguous))
+      (brackets-for-adverb-noun lemma))
      
      ((equal combinations '(adverb noun verb))
       (when *edge-for-unknown-words*

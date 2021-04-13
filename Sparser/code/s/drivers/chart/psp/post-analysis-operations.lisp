@@ -271,7 +271,7 @@ where it regulates gene expression.") ;; no restriction on the 'it'
           (and (itypep interp (car cv))
                (eq (pname var) (second cv)))))
 
-#| Non-individual warning is triggerd by
+#| Non-individual warning is triggered by
   "In the undirected model, contact was a function of within-state flows 
 and both flows into and out of a state."  because 'interp' includes the
 symbol 't' -- (t #<flow-endurant plural 98209>)   ddm 3/25/20|#
@@ -281,9 +281,11 @@ symbol 't' -- (t #<flow-endurant plural 98209>)   ddm 3/25/20|#
         do
           (let* ((ival (interpret-in-context val)))
             (declare (special ival))
-            (loop for i in interps when (not (or (individual-p i)(category-p i)))
+            (loop for i in interps when (not (or (individual-p i) (category-p i)))
+               ;; Using (sentence-string *sentence-in-core*) here can spew several paragraphs
+               ;;  of text in some file contexts with weak sentence boundaries
                do (warn-or-error "non-individual among ~s in reinterp-list-using-bindings, in: ~s~%"
-                                 interps (sentence-string *sentence-in-core*)))
+                                 interps (current-string)))
             (setq interps
                   (loop for i in interps
                         when (individual-p i)
