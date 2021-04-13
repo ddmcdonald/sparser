@@ -141,7 +141,6 @@
 
 (defgeneric category-named (name &optional errorp)
   (:documentation "Look up a category by name.")
-
   (:method ((name symbol) &optional errorp)
     (declare (optimize (speed 3)(safety 0)))
     (let ((c-symbol (if (eq (symbol-package name) *category-package*)
@@ -151,10 +150,17 @@
         (symbol-value c-symbol)
         (when errorp
           (error "There is no category named ~a." name)))))
-
   (:method ((c category) &optional errorp)
     (declare (ignore errorp) (optimize (speed 3)(safety 0)))
-    c))
+    c)
+  (:method ((w word) &optional errorp)
+    (declare (ignore errorp))
+    (let* ((pname (word-pname w))
+           (name (intern (string-upcase pname) (find-package :sparser))))
+      (category-named name)))
+  (:method ((pname string) &optional errorp)
+    (let ((name (intern (string-upcase pname) (find-package :sparser))))
+      (category-named name))))
 
 
 (defun referential-category-named (symbol)

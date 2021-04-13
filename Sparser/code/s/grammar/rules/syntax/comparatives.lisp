@@ -60,6 +60,11 @@ abstract > abstract-region >
             (resolve/make est)
             (make-comparative/superlative
              base-word :suffix "est" :y-suffix "iest"))))
+
+    (when (category-named er-word) ; (category-named est-word) too?
+      (format t "~&~%Constructed comparative ~s clashes with defined category~%~%"
+              er-word)  ;; 'number' from 'numb' out of comlex
+      (return-from setup-comparatives))
     
     (multiple-value-bind (er-category er-indiv er-rule)
         (define-function-term er-word 'comparative-adjective
