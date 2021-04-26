@@ -241,9 +241,10 @@
          (tr ::make-word/properties morph-keyword)
 
          (when *introduce-brackets-for-unknown-words-from-their-suffixes*
-           (when morph-keyword
+           (if morph-keyword
              (assign-morph-brackets-to-unknown-word
-              word morph-keyword))))))
+              word morph-keyword)
+             (setup-unknown-word-by-default word))))))
     word ))
 ; (what-to-do-with-unknown-words :capitalization-digits-&-morphology)
 
