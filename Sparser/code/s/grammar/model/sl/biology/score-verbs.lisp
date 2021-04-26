@@ -3472,9 +3472,7 @@ sp> (comlex-entry "fall")
        (|OUT OF| top))
      :realization (:verb  "glimpse" :s SUBJECT :o OBJECT :from FROM :in IN :|OUT OF| |OUT OF|))
 
-(define-category go :specializes comlex-verb
-     :realization (:verb ( "go"  :TENSED/SINGULAR "going" :PAST-TENSE "went")
- :s SUBJECT))
+;; "go" moved to verbs dossier
 
 (define-category gong :specializes comlex-verb
      :realization (:verb  "gong" :s SUBJECT :o OBJECT))

@@ -230,6 +230,18 @@ come
   :documentation "'Get' as in 'come to have'. Could be
     construded as generalized possession: 'I've got a cold'.")
 
+(define-category go
+  :specializes move ;; core/kinds/movement.lisp
+  :mixins (basic-intransitive)
+  :realization (:verb ("go" :past-tense "went"
+                            :present-particple "going"
+                            :past-participle "gone"
+                            :third-singular "goes"  ;; :tensed/singular
+                            :third-plural "go")
+                #|:noun ("go" :plural :none) |#) ;; !! -- new option 4/21
+  :documentation "Takes a vast number of bound prepositions and idiomatic
+    uses. Also used as a model ('they're going to come'). The entry in
+    Collins is a good source.")
 
 (define-category imply
   :specializes state

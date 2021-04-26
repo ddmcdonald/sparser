@@ -2267,9 +2267,8 @@
 (define-category fuel-cl-noun :specializes comlex-noun
      :realization (:noun  "fuel"))
 
-(define-category go-cl-noun :specializes comlex-noun
-     :realization (:noun ( "go" )
-))
+;; go-cl-noun -- moved to verbs dossier. Marked to not take plurals
+
 
 (define-category grab-cl-noun :specializes comlex-noun
      :realization (:noun  "grab"))
