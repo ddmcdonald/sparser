@@ -24,7 +24,7 @@
 (def-indiv-with-id database "pharmgkb" "pharmgkb" :name "PharmGKB" :synonyms ("Pharmacogenomics Knowledgebase"))
 (def-indiv-with-id database "biocarta" "biocarta" :name "BioCarta")
 (def-indiv-with-id database "MeSH" "MESH" :name "MeSH" :maintain-case t :synonyms ("Medical Subject Headings" "MSH"))
-(def-indiv-with-id database "GO" "NCIT:43520" :name "Gene Ontology" :synonyms ("GO Ontology") :maintain-case t)
+(def-indiv-with-id database "GO" "NCIT:43520" :name "Gene Ontology" :synonyms ("GO Ontology") :maintain-case t :no-plural t)
 
 ;; note: this is based on a question in
 ;; all-bioagent-capability-sentences but googling I can't actually
