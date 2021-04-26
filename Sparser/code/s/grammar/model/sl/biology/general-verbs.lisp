@@ -228,7 +228,7 @@
     :restrict ((theme (:or be biological))) ;; could be "the effects..."
     :realization
     (:verb ("consider" :present-participle "considering"
-                       :past-tense "considered") ;; keyword: ENDS-IN-ED 
+                       :past-tense "considered")
 	   :noun "consideration"
 	   :etf (svo-passive)))
 
@@ -240,7 +240,7 @@
 
 (define-category constitute :specializes bio-relation
   :realization
-  (:verb "constitute" ;; keyword: ENDS-IN-ED 
+  (:verb "constitute"
          :etf (svo)))
 
 (define-category construct :specializes bio-method
@@ -1431,9 +1431,9 @@
        :etf (svo-passive)))
 |#
 
-(define-category tend :specializes action-on-eventuality
+(define-category tend :specializes perdurant ;; TOO GENERAL
   ;; :mixins (bio-tocomp) working on this.. other comps not working.
-  :mixins (related-thing)
+  :mixins (action-on-eventuality related-thing)
   :realization
   (:verb "tend" ;; keyword: ENDS-IN-ED 
    :noun "tendency"
