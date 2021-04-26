@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2013-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "content"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  April 2020
+;;;  Version:  April 2021
 
 ;; initiated 3/13/13. Elaborated through 3/29/13. 9/17/13 fan-out
 ;; from sections make-over. 10/2/19 Fleshed out general notion of
@@ -38,13 +38,15 @@
                             sentence-text-structure ;; subject
                             records-of-delayed-actions
                             accumulate-items ; noteworthy categories
-                            text-relation ; Grok chunk analysis
+                            text-relations ; Grok chunk analysis
                             ordered)
   ((metadata :initform nil :accessor metadata
     :documentation "Metadata describing choices made by Sparser."))
   (:documentation "From container we get :in to point back to the
     sentence. From ordered we get previous and next so we can link
     the directly without having to go to the sentence objects."))
+;; n.b. text-relation (singular) is for grok
+;;   in analyzers/sdmp/text-relation-class.lisp
 
 
 (defun make-sentence-content-container (sentence)
@@ -79,7 +81,7 @@
 
 
 (defclass paragraph-features (container
-                              aggregated-bio-terms
+                              ;;aggregated-bio-terms
                               sentence-parse-quality
                               sentence-tt-counts ; assess-sentence-analysis-quality
                               paragraph-characteristics)
@@ -108,13 +110,6 @@
 ;;; conditional containers
 ;;;-----------------------
 
-(defun make-sentence-container (sentence)
-  "N.b. this called from start-sentence directly, not by a install-contents
-   method (probably it should be). The (setf contents) call is there. These
-   variants just determine what content class the sentences will have."
-  (declare (ignore sentence))
-  (error "No version of make-sentence-container has been specified"))
-
 (defparameter *container-for-sentence* :complex ;; :situation
   "Switch parameter for the kind of container we make for
    a sentence, which could be designed for simple accumulation,
@@ -122,11 +117,17 @@
    or (the motive for all this) a situation.")
 
 (defun designate-sentence-container (&optional (keyword *container-for-sentence*))
-  (setq *container-for-sentence* keyword)
-  (setf (symbol-function 'make-sentence-container)
-        (ecase keyword
-          (:situation (symbol-function 'make-sentence-container/situation))
-          (:complex (symbol-function 'make-sentence-content-container)))))
+  (declare (special *container-for-sentence*))
+  (setq *container-for-sentence* keyword))
+
+(defun make-sentence-container (sentence)
+  "N.b. this called from start-sentence directly, not by a install-contents
+   method (probably it should be). The (setf contents) call is there. These
+   variants just determine what content class the sentences will have."
+  (declare (ignore sentence) (special *container-for-sentence*))
+  (ecase *container-for-sentence*
+    (:situation (make-sentence-container/situation sentence))
+    (:complex (make-instance 'sentence-content :in sentence))))
 
 
 
@@ -134,11 +135,7 @@
 
 (defun designate-paragraph-container (&optional (keyword *container-for-paragraph*))
   (declare (special *container-for-paragraph*))
-  (setq *container-for-paragraph* keyword)
-  (setf (symbol-function 'make-paragraph-container)
-        (ecase keyword
-          (:biology (symbol-function 'make-paragraph-content-container/bio))
-          (:texture (symbol-function 'make-paragraph-content-container/texture)))))
+  (setq *container-for-paragraph* keyword))
 
 (defun make-paragraph-content-container/bio (p)
   (make-instance 'paragraph-content :in p))
@@ -146,6 +143,13 @@
 (defun make-paragraph-content-container/texture (p)
   (make-instance 'paragraph-features :in p))
 
+(defmethod install-contents ((p paragraph))
+  "The setf is done in the caller, which should always be
+   begin-new-paragraph, regardless of where we're getting
+   the paragraphs from."
+  (ecase *container-for-paragraph*
+    (:biology (make-paragraph-content-container/bio p))
+    (:texture (make-paragraph-content-container/texture p))))
 
 
 
@@ -175,16 +179,6 @@
   (unless (contents te)
     (setf (contents te) (make-instance 'paragraph-content :in te))))
 
-(defmethod install-contents ((p paragraph))
-  "The setf is done in the caller, which should always be
-   begin-new-paragraph, regardless of where we're getting
-   the paragraphs from."
-  (ecase *container-for-paragraph*
-    (:biology (make-paragraph-content-container/bio p))
-    (:texture (make-paragraph-content-container/texture p))))
-
-#| The contents field for sentences is populated by a call to
- make-sentence-container from start-sentence. |#
 
 
 ;;;---------------------------
@@ -219,8 +213,8 @@
 
 (defgeneric add-to-container (item container)
   (:documentation "Handles the odities of putting the items into
-     the correct place according to the type of the container.")
-
+     the correct place according to the type of the container.
+     The 'note' function sets the 'list' slot directly.")
   (:method ((item t) (s sentence))
     (tr :adding-to-container item s)
     (let* ((container (contents s))
@@ -271,5 +265,3 @@
       (otherwise
        (push-debug `(,relation ,instance))
        (error "No provision for storing ~a yet" relation)))))
-
-

@@ -87,7 +87,8 @@
    (adjacencies :initform nil :accessor adjacency-relations))
   (:documentation
    "Provides slots for counting the relations in simple discource
-    modeling"))
+    modeling. The more complex relations developed for Grok that
+    could populate these slots are worked out in analysers/sdmp/"))
 
 
 ;;--- sentence level

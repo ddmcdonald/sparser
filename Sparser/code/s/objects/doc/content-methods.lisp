@@ -80,11 +80,12 @@
   the sentences of the paragraph and distribute them
   into buckets (slots on the content object) at whatever
   degree of delicacy seems the most useful."
-  (let ((sentences (sentences-in-paragraph p)))
-    ;;/// something should attend to the topic sentence
-    (dolist (s sentences)
-      (aggregate-sentence-bio-terms s p)
-      (sort-bio-terms p (contents p)))))
+  (when (typep (contents p) 'aggregated-bio-terms)
+    (let ((sentences (sentences-in-paragraph p)))
+      ;;/// something should attend to the topic sentence
+      (dolist (s sentences)
+        (aggregate-sentence-bio-terms s p)
+        (sort-bio-terms p (contents p))))))
 
 (defmethod aggregate-bio-terms ((tt title-text))
   (let ((s (children tt)))
@@ -289,7 +290,7 @@
     paragraph to get a coarse style marker of a sort.")
   
   (:method ((p paragraph))
-    (declare (special *tts-after-each-section*))
+    (declare (special *print-text-stats*))
     (when (and (starts-at-pos p) (ends-at-pos p))
       (let* ((content (contents p))
              (sentences (sentences-in-paragraph p)) ; list of sentence objects
@@ -300,12 +301,18 @@
         (setf (word-count content) word-count)
         (setf (token-count p) word-count)
 
-        (when *tts-after-each-section*
-          (format t "~&Paragraph ~a~%  ~a sentences~%  ~a words~
-                   ~%  ~4,1F words per sentence~%"
+        (when *print-text-stats*
+          (format t "~&Paragraph ~a.  ~a sentences  ~a words.
+                   ~%~%"
                   p (length sentences) word-count
-                  (float (/ word-count (length sentences)))))
+                  ))
         word-count ))))
+
+#|    ~4,1F words per sentence
+     (float (/ word-count (length sentences)))
+|#
+
+
 
 (defgeneric aggregate-text-characteristics (doc-element)
   (:documentation "Add up the word-count over the element's
@@ -429,7 +436,6 @@ using data collected by identify-relations |#
 (defmethod sentence-mentions ((s sentence))
   (sentence-mentions (contents s)))
 
-
 (defmethod sentence-mentions ((s string))
   (safe-parse s)
   (sentence-mentions (contents (sentence))))
@@ -439,38 +445,39 @@ using data collected by identify-relations |#
         (init-mentions (find-all-mentions s)))
     (setf (gethash s *mentions-in-sentence*)
           (if (eq (search "NIL" s-toc-ind :test #'equalp) 0)
-              ;; we're not in an article
-              ;; need to be case-insensitive for when "nil" is lowercase...
-              init-mentions
-              (loop for mention in init-mentions
-                    collect (let ((ment-art-loc (car (mentioned-in-article-where mention))))
-                              (cond ((or (null ment-art-loc)
-                                  ;; if we're not in an article, this is unbound
-                                         (equal ment-art-loc s-toc-ind))
-                                     mention)
-                                    ((mention-in-sentence? mention s)
-                                     ;; check if in bounds of current
-                                     ;; sentence -- if so, then the
-                                     ;; mentioned-in-article-where is
-                                     ;; wrong and should be updated
-                                     (push mention *reset-sent-mentions*)
-                                     (setf (mentioned-in-article-where mention)
-                                           (cons s-toc-ind *current-paragraph*))
-                                     mention)
-                                    (t
-                                     (push mention
-                                           (gethash
-                                            s
-                                            *sentence-mismatch-mentions-ht*))
-                                     (if *break-on-sentence-mention-mismatches*
-                                         (lsp-break "bad mention sentence match for ~s ~s~%"
-                                                    mention s)
-                                       ;; this is problematic because
-                                       ;; there will be bad mentions
-                                       ;; in the table -- hopefully
-                                       ;; will find and fix all these
-                                       ;; cases
-                                         mention)))))))))
+            ;; we're not in an article
+            ;; need to be case-insensitive for when "nil" is lowercase...
+            init-mentions
+            (loop for mention in init-mentions
+               collect
+                 (let ((ment-art-loc (car (mentioned-in-article-where mention))))
+                   (cond ((or (null ment-art-loc)
+                              ;; if we're not in an article, this is unbound
+                              (equal ment-art-loc s-toc-ind))
+                          mention)
+                         ((mention-in-sentence? mention s)
+                          ;; check if in bounds of current
+                          ;; sentence -- if so, then the
+                          ;; mentioned-in-article-where is
+                          ;; wrong and should be updated
+                          (push mention *reset-sent-mentions*)
+                          (setf (mentioned-in-article-where mention)
+                                (cons s-toc-ind *current-paragraph*))
+                          mention)
+                         (t
+                          (push mention
+                                (gethash
+                                 s
+                                 *sentence-mismatch-mentions-ht*))
+                          (if *break-on-sentence-mention-mismatches*
+                            (lsp-break "bad mention sentence match for ~s ~s~%"
+                                       mention s)
+                            ;; this is problematic because
+                            ;; there will be bad mentions
+                            ;; in the table -- hopefully
+                            ;; will find and fix all these
+                            ;; cases
+                            mention)))))))))
 
 (defun mention-in-sentence? (mention s)
   "Given a mention and a sentence, determine if the mention's bounds
@@ -489,6 +496,7 @@ using data collected by identify-relations |#
             (pos-array-index (ends-at-pos s))))
       (and (<= s-start-index m-start-index)
            (>= s-end-index m-end-index)))))
+
 
 ;;;----------------------------------------------
 ;;; functionally salient aspects of the sentence

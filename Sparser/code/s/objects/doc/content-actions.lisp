@@ -162,7 +162,7 @@ and make that file easier to understand. |#
      if that has not already been done. 
      Called by the read-from-document for each element type."))
 
-(defmethod set-document-index (element index)
+(defmethod set-document-index (element index) ;; "T" case
   (declare (ignore element index)))
 
 (defmethod set-document-index ((a article) index)
@@ -190,9 +190,6 @@ and make that file easier to understand. |#
   (unless (toc-index s)
     (let* ((parent (parent s))
            (parent-toc (toc-index parent)))
-      #+ignore(unless parent-toc
-        (lsp-break "Null toc in parent ~a of ~a"
-                   parent s))
       (setf (doc-index s) index)
       (setf (toc-index s)
             (format nil "~a.~a" parent-toc index)))))
@@ -209,9 +206,6 @@ and make that file easier to understand. |#
   (unless (toc-index p)
     (let* ((parent (parent p))
            (parent-toc (toc-index parent)))
-      #+ignore(unless parent-toc
-        (lsp-break "Null toc in parent ~a of ~a"
-                   parent p))
       (setf (doc-index p) index)
       (setf (toc-index p)
             (format nil "~a.p~a" parent-toc index)))))
@@ -223,9 +217,6 @@ and make that file easier to understand. |#
   (unless (toc-index p)
     (let* ((parent (parent p))
            (parent-toc (toc-index parent)))
-      #+ignore(unless parent-toc
-        (lsp-break "Null toc in parent ~a of ~a"
-                   parent p))
       (setf (doc-index p) index)
       (setf (toc-index p)
             (format nil "~a.~a" parent-toc index)))))
@@ -234,9 +225,6 @@ and make that file easier to understand. |#
   (unless (toc-index s)
     (let* ((parent (parent s))
            (parent-toc (toc-index parent)))
-      #+ignore(unless parent-toc
-        (lsp-break "Null toc in parent ~a of ~a"
-                   parent s))
       (setf (doc-index s) index)
       (setf (toc-index s)
             (format nil "~a.s~a" parent-toc index)))))
@@ -245,8 +233,8 @@ and make that file easier to understand. |#
 (defun location-in-article-of-current-sentence ()
   "Looks up the sentence we are presently working on
   and returns its document index. This will always work
-  provided we do the usual initializations: creating document
-  objects for even the simplest analyses"
+  provided we do the usual initializations, i.e. creating
+  document objects for even the simplest analyses"
   ;; previously returned nil if *reading-populated-document*
   ;; was nil.
   (let ((s (identify-current-sentence t)))
@@ -350,6 +338,8 @@ and make that file easier to understand. |#
           ((typep doc-element 'article)
            (format stream "~&Parsing coverage: ~a (1 edge), ~a (2-5), ~a (> 5)~%"
                    great medium horrible))
+          ((typep doc-element 'paragraph)
+           (format  stream "~&~a, ~a, ~a~%" great medium horrible))
           (*readout-segments-inline-with-text*
            ;; proxy for with-total-quiet
            (format stream "~&~%~%")))))))
