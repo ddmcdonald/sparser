@@ -162,13 +162,13 @@
               (if *edge-for-unknown-words*
                 (setup-adjective word)
                 (assign-brackets-to-adjective word)))
+             ;; The -er, -ier, and -est suffixes generate
+             ;; many false positives. 
              #+ignore(comparative
               (tr :defining-as-given-morph 'adjective)
               (if *edge-for-unknown-words*
                 (setup-comparative word)
                 (assign-brackets-to-adjective word)))
-             ;; The -er, -ier, and -est suffixes generate
-             ;; many false positives. 
              #+ignore(superlative
               (tr :defining-as-given-morph 'adjective)
               (if *edge-for-unknown-words*
@@ -177,7 +177,7 @@
              (v
               (tr :defining-as-given-morph 'verb)
               (if *edge-for-unknown-words*
-                (setup-verb word)
+                (setup-verb word entry)
                 (assign-brackets-as-a-main-verb word))))))))))
 
 
