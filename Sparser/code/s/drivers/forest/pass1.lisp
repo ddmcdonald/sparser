@@ -308,7 +308,8 @@
   "Modeled directly on look-for-prep-binders."
   (let* ((post-mvb-edges (post-mvb-tt)) ;; returns a list of edges
          (post-mvb-edge (car post-mvb-edges))
-         (left-neighbor (left-treetop-at/edge post-mvb-edge))
+         (left-neighbor (when (edge-p post-mvb-edge) ; "gonna"
+                          (left-treetop-at/edge post-mvb-edge)))
          (verb?
           (when (and left-neighbor ;; could be sentence-initial
                      (not (word-p left-neighbor))) ;; treetop could be a word
