@@ -470,8 +470,9 @@
     are based on a polyword")
   (:method ((string string))
     (declare (special *break-on-pattern-outside-coverage?*))
-    (assert (not (string-equal string "top")) ()
-            "You mustn't define another 'top' category")
+    (when (string-equal string "top")
+      ;; "You mustn't define another 'top' category"
+      (setq string (string-append string '#:-not-the-top)))
     (when (contains-whitespace string)
       ;; fill the spaces, if only for the sake of the category display
       (setq string (substitute #\- #\space string)))
