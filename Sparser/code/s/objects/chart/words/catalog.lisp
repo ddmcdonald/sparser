@@ -25,6 +25,7 @@
    consumption.")
 #| Bound to :comlex by continue-unpacking-lexical-entry
          to :default by setup-unknown-word-by-default
+         to :computed by create-category-from-word / setup-word-based-verb-category
      and to :morphology by assign-morph-brackets-to-unknown-word  |#
 
 (defun mark-definition-source (unit)
