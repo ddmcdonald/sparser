@@ -306,7 +306,7 @@
 
 (defun define-main-verb (verb &key
                          (category (find-or-make-category verb))
-                         (referent (category-named 'event)) ;; should be eventuality
+                         (referent (category-named 'perdurant))
                          (infinitive        ;; "to give"
                           (error "Must supply at least the infinitive form."))
                          tensed/singular    ;; "he gives"
@@ -1067,21 +1067,23 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
 
 (defun make-cn-plural-rules (word category referent &key plural)
   (if plural ;; a marked irregular
-    (make-irreg-mword word :noun :plural plural)
+    (unless (eq plural :none)
+      (make-irreg-mword word :noun :plural plural))
     (setq plural (etypecase word
                    (polyword (plural-version/pw word))
                    (word (plural-version word)))))
-  (loop for plural in (ensure-list plural)
-        as plural-word = (etypecase plural
-                           ((or word polyword) plural)
-                           (string (resolve/make plural)))
-        collect plural-word into inflections
-        collect (make-cn-plural-rule plural-word category referent) into rules
-        finally
-          (record-inflections inflections word :noun)
-          (loop for i in inflections ;; may not be right - needs review
-                do (record-lemma i word :noun))
-       (return rules)))
+  (unless (eq plural :none)
+    (loop for plural in (ensure-list plural)
+       as plural-word = (etypecase plural
+                          ((or word polyword) plural)
+                          (string (resolve/make plural)))
+       collect plural-word into inflections
+       collect (make-cn-plural-rule plural-word category referent) into rules
+       finally
+         (record-inflections inflections word :noun)
+         (loop for i in inflections ;; may not be right - needs review
+            do (record-lemma i word :noun))
+         (return rules))))
 
 (defun make-cn-plural-rule (plural category referent)
   (assign-brackets-as-a-common-noun plural)
