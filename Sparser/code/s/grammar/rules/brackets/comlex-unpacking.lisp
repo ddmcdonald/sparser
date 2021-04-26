@@ -127,64 +127,63 @@ places. ]]
             (format t "~&No entry in Comlex for ~a~%" w)))))))
 
 
-(defgeneric unambiguous-comlex-primed-decoder (word clause)
-  (:documentation "Identify any inflected forms and define words for
+(defun unambiguous-comlex-primed-decoder (lemma clause)
+  "Identify any inflected forms and define words for
    them. Assign brackets to all the words. Do much more if
-   *edge-for-unknown-words* is up.")
-  (:method ((lemma word) clause)
-    (tr :unpacking-unambiguous (car clause))
-    (let ((pos-marker (car clause))
-          (properties (cdr clause)))
-      (case pos-marker
-        (noun 
-         (if *edge-for-unknown-words*
-           (setup-common-noun lemma clause)
-           (else
-             (assign-brackets-as-a-common-noun lemma)
-             (plural-words-given-CL-clause lemma clause))))
+   *edge-for-unknown-words* is up."
+  (tr :unpacking-unambiguous (car clause))
+  (let ((pos-marker (car clause))
+        (properties (cdr clause)))
+    (case pos-marker
+      (noun 
+       (if *edge-for-unknown-words*
+         (setup-common-noun lemma clause)
+         (else
+           (assign-brackets-as-a-common-noun lemma)
+           (plural-words-given-CL-clause lemma clause))))
 
-        (adjective
-         (if *edge-for-unknown-words*
-           (setup-adjective lemma clause)
-           (assign-brackets-to-adjective lemma)))
+      (adjective
+       (if *edge-for-unknown-words*
+         (setup-adjective lemma clause)
+         (assign-brackets-to-adjective lemma)))
 
-        (adverb
-         (if *edge-for-unknown-words*
-           (setup-adverb lemma)
-           (assign-brackets-to-adverb lemma)))
-        
-        (verb
-         (if *edge-for-unknown-words*
-           (setup-verb lemma clause)
-           (loop for w in (cons lemma (verb-forms-of lemma))
-              do (assign-brackets-as-a-main-verb w))))
+      (adverb
+       (if *edge-for-unknown-words*
+         (setup-adverb lemma)
+         (assign-brackets-to-adverb lemma)))
+      
+      (verb
+       (if *edge-for-unknown-words*
+         (setup-verb lemma clause)
+         (loop for w in (cons lemma (verb-forms-of lemma))
+            do (assign-brackets-as-a-main-verb w))))
 
-        ;; Prepositions and conjunctons don't have the instances
-        ;; and category structure of adverbs. Probably want to put it in
-        ;; but can wait until there are axioms (methods) for them. 
-        (prep
-         ;; Creates a category the way define-adverb does. 
-         (define-preposition (word-pname lemma)))
+      ;; Prepositions and conjunctons don't have the instances
+      ;; and category structure of adverbs. Probably want to put it in
+      ;; but can wait until there are axioms (methods) for them. 
+      (prep
+       ;; Creates a category the way define-adverb does. 
+       (define-preposition (word-pname lemma)))
 
-        ((sconj ;; See /rules/words/conjunctions.lisp for the explicit list
-          quant) ;; see words/quantifiers.lisp
-         (define-isolated-function-word (word-pname lemma)))
+      ((sconj ;; See /rules/words/conjunctions.lisp for the explicit list
+        quant) ;; see words/quantifiers.lisp
+       (define-isolated-function-word (word-pname lemma)))
 
-        ;;(pronoun ;; "hers" in June pmc3577861 during sweep
-        ;;  Could be pulled in by funny protein name
+      ;;(pronoun ;; "hers" in June pmc3577861 during sweep
+      ;;  Could be pulled in by funny protein name
 
-        (otherwise
-         (push-debug `(,lemma ,clause))
-         (warn-or-error "unambiguous-comlex-primed-decoder -- Unexpected ~
+      (otherwise
+       (push-debug `(,lemma ,clause))
+       (warn-or-error "unambiguous-comlex-primed-decoder -- Unexpected ~
                POS marker: '~a' on ~a, near ~s ~& in ~s" 
-               pos-marker lemma
-               (cur-string) (sentence-string (sentence)))
-         nil))
+                      pos-marker lemma
+                      (cur-string) (sentence-string (sentence)))
+       nil))
 
-      (setf (get-tag :comlex lemma) properties))))
+    (setf (get-tag :comlex lemma) properties)))
 
 
-(defmethod ambiguous-comlex-primed-decoder ((lemma word) clauses)
+(defun ambiguous-comlex-primed-decoder (lemma clauses)
   (let ((combinations (sort (copy-list (mapcar #'car clauses))
                             #'alphabetize)))
     (tr ::unpacking-ambiguous combinations)
@@ -207,14 +206,14 @@ places. ]]
      ((equal combinations '(adjective verb))
       (when *edge-for-unknown-words*
         (maybe-setup-adjective lemma clauses :ambiguous)
-        (maybe-setup-verb lemma clauses :ambiguous t))
+        (maybe-setup-verb lemma clauses :ambiguous))
       (brackets-for-adjective-verb lemma))
      
      ((equal combinations '(adjective noun verb))
       (when *edge-for-unknown-words*
         (maybe-setup-adjective lemma clauses :ambiguous)
         (maybe-setup-common-noun lemma clauses :ambiguous)
-        (maybe-setup-verb lemma clauses :ambiguous t))
+        (maybe-setup-verb lemma clauses :ambiguous))
       (assign-noun-verb-brackets lemma clauses))
      
      ((equal combinations '(adjective adverb noun))
@@ -236,6 +235,20 @@ places. ]]
         (maybe-setup-adjective lemma clauses :ambiguous)
         (maybe-setup-adverb lemma clauses :ambiguous)
         (maybe-setup-common-noun lemma clauses :ambiguous)
+        (maybe-setup-verb lemma clauses :ambiguous))
+      (brackets-for-adjective-adverb-noun-verb lemma))
+
+     ((equal combinations '(adjective adverb noun prep))
+      (when *edge-for-unknown-words*
+        (maybe-setup-adjective lemma clauses :ambiguous)
+        (maybe-setup-adverb lemma clauses :ambiguous)
+        (maybe-setup-common-noun lemma clauses :ambiguous))
+      (brackets-for-adjective-adverb-noun-verb lemma))
+
+     ((equal combinations '(adjective adverb prep verb))
+      (when *edge-for-unknown-words*
+        (maybe-setup-adjective lemma clauses :ambiguous)
+        (maybe-setup-adverb lemma clauses :ambiguous)
         (maybe-setup-verb lemma clauses :ambiguous))
       (brackets-for-adjective-adverb-noun-verb lemma))
      
@@ -294,7 +307,18 @@ places. ]]
         (maybe-setup-common-noun lemma clauses :ambiguous)
         (maybe-setup-verb lemma clauses :ambiguous))
       (assign-noun-verb-brackets lemma clauses))
-
+         
+     ((equal combinations '(noun prep verb))
+      (when *edge-for-unknown-words*
+        (maybe-setup-common-noun lemma clauses :ambiguous)
+        (maybe-setup-verb lemma clauses :ambiguous))
+      (assign-noun-verb-brackets lemma clauses))
+ 
+     ((equal combinations '(aux noun verb)) ;; work + will ??
+      (when *edge-for-unknown-words*
+        (maybe-setup-common-noun lemma clauses :ambiguous)
+        (maybe-setup-verb lemma clauses :ambiguous))
+      (assign-noun-verb-brackets lemma clauses))
      ((equal combinations '(noun pronoun verb)) ;; ignore pn
       (when *edge-for-unknown-words*
         (maybe-setup-common-noun lemma clauses :ambiguous)
@@ -331,7 +355,7 @@ places. ]]
 
 ;;--- aux
 
-(defmethod plural-words-given-CL-clause ((lemma word) clause)
+(defun plural-words-given-CL-clause (lemma clause)
   "If the Comlex clause stipulates one or more plurals then use them,
    otherwise construct the default plural. Give them brackets as
    a common noun."
