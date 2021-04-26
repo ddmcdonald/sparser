@@ -198,6 +198,7 @@
     ("al" ADJ)
     ("ar" ADJ)
     ("ary" ADJ)
+    ("ant" N) ; "houseplant"
     ("ase" N)
     ("blast" N)
     ("cyte" N)
