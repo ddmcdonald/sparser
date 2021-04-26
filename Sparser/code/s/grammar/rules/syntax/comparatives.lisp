@@ -100,16 +100,20 @@ abstract > abstract-region >
   ;;(push-debug `(,base-word ,comparative-entry ,superlative-entry))
   (let* ((pname (pname base-word))
          (attribute (create-scalar-attribute base-word))
-         (comparative (first comparative-entry)) ;; ignore "more happy" for now
+         (comparative (first comparative-entry))
          (superlative (first superlative-entry))
          (base-adjective (define-adjective pname)))
-    (setup-comparatives base-adjective
-                        (cat-name attribute)
-                        pname
-                        nil ;  direction-flag
-                        comparative ; er
-                        superlative ; est
-                        )))
+    (unless (and (> (length comparative) 5)
+                 (string-equal "more" (subseq comparative 0 4)))
+      ;; presumably the superlative is "most xx"
+      ;; We let these get formed by rule
+      (setup-comparatives base-adjective
+                          (cat-name attribute)
+                          pname
+                          nil ;  direction-flag
+                          comparative ; er
+                          superlative ; est
+                          ))))
 
 (defgeneric create-scalar-attribute (base)
   (:method ((w word))
