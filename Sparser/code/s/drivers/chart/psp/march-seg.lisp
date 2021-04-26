@@ -51,12 +51,12 @@
    hard not to miss any cases.
    For neo-fire trying to see if we can leach some of the
    bio-knowledge out and also use the 'specialized' protocols."
-  (declare (special *current-chunk* *big-mechanism-ngs*))
+  (declare (special *current-chunk*))
   (tr :parse-at-the-segment-level segment-end-pos)
   (setq *rightmost-active-position/segment* segment-end-pos)
   
   (cond
-    ((member (chunk-forms *current-chunk*) '((VG) (ADJG)) :test #'equal)
+    ((member (chunk-forms *current-chunk*) '((vg) (adjg)) :test #'equal)
      ;; arguments: the chunk, parse from the right, noun-group?
      (interp-big-mech-chunk *current-chunk* t nil))
     ((use-specialized-ng-parser?)

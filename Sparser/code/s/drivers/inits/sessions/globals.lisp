@@ -90,6 +90,10 @@
   "Gates displaying the chart after each section.
    Referenced in begin-new-paragraph")
 
+(defparameter *print-text-stats* nil
+  "Gates whether we display the text characteristics of a
+   particular document element. First use with paragraphs.")
+
 
 ;;;-----------------------------------------------
 ;;; parameters controlling whether trap new cases
@@ -268,10 +272,6 @@
   "Gates the option to parse the interior of a chunk
    just after the chunk is created. Referenced in
    identify-chunks")
-
-(defparameter *big-mechanism-ngs* nil
-  "use new interpreter for interior of NGs (only called for 
-   NGs without a spanning edge)")
 
 (defparameter *whack-a-rule* nil
   "In the multi-pass control structure this controls the
