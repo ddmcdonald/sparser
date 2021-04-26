@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-2005,2010-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2010-2021 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "lookup"
 ;;;   Module:  "objects;chart:categories:"
-;;;  Version:  December 2018
+;;;  Version:  April 2021
 
 (in-package :sparser)
 
@@ -51,7 +51,8 @@
 (defun find-or-make-category-object (symbol &optional (source :define-category) source-location)
   "The core routine used by all the various sources for categories to
    make the minimal object and have it cataloged."
-  (declare (special *all-intra-category-relationships-noticed?* *dotted-categories*))
+  (declare (special *all-intra-category-relationships-noticed?*
+                    *dotted-categories*))
   (unless (if *include-model-facilities*
             (referential-category-p symbol) ;; can happen in generated code
             nil)
