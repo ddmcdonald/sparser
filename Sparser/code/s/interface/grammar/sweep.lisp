@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015-2020 David D. McDonald -- all rights reserved
+;;; copyright (c) 2015-2021 David D. McDonald -- all rights reserved
 ;;;
 ;;;      File:   "sweep"
 ;;;    Module:   interface/grammar/
-;;;   Version:   April 2020
+;;;   Version:   April 2021
 
 ;; Routines for sweeping down through the structure of Krisp referents.
 ;; Initiated 1/11/15 with code from December. 
@@ -25,7 +25,8 @@
 (defun strip-model-descriptions (list)
   "Called by identify-relations to pass the raw-entities and raw-relations
    that are collected by collect-model and pass them through a filter
-   dropping out types of individuals that aren't relevant."
+   dropping out types of individuals that aren't relevant.
+   The original list was created by pushing so this puts in text order."
   (let (  clean-items  )
     (dolist (item list)
       (when item ;; some are null
@@ -43,8 +44,6 @@
            (push-debug `(,item))
            (break "New type of item: ~a~%~a"
                   (type-of item) item)))))
-    ;; The original list was created by pushing
-    ;; so this puts in text order. 
     clean-items))
 
 (defun strip-model-description (tree)
@@ -86,7 +85,9 @@
 (defun filter-list-of-items-for-relevance (list)
   "Called by filter-for-relevant-mentions (in content-methods).
    The list is the dedup'd sentence-mentions in a sentence,
-   and we collect individuals. Feeds into aggregate-terms"
+   and we collect individuals. Feeds into aggregate-terms
+   Relevance is ultimately determined by the list that is used
+   to control what goes on the discourse history ('dh')."
   (loop for item in list
      when (relevant-type-of-individual item)
      collect item))
@@ -109,7 +110,7 @@
   (:method ((e edge)) nil)
   (:method ((n number)) nil)
   (:method ((item T))
-    (warn-or-error "'~a' of type ~a passed to relevant type filter"
+    (warn-or-error "'~a' of type ~a passed to relevant-type filter"
           item (type-of item))
     nil))
 
@@ -264,6 +265,12 @@
              (loop for n in list-of-names collect (find-var n i))))
     (case category-name
       (company (map-names '(name)))
+      (month (map-names '(name next previous number-of-days-position-in-year)))
+      (year (map-names '(name value year-of-century)))
+      (date (map-names '(year day month)))
+      (number (map-names '(value)))
+      (money (map-names '(currency number)))
+      (denomination/money '(name symbol))
       )))
 
 
@@ -355,7 +362,7 @@
 (defvar *from-BigMech-default* nil)
 (defvar *from-no-morph-default* nil)
 (defvar *from-morphology* nil)
-;; *bio-entity-strings* is in analyzers/psp/patterns/driver.lisp
+(defvar *from-computation* nil)
 (defvar *first-names* (make-hash-table :size 5000 :test #'equalp))
 (defvar *last-names* (make-hash-table :size 5000 :test #'equalp))
 
@@ -365,7 +372,9 @@
         *from-BigMech-default* nil
         *from-no-morph-default* nil
         *from-morphology* nil
+        *from-computation* nil
         *bio-entity-strings* (list *bio-entity-initial-string*)
+        ;; *bio-entity-strings* is in analyzers/psp/patterns/driver.lisp
         ))
 
 (defun display-word-accumulator-tallies (&optional (stream *standard-output*))
@@ -373,12 +382,14 @@
                   ~% ~a deduced from their morphology~
                   ~% ~a added by Big Mechanism default~
                   ~% ~a added with default setup~
-                  ~% ~a added from no-space operations~%~%"
+                  ~% ~a added from no-space operations
+                  ~% ~a added by computing them~%~%"
           (length *from-comlex*)
           (length *from-morphology*)
           (length *from-BigMech-default*)
           (length *from-no-morph-default*)
-          (1- (length *bio-entity-strings*))))
+          (1- (length *bio-entity-strings*))
+          (length *from-computation*)))
 
 #| make-word/all-properties/or-primed => objects/chart/words/lookup/new-words
 The real call is to establish-unknown-word, which gets set by the switch
@@ -408,6 +419,9 @@ unknown words.|#
 
     (:BigMech-default ;; handle-unknown-word-as-bio-entity
      (pushnew word *from-BigMech-default*))
+
+    (:computed
+     (pushnew word *from-computation*))
     
     (:default ;; setup-unknown-word-by-default -- no mophology information
      ;; will be redundantly listed in *from-morphology*
