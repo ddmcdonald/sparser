@@ -120,7 +120,7 @@ in conjunction with an early version of Hark. Notable for using the
    (*index-bindings-to-variables* nil)
    (*filter-vocabulary* :score))
   (:grammar-configuration "score-grammar")
-  (:switches score-setting))
+  (:switches neo-fire-setting)) ; score-setting
 
 (defscript fire ()
   "FIRE stands for 'Free-text Information and Relation Extraction'.

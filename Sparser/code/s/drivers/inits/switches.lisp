@@ -342,7 +342,6 @@
         *sweep-for-conjunctions* t
         *sweep-for-parentheses* t
         *chunk-sentence-into-phrases* t
-        *big-mechanism-ngs* t
         *parse-chunk-interior-online* t
         *parse-chunked-treetop-forest* t
         *sweep-sentence-treetops* t
@@ -580,11 +579,11 @@
   (top-edges-setting)
   (standard-extras)
   (include-comlex)
+  (experimental-settings)
   
   ;;(parsing-protocol-for-documents) which is ...
   (what-to-do-at-the-forest-level :new-forest-protocol)
-  (setq *kind-of-chart-processing-to-do* :successive-sweeps)
-  
+  (setq *kind-of-chart-processing-to-do* :successive-sweeps)  
   ;; in scan-terminals-loop
   (setq *sweep-for-word-level-fsas* t
         *sweep-for-terminal-edges* t )
@@ -594,22 +593,16 @@
         *sweep-for-early-information* t ;; questions
         *sweep-for-conjunctions* t
         *sweep-for-parentheses* t
-
         *ignore-literal-edges* nil ;; default, but need when switching
-        
         *chunk-sentence-into-phrases* t
-        ;;  *big-mechanism-ngs* t  /// check details
         *parse-chunk-interior-online* t
-        
         *sweep-sentence-treetops* t
-
         *parse-chunked-treetop-forest* t
         *sweep-sentence-treetops* t
-        *island-driving* t
-        )
+        *island-driving* t)
   (setq *edges-from-referent-categories* nil
         *allow-pure-syntax-rules* t
-        *check-forms* t) ;; controls validity check in multiply-edges
+        *check-forms* nil) ;; turn off validity check in multiply-edges
   (whack-a-rule t)
 
   (use-unknown-words)
