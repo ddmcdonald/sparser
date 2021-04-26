@@ -583,8 +583,10 @@
   "Called from initialize-sentences for the first one, then
    from period-hook -- 'pos' is the position after the period."
   (declare (special *reading-populated-document*
+                    *paragraphs-from-orthography*
                     *sentence-terminating-punctuation*))
-  (let ((s (if *reading-populated-document*
+  (let ((s (if (or *reading-populated-document*
+                   *paragraphs-from-orthography*)
              (make-instance 'sentence) ;; permanent
              (allocate-sentence))) ;; reclaimed
         (index (if *current-sentence*
@@ -595,7 +597,7 @@
           (if *current-sentence*
             (pos-character-index pos)
             1))
-    (when (null (starts-at-char s)) (lsp-break "bad index"))
+    (when (null (starts-at-char s)) (lsp-break "bad sentence index"))
     (setf (contents s) (make-sentence-container s))
     ;; lookup the current section for parent
     (when *current-sentence*
