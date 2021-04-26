@@ -20,14 +20,14 @@
 (in-package :sparser)
 
 #| There are handlers for calls to error and related conditions
-that catch the condition thatand let us continue, for instance
+that catch the condition and let us continue, for instance
 error-trapped-scan-and-core used in document parsing. 
    But break is different and will always invoke the error-handling
 machinery. Unless we take steps, it will always blow through any error
 handler. That what this code is all about. We make our own version of
 'break' by shadowing the definition we get fom the Lisp and use a
 function we define here in the :sparser package. 
-   There are function here to swtich back and forth between definitions
+   There are functions here to swtich back and forth between definitions
 or simply use a break function with a different name. N.b. the only real
 practical difference between a call to break and one to error is that
 you can continue from a break (c.f. cerror). 
