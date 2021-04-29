@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2011-2020  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2011-2021 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "terminal edges"
 ;;;   Module:  "analyzers;psp:assess:"
-;;;  Version:  September 2020
+;;;  Version:  April 2021
 
 ;; initiated 9/12 v2.3
 ;; 1.1 (10/23) reorganized what kinds of property edges are created
@@ -229,14 +229,14 @@
             nil))
         (else
           (tr :install/one-doesnt-match-actual-state)
-          nil) ))
+          nil)))
     (else
       (let ( edges total-edges )
         (dolist (word capitalized-variants)
           (setq edges
                 (if (eq actual-state (word-capitalization word))
                   (if (word-rules word)
-                    (preterminals/word (word-rules word) word
+                    (preterminals/word (word-rules word)1 word
                                        position-scanned next-position)
                     nil)
                   nil ))
@@ -249,10 +249,12 @@
 ;;; instantiating edges from the rule-set
 ;;;---------------------------------------
 
+;; (trace-edges)
+
 (defun preterminals/word (rule-set word
                           position-scanned next-position)
   "This is the final target for many of the threads, including
-   check-caps-variations. It where we make and install the edge(s).
+   check-caps-variations. It is where we make and install the edge(s).
    If the word is mentioned as a literal in some non-unary rule
    then we install an edge for it. Also we look to see if there
    is a single-term rule for the word that rewrites it as another
@@ -264,6 +266,13 @@
 
     (when (setq single-term-rules (rs-single-term-rewrites rule-set))
       (tr :word-has-n-single-term-rules word single-term-rules)
+      (when *filter-vocabulary*
+        (let ((filtered (loop for rule in single-term-rules
+                           unless (ignore-rule? rule)
+                           collect rule)))
+          (tr :single-term-after-filtering filtered)
+          (setq single-term-rules filtered)))
+
       ;; Sweep the rules for tacit form characterizations
       (dolist (cfr single-term-rules)
         (when (word-p (cfr-category cfr))
@@ -308,7 +317,7 @@
             (push (install-preterminal-edge
                    cfr word position-scanned next-position)
                   single-term-edges)))))
-
+    ;;(break "here")
     (cond
      ((and edge-for-literal single-term-edges)
       (tail-cons edge-for-literal single-term-edges))
