@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2020 David D. McDonald all rights reserved
+;;; Copyright (c) 2020-2021 David D. McDonald all rights reserved
 
 ;;;      File: "note"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: March 2020
+;;;   Version: April 2021
 
 ;; Initiated 1/29/20. To make an easy to use, structured, ability to
 ;; 'note and record interesting objects' 
@@ -59,7 +59,11 @@
 (defgeneric note? (item)
   (:documentation "Combines the check as to whether the item is
     noteworthy with the action ('note') that records it in the current
-    content model.")
+    content model.
+    Presently seeded in the edge referent computation
+       -- analyzers/psp/referent/ driver & unary
+       -- grammar/model/core/names/fsa/ driver
+    ")
 
   (:method ((e edge))
     (let ((referent (edge-referent e)))
