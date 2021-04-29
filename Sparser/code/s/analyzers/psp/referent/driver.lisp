@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1999,2011-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1999,2011-2021 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "driver"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   May 2020
+;;;   Version:   April 2021
 
 ;; broken out from all-in-one-file 11/28/91
 ;; 1.0 (8/28/92 v2.3) Added global referring to the referent returned.
@@ -287,9 +287,9 @@ or a function that simulates its environment like with-referent-edges |#
 
 (defvar *referent-edges-return-nil* t
   "Functions invoked by Debris Analysis typically need the variables
-   to have values -- set up by with-referent-edges -- this had them
-   return nil where there's no edge rather than throwing it error
-   which is what makes sense in regular parsing.")
+   to have values -- set up by with-referent-edges -- this has them
+   return nil where there's no edge rather than throwing an error
+   which would make sense in regular parsing.")
   
 (defun left-edge-for-referent ()
   (or *left-edge-into-reference*
@@ -383,6 +383,18 @@ in the scope of referent-from-rule.
     (revise-edge edge category form referent)))
 
 (defun revise-edge (edge category form referent)
+  (when category
+    (setf (edge-category edge) category))
+  (when form
+    (setf (edge-form edge) form))
+  (when referent
+    (set-edge-referent edge referent))
+  edge)
+
+(defun revise-edge-labels (edge &key category form referent)
+  "Same functionality as revise-edge, but keywords make it easier
+   to use when changing one label, and there is no assumption
+   that the edge caught up in rule interpretation"
   (when category
     (setf (edge-category edge) category))
   (when form
