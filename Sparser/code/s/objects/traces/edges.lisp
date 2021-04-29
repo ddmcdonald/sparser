@@ -688,10 +688,18 @@ Applying ~a to compose e~a and e~a"
 
 
 (deftrace :word-has-n-single-term-rules (word list-of-cfrs)
+  ;; in preterminals/word
   (when *trace-check-edges*
     (trace-msg "The word \"~A\" has ~A single-term rules:~
                 ~%  ~A" (word-pname word) (length list-of-cfrs)
                list-of-cfrs)))
+
+(deftrace :single-term-after-filtering (rules)
+  ;; in preterminals/word
+  (when *trace-check-edges*
+    (if (null rules)
+      (trace-msg "All of them were filtered out")
+      (trace-msg "~a remain after filtering" (length rules)))))
 
 (deftrace :making-edge-over-literal (edge)
   (when *trace-check-edges*

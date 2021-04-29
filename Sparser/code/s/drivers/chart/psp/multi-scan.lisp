@@ -1194,10 +1194,13 @@
 ;; (trace-traversal-hook) (trace-traversal-hits)
 
 (defun sweep-to-span-parentheses (sentence)
-  ;; Given the sweeps that have preceded this, there will be
-  ;; no edges over the parentheses. (////barring an errant
-  ;; mention in a cfr, as happens for "the" or even ".")
-  ;; So we walk through looking for words
+  "Given the sweeps that have preceded this, there will be
+   no edges over the parentheses. (////barring an errant
+   mention in a cfr, as happens for 'the' or even '.')
+   So we walk through the sentence looking for 'exposed'
+   words applying the word-traversal-hook to each on in turn.
+   Actions occur when the close of a set of paired punctuation
+   is encountered."
   (declare (special *the-punctuation-period* *trace-sweep*
                     *sentence-terminating-punctuation*))
   (tr :sweep-to-span-parentheses)
@@ -1207,9 +1210,7 @@
         treetop  position-after )
     (declare (special *special-acronym-handling*))
 
-    ;; (push-debug `(,sentence ,position-before ,end-pos))
-    (loop
-      ;; copied from the pattern sweep. 
+    (loop ;; copied from the pattern sweep. 
       (multiple-value-setq (treetop position-after)
         (next-treetop/rightward position-before))
 
@@ -1251,6 +1252,12 @@
    removed from the parser's attention by burying within the prior
    edge.")
 
+(defparameter *store-acronyms* nil
+  "If this flag is up we 'hide' each probable acronym (full-caps word
+   inside parentheses) on the edge to its left.  If it is down (nil)
+   we 'elevate' the acronym as an edge spanning the parens so that
+   it is visible to rules (e.g. acronym-is-alternative-for-name).")
+
 (defvar *pending-acronyms* nil
   "If we have walked over what appears to be an acronym to be
   handled later, this stores the needed information.")
@@ -1263,53 +1270,56 @@
 (defun assess-parenthesized-content (paren-edge
                                      pos-before-open pos-after-open
                                      pos-before-close pos-after-close)
-  ;; Called from span-parentheses after all the handling of
-  ;; the interior has been handled and a (usually) vanilla edge
-  ;; constructed to span the whole expression. 
+  "Called from span-parentheses after all the handling of
+   the interior is finished and a (usually) vanilla edge
+   has been constructed to span the whole expression.
+   What we do is determined by the parameters just above.
+   The paren-edge is the top edge starting at the open.
+   It will have been created by do-paired-punctuation-interior
+   and will span everything between the open and close inclusive."
   (push-debug `(,paren-edge ,pos-before-open ,pos-after-open
                 ,pos-before-close ,pos-after-close))
-  ;; (lsp-break "call to assess-parenthesized-content")
   #| (setq first-edge (nth 0 *) pos-before-open (nth 1 *)
-pos-after-open (nth 2 *) pos-before-close (nth 3 *)
-pos-after-close (nth 4 *)) |#
-  ;; Some of this lookup is recreating observations within
-  ;; do-paired-punctuation-interior but it simpler than figuring out
-  ;; a way to export it.
+       pos-after-open (nth 2 *) pos-before-close (nth 3 *)
+  pos-after-close (nth 4 *)) |#
+  
   (let* ((first-edge (right-treetop-at/edge pos-after-open))
          (one-edge-over-entire-segment?
           (when (edge-p first-edge) ;; e.g. "the underlying mechanism(s)."
             (eq (pos-edge-ends-at first-edge) pos-before-close)))
          (edge-to-left (left-treetop-at/edge pos-before-open)))
     (cond
-     ((and (edge-p first-edge)
-           one-edge-over-entire-segment?
-           (one-word-long? first-edge)
-           (eq (pos-capitalization pos-after-open) :all-caps))
-      #+ignore ;; too loud when not working on these
-      (unless (and edge-to-left (edge-p edge-to-left))
-        (warn "probable acronym w/o edge to its left: ~s~%in ~s"
-              (string-for-edge first-edge) (current-string)))
-      (when (edge-p edge-to-left) ;; otherwise there's nothing to hide under
-        (let* ((ev-after-close (pos-ends-here pos-after-close))
-               (ev-to-get-edges-from (edge-starts-at edge-to-left))
-               (edges-to-extend (all-edges-on ev-to-get-edges-from))
-               (ev-of-edge (edge-ends-at edge-to-left)))
-          
-          ;; There may be more than one edge just before the open,
-          ;; i.e. it's top-node is :multiple-initial-eges. We need to
-          ;; make all of them longer because which of these edges is
-          ;; going to be selected by the chunker can't be determined here.
-          (loop for edge in edges-to-extend
-            ;; Move the edge over the parentheses
-            do (knit-edge-into-position edge ev-after-close)
-               (setf (edge-ends-at edge) ev-after-close))
+      ;; check whether it could be an acronym
+      ((and (edge-p first-edge)
+            one-edge-over-entire-segment?
+            (one-word-long? first-edge)
+            (eq (pos-capitalization pos-after-open) :all-caps))
+       (if *store-acronyms*
+         (when (edge-p edge-to-left) ;; otherwise there's nothing to hide under
+           (let* ((ev-after-close (pos-ends-here pos-after-close))
+                  (ev-to-get-edges-from (edge-starts-at edge-to-left))
+                  (edges-to-extend (all-edges-on ev-to-get-edges-from))
+                  (ev-of-edge (edge-ends-at edge-to-left)))            
+             ;; There may be more than one edge just before the open,
+             ;; i.e. it's top-node is :multiple-initial-eges. We need to
+             ;; make all of them longer because which of these edges is
+             ;; going to be selected by the chunker can't be determined here.
+             (loop for edge in edges-to-extend
+                ;; Move the left-side edge over the parentheses
+                do (knit-edge-into-position edge ev-after-close)
+                  (setf (edge-ends-at edge) ev-after-close))
+             ;; save the information we need to recover it all
+             (push `(,pos-before-open ,paren-edge ,first-edge ,ev-of-edge)
+                   *pending-acronyms*)))
+         
+         (else ;; re-label it
+           (revise-edge-labels
+            paren-edge
+            :category (category-named 'single-capitalized-word-in-parentheses)))))
 
-          ;; save the information we need to recover it all
-          (push `(,pos-before-open ,paren-edge ,first-edge ,ev-of-edge)
-                *pending-acronyms*))))
-     (*hide-parentheses*
-      (lsp-break "stub: finish revision of hide parentheses?")
-      (hide-parenthesis-edge paren-edge edge-to-left)))))
+      (*hide-parentheses*
+       (lsp-break "stub: finish revision of hide parentheses?")
+       (hide-parenthesis-edge paren-edge edge-to-left)))))
 
 (defparameter *show-acronym-conflicts* nil)
 

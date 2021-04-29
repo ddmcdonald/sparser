@@ -74,7 +74,7 @@
            ;; That's enough evidence to recast the edge and take it
            ;; as an acronym or ticker symbol, but we'll leave that
            ;; to context to determine which one
-           (unless (or *special-acronym-handling*
+           (unless (or *special-acronym-handling* ;; set by sweep-to-span-parentheses
                        (eq (edge-form first-edge) (category-named 'proper-name))
                        (eq (edge-form first-edge) (category-named 'np)))
              ;; if so, then there's probably a hook for it and

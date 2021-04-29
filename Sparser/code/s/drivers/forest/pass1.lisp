@@ -11,7 +11,7 @@
 ;;  was #+ignored
 ;; 3/12/15 Rewrote try-spanning-conjunctions to leave out the special cases and not
 ;;  worry about how many conjunction edges there are. 
-;; 5/8/2015 DAVID -- look-for-prep-binders now also handle premodifiers for prepositions, as in "30 minutes after"
+;; 5/8/2015 DAVID -- look-for-prep-binders now also handles premodifiers for prepositions, as in "30 minutes after"
 ;; 5/13/2015 modified knit-parens-into-neighbor to copy the base item when binding trailing-parenthetical -- this prevents
 ;;  smashing base proteins, etc.
 
@@ -551,8 +551,9 @@
   (dolist (paren-edge (parentheses (layout)))
     (let ((left-neighbor (left-treetop-at/only-edges paren-edge)))
       (when left-neighbor ;; conceivably it could be sentence initial
-        ;; but its more likely to be an edge than not        
-        (knit-parens-into-neighbor left-neighbor paren-edge)))))
+        ;; but it's more likely to be an edge than not
+        (or (multiply-edges left-neighbor paren-edge) ;; the whack cycle will get it
+            (knit-parens-into-neighbor left-neighbor paren-edge))))))
 
 
 (defparameter *bind-parens-into-semantics* nil
@@ -562,7 +563,7 @@
   (declare (special left-neighbor paren-edge))
   (tr :parens-after left-neighbor paren-edge)
   (when (and (edge-p left-neighbor) ;; sometimes the left-neighbor is just a word
-	     ;; we should note when that happens and try to reduce the cases
+	     ;;// we should note when that happens and try to reduce the cases
 	     (eq (pos-edge-ends-at left-neighbor)
 		 (pos-edge-ends-at paren-edge)))
     ;; already knit. If this is called from interp-big-mech-chunk it's
@@ -573,11 +574,9 @@
   (cond
     ((and (edge-p left-neighbor)
 	  (edge-referent left-neighbor)
-	  (or
-	   (individual-p (edge-referent left-neighbor))
-	   (category-p (edge-referent left-neighbor))))
-     (let* ((referent
-	     (individual-for-ref (edge-referent left-neighbor)))
+	  (or (individual-p (edge-referent left-neighbor))
+              (category-p (edge-referent left-neighbor))))
+     (let* ((referent (individual-for-ref (edge-referent left-neighbor)))
 	    (constituents (edge-constituents paren-edge))
 	    (count (when constituents ;;///review the code to guarentee this
 		     ;; count is a crude 1st-cut distinction in what's inside 
@@ -586,11 +585,10 @@
 	    (paren-referent (referent-of-parenthetical-expression
 			     count paren-edge)))
       
-       (when (and (individual-p paren-referent)
-		  (individual-p referent))
-	 (when *bind-parens-into-semantics*
+       (when *bind-parens-into-semantics* ;; obsolete in DLI case
+         (when (and (individual-p paren-referent)
+                    (individual-p referent))
            (setq referent (bind-variable (lambda-variable-named 'trailing-parenthetical)
-                                         ;;    obsolete in DLI case
                                          paren-referent
                                          referent))))
        
@@ -622,7 +620,7 @@
      )))
 
 (defun referent-of-parenthetical-expression (count paren-edge)
-  ;; If there's one interior edge return it's referent. 
+  ;; If there's one interior edge return its referent. 
   ;; If there are more edges then try to categorize them but
   ;; for now returning nil is ok. In general the content of the
   ;; interior dictates the relationship that we bind so we would

@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; Copyright (c) 1993-2005.2013  David D. McDonald  -- all rights reserved
+;;; Copyright (c) 1993-2005.2013,2021  David D. McDonald  -- all rights reserved
 ;;; extensions Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "classify"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  1.11 August 2013
+;;;  version:  April 2021
 
 ;; initiated 5/15/93 v2.3 to fit PNF paper
 ;; 0.1 (6/10) tweeked judgement over single words
@@ -165,6 +165,7 @@
         (ev (pos-starts-here position)))
 
     (tr :pnf/classifying-one-word-span word)
+    ;;  (break "position: ~a" position)
 
     ;; Do we have to install the terminal edge(s)?
     (case status
@@ -180,28 +181,31 @@
       (otherwise
        (break "Unexpected value for status: ~a~%Expected :pnf-checked  ~
                or :preterminals-installed" status)))
-
+    ;;  (push-debug `(,ev)) (break "status: ~a" status)
     (if (ev-top-node ev)
       (then ;; there are some edges 
-       (tr :pnf/edges-over-word word ev)
-       (sortout-edges-over-single-cap-word position next-position))
+        (tr :pnf/edges-over-word word ev)
+        ;;  (break "some edges")
+        (sortout-edges-over-single-cap-word position next-position))
       (else
-       ;; No edges.
-       ;; The word is capitalized, so the question is whether it's a
-       ;; function word (and then maybe we also check whether we're
-       ;; at beginning of the sentence).  If it is, we return
-       ;; function to the fsa driver that we're rejecting this one
-       ;; as a name and the regular processing should get a crack at it.
-       (tr :pnf/no-edges-over-word word)
-       (if (function-word? word)
-         nil
-         (when (unknown-word? word)
-           (if *treat-single-Capitalized-words-as-names*
-             (do-single-word-name word position next-position)
-
-             (if (could-be-the-start-of-a-sentence position)
-               nil
-               (span-as-capitalized-word word position next-position)))))))))
+        ;; No edges.
+        ;; The word is capitalized, so the question is whether it's a
+        ;; function word (and then maybe we also check whether we're
+        ;; at beginning of the sentence).  If it is, we return
+        ;; function to the fsa driver that we're rejecting this one
+        ;; as a name and the regular processing should get a crack at it.
+        (tr :pnf/no-edges-over-word word)
+        (break "no edges over ~a" word)
+        (if (function-word? word)
+          nil
+          ;; when (unknown-word? word)
+          ;; There aren't unknown words anymore. Everything gets
+          ;;   a projected concept and unary rule
+          (if *treat-single-Capitalized-words-as-names*
+            (do-single-word-name word position next-position)
+            (if (could-be-the-start-of-a-sentence position)
+              nil
+              (span-as-capitalized-word word position next-position))))))))
 
 
 ;;;---------------------
@@ -214,7 +218,7 @@
   ;; because if there were we'd have a name-word edge instead
   ;; of this unknown word, so we go ahead and create the individual
   ;; (of type "uncategorized-name") that has this word as their name
-
+  (push-debug `(,word ,position)) (break "single word: ~a" word)
   (let ((name (make-unindexed-individual category::uncategorized-name))
         (name-word (make-name-word-for-unknown-word-in-name word position)))
     (tr :pnf/items-for-unknown-word word name name-word)
@@ -293,6 +297,9 @@
         ;; return nil.                      
         (or new-edge
             nil )))
+
+     ((eq (edge-form edge) category::common-noun) ; e.g. from a protein
+      edge)
 
      ;; else the edge might be over a function word that's
      ;; used as a literal in rules
