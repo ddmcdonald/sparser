@@ -236,7 +236,7 @@
           (setq edges
                 (if (eq actual-state (word-capitalization word))
                   (if (word-rules word)
-                    (preterminals/word (word-rules word)1 word
+                    (preterminals/word (word-rules word) word
                                        position-scanned next-position)
                     nil)
                   nil ))

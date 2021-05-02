@@ -195,7 +195,8 @@
         ;; function to the fsa driver that we're rejecting this one
         ;; as a name and the regular processing should get a crack at it.
         (tr :pnf/no-edges-over-word word)
-        (break "no edges over ~a" word)
+        ;; (break "no edges over ~a" word)
+        ;;   There ought to be an edge from the constructed category
         (if (function-word? word)
           nil
           ;; when (unknown-word? word)
@@ -218,7 +219,7 @@
   ;; because if there were we'd have a name-word edge instead
   ;; of this unknown word, so we go ahead and create the individual
   ;; (of type "uncategorized-name") that has this word as their name
-  (push-debug `(,word ,position)) (break "single word: ~a" word)
+  ;;   (push-debug `(,word ,position)) (break "single word: ~a" word)
   (let ((name (make-unindexed-individual category::uncategorized-name))
         (name-word (make-name-word-for-unknown-word-in-name word position)))
     (tr :pnf/items-for-unknown-word word name name-word)
