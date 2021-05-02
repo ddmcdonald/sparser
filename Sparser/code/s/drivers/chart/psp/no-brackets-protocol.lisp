@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "no-brackets-protocol"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  August 2019
+;;;  version:  May 2021
 
 ;; Initiated 10/5/14, starting from the code for detecting bio-entities.
 ;; 10/29/14 added flags to turn off various steps so lower ones
@@ -82,6 +82,7 @@
   "some errors or interesting events happen in the sentence creating sweep, 
    and we want to se the entire sentence context")
 
+;;----//// move
 
 (defparameter *warn-or-error-choice* :warn) ;; :error)
 
@@ -127,7 +128,7 @@
    If we're parsing a document where 'sentences' are not identifiable
    or not even a sensible notion we can get unusably long error
    strings, so check for that and truncate the really long ones"
-  (let* ((string
+  (let* ((string (id
           (or (let ((s (identify-current-sentence :no-break)))
                 (when s (sentence-string s)))
               *current-sentence-string*
@@ -137,6 +138,12 @@
     (if (> length *truncate-current-string-at*)
       (string-append (subseq string 0 *truncate-current-string-at*) "...")
       string)))
+
+(defun full-current-string ()
+  "When debugging we'll want to see the whole thing, regardless of
+   how long it is"
+  (let ((s (identify-current-sentence :no-break)))
+    (sentence-string s)))
 
 (defun identify-current-sentence (&optional no-break)
   "Identify and return the sentence that the parser is operating in
