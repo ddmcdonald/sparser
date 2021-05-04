@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  February 2021
+;;;  Version:  May 2021
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -269,7 +269,6 @@
         *do-last-ditch-non-semantic-whacks* nil))
 
 
-
 ;;--- What do we do with a segment after we've delimited
 ;;    it and parsed it.
 
@@ -459,6 +458,10 @@
   (setq *make-edges-over-new-digit-sequences* t)
   (what-to-do-with-unknown-words :capitalization-digits-&-morphology/or-primed)
   (designate-sentence-container :complex)
+  (designate-paragraph-container :biology)
+  (designate-section-container :biology)
+  (designate-article-container :biology)
+
   (setq *treat-single-Capitalized-words-as-names* t)
   
   ;; (grok-setting)
@@ -640,6 +643,8 @@
 
   (designate-sentence-container :complex)
   (designate-paragraph-container :texture)
+  (designate-section-container :texture)
+  (designate-article-container :texture)
   
   (setq *recognize-sections-within-articles* t) ;; otherwise no sentences
  
