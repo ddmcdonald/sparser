@@ -547,46 +547,58 @@
   (declare (special var))
   (cond
     ((and *do-anaphora* (is-pronoun? item))
+     (push-debug `(,head ,item ,subcat-label ,var))
      (let* ((pn-edge (edge-for-referent item))
-            (ignore? (ignore-this-type-of-pronoun (edge-category pn-edge)))
+            (ignore? (when pn-edge (ignore-this-type-of-pronoun (edge-category pn-edge))))
             (v/r (unless ignore? (effective-pronoun-value-restriction var))))
-       (cond
-	 (ignore?
-	  item)
-	 (*constrain-pronouns-using-mentions*
-          (when v/r
-            ;; Comes from the value restriction of the variable to be
-            ;; bound as determined by assimilate-subcat. It's frequently
-            ;; the case that this variable doesn't have a value restriction,
-            ;; particularly for default choices like 'subject'.
-            (tr :recording-pn-mention-v/r head var v/r)
-            (setf (mention-restriction (edge-mention pn-edge)) v/r))
-          item)
-	 (t
-	  (let ((relation-label (or (form-label-corresponding-to-subcat subcat-label)
-                                    category::np))
-                (restriction (or v/r category::unknown-grammatical-function)))
-            (declare (special category::np category::unknown-grammatical-function))
-	    (when (consp restriction)
-	      ;; the first one after the :or
-	      (setq restriction 
-		    (or (loop for c in (cdr restriction) 
-                              when (itypep (edge-referent pn-edge) c)
-                              do (return c))
-			(cadr restriction))))
-            (tr :recording-pn-mention-v/r head var v/r)
-	    (let ((new-ref (individual-for-ref restriction)))
-	      (unless ignore?
-                ;; If we're going to ignore the pronoun we don't want or
-                ;; need to rework its edge
-                (tr :anaphor-conditioned-to new-ref restriction relation-label)
-		;; Encode the type-restriction in the category label
-		;; and the grammatical relationship in the form
-		(setf (edge-category pn-edge) restriction)
-		(setf (edge-form pn-edge) relation-label)
-		(set-edge-referent pn-edge new-ref)
-		(setf (edge-rule pn-edge) 'condition-anaphor-edge))
-	      new-ref))))))
+
+       (unless pn-edge
+         (when *debug-pronouns*
+           ;; 5/3/21 Something changes the referent in the rule for 'they'
+           ;;  so that it looks like its conditioned form (last clause in cond),
+           ;;  the shift in referent makes edge-for-referent fail
+           (break "did not find the edge over the pronoun~
+                 ~%'item' = ~a" item)))
+
+       (when pn-edge
+         (cond
+           (ignore?
+            item)
+           (*constrain-pronouns-using-mentions*
+            (when v/r
+              ;; Comes from the value restriction of the variable to be
+              ;; bound as determined by assimilate-subcat. It's frequently
+              ;; the case that this variable doesn't have a value restriction,
+              ;; particularly for default choices like 'subject'.
+              (tr :recording-pn-mention-v/r head var v/r)
+              (setf (mention-restriction (edge-mention pn-edge)) v/r))
+            item)
+           (t
+            (let ((relation-label (or (form-label-corresponding-to-subcat subcat-label)
+                                      category::np))
+                  (restriction (or v/r category::unknown-grammatical-function)))
+              (declare (special category::np category::unknown-grammatical-function))
+              (when (consp restriction)
+                ;; the first one after the :or
+                (setq restriction 
+                      (or (loop for c in (cdr restriction) 
+                             when (itypep (edge-referent pn-edge) c)
+                             do (return c))
+                          (cadr restriction))))
+              (tr :recording-pn-mention-v/r head var v/r)
+              (let ((new-ref (individual-for-ref restriction)))
+                (unless ignore?
+                  ;; If we're going to ignore the pronoun we don't want or
+                  ;; need to rework its edge
+                  (tr :anaphor-conditioned-to new-ref restriction relation-label)
+                  ;;     (break "pronoun: ~a" item)
+                  ;; Encode the type-restriction in the category label
+                  ;; and the grammatical relationship in the form
+                  (setf (edge-category pn-edge) restriction)
+                  (setf (edge-form pn-edge) relation-label)
+                  (set-edge-referent pn-edge new-ref)
+                  (setf (edge-rule pn-edge) 'condition-anaphor-edge))
+                new-ref)))))))
     (t item)))
 
 
