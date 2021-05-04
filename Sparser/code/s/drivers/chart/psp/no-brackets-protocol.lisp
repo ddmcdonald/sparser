@@ -128,7 +128,7 @@
    If we're parsing a document where 'sentences' are not identifiable
    or not even a sensible notion we can get unusably long error
    strings, so check for that and truncate the really long ones"
-  (let* ((string (id
+  (let* ((string
           (or (let ((s (identify-current-sentence :no-break)))
                 (when s (sentence-string s)))
               *current-sentence-string*

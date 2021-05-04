@@ -35,9 +35,11 @@ and make that file easier to understand. |#
     (let ((*current-paragraph* p))
       (declare (special *current-paragraph*))
       (when *run-aggregation-after-action*
-        (aggregate-bio-terms p))
+        (when (typep (contents p) 'aggregated-bio-terms)
+          (aggregate-bio-terms p)))
       (assess-sentence-analysis-quality p)
       (collect-text-characteristics p)
+      (collect-noted-items p)
       (unless *debugging-document-structure*
         (make-mentions-long-term))))) ; zero's the list in the lattice
 
@@ -66,14 +68,16 @@ and make that file easier to understand. |#
     (let ((*current-article* a))
       (declare (special *current-article*))
       (do-section-level-after-actions a)
-      (consolidate-aggregations a))))
+      (when (typep (contents a) 'aggregated-bio-terms)
+        (consolidate-aggregations a)))))
 
 (defun do-section-level-after-actions (s)
   "Actions taken by everything about the level of a paragraph"
   (summarize-parse-performance s)
   (aggregate-text-characteristics s)
-  ;;(add-bio-term-counts s)
-  ;;(sort-bio-terms s (contents s))
+  (when (typep (contents s) 'aggregated-bio-terms)
+    (add-bio-term-counts s)
+    (sort-bio-terms s (contents s)))
   s)
 
 
