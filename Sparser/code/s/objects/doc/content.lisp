@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "content"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  April 2021
+;;;  Version:  May 2021
 
 ;; initiated 3/13/13. Elaborated through 3/29/13. 9/17/13 fan-out
 ;; from sections make-over. 10/2/19 Fleshed out general notion of
@@ -81,9 +81,9 @@
 
 
 (defclass paragraph-features (container
-                              ;;aggregated-bio-terms
                               sentence-parse-quality
-                              sentence-tt-counts ; assess-sentence-analysis-quality
+                              sentence-tt-counts
+                              accumulate-items
                               paragraph-characteristics)
   ()
   (:documentation "Populated by collect-text-characteristics called
@@ -96,13 +96,33 @@
 (defclass section-content (container
                            aggregated-bio-terms
                            sentence-parse-quality)
-  ())
+  ()
+  (:documentation "For Biology or Covid"))
+
+(defclass section-features (container
+                            sentence-parse-quality
+                            sentence-tt-counts
+                            accumulate-items
+                            paragraph-characteristics)
+  ()
+  (:documentation "For non-Bio, more general"))
+
+
 
 (defclass article-content (container
                            aggregated-bio-terms
                            sentence-parse-quality
                            text-relations)
-  ())
+  ()
+  (:documentation "For Biology or Covid"))
+
+(defclass article-features (container
+                            sentence-parse-quality
+                            sentence-tt-counts
+                            accumulate-items
+                            paragraph-characteristics)
+  ()
+  (:documentation "For non-Bio, more general"))
 
 
 
@@ -152,6 +172,20 @@
     (:texture (make-paragraph-content-container/texture p))))
 
 
+(defparameter *container-for-sections* :biology)
+
+(defun designate-section-container (&optional (keyword *container-for-sections*))
+  (declare (special *container-for-sections*))
+  (setq *container-for-sections* keyword))
+
+
+(defparameter *container-for-articles* :biology)
+
+(defun designate-article-container (&optional (keyword *container-for-articles*))
+  (declare (special *container-for-articles*))
+  (setq *container-for-articles* keyword))
+
+
 
 ;;;---------------------------------------------------------
 ;;; Setting the context of the different levels of document
@@ -165,7 +199,9 @@
 
 (defmethod install-contents ((a article))
   (unless (contents a)
-    (setf (contents a) (make-instance 'article-content :in a))))
+    (ecase *container-for-articles*
+      (:biology (setf (contents a) (make-instance 'article-content :in a)))
+      (:texture (setf (contents a) (make-instance 'article-features :in a))))))
 
 (defmethod install-contents ((sos section-of-sections))
   (unless (contents sos)
@@ -173,7 +209,9 @@
 
 (defmethod install-contents ((s section))
   (unless (contents s)
-    (setf (contents s) (make-instance 'section-content :in s))))
+    (ecase *container-for-sections*
+      (:biology (setf (contents s) (make-instance 'section-content :in s)))
+      (:texture (setf (contents s) (make-instance 'section-features :in s))))))
 
 (defmethod install-contents ((te title-text))
   (unless (contents te)
