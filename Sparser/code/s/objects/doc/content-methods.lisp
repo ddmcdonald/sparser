@@ -312,8 +312,6 @@
      (float (/ word-count (length sentences)))
 |#
 
-
-
 (defgeneric aggregate-text-characteristics (doc-element)
   (:documentation "Add up the word-count over the element's
     daughters. Other paragraph-level assessed characteristics
@@ -323,8 +321,21 @@
                     sum (token-count d))))
       (setf (token-count e) count)
       count)))
-      
-                      
+
+
+
+;;;--------------------------------------------
+;;; what 'noteworthy' individuals have we seen
+;;;--------------------------------------------
+
+;; accumulate-items class holds an alist of count of
+;;  noted categories.
+
+(defgeneric collect-noted-items (doc-element)
+  (:documentation "The accumulate-items class holds
+    an alist of the count of noted categories. See note.")
+  (:method ((p paragraph))
+    p))
 
 
 
