@@ -119,6 +119,12 @@
           (j (value-of-current-time unit)))
       (when j (setq i (bind-variable 'extension j i)))
       i))
+  (:method ((this category::this) (unit category::time-unit))
+    (let ((i (define-or-find-individual 'proxal-moment
+                 :unit unit))
+          (j (value-of-current-time unit)))
+      (when j (setq i (bind-variable 'extension j i)))
+      i))
   (:method ((that (eql category::that)) (unit category::time-unit))
     (let ((i (define-or-find-individual 'distal-moment
                  :unit unit))
