@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "logicals"
 ;;;   Module:  "init;loaders;"
-;;;  version:  February 2021
+;;;  version:  May 2021
 
 ;; 4/21/92 added new,  5/10 broke apart CA/HA,  7/18 promoted all the
 ;; directories under "names;" up to "core;",  7/23 added tools;time
@@ -161,6 +161,7 @@
 (def-logical-pathname "march;"       "psp;march;")
 (def-logical-pathname "threading;"   "psp;threading;")
 (def-logical-pathname "complete;"    "psp;complete;")
+(def-logical-pathname "spot;"        "psp;word-spotting;")
 (def-logical-pathname "referent;"    "psp;referent;")
 (def-logical-pathname "annotation;"  "psp;annotation;")
 (def-logical-pathname "kinds of edges;"    "psp;edges;")

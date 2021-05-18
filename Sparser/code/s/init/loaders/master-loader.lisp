@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "master-loader"
 ;;;   module:  "init;loaders;"
-;;;  Version:   January 2021
+;;;  Version:   May 2021
 
 ;; 4/21  added loading of chart-drivers;new:loader
 ;; 4/25  split fsas into basics and model
@@ -182,6 +182,7 @@
 (lload "analyzers;psp;threading;loader")
 ;; (lload "march;loader") directory & load-file empty so flushed 9/22/11
 (lload "complete;loader")
+(lload "spot;loader")
 (lload "referent;loader")
 (lload "kinds of edges;loader") ;; use with-referent-edges macro
 
