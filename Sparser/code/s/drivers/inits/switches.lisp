@@ -255,8 +255,12 @@
   (setq *constrain-pronouns-using-mentions* t
         *ignore-personal-pronouns* t)
   (setq *use-discourse-mentions* t
-        *interpret-in-context* t))
+        *interpret-in-context* t
+        *store-restriction-on-pronoun-edge* t))
 
+(defun use-inline-handler-for-pronouns ()
+  (setq *store-restriction-on-pronoun-edge* nil ; see condition-anaphor-edge
+        *try-incrementally-resolve-pronouns* t))
 
 ;;--- post-chunking extras
 
@@ -619,7 +623,9 @@
   (setq *edge-for-unknown-words* t)
   ;; It's T by default. Used by assign-morph-brackets-to-unknown-word
   ;; to control whether we make categories for the words
-  ;; it gets a POS analysis for. 
+  ;; it gets a POS analysis for.
+
+  (use-inline-handler-for-pronouns)
   
   ;; R3 sweeper doesn't introduce boundaries so no point
   ;; in expecting them

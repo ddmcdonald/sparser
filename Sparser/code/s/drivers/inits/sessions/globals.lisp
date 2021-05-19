@@ -493,6 +493,10 @@
   "Ignore situational deictics like 'I' or 'we' or 'you'.
    Their grammar is handled in grammar/model/core/mid-level/interlocutor.lisp")
 
+(defparameter *store-restriction-on-pronoun-edge* nil
+  "Have condition-anaphor-edge rewrite an edge over a pronoun to store what
+   we know about the constraints on its type")
+
 ;;;---------
 ;;; readout
 ;;;---------

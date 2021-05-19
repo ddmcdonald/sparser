@@ -1,9 +1,9 @@
-;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
+ ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 2016-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "syntax-predicates"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  January 2021
+;;;  Version:  May 2021
 
 ;; Simple functions lifted from syntax-functions 8/30/16
 
@@ -573,7 +573,7 @@
               (tr :recording-pn-mention-v/r head var v/r)
               (setf (mention-restriction (edge-mention pn-edge)) v/r))
             item)
-           (t
+           (*store-restriction-on-pronoun-edge*
             (let ((relation-label (or (form-label-corresponding-to-subcat subcat-label)
                                       category::np))
                   (restriction (or v/r category::unknown-grammatical-function)))
@@ -598,7 +598,8 @@
                   (setf (edge-form pn-edge) relation-label)
                   (set-edge-referent pn-edge new-ref)
                   (setf (edge-rule pn-edge) 'condition-anaphor-edge))
-                new-ref)))))))
+                new-ref)))
+           (t item)))))
     (t item)))
 
 
