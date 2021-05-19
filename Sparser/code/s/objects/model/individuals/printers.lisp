@@ -115,6 +115,7 @@
 (defun has-a-bp-id? (i)
   (binds-variable i 'reactome-id))
 
+#+ignore ;; integrated into print-biopax-entity to reuse more general case
 (defmethod display-name? ((i individual))
   (let ((binding (binds-variable i 'reactome-id)))
     (when binding
@@ -129,18 +130,23 @@
 
 (defun print-biopax-entity (i stream)
   (declare (special *print-short*))
-  (write-string "#<" stream)
-  (unless *print-short*
-    (dolist (category (indiv-type i))
-      (princ-category category stream)
-      (write-string " " stream)))
-  (format stream "~A ~A ~A>" (or `(bp-id-of-individual i) "")
-          (if (name-of-individual i)
-           (format nil "[~A]" 
-                   (or (display-name? i)
-                       (name-of-individual i)))
-           "")
-          (maybe-indiv-uid i)))
+  (flet ((display-name? (i)
+           (let ((binding (binds-variable i 'reactome-id)))
+             (when binding
+               (binding-value binding)))))
+
+    (write-string "#<" stream)
+    (unless *print-short*
+      (dolist (category (indiv-type i))
+        (princ-category category stream)
+        (write-string " " stream)))
+    (format stream "~A ~A ~A>" (or `(bp-id-of-individual i) "")
+            (if (name-of-individual i)
+              (format nil "[~A]" 
+                      (or (display-name? i)
+                          (name-of-individual i)))
+              "")
+            (maybe-indiv-uid i))))
 
 
 ;;--- Vanilla cases
