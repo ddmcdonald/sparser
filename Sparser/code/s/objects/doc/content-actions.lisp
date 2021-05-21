@@ -63,14 +63,6 @@ and make that file easier to understand. |#
       (declare (special *section-of-sections*))
       (do-section-level-after-actions ss))))
 
-(defmethod after-actions ((a article))
-  (when *apply-document-after-actions*
-    (let ((*current-article* a))
-      (declare (special *current-article*))
-      (do-section-level-after-actions a)
-      (when (typep (contents a) 'aggregated-bio-terms)
-        (consolidate-aggregations a)))))
-
 (defun do-section-level-after-actions (s)
   "Actions taken by everything about the level of a paragraph"
   (summarize-parse-performance s)
@@ -78,7 +70,17 @@ and make that file easier to understand. |#
   (when (typep (contents s) 'aggregated-bio-terms)
     (add-bio-term-counts s)
     (sort-bio-terms s (contents s)))
+  (when (typep (contents s) 'accumulate-items)
+    (aggregate-noted-items s))
   s)
+
+(defmethod after-actions ((a article))
+  (when *apply-document-after-actions*
+    (let ((*current-article* a))
+      (declare (special *current-article*))
+      (do-section-level-after-actions a)
+      (when (typep (contents a) 'aggregated-bio-terms)
+        (consolidate-aggregations a)))))
 
 
       
@@ -303,7 +305,21 @@ and make that file easier to understand. |#
       (if (= n 1)
         s1
         (nth-next s1 n)))))
-      
+
+
+
+;;;-----------------------------------
+;;; printing simple lists of entities
+;;;-----------------------------------
+
+;;(defgeneric print-entity-list (list &key stream count index?)
+;;  )
+
+(defun pp-entity-list (list &key stream count index?)
+  "The list will be objects of the same type, so dispatch on that
+ and collect the print forms to use. 'Count' will limit how many
+ we present. 'Index? will add numbers for nth-based access."
+  )
 
 
 ;;;------------------------------
@@ -313,7 +329,6 @@ and make that file easier to understand. |#
 (defvar *print-bio-terms* t
   "Rebind to nil to block including the bio-terms in the
    summary-document-stats")
-
 
 (defgeneric summary-document-stats (document-element &optional stream)
   (:documentation "Principally for information while exploring.
