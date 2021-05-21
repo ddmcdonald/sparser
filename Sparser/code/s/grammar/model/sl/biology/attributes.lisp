@@ -100,7 +100,10 @@ have with phosphorylated as a preposed modifier.) |#
 
 ;;(delete-noun-cfr (resolve "number"))
 ;;(delete-noun-cfr (resolve "numbers"))
+
+#+ignore ;; use the version in core/model/time/age.lisp
 (noun "age" :specializes scalar-attribute)
+
 (noun "coefficient" :specializes scalar-attribute)
 (define-category count-of :specializes scalar-attribute
   :realization (:noun ("number" "count")))
