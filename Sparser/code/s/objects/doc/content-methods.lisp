@@ -333,9 +333,85 @@
 
 (defgeneric collect-noted-items (doc-element)
   (:documentation "The accumulate-items class holds
-    an alist of the count of noted categories. See note.")
+    an alist of the count of noted categories. See the
+    function 'note' for details. Specialized to the relationship
+    between a paragraph and the sentences in it.")
   (:method ((p paragraph))
-    p))
+    (let* ((sentences (sentences-in-paragraph p))
+           (contents (loop for s in sentences collect (contents s)))
+           (alists (loop for c in contents
+                      when (items c) collect (items c))))         
+      (when alists
+        (push-debug `(,alists)) 
+        (setf (items (contents p))
+              (merge-items-alist alists)))
+      p)))
+
+(defgeneric aggregate-noted-items (doc-element)
+  (:documentation"Carries out the same thing as collect-noted-items
+    but over the elements children uniformly")
+  (:method ((parent has-children))
+    (let* ((children (children parent))
+           (contents (loop for c in children collect (contents c)))
+           (alists (loop for d in contents
+                      when (items d) collect (items d))))
+      (when alists
+        (setf (items (contents parent))
+              (merge-items-alist alists)))
+      parent)))
+
+
+(defun merge-items-alist (alists)
+  (let ((merged-alist (first alists))) ; prime the pump
+    (loop for alist in (cdr alists)
+       do (loop for (name number) in alist
+             ;; walk through the alist
+             do (let ((entry (assoc name merged-alist :test #'eq)))
+                  (cond
+                    (entry
+                     (let* ((base (cadr entry))
+                            (sum (+ base number)))
+                       (setf (cadr entry) sum)))
+                    (t (push alist merged-alist))))))
+    merged-alist))
+          
+
+#| Convenient viewer. 'a' is bound to the article
+
+(loop for p in (paragraphs-in-doc-element a)
+   do (loop for s in (sentences-in-paragraph p)
+         do (print (items (contents s)))))
+
+(run-specific-acumen-file 217 :quiet nil)
+
+Something is sticky, since these numbers are too uniform to be
+explained just by the structure of the parse. Or we run the note
+operations too much?  5/19/21
+
+(defvar alists
+'(((multiplier 7))
+ ((company 8) (name-word 7)) ((company 8) (name-word 7))
+ ((named-object 8) (name-word 7))
+ ((named-object 8) (name-word 7))
+ ((year 7))
+ ((year 8) (named-object 7))
+ ((year 8) (named-object 7))
+ ((named-object 7))
+ ((name-word 8) (us-state 8) (named-object 7))
+ ((name-word 8) (us-state 8) (named-object 7))
+ ((number 7)) ((name-word 7))
+ ((plural 8) (unit-of-measure 7))
+ ((plural 8) (unit-of-measure 7))
+ ((number 8) (us-state 8) (name-word 8) (named-object 7))
+ ((number 8) (us-state 8) (name-word 8) (named-object 7))
+ ((number 8) (us-state 8) (name-word 8) (named-object 7))
+ (us-state 23)) )
+
+|#
+
+                              
+      
+
 
 
 

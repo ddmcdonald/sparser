@@ -121,7 +121,7 @@
      Treetop count is simple by-product of the e/r calculation."))
 
 (defclass accumulate-items ()
-  ((list :initform nil :accessor items
+  ((items-alist :initform nil :accessor items
     :documentation "Simple list. Items are just pushed onto it
       making them in reverse cronological order."))
   (:documentation "Maintains a simple list or alist. Up to the
