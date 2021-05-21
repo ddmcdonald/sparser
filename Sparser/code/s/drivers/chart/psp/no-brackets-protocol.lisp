@@ -397,6 +397,7 @@
             ,(assess-relevance sentence))
           *all-sentences*))
   (save-missing-subcats)
+  (clear-note-edge-cache)
   (when *do-discourse-relations*
     (establish-discourse-relations sentence)))
   

@@ -3,7 +3,7 @@
 ;;;
 ;;;      File: "noteworthy"
 ;;;    Module: "grammar;rules:SDM&P:
-;;;   Version: April 2021
+;;;   Version: May 2021
 
 ;; Initiated 1/29/20 to hold the actual notes and their generalization
 
@@ -15,26 +15,31 @@
      do (noteworthy category)))
 
 (mark-as-noteworthy
- '(person
-   name name-word
+ '(person named-object
+   name name-word proper-name
    initial
 
    company
 
-   title
+   title role-based-person
 
    location
+   direction
+   city us-state country
 
    time
+   date day-of-the-month
+   year month
 
    amount
+   measurement unit-of-measure
    number ordinal multiplier
 
    approximator
 
    money currency
 
-   pronoun  plural
+   pronoun  ;;plural --> texture
 
 
    ))
@@ -42,8 +47,9 @@
 
 ;; report verbs -- other interesting classes of verb
 ;; commas, colons, semicolons, slashes
+;; exclamation-points
 ;; parentheses, quotation, other braces
 
-  
+;; tell report said
 
 

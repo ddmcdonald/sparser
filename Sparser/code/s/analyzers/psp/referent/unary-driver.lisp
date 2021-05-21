@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2005,2012-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2012-2021 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2006-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "unary driver"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   February 2020
+;;;   Version:   May 2021
 
 ;; broken out as its own file 11/91
 ;; 1.0 (10/23/92 v2.3) Got the options set up to date with actions in
@@ -102,9 +102,10 @@
       
       (when *show-note-candidates*
         (format t "~&Unary: ~a~%" *referent*))
-      (note? *referent*)
+      (note? edge) ; *referent*
 
       *referent* )))
+
 
 (defun evaluate-unary-ref-actions (rule-field)
   (let ((*referent*

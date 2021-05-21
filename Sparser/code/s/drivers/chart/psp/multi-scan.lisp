@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "multi-scan"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  June 2020
+;;;  version:  May 2021
 
 ;; Broken out of no-brackets-protocol 11/17/14 as part of turning the
 ;; original single-pass sweep into a succession of passes. Drafts of
@@ -67,6 +67,8 @@
                     *newline*)
            (optimize debug))
 
+  (sentence-level-initializations) ;; clear traversal state
+
   (unless (includes-state position :scanned) ;; make sure there's a word
     (scan-next-position))
   
@@ -118,12 +120,16 @@
                                          (chart-position-after position))))
                 (when where-pw-ended
                   (tr :scanned-pw-ended-at word where-pw-ended)
+                  (spot-polyword where-pw-ended)
                   (setq position where-pw-ended)
                   (unless (includes-state where-pw-ended :scanned)
                     ;; PW can complete without thinking about the
                     ;; word that follows it.
                     (scan-next-position))
                   (setq word (pos-terminal where-pw-ended)))
+
+                (unless where-pw-ended
+                  (spot-word position))
                 
                 (unless (includes-state position-after :scanned)
                   (scan-next-position))
@@ -226,7 +232,6 @@
   
   (tr :scan-terminals-loop)
   (simple-eos-check position-before word)
-  (sentence-level-initializations) ;; clear traversal state
 
   (when *sweep-for-word-level-fsas*
     (word-level-fsa-sweep position-before end-pos))

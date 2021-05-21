@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1996,2013,2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1996,2013,2016-2021  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "articles"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  December 2016
+;;;  Version:  May 2021
 
 ;; 1.1  (3/28/91 v1.8.1)  Added Clear-individuals, and improved the
 ;;      conditionalization according to the load-time switches
@@ -113,6 +113,7 @@ set in. This initialization manages them.|#
   (declare (special *localization-interesting-heads-in-sentence*))
   (when *localization-interesting-heads-in-sentence*
     (reset-localization-interesting-heads-in-sentence))
+  (initialize-note-edge-cache)
   (clear-traversal-state))
 
 

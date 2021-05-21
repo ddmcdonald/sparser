@@ -156,7 +156,7 @@
 
            (cond ((null *referent*)
                   :abort-edge)
-                 (t (note? *referent*)
+                 (t (note? parent-edge) ; *referent*
                     *referent* ))))))))
 
 (defun walk-through-referent-actions  (rule-field 
