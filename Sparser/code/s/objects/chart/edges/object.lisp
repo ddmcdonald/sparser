@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1999,2012-2018  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2012-2021  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "objects;chart:edges:"
-;;;  Version:  November 2018
+;;;  Version:  May 2021
 
 ;; 3.0 (9/3/92 v2.3) flushed the fields used by earlier psp algorithms
 ;; 3.1 (5/14/93) Allowed Set-used-by to make a list to help redundancy checking
@@ -528,6 +528,22 @@ code is make-edge-over-abbreviation and its feeders. |#
 	    ((position-precedes left-end right-start)
 	     t)
 	    (t nil)))))
+
+
+(defun disjoint-edges (e1 e2)
+  "These edges do not overlap. Their order in the chart should
+   not matter"
+  (if (edges-have-same-span? e1 e2)
+    nil
+    (else ;; so one of them has to be to the right of the other
+      (let ((e1-precedes (edge-precedes e1 e2)))
+        (if e1-precedes
+          ;; the does e1 end before e2 starts?
+          (position/<= (pos-edge-ends-at e1) (pos-edge-starts-at e2))
+          ;; else, e2 should end before e1 starts
+          (position/<= (pos-edge-ends-at e2) (pos-edge-starts-at e1)))))))
+          
+    
 
 (defmethod to-the-right-of ((e1 edge) (e2 edge))
   ;; methods for other signatures in positions/positions.lisp
