@@ -215,6 +215,7 @@
 (define-country "Poland")
 (define-country "Portugal" :adjective "Portuguese"
                 :cities '("Lisbon"))
+(define-country "Puerto Rico")
 (define-country "Qatar")
 (define-country "Romania")
 (define-country "Russia" :adjective "Russian"
@@ -271,7 +272,8 @@
 (define-country "United States"
   :aliases '("US" "U.S." "U.S.A." "America" "United States of America")
   :adjective '("American")
-  :cities '("Washington, D.C." "New York"
+  :cities '("Washington, D.C."
+            "New York" "New York City"
             "San Francisco" "Miami" "Boston" "Sunnyvale" "Seattle" "Portland" "Newark"
             "Minneapolis" "Milwaukee" "Indianapolis" "Denver" "Chicago"
             "Charlottesville" "Atlanta"))
