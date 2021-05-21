@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994-2005,2013-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2005,2013-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "ref"
 ;;;   Module:  "model;core:pronouns:"
-;;;  version:  October 2020
+;;;  version:  May 2021
 
 ;; 3.0 (7/11/94) completely redone from scratch
 ;; 4.0 (5/8/95) in progress ..5/22
@@ -43,33 +43,62 @@
 ;;;------------------------
 
 #| Deferencing pronouns in-line is to do them as soon as there
-enough information to establish their context
+enough information to establish their context.
+
+The process is run out of sweep-sentence-treetops and controlled
+by these parameters. The existence of a pronoun or pronouns in
+a sentence is noted in the sweep/form-dispatch portion of the
+sweep operation where decides what to do with any sort of np.
+Quote: 
+               ;; We've got several options. If we're going to wait until the
+               ;; whole sentence is done and condition-anaphor-edge runs to
+               ;; record whatevern information the grammar can give us for v/r,
+               ;; the we just push the pronoun.
+               ;;   If we going to do it now, then we can either wait until
+               ;; all of the features of this sentence have been determined,
+               ;; in which case we 'enqueue' the pronoun and a trap will find it.
+               ;; That might provide a better picture of the sentence layout.
+               ;; Alternatively, we see if we can do it right now.
+
 
 |#
 
 (defparameter *try-incrementally-resolve-pronouns* nil
-  "Controls how we get here in the layout sweep")
+  "Read in sweep/form-dispatch and determines whether we call
+   attempt-to-dereference-pronoun or just push the pronoun
+   onto the layout.
+     Another option (commented out 5/19/21) is to save the
+   pronoun by calling enqueue-pronoun")
 
 (defvar *pending-pronoun* nil
-  "Holds the edge past to enqueue-pronoun and handled by xxx")
+  "Holds the edge passed to enqueue-pronoun for later processing")
 
 (defun enqueue-pronoun (edge-over-pn)
-  "Called from sweep-sentence-treetops when it walks over a pronoun
-   we could potentially dereference"
-  ;;/// trace
+  "Called in the np handler of sweep-sentence-treetops when it walks
+   over a pronoun that we could potentially dereference.
+   At the end of the sweep we check for *pending-pronoun* and
+   call attempt-to-dereference-pronoun"
   (setq *pending-pronoun* edge-over-pn))
 
 
-(defparameter *record-rather-than-try-pronoun* t)
+(defparameter *record-rather-than-try-pronoun* nil
+  "Good when in quiet mode since the format statement will blow
+   through that.")
+
+(defparameter *work-on-pronouns* nil
+  "Gate to ignore everything for the moment")
 
 (defun attempt-to-dereference-pronoun (edge-over-pn layout)
-  ;; Get the discriminiating properties of the pronoun
-  ;; If 3d person note the candidates based on same-sentence
-  ;; topology.
-  (push-debug `(,edge-over-pn ,layout))
+  "Called at the end of sweep-sentence-treetops, which is after chunking
+   and before any forest-level operations.
+   Get the discriminiating properties of the pronoun
+   If 3d person, note the candidates based on same-sentence topology."
   (if *record-rather-than-try-pronoun*
     (format t "Pronoun ~a in ~%~s~%" edge-over-pn (current-string))
-    (break "Pn at ~a" edge-over-pn)))
+    (else
+      (push-debug `(,edge-over-pn ,layout))
+      (when *work-on-pronouns*
+        (break "Pn at ~a" edge-over-pn)))))
 
 
 
