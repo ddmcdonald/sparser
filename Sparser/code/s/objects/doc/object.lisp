@@ -579,14 +579,18 @@
         (set-document-index s1 1)
         s1)))))
 
+(defparameter *always-make-fresh-sentences* t)
+
 (defun start-sentence (pos)
   "Called from initialize-sentences for the first one, then
    from period-hook -- 'pos' is the position after the period."
   (declare (special *reading-populated-document*
                     *paragraphs-from-orthography*
-                    *sentence-terminating-punctuation*))
+                    *sentence-terminating-punctuation*
+                    *always-make-fresh-sentences* ))
   (let ((s (if (or *reading-populated-document*
-                   *paragraphs-from-orthography*)
+                   *paragraphs-from-orthography*
+                   *always-make-fresh-sentences*)
              (make-instance 'sentence) ;; permanent
              (allocate-sentence))) ;; reclaimed
         (index (if *current-sentence*
@@ -599,7 +603,6 @@
             1))
     (when (null (starts-at-char s)) (lsp-break "bad sentence index"))
     (setf (contents s) (make-sentence-container s))
-    ;; lookup the current section for parent
     (when *current-sentence*
       (let* ((last *current-sentence*)
              (section (parent last)))
