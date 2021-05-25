@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2018-2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2018-2021  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "initials"
 ;;;   Module:  "grammar;rules:FSAs:"
-;;;  Version:  March 2019
+;;;  Version:  May 2021
 
 ;; 2.0 (11/9 v2.3) Threw out the old version as capitalization trigger changed
 ;; 2.1 (12/29/93) Added a check against polywords that start with the letter.
@@ -39,7 +39,9 @@
 
 
           (let* ((capital (car (word-capitalization-variants letter)))
-                 (initial (find-individual 'initial :word capital)))
+                 (initial (find-individual 'initial :word capital))
+                 (sentence-final-period?
+                  (eq position (ends-at-pos (sentence)))))
             
             (unless initial
               (push-debug `(,letter ,capital))
@@ -53,10 +55,15 @@
                 (t (error "Different case of not getting an initial. ~
                            letter = ~s" (pname letter)))))
 
+            ;; If the period is also the EOS period we make
+            ;; a smaller edge, leaving the period exposed, and
+            ;; return the fact to the caller.
             (let ((edge
                    (make-chart-edge
                     :starting-position prior-position
-                    :ending-position (chart-position-after position)
+                    :ending-position (if sentence-final-period?
+                                       position
+                                       (chart-position-after position))
                     :left-daughter letter
                     :right-daughter (pos-terminal position)
                     :category (category-named 'initial)
@@ -65,7 +72,9 @@
                     :referent   initial )))
 
               (tr :initial-made-edge edge)
-              edge )))))))
+
+              (values edge
+                      sentence-final-period?))))))))
 
 
 

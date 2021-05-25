@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "scan"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  Version:  April 2021
+;;;  Version:  May 2021
 
 ;; initiated 5/15/93 v2.3 on a few pieces of names:fsa:fsa8
 ;; 5/21 fixed a bug, 5/26 added traces
@@ -351,8 +351,9 @@
   ;; over the two and go on.  We also check whether the letter initiates
   ;; a polyword and if that succeeds, we give it priority
 
-  (let ((position-after-initial-check
-         (check-for-initial-before-position position)))
+  (multiple-value-bind (position-after-initial-check
+                        subsumed-sentence-period?)
+         (check-for-initial-before-position position)
 
     (if (null position-after-initial-check)
       (then
@@ -368,8 +369,10 @@
       (etypecase position-after-initial-check
         (edge
          ;; it found a single-letter and formed an 'initial' edge with it
-         (tr :pnf/initial (chart-position-after position))
-         (cap-seq-continues-from-here? (chart-position-after position)))
+         (tr :pnf/initial (chart-position-after position) subsumed-sentence-period?)
+         (if subsumed-sentence-period?
+           position
+           (cap-seq-continues-from-here? (chart-position-after position))))
         (position
          ;; a polyword that the letter initiated succeeded
          (tr :pnf/pw position-after-initial-check)

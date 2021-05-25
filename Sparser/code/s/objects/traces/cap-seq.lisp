@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1995,2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2013-2021  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "cap seq"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  May 2013   
+;;;  Version:  May 2021   
 
 ;; initiated 5/26/93 v2.3. added two more moments 12/17. And more 1/7/94.
 ;; Added traces for "of" in the scan 5/3. Added start/end fns 6/13.
@@ -119,12 +119,15 @@
   (when *trace-pnf*
     (trace-msg "PNF:    there is no initial in front of it")))
 
-(deftrace :pnf/initial (pos)
+(deftrace :pnf/initial (pos final?)
   ;; checkout-period-for-capseq
   (when *trace-pnf*
-    (trace-msg "PNF:    and there is an initial in front of it.~
-              ~%     continuing the scan with p~A"
-               (pos-token-index pos))))
+    (if final?
+      (trace-msg "PNF: and there is an initial in front of it.~
+                ~%     but it is the EOS period")
+      (trace-msg "PNF: and there is an initial in front of it.~
+                ~%     continuing the scan with p~A"
+                 (pos-token-index pos)))))
 
 (deftrace :pnf/abbreviation ()
   (when *trace-pnf*
