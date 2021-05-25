@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "debris-sweep"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  February 2021
+;;;  Version:  May 2021
 
 ;; Initiated 1/15/20 to identify discourse relations and other
 ;; patterns in the debris left after pass one. Design is similar
@@ -35,6 +35,12 @@
       (loop
          (multiple-value-setq (tt pos-after)
            (next-treetop/rightward rightmost-pos))
+
+         (when (null tt)
+           ;; usually means something ate the end-of-sentence period
+           ;; and we're going past it
+           (return))
+
          (incf count)
 
          (typecase tt
