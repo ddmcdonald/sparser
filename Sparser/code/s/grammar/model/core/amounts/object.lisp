@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1995,2013-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2013-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   module:  "model;core:amounts:"
-;;;  Version:  March 2016
+;;;  Version:  May 2021
 
 ;; completely made over 9/18/93 in new semantics
 ;; 12/22/95 added adjuncts that appear in the ERN domain. They'll probably
@@ -26,7 +26,9 @@
   :instantiates self
   :index (:temporary :sequential-keys stuff measurement)
   :binds ((measurement (:or measurement
-                            number ; subsumes ordinal, fractional-term 
+                            number ; subsumes ordinal
+                            fractional-term ; "half" "quarter"
+                            quantifier ; "many" "some" "each"
                             ))
           (stuff)
           ;; adjuncts that can be expected
