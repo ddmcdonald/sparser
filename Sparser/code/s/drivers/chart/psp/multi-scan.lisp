@@ -1080,6 +1080,9 @@
      (tr :ns-start-tt-pos pos tt next-pos)
      (cond ((eq next-pos sent-end-pos)
             (return nil))
+           ((position/>= next-pos sent-end-pos)
+            ;; probably an edge has gone past the end of the sentence
+            (return nil))
            ((or (pos-preceding-whitespace next-pos)
                 (word-never-in-ns-sequence
                  (or (left-treetop-at/only-edges next-pos)
