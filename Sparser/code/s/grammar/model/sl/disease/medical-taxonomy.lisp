@@ -149,4 +149,5 @@
                       :of drug))
 
 (def-synonym injection (:noun "shot"))
-;; Obvious homonym with the verb form
+;; The obvious homonym is in score-verbs
+ 
