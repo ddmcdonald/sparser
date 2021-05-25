@@ -10,15 +10,34 @@
 
 (in-package :sparser)
 
-;;--- helpers
+;;;---------
+;;; helpers
+;;;---------
 
 (defvar *show-note-candidates* nil
   "Flag in the various place that note is used to report the
    full list of things they've seen, noteworthy or not.
    Useful in gauging what groups of categories might be")
 
+(defgeneric list-notes-in (a)
+  (:documentation "Loop over the paragraphs and their sentences
+    an print the value of their items alist")
+  (:method ((a article))
+    (loop for p in (paragraphs-in-doc-element a)
+       do (loop for s in (sentences-in-paragraph p)
+             do (print (items (contents s)))))))
 
-;;--- traces
+
+(defvar *edges-noted* nil
+  "Every edges that is passed to note gets pushed onto this.
+   It's a fixup for when our logic fails and we call no
+   on the same edge more than once.")
+
+(define-per-run-init-form '(setq *edges-noted* nil))
+
+;;;--------
+;;; traces
+;;;--------
 
 (defvar *trace-note* nil "For tracking what we're laying down")
 (defun trace-notes ()
@@ -26,10 +45,10 @@
 (defun untrace-notes ()
   (setq *trace-note* nil))
 
-(deftrace :noting-category (cat-name)
+(deftrace :noting-category (cat-name count)
   ;; called from note
   (when *trace-note*
-    (trace-msg "NOTE: ~a" cat-name)))
+    (trace-msg "NOTE: ~a ~a" cat-name count)))
 
 (deftrace :edge-is-noteworthy (edge)
   ;; edge method of note?
@@ -69,8 +88,12 @@
   (when *trace-note*
     (trace-msg "Noting stranded note: ~a" edge)))
 
+(deftrace :blocking-redundant-note (edge)
+  (when *trace-note*
+    (trace-msg "Redundant: ~a" edge)))
+
 ;;;-------
-;;; tests"the UK and Brendan Hollande""the UK and Brendan Hollande"
+;;; tests
 ;;;-------
 
 ;; (pl (items (contents (sentence))))
@@ -85,16 +108,26 @@
 ;;; cache noted edge
 ;;;------------------
 #| Many categories lie on a headline and will pass through
- a note? call several times.
+a note? call several times. If we count each instance than
+the result will be greatly exagerated over what we really want.
+  This scheme implements a 'subsuming edge' strategy that is
+similar to what we do when adding individuals into the
+discourse history. 
 |#
 
 (defclass note-edge-cache ()
-  ((edge :initform nil :initarg :e :accessor cached-edge)
-   )
+  ((edge :initform nil :initarg :e :accessor cached-edge))
   (:documentation
    "We only have to cache a single edge at a time.
     It will either be suplanted by a subsuming edge
     or released when the note is finalized."))
+
+(defmethod print-object ((c note-edge-cache) stream)
+  (print-unreadable-object (c stream :type t)
+    (let ((edge (cached-edge c)))
+      (if (null edge)
+        (format stream "empty")
+        (format stream "e~a" (edge-position-in-resource-array edge))))))
 
 (defvar *cached-note-edge* nil "points to the current instance")
 
@@ -134,9 +167,11 @@
       ((null cached-edge)
        (tr :initializing-note-cache)
        (load-edge-into-note-cache edge)
-       (pass-cached-edge-to-note))
+       #+ignore(pass-cached-edge-to-note))
 
       ((edge-precedes cached-edge edge)
+       ;; send the both in? or save the new one to see
+       ;; whether it gets subsumed
        (tr :cached-edge-preceded)
        (pass-cached-edge-to-note)
        (load-edge-into-note-cache edge)
@@ -169,10 +204,10 @@
                  what should we do?" edge cached-edge)))))
       
       ((disjoint-edges cached-edge edge)
-       ;; the polyword pass may create cached edges that are
+       ;; the polyword pass can create cached edges that are
        ;; to the right of new edges of their left.
        ;; (p "dates back to 1995 in Puerto Rico")
-       ;; Sent both of them over
+       ;; Send both of them over
        (tr :disjoint-new-and-cached)
        (pass-cached-edge-to-note)
        (pass-edge-to-note edge)
@@ -183,25 +218,32 @@
                 edge cached-edge)))))
 
 
+(defun empty-note-cache ()
+  (setf (cached-edge *cached-note-edge*) nil))
+
 (defun load-edge-into-note-cache (edge)
   (tr :loading-note-cache edge)
   (setf (cached-edge *cached-note-edge*) edge))
 
+
+(defun maybe-note (edge)
+  (declare (special *edges-noted*))
+  (if (memq edge *edges-noted*)
+    (tr :blocking-redundant-note edge)
+    (note edge)))
+
 (defun pass-cached-edge-to-note ()
   (let ((e (cached-note-edge)))
     (tr :passing-edge-to-note e)
-    (note e)))
+    (maybe-note e)))
 
 (defun pass-edge-to-note (edge)
   (tr :passing-edge-to-note edge)
-  (note edge))
+  (maybe-note edge))
 
-(defun empty-note-cache ()
-  (setf (cached-edge *cached-note-edge*) nil))
-  
        
 (defun clear-note-edge-cache ()
   (let ((e (cached-note-edge)))
     (when e
       (tr :leftover-note e)
-      (note e))))
+      (maybe-note e))))

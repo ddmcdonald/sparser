@@ -12,6 +12,8 @@
 
 ;;--- record what we want to note
 
+(defvar *noteworthy-categories* nil)
+
 (defgeneric noteworthy (category)
   (:documentation "Instances of this category in a text should be
     recorded when they occur in a text as part of its meta data.
@@ -20,12 +22,13 @@
 
   (:method ((name symbol))
     (let ((c (category-named name)))
-      ;; Not every load will include a noteworthy category.
-      ;; E.g. biology doesn't include us-state
       (when c
+        ;; Not every load will include a noteworthy category.
+        ;; E.g. biology doesn't include us-state
         (noteworthy c))))
 
   (:method ((c category))
+    (pushnew c *noteworthy-categories*)
     (setf (get-tag :noteworthy c) t)))
 
 
@@ -67,8 +70,11 @@
     content model.
     Presently seeded in the edge referent computation
        -- analyzers/psp/referent/ driver & unary
-       -- grammar/model/core/names/fsa/driver
-    ")
+       -- grammar/model/core/names/fsa/driver")
+
+  ;;/// Should only be being passed edges now (5/18/21). We used to get
+  ;; individuals and categories. Take out the break's when we've run over
+  ;; a lot of text and not encountered them.
 
   (:method ((e edge))
     (when (noteworthy? e)
@@ -78,16 +84,20 @@
   (:method ((list cons))
     "Call from pnf/scan-classify-record will return a list of edges
      when it can't decide between them"
-    ) ;; drop on the floor. Hits in 200, 201, 202, 203
-    ;;(break "Got a list passed to note?")
-   ;; (loop for e in list do (note? e))
+    ;; drop on the floor. Hits in 200, 201, 202, 203
+    (let ((noteworthy (loop for item in list
+                         when (noteworthy? item) collect item)))
+      (when noteworthy
+        (break "Multiple noteworthy items: ~a" noteworthy)
+        (loop for n in noteworthy do (note? n)))))
 
   (:method ((i individual))
-    (break "note? got an individual")
+    (break "note? was passed an individual")
     (when (noteworthy? i)
       (note i)))
 
   (:method ((c category))
+    (break "note? was passed a category")
     (when (noteworthy? c)
       (note c)))
 
@@ -114,6 +124,8 @@
     this more interesting at higher layers of document structure.")
 
   (:method ((e edge))
+    (declare (special *edges-noted*))
+    (push e *edges-noted*)
     (let ((c (cond ((noteworthy? (edge-referent e))
                     (edge-referent e))
                    ((noteworthy? (edge-form e))
@@ -129,24 +141,35 @@
 
   (:method ((c category))
     (unless (current-script :biology)
-      (let ((s (current-sentence))
+      (let ((s (sentence))
             (name (cat-name c)))
         (unless s (error "Current-sentence is not defined"))
         (let ((container (contents s)))
           (unless (and container (typep container 'accumulate-items))
             (error "wrong kind of container"))
-          (let* ((alist (slot-value container 'items-alist))
+          
+          (let* ((alist ;;(slot-value container 'items-alist))
+                  (items container))
                  (entry (assoc name alist :test #'eq)))
-            (tr :noting-category (cat-name c))
-            ;; (push-debug `(,container ,entry)) (break "contain")
+            
+            ;;(push-debug `(,container ,entry ,alist)) (break "container")
             (cond
               ((null alist)
-               (setf (slot-value container 'items-alist)
+               (setf (items container)
+                     ;;(slot-value container 'items-alist)
                      `((,name 1))))
               (entry
                (incf (cadr entry)))
               (t
-               (setf (slot-value container 'items-alist)
-                     (cons `(,name 1) alist))))))))))
+               ;; (slot-value container 'items-alist)
+               (setf (items container)
+                     (cons `(,name 1) alist))))
+
+            (let* ((alist1 (items container))
+                   (entry1 (assoc name alist1 :test #'eq))
+                   (count (cadr entry1)))
+              (when (null count)
+                (push-debug `(,entry1 ,alist1)) (break "no counts"))
+              (tr :noting-category name count))))))))
 
 
