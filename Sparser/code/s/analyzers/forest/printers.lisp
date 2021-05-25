@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1994,2012-2018  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2012-2021  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "printers"
 ;;;    Module:   "analyzers;forest:"
-;;;   Version:   April 2018
+;;;   Version:   May 2021
 
 ;; initiated 11/90
 ;; 0.1 (6/30/91 v1.8.1) Revised TTs to appreciate the possibility of the
@@ -738,8 +738,12 @@ there were ever to be any.  ///hook into final actions ??  |#
     (format stream "~&~{~a ~}~%" labels)))
 
 
+(defparameter *debug-overshooting-treetops* nil
+  "If an edge somehow covers the final position this loop will not
+   terminate cleanly. This blocks a noisy error when working with Acumen documents.")
 
 (defun treetops-in-segment (starting-position ending-position)
+  (declare (special *debug-overshooting-treetops*))
   (let ((start starting-position)
         tts )
     (if (eq starting-position ending-position)
@@ -755,12 +759,16 @@ there were ever to be any.  ///hook into final actions ??  |#
             (cond ((eq end ending-position)
                    (return))
                   ((eq (pos-terminal end) *end-of-source*)
-                   ;; the final period might be in an abbreviatoin
+                   ;; the final period might be in an abbreviation
+                   (return))
+                  ((null (pos-token-index end)) ; pathology of overrunning
                    (return))
                   ((> (pos-token-index end)
                       (pos-token-index ending-position))
-                   (error "Treetops-in-segment: the last edge ~
-                           overshoots the ending-position"))
+                   (if *debug-overshooting-treetops*
+                     (error "Treetops-in-segment: the last edge ~
+                             overshoots the ending-position")
+                     (return)))
                   (t (setq start end)))
 
             ;; (p "Inc.")
@@ -768,5 +776,3 @@ there were ever to be any.  ///hook into final actions ??  |#
               (return))))
 
         (nreverse tts)))))
-
-
