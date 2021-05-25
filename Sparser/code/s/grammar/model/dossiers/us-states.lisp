@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2021  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "U.S. States"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  March 1994
+;;;  version:  May 2021
 
 ;; initiated 3/10/94 v2.3
 
@@ -103,7 +103,7 @@
                  :aliases '("NH"))
 
 (define-us-state "New Jersey"
-                 :aliases '("NJ"))
+                 :aliases '("NJ" "N.J."))
 
 (define-us-state "New Mexico"
                  :aliases '("N.Mex." "NM"))
