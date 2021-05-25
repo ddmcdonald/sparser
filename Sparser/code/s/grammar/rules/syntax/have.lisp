@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1996,2013-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1996,2013-2021 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "have"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  April 2016
+;;;  Version:  May 2021
 
 ;; moved from [syntax;aux verbs] 5/7/93 v2.3.  Fleshed out 6/4.
 ;; Added negative contractions 1/11/94.  7/21 switch aux rule to use
@@ -64,6 +64,11 @@
 ;;;-------------------
 
 ;;---- "have" + "ed"  perfect
+
+(def-form-rule (have verb) ; "has become"
+  :form vg
+  :referent (:head right-edge
+             :function add-tense/aspect left-edge right-edge))
 
 (def-form-rule (have verb+ed)
   :form vg
