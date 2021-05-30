@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2020-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File: embedded-da
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  November 2020
+;;;  Version:  May 2021
 
 ;; Initiated 10/26/20. To organize appling DA rules during the
 ;; initial sweeps. 
@@ -118,7 +118,10 @@ like any other rule.
          (multiple-value-setq (edge da-node)
            (triggers-trie? tt))
          (when da-node ; take the first one that's a trigger
-           (setq trigger-position (pos-edge-starts-at tt)) 
+           (setq trigger-position (etypecase tt
+                                    (edge (pos-edge-starts-at tt))
+                                    (edge-vector
+                                     (ev-position tt))))
            (return)))
 
        ;; Setup for 3b
