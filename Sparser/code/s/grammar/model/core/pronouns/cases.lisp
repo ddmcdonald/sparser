@@ -1,13 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994-1996,2013-2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2013-2021  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "cases"
 ;;;   Module:  "model;core:pronouns:"
-;;;  version:  June 2017
+;;;  version:  June 2021
 
 ;; 1.0 (7/11/94) completely redone from scratch.
 ;; 1.1 (6/27/96) made "i" into "I" so that it would be correctly recognized.
 ;; 1.2 (3/15/13) Replaced np form with prounoun
+
+;; N.b. there must be a definition of the word in rules/words/pronouns.lisp
+;;  before we make these pronoun definitions
 
 (in-package :sparser)
 
@@ -79,7 +82,7 @@
 (define-pronoun "oneself"    'neutral        'reflexive/pronoun)
 (define-pronoun "itself"     'inanimate      'reflexive/pronoun)
 (define-pronoun "themselves" 'plural         'reflexive/pronoun)
-
+(define-pronoun "each other" 'neutral        'reflexive/pronoun)
 
 
 ;;-- indefinites
@@ -87,14 +90,19 @@
 (define-indefinite-pronoun "something")
 (define-indefinite-pronoun "someone")
 (define-indefinite-pronoun "somebody")
+(define-indefinite-pronoun "somewhere")
+(define-indefinite-pronoun "sometimes")
 (define-indefinite-pronoun "nothing")
 (define-indefinite-pronoun "no one")
 (define-indefinite-pronoun "nobody")
 (define-indefinite-pronoun "anything")
 (define-indefinite-pronoun "anyone")
 (define-indefinite-pronoun "anybody")
+(define-indefinite-pronoun "anywhere")
+(define-indefinite-pronoun "anymore")
 (define-indefinite-pronoun "everything")
 (define-indefinite-pronoun "everyone")
 (define-indefinite-pronoun "everybody")
+(define-indefinite-pronoun "everywhere")
 
 (define-indefinite-pronoun "one")

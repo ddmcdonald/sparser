@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2012-2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2012-2021  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2008 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "pronouns"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   January 2017
+;;;   Version:   May 2021
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3
 ;; 0.1 (6/18/93) added  .[np  np]. brackets
@@ -61,7 +61,7 @@
 (define-function-word "itself"     :brackets '( ].pronoun  .[np  np]. ))
 (define-function-word "oneself"    :brackets '( ].pronoun  .[np  np]. ))
 (define-function-word "themselves" :brackets '( ].pronoun  .[np  np]. ))
-
+(define-function-word "each other" :brackets '( ].pronoun  .[np  np]. ))
 
 ;; locatives
 (define-function-word "here"  :brackets '( ].pronoun  .[np  np]. ))
@@ -72,15 +72,20 @@
 (define-function-word "something" :brackets '( ].quantifier  .[np ))
 (define-function-word "someone"   :brackets '( ].quantifier  .[np  np]. ))
 (define-function-word "somebody"   :brackets '( ].quantifier  .[np  np]. ))
+(define-function-word "somewhere"  :brackets '( ].quantifier  .[np  np]. ))
+(define-function-word "sometimes"  :brackets '( ].quantifier  .[np  np]. ))
 (define-function-word "nothing"   :brackets '( ].quantifier  .[np ))
 (define-function-word "no one"    :brackets '( ].quantifier  .[np  np]. ))
 (define-function-word "nobody"    :brackets '( ].quantifier  .[np  np]. ))
 (define-function-word "anything"  :brackets '( ].quantifier  .[np ))
 (define-function-word "anyone"    :brackets '( ].quantifier  .[np  np]. ))
 (define-function-word "anybody"    :brackets '( ].quantifier  .[np  np]. ))
+(define-function-word "anywhere"   :brackets '( ].quantifier  .[np  np]. ))
+(define-function-word "anymore"   :brackets '( ].quantifier  .[np  np]. ))
 (define-function-word "everything"   :brackets '( ].quantifier  .[np  np]. ))
 (define-function-word "everyone"  :brackets '( ].quantifier  .[np  np]. ))
 (define-function-word "everybody"  :brackets '( ].quantifier  .[np  np]. ))
+(define-function-word "everywhere" :brackets '( ].quantifier  .[np  np]. ))
 
 ;; 'one'
 (define-function-word "one"  :brackets '( ].quantifier  .[np  np]. ))

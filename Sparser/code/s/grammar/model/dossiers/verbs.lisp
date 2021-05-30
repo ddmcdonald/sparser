@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2018-2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2018-2021  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "verbs"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  June 2019
+;;;  version:  June 2021
 
 (in-package :sparser)
 
@@ -82,27 +82,15 @@ dm #79 "a more precise answer" --> see answer/info in mid-level/things.lisp
  go  
  going to X / gonna
 
-come
- come here/home/(with me) to the Casbah/to bed
- came from Philly
- coming for grass under the bed/breakfast
- Comlex-entry: (comlex come (adjective)
-                         (noun (features ((countable))))
-                         (verb
-                          (tensed/singular comes infinitive come past-tense
-                           came)
-                          (features ((vmotion)) subc
-                           ((advp) (pp-pred-rs pval (to)) (adjp-pred)
-                            (p-ing-sc pval (into)) (pp-pp pval (from to))
-                            (to-inf-sc)
-                            (pp pval
-                                (after off out of to under from into of with))
-                            (part-pp adval (down in around back over up on)
-                             pval (for from on to with))
-                            (part adval
-                             (along in about around back over out to up))
-                            (intrans)))))
+
  |#
+
+
+(define-category appear ; Molly experiment
+  :specializes state
+  :mixins (expletive-subject raising-to-subject with-expletive)
+  :realization (:verb "appear"))
+                      
 
 (define-category arrive
   :specializes move
@@ -164,6 +152,33 @@ come
                          activity-with-a-purpose))             
              (patient perdurant))
   :realization (:verb ("carry" :prep "out")))
+
+
+(define-category come
+  :specializes move ;; core/kinds/movement.lisp
+  :mixins (basic-intransitive)
+  :realization (:verb ("come" :past-tense "came"))
+  :documentation
+     "Move in the opposite direction as 'go'
+ come here/home/(with me) to the Casbah/to bed
+ came from Philly
+ coming for (grass under the bed)/breakfast
+ Comlex-entry: (comlex come (adjective)
+                         (noun (features ((countable))))
+                         (verb
+                          (tensed/singular comes infinitive come past-tense
+                           came)
+                          (features ((vmotion)) subc
+                           ((advp) (pp-pred-rs pval (to)) (adjp-pred)
+                            (p-ing-sc pval (into)) (pp-pp pval (from to))
+                            (to-inf-sc)
+                            (pp pval
+                                (after off out of to under from into of with))
+                            (part-pp adval (down in around back over up on)
+                             pval (for from on to with))
+                            (part adval
+                             (along in about around back over out to up))
+                            ))))   ")
 
 (define-category comply
   :specializes state
@@ -242,6 +257,18 @@ come
   :documentation "Takes a vast number of bound prepositions and idiomatic
     uses. Also used as a model ('they're going to come'). The entry in
     Collins is a good source.")
+
+(define-category happen
+  :specializes state
+  :mixins (basic-intransitive) ; patient
+  :realization (:verb ("happen"
+                       :past-tense "happened"
+                       :present-participle "happening")
+                      )
+  :documentation "Very general word that an event of some sort
+     exists. Synonyms are 'occur' and 'take place'.
+     Takes locative agent. ///takes a to-comp that needs reserch.
+     Folds into idioms: 'as happens in' aspp2 #6")
 
 (define-category imply
   :specializes state
@@ -372,6 +399,12 @@ come
     the change in some value over time is in amounts;measurements.lisp")
 
 
+(define-category seem ; Molly experiment
+  :specializes state
+  :mixins (expletive-subject raising-to-subject with-expletive)
+  :realization (:verb "seem"))
+
+
 (define-category sell
   :specializes process
   :mixins (directed-action)
@@ -423,6 +456,7 @@ come
     (np-to-inf-oc) (np-advp) (np-adjp) (np-to-np) (np-as-np) (np-tobe)
     (intrans) (np) (np-pp :pval ("before" "for" "p-dir" "upon" "at")))))
  (noun (:features ((countable))))) |#
+
 
 ;;sp> (comlex-entry "tell")
 ;;((verb (:tensed/singular "tells" :infinitive "tell" :past-tense "told")
@@ -620,10 +654,13 @@ come
   :mixins (with-agent with-goal with-theme with-extent with-specified-location move-something-verb)
   :restrict ((agent physical-agent)
              (theme endurant)
-             (goal (:or endurant direction)) (extent measurement))
-  :documentation "This allows proper chunking of a locative complements to 'move' verbs (more than just 'to'), where previously these
-  locative complements were swalowed up by the theme np. It seems that move is a complex category with lots of working
-  parts, so this may just be a temporary hack."
+             (goal (:or endurant direction))
+             (extent measurement))
+  :documentation "This allows proper chunking of a locative
+  complements to 'move' verbs (more than just 'to'), where previously
+  these locative complements were swalowed up by the theme np. It
+  seems that move is a complex category with lots of working parts, so
+  this may just be a temporary hack."
    :realization (:verb "move"
                  :etf (svol)
                  :s agent
@@ -757,16 +794,4 @@ come
   :documentation "Need to indicate that the patient must
     have an axis that it can rotate around")
 
-;;Experimenting
-
-(define-category seem
-  :specializes state
-  :mixins (expletive-subject raising-to-subject with-expletive)
-  :realization (:verb "seem"))
-
-(define-category appear
-  :specializes state
-  :mixins (expletive-subject raising-to-subject with-expletive)
-  :realization (:verb "appear"))
-                      
                       

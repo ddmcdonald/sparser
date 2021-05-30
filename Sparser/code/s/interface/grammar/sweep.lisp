@@ -382,7 +382,7 @@
                   ~% ~a deduced from their morphology~
                   ~% ~a added by Big Mechanism default~
                   ~% ~a added with default setup~
-                  ~% ~a added from no-space operations
+                  ~% ~a added from no-space operations~
                   ~% ~a added by computing them~%~%"
           (length *from-comlex*)
           (length *from-morphology*)

@@ -53,7 +53,7 @@
     immediately after where the pw ended.
     If the pattern of edges over a polyword ever changes,
     this will need revising")
-  (:method ((p position)) )
+  (:method ((p position)) ))
   #+ignore ;; suppress breaks until fully debugged -- irish #6
     (let* ((e1 (edge-ending-at p))
            (left-daughter (edge-left-daughter e1)))
@@ -61,5 +61,5 @@
       (let* ((pw (edge-category left-daughter))
              (spotter (target-word-to-spot pw)))
         (when spotter
-          (handle-spotted-word spotter (pos-edge-starts-at e1) p :edge e1))))))
+          (handle-spotted-word spotter (pos-edge-starts-at e1) p :edge e1))))
 

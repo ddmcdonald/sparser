@@ -342,7 +342,7 @@
            (alists (loop for c in contents
                       when (items c) collect (items c))))         
       (when alists
-        (push-debug `(,alists)) 
+        (push-debug `(,alists)) (print alists) (break "alist")
         (setf (items (contents p))
               (merge-items-alist alists)))
       p)))
@@ -356,6 +356,7 @@
            (alists (loop for d in contents
                       when (items d) collect (items d))))
       (when alists
+        (push-debug `(,alists)) (print alists) (break "sect alist")
         (setf (items (contents parent))
               (merge-items-alist alists)))
       parent)))
@@ -368,11 +369,12 @@
              ;; walk through the alist
              do (let ((entry (assoc name merged-alist :test #'eq)))
                   (cond
-                    (entry
+                    (entry ;; bump up the number
                      (let* ((base (cadr entry))
                             (sum (+ base number)))
                        (setf (cadr entry) sum)))
-                    (t (push alist merged-alist))))))
+                    (t ;; add this pair to the merged list
+                     (push `(,name ,number) merged-alist))))))
     merged-alist))
           
 
