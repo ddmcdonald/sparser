@@ -449,7 +449,9 @@
        (IN top)
        (WITH top)
        (AT top))
-     :realization (:verb  "assist" :s SUBJECT :o OBJECT :on ON :in IN :with WITH :at AT))
+      :realization (:verb  "assist"
+                    :noun "assist" ;; as in hockey or other sports
+                    :s SUBJECT :o OBJECT :on ON :in IN :with WITH :at AT))
 
 (define-category assure :specializes comlex-verb
      :binds
