@@ -1150,29 +1150,33 @@
 (defun short-conjunctions-sweep (sentence)
   "Look for adjacent single edges that can conjoin around an instance of
    'and' identified by the completion action on the conjunction"
-  (declare (ignore sentence))
-  (tr :short-conjunctions-sweep)
-  (when *pending-conjunction*
-    (dolist (position (remove-duplicates *pending-conjunction*))
-      (let ((left-edge (left-treetop-at/only-edges position))
-            (right-edge (right-treetop-at/edge 
-                         (chart-position-after position)))
-            (*allow-form-conjunction-heuristic* 
-             *use-form-heuristic-in-conj-sweep*))
-        (declare (special *allow-form-conjunction-heuristic*))
-        (unless (or (word-p left-edge)
-                    (word-p right-edge))
-          (when left-edge
-            ;; "... for Ras17N (and Ras17N/69N)" in overnight #10
-            (if (edge-over-comma? left-edge)
-              (let ((new-left-edge (oxford-comma-pattern? left-edge)))
-                (when new-left-edge
-                  (tr :oxford-comma new-left-edge)
-                  (create-short-conjunction-edge-if-possible
-                   new-left-edge right-edge)))
-              (else ;; it's the simple case
-                (create-short-conjunction-edge-if-possible
-                 left-edge right-edge)))))))))
+  (declare (special *pending-conjunction*))
+  (let ((left-bound (starts-at-pos sentence))
+        (right-bound (ends-at-pos sentence)))
+    (tr :short-conjunctions-sweep)
+    (when *pending-conjunction*
+      (dolist (position (remove-duplicates *pending-conjunction*))
+        (when (position/<= position left-bound)
+          (let ((left-edge (left-treetop-at/only-edges position))
+                (right-edge (right-treetop-at/edge 
+                             (chart-position-after position)))
+                (*allow-form-conjunction-heuristic* 
+                 *use-form-heuristic-in-conj-sweep*))
+            (declare (special *allow-form-conjunction-heuristic*))
+            (setq *pending-conjunction* (remove position *pending-conjunction*))
+            (unless (or (word-p left-edge)
+                        (word-p right-edge))
+              (when left-edge
+                ;; "... for Ras17N (and Ras17N/69N)" in overnight #10
+                (if (edge-over-comma? left-edge)
+                  (let ((new-left-edge (oxford-comma-pattern? left-edge)))
+                    (when new-left-edge
+                      (tr :oxford-comma new-left-edge)
+                      (create-short-conjunction-edge-if-possible
+                       new-left-edge right-edge)))
+                  (else ;; it's the simple case
+                    (create-short-conjunction-edge-if-possible
+                     left-edge right-edge)))))))))))
 
 
 (defun create-short-conjunction-edge-if-possible (left-edge right-edge)
