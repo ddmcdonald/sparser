@@ -3,7 +3,7 @@
 
 ;;;      File: "note"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: May 2021
+;;;   Version: June 2021
 
 ;; Initiated 1/29/20. To make an easy to use, structured, ability to
 ;; 'note and record interesting objects' 
@@ -88,7 +88,8 @@
     (let ((noteworthy (loop for item in list
                          when (noteworthy? item) collect item)))
       (when noteworthy
-        (break "Multiple noteworthy items: ~a" noteworthy)
+        (when (> (length noteworthy) 1)
+          (break "Multiple noteworthy items: ~a" noteworthy))
         (loop for n in noteworthy do (note? n)))))
 
   (:method ((i individual))
@@ -116,6 +117,8 @@
 
 ;;--- store the noted category
 
+;; (announce-notes)
+
 (defgeneric note (item)
   (:documentation "Add a noteworthy item to the sentence-level
     contents model using the list element of the accumulate-items
@@ -139,6 +142,38 @@
     (loop for c in (indiv-type i)
        do (note c)))
 
+  (:method ((c category)) 
+    (unless (current-script :biology)
+      (let ((s (sentence))
+            (name (cat-name c)))
+        (unless s (error "Current-sentence is not defined"))
+        (let ((container (contents s)))
+          (unless (and container (typep container 'accumulate-items))
+            (error "wrong kind of container"))
+
+          (let* ((alist ;;(slot-value container 'items-alist))
+                  (items container))
+                 (entry (assoc name alist :test #'eq)))
+            (push-debug `(,container ,entry ,alist))
+            (cond
+              ((null alist)
+               (setf (items container) (list (list name 1))))
+              (entry
+               (incf (cadr entry)))
+              (t
+               (setf (items container)
+                     (cons (list name 1) alist))))
+
+            (let* ((alist1 (items container))
+                   (entry1 (assoc name alist1 :test #'eq))
+                   (count (cadr entry1)))
+              (when (null count)
+                (push-debug `(,entry1 ,alist1)) (break "no counts"))
+              (tr :noting-category name count)) ))))))
+
+#+ignore ;; instrumented version to look at cases.
+;; original problem was that `((,item 1)) let SBCL share the
+;; (cons 1 nil) across the whole list.
   (:method ((c category))
     (unless (current-script :biology)
       (let ((s (sentence))
@@ -147,29 +182,39 @@
         (let ((container (contents s)))
           (unless (and container (typep container 'accumulate-items))
             (error "wrong kind of container"))
-          
+
+          (format t "~&~%noting ~a~%" name)
           (let* ((alist ;;(slot-value container 'items-alist))
                   (items container))
                  (entry (assoc name alist :test #'eq)))
+            (push-debug `(,container ,entry ,alist))
             
-            ;;(push-debug `(,container ,entry ,alist)) (break "container")
             (cond
               ((null alist)
                (setf (items container)
                      ;;(slot-value container 'items-alist)
-                     `((,name 1))))
+                     (list (list name 1)))
+               (format t "~&Null alist. items: ~a~%" (items container))
+               )
               (entry
-               (incf (cadr entry)))
+               (format t "~&Before Increment: entry: ~a~%" entry)
+               (push-debug `(,entry ,alist ,container)) (break "incr")
+               (incf (cadr entry))
+               (format t "~&After Increment: entry: ~a~%" entry)
+               )
               (t
                ;; (slot-value container 'items-alist)
+               (format t "~&New item.")
                (setf (items container)
-                     (cons `(,name 1) alist))))
+                     (cons (list name 1) alist))
+               (format t "~&after alist: ~a" (items container))))
+
+            (format t "~&Final alist: ~a~%" (items container)) (break "Break ?")
 
             (let* ((alist1 (items container))
                    (entry1 (assoc name alist1 :test #'eq))
                    (count (cadr entry1)))
               (when (null count)
                 (push-debug `(,entry1 ,alist1)) (break "no counts"))
-              (tr :noting-category name count))))))))
-
+              (tr :noting-category name count))))))) 
 
