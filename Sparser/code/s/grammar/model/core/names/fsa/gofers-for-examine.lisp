@@ -219,7 +219,23 @@
                   (list company))))))))))
             
       
-    
+
+;;--- hyphen
+
+(defun reify-hyphenated-pair (items tt-before-hyphen hyphen)
+  "During the scan we encountered a hyphen between two capitalized words.
+   We want to form a polyword from the triple. We edit and return
+   the items list to reflect this."
+  (push-debug `(,items ,tt-before-hyphen ,hyphen))
+  ;; The revised item list has to run the gauntlet of referents-of-list-of-edges
+  ;;   which wants to return name-words -- but there doesn't seem to be
+  ;;   a provision for a polyword making a name-word from a pw. Just individual words.
+  ;; While sorting that out, just splice the hyphen out of list.
+  (let ((hyphen-edge (ev-top-node (pos-starts-here hyphen))))
+    (unless hyphen-edge
+      (break "no hyphen edge")) ; throw
+    (setq items (remove hyphen-edge items))
+    items))
 
 
 ;;--- countries

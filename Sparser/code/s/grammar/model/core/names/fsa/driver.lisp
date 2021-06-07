@@ -58,6 +58,9 @@
    classifier and such as part of making subdivisions of names compounded
    out of other names.")
 
+(defvar *hyphen-seen* nil
+  "Set in checkout-hyphen-for-capseq to the position of the hyphen.
+   Read in examine")
 
 (defparameter *pnf-scan-respects-segment-boundaries* t
   "If so, the scan will lookahead for anticipated cases but otherwise

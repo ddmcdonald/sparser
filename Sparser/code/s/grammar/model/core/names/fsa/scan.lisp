@@ -383,6 +383,7 @@
   ;; if the word at the next position is capitalized, and the hyphen
   ;; directly connects them then accept it, otherwise let it through
   ;; since a separated hyphen is often standing in for a dash
+  (declare (special *hyphen-seen*))
 
   (if (null (pos-preceding-whitespace position))
     (let ((next-position (chart-position-after position)))
@@ -391,7 +392,10 @@
 
       (if (and (null (pos-preceding-whitespace next-position))
                (word-at-this-position-is-capitalized? next-position))
-        (cap-seq-continues-from-here? next-position)
+        (then
+          (setq *hyphen-seen* position)
+          (cap-seq-continues-from-here? next-position))
+        
         position))
     position ))
 
@@ -478,6 +482,7 @@
                  (eq next-word word::\,) ;; "the 'Sunday Independent',"
                  (eq next-word word::open-paren) ;; "the 'Manchester Guardian'(as it then was)"
                  (eq next-word word::close-paren) ;; "a book ('Synopsis Stirpium Hibernicarum')"
+                 (eq next-word word::colon) ;; #505 " 'Hercules Tire and Auto': the same five-star..."
                  (eq next-word word::open-square-bracket)
                  (eq next-word word::close-square-bracket))
              ;; leave the "'s" to be gotten later as a concatenation

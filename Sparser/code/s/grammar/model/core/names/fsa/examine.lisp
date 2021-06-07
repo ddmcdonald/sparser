@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "examine"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  March 2021
+;;;  version:  June 2021
 
 ;; initiated 4/1/94 v2.3
 ;; 0.1 (4/23) fixed change of where :literal-in-a-rule is in Sort-out-multiple-
@@ -128,14 +128,14 @@
    be stopped immediately. The value returned with the throw ('result' in
    the caller) is an indicator of how to proceed.
    The normal return is expected to be an individual of type name."
-  
+  (declare (special *hyphen-seen*))
   (tr :examine-capitalized-sequence starting-position ending-position)
   (let ((count 0)
         (position starting-position)
         tt  tt-category  label  items  next-position already-pushed?
         name-state  edge-labeled-by-word multiple-treetops
         &-sign  initials?  person-version  inc-term?  of  and  the  slash
-        generic-co co-activity koc?  ordinal  flush-suffix 
+        generic-co co-activity koc?  ordinal  flush-suffix  tt-before-hyphen hyphen
         country  title  weekday music-note month  other
         location-head  location  hurricane)
     
@@ -183,7 +183,9 @@
                      ;; no 'prefix' to be rendered into a name so we don't
                      ;; set 'flush-suffix'.
                      (return-from check-cases nil))))
-                  
+
+                (word::hyphen ;; see reify-hyphenated-pair
+                 (setq hyphen position))
                   
                 (word::|and|
                   (if (reason-to-terminate-name-at-and? items)
@@ -362,14 +364,19 @@
                
              (category::ordinal   ;; e.g. in "Thomas E. Paisley III"
               (setq ordinal `(,count . ,(edge-referent tt))))
-               
+
              (category::person-prefix  ;; e.g. "Mr."
               ;; we don't want this included as part of the name, so we use
               ;; the escape route through the catch in Classify-&-record-span
               ;; and indicate that this part of the sequence should be rejected
               ;; from the proper name, leaving the rest of it to be picked up
               ;; again and resumed in a moment by an independent call to PNF.
-              (throw :leave-out-prefix (pos-edge-ends-at tt)))
+              (if *hyphen-seen*
+                (if (eq *hyphen-seen* (pos-edge-ends-at tt))
+                  ;; can't leave out the prefix. It will bind to the following term
+                  (setq tt-before-hyphen tt)
+                  (throw :leave-out-prefix (pos-edge-ends-at tt)))
+                (throw :leave-out-prefix (pos-edge-ends-at tt))))
                
              (category::person-version    ;; e.g. "Jr."
               (setq person-version (cons count (edge-referent tt))))
@@ -420,12 +427,14 @@
          ;; That was the end of check-cases flet function,
 
          (label-for (tt)
+           "What kind of thing is this treetop, which clause of check-cases
+            should it go through"
            (typecase tt 
              (edge
               (cond
                 ((word-p (edge-category tt))
                  (setq edge-labeled-by-word tt
-                            tt-category (edge-category tt))
+                       tt-category (edge-category tt))
                  :word)
                 ((polyword-p (edge-category tt))
                  :polyword)
@@ -474,6 +483,7 @@
          
          (tr :examining label tt)          
          ;; Look at the tt and set flags (indicators of the type of name)
+
          (if multiple-treetops
            (dolist (mtt multiple-treetops)
              ;; collect evidence from each of the cases
@@ -510,6 +520,9 @@
         (setq items (remove-duplicates items :test #'eq))
         ;; Need to review the item accumulator to see why name-words
         ;; are being accumulated twice
+
+        (when tt-before-hyphen
+          (setq items (reify-hyphenated-pair items tt-before-hyphen hyphen)))
 
         (when location
           (when (= count (caar location))
