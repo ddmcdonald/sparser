@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "content-methods"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  April 2020
+;;;  Version:  June 2020
 
 ;; Created 5/12/15 to hold the container mixings and such that need
 ;; to have the document model elements already defined so they can
@@ -342,9 +342,10 @@
            (alists (loop for c in contents
                       when (items c) collect (items c))))         
       (when alists
-        (push-debug `(,alists)) (print alists) (break "alist")
+        ;;(format t "~&Items alists for ~a~%~a~%" p alists)
         (setf (items (contents p))
-              (merge-items-alist alists)))
+              (merge-items-alist alists))
+        #+ignore(format t "~&merged alist: ~a~%~%" (items (contents p))))
       p)))
 
 (defgeneric aggregate-noted-items (doc-element)
@@ -356,7 +357,7 @@
            (alists (loop for d in contents
                       when (items d) collect (items d))))
       (when alists
-        (push-debug `(,alists)) (print alists) (break "sect alist")
+        ;;(push-debug `(,alists)) (print alists) (break "sect alist")
         (setf (items (contents parent))
               (merge-items-alist alists)))
       parent)))
@@ -386,36 +387,9 @@
 
 (run-specific-acumen-file 217 :quiet nil)
 
-Something is sticky, since these numbers are too uniform to be
-explained just by the structure of the parse. Or we run the note
-operations too much?  5/19/21
-
-(defvar alists
-'(((multiplier 7))
- ((company 8) (name-word 7)) ((company 8) (name-word 7))
- ((named-object 8) (name-word 7))
- ((named-object 8) (name-word 7))
- ((year 7))
- ((year 8) (named-object 7))
- ((year 8) (named-object 7))
- ((named-object 7))
- ((name-word 8) (us-state 8) (named-object 7))
- ((name-word 8) (us-state 8) (named-object 7))
- ((number 7)) ((name-word 7))
- ((plural 8) (unit-of-measure 7))
- ((plural 8) (unit-of-measure 7))
- ((number 8) (us-state 8) (name-word 8) (named-object 7))
- ((number 8) (us-state 8) (name-word 8) (named-object 7))
- ((number 8) (us-state 8) (name-word 8) (named-object 7))
- (us-state 23)) )
-
 |#
 
                               
-      
-
-
-
 
 ;;;--------------------------------
 ;;; how well is our analysis doing
