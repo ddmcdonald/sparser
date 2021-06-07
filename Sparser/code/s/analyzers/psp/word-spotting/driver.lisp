@@ -53,13 +53,18 @@
     immediately after where the pw ended.
     If the pattern of edges over a polyword ever changes,
     this will need revising")
-  (:method ((p position)) ))
-  #+ignore ;; suppress breaks until fully debugged -- irish #6
+  (:method ((p position))
     (let* ((e1 (edge-ending-at p))
            (left-daughter (edge-left-daughter e1)))
-      (unless (edge-p left-daughter) (break "PW layout is unexpected"))
-      (let* ((pw (edge-category left-daughter))
-             (spotter (target-word-to-spot pw)))
-        (when spotter
-          (handle-spotted-word spotter (pos-edge-starts-at e1) p :edge e1))))
+      (let ((pw
+             (typecase left-daughter
+               (polyword left-daughter) ;; "in order to"
+               (edge
+                (edge-category left-daughter))
+               (otherwise (break "polyword not where expected")))))
+        (unless (polyword-p pw)
+          (break "spot-polyword needs extension"))
+        (let ((spotter (target-word-to-spot pw)))
+          (when spotter
+            (handle-spotted-word spotter (pos-edge-starts-at e1) p :edge e1)))))))
 
