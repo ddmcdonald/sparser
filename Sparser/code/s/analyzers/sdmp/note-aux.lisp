@@ -39,20 +39,30 @@
 ;;; traces
 ;;;--------
 
-(defvar *trace-note* nil "For tracking what we're laying down")
+(defvar *trace-note* nil
+  "For tracking what we're laying down. Helps debug the cases
+   when we have subsumed edges")
 (defun trace-notes ()
   (setq *trace-note* t))
 (defun untrace-notes ()
   (setq *trace-note* nil))
 
+(defvar *trace-note-announce* nil
+  "Minimal trace. Just one stmt per note")
+(defun announce-notes ()
+  (setq *trace-note-announce* t))
+(defun unannounce-notes ()
+  (setq *trace-note-announce* nil))
+
+
 (deftrace :noting-category (cat-name count)
   ;; called from note
-  (when *trace-note*
+  (when (or *trace-note* *trace-note-announce*)
     (trace-msg "NOTE: ~a ~a" cat-name count)))
 
 (deftrace :edge-is-noteworthy (edge)
   ;; edge method of note?
-  (when *trace-note*
+  (when *trace-note* =
     (trace-msg "noteworthy: ~a" edge)))
 
 (deftrace :calling-cache-noteworthy-edge (edge)
@@ -212,6 +222,14 @@ discourse history.
        (pass-cached-edge-to-note)
        (pass-edge-to-note edge)
        (empty-note-cache))
+
+      ((and (eq (pos-edge-ends-at cached-edge) end-pos) ; end at same point
+            (position/< ; edge's start pos is to the right of cached
+             (pos-edge-starts-at cached-edge) start-pos))
+       ;; cached edge is better. Ignore the new edge
+       ;; ""Shamrock and Diaz, 25," -- age should go w/ Diaz,  but compound name wins
+       ;; 
+       )
 
       (t (push-debug `(,edge ,cached-edge))
          (break "What do we do?~%new: ~a~%cached: ~a"
