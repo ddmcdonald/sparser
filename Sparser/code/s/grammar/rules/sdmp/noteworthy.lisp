@@ -23,13 +23,13 @@
 
    title role-based-person
 
-   location
+   location  location-of
    direction
    city us-state country
 
    time
    date day-of-the-month
-   year month
+   year month weekday time-unit
 
    amount
    measurement unit-of-measure
@@ -39,17 +39,23 @@
 
    money currency
 
+   modal
    pronoun  ;;plural --> texture
+
+   acknowledgement
 
 
    ))
 ;; (noteworthy 'xxxx)
 
-;; report verbs -- other interesting classes of verb
 ;; commas, colons, semicolons, slashes
 ;; exclamation-points
 ;; parentheses, quotation, other braces
 
-;; tell report said
+;; past tense, qualified with modals, future(?)
+;; become
+
+;; report verbs -- other interesting classes of verb
+;; tell report said announced
 
 
