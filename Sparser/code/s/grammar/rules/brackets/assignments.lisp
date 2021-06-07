@@ -347,7 +347,7 @@
   (ecase (cat-name form-category)
     (adverb (setup-adverb word))
     (adjective (setup-adjective word))
-    (verb (setup-verb word))
+    (verb (setup-verb word nil))
     (noun (setup-common-noun word))))
 
 
