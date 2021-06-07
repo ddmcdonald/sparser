@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-;;; copyright (c) 1990,1991  Content Technologies Inc.
-;;; copyright (c) 1992-1994,2013,2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2013,2019-2021 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "vectors"
-;;;   Module:  "objects;edge vectors:"
-;;;  Version:  November 2019
+;;;   Module:  "objects/chart/edge vectors/"
+;;;  Version:  June 2021
 
 ;; 2.0 (11/26/92 v2.3) bumped on general principles anticipating changes.
 ;; 2.1 (4/6/93) Put in switch for kcons vs. vector versions
@@ -55,10 +55,8 @@
               (setq array (make-edge-vector-array)))))
 
     (when (>= count *maximum-number-of-edges-in-an-edge-vector*)
-      (break "Reached the maximum number of edges (~a) allowed on~
-            ~%a pre-constructed edge-vector.
-            ~%    This usually indicates a runaway circular set of rules~
-            ~%in the grammar.~
+      (break "Reached the maximum number of edges (~a) allowed on ~
+            ~an edge-vector.~
             ~%    next edge to add: ~A~
             ~%      at edge-vector: ~A"
              *maximum-number-of-edges-in-an-edge-vector*
