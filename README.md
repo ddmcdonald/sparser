@@ -29,13 +29,13 @@ usually done over small texts. As a consequence, Sparser is run for
 side-effects. It does not 'return' anything, though it has machinery
 for periodically reading out its chart or the objects it has
 recognized or instantiated (i.e. categories and instances of
-categories). Sparser uses its native KRISP language to define its
-domain models and represent the information it identifies as it
-reads. KRISP can be easily converted to OWL triples of JSON.
+categories). Sparser uses its native KRISP KR language to define its
+domain models and represent the information that it identifies as it
+reads. KRISP can be easily converted to OWL triples or JSON.
 
 Sparser is an open-source project under the Eclipse Public License
 (see LICENSE). The definitive repository for Sparser is on GitHub
-at https://github.com/ddmcdonald/sparser, people who have been registered
+at https://github.com/ddmcdonald/sparser/, people who have been registered
 as 'contributors' can push commits to the repository directly.
 
 # Prerequisites
@@ -43,7 +43,7 @@ as 'contributors' can push commits to the repository directly.
 ## Lisp You need to have a modern implementation of Common Lisp
 already installed. We exclusively use SBCL in our own development (www.sbcl.org).
 In the past we have also used Clozure (www.clozure.com) and
-Allegro (www.franz.com), but we do not presently run our regression tests on
+Allegro (www.franz.com). We do not presently run our regression tests on
 those platforms, so caveat emptor.
 
 ## OS
@@ -66,7 +66,6 @@ definitions for different configurations of the grammar, semantics,
 and runtime behavior.
 
 ## Setup ASDF
-
 At the toplevel, Sparser's loader is based on ASDF. To use it you
 have to enter Sparser's location in your file system into the ASDF
 registry so that ASDF can find Sparser's .asd file.  We recommend that
@@ -76,14 +75,18 @@ directory (i.e. ~/sparser/).
 ```
 (require :asdf)
 ```
-```
 (asdf:initialize-source-registry
  '(:source-registry
     (:tree (:home "sparser"))
     :inherit-configuration))
-```
-## Configurations and Loading
+    ```
+Several of Sparser's subsystems make use of a couple of standard Lisp
+packages: CL-JSON, and CL-PPCRE. You need to include a path to them
+as part of your source-registry because they are named in the
+depends-on specification in the :sparser defsystem definition in
+the asd file.
 
+## Configurations and Loading
 In a running Lisp, with the ASDF registry configured, you load Sparser
 by executing this in your REPL.
 ```
@@ -97,7 +100,7 @@ for configuring the analysis protocol. Most of these only interesting
 to illustrate the range of configurations we have used.  We are
 actively doing development in just two configurations: 'biology' for
 our project work for DARPA, and 'fire' for wider-ranging
-explorations. The default configuration is the same as
+explorations. The default configuration is the same as the one for
 fire ("Free-text Information and Relation Extraction").
 
 
@@ -122,8 +125,8 @@ that has been developed for sparser, such as amounts and time, names
 and numbers, location, or person-company-title. Beyond semantically
 controlled sublanguages, we use an extensive syntactic grammar where
 composition is constrained by more heuristic type-checking. We also
-draw on the Complex lexicon to giving as part of speech and simple
-subcategorization information about words that weren't given an
+draw on the Complex lexicon to provide part of speech and simple
+subcategorization information about words that haven't given an
 explicit semantic definition.
 
 
@@ -140,7 +143,7 @@ We can illustrate this with this short example, interpreting the
 string "it is almost Wednesday". 
 ```
 sp> (p "it is almost Wednesday")
-[it ][is ]almost [Wednesday]
+[it ][is ]almost Wednesday
 ```
 ```
                     source-start
@@ -149,8 +152,8 @@ e7    BE            1 "it is almost Wednesday" 5
 :done-printing
 ```
 The function 'p' is one of the many abbreviations we use to cut down
-on typing time. P combines the step of running the parsing engine on
-the string and printing out a view of the chart after the analysis was
+on typing. P combines the step of running the parsing engine on
+the string with printing out a view of the chart after the analysis was
 finished. An early step in the analysis was chunking the input into
 minimal phrases (noun groups, verb groups, or adjective groups), as
 shown in the square brackets. 
@@ -158,62 +161,73 @@ shown in the square brackets.
 Sparser's chart uses between-word positions, with edges representing
 constituents formed by the application of rules in the grammar. In
 this case the whole text was composed in to a single edge, with the
-index 'e7' and started at position 1 and ended at position 5.
+index 'e7' that started at position 1 and ended at position 5.
 
 Under the hood everything in Sparser's representation is a typed
-structured object. Manipulating them directly is a matter of invoking
+structured object. Manipulating objects directly is a matter of invoking
 functions or small programs and can be cumbersome. But for things we
 know we always want to see these have been already pre-packaged, and
 often use the numbers of the chart edges as their arguments.
 
 To see the syntactic constituent structure of the text we have the
-function 'stree' for "syntactic tree". Constituency is given by
+function 'stree' for "syntactic tree". Constituency is shown by
 indentation. Each edge show its index, its category and syntactic
 labels, the chart positions at which it begins and ends, and the
 number (or name) of the rule that created it.
 ```
 sp> (stree 7)
- e7 be/s                      p1 - p5   rule 689
-  e2 top/grammatical-subject    p1 - p2   condition-anaphor-edge
+ e7 be/s                      p1 - p5   rule 1390
+  e2 pronoun/inanimate/pronoun    p1 - p2   rule 2796
     "it"
-  e6 be/vp                    p2 - p5   rule 782
-    e3 be/vg                  p2 - p3   rule 1256
+  e6 be/vp                    p2 - p5   rule 1490
+    e3 be/vg                  p2 - p3   rule 2006
       "is"
-    e5 weekday/np             p3 - p5   rule 1856
-      e4 almost/approximator    p3 - p4   rule 3076
+    e5 time/np                p3 - p5   rule 2555
+      e4 approximator/det     p3 - p4   rule 4697
         "almost"
-      e0 weekday/proper-noun    p4 - p5   rule 2772
+      e0 weekday/proper-noun    p4 - p5   rule 3149
         "Wednesday"
 ```
 The top edge is syntactically an 'S'. It is the result of applying a
 syntactic rule combining that took the subject np (e2) and assimilated
 it into the verb phrase predicate (e6).
 ```
-sp> (irr 689)
+sp> (irr 1390)
 referent: (funcall assimilate-subject left-referent right-referent)
 #<PSR-689 s → {pronoun vp}>
 ```
 Semantically the result is a dependency tree. These are displayed as a
 set of nested expressions.
 ```
-sp> (semtree 7)
-(#<be 2328>
-   (subject (#<top  105>))
-   (predicate
-      (#<weekday "Wednesday" 1175> (name "Wednesday")))
-   (present #<ref-category PRESENT>))
+ssp> (semtree 7)
+(#<be 105673>
+ (subject (#<pronoun/inanimate "it" 1003> (word "it")))
+ (predicate
+  (#<relative-time 105670>
+   (relativizer (#<almost "almost" 2550> (name "almost")))
+   (reference-time (#<weekday "Wednesday" 1244>))))
+ (present #<ref-category PRESENT>))
+
 ```
 This show an instance of the category representing 'be', whose index
-is 2328. And it shows what is wrong with this interpretation and will
-need sooner or later to be fixed: There is now appreciation that the
-pronoun "it" should be understood as an empty grammatical marker, and
-the modifier "almost" was not incorporated, as it is waiting on
-someone working up a small semantic model of approximation and the
-kinds of effects it should have on any reasoning that happens next.
+is 105673. This category has two local variables, 'subject' and
+'predicate', and also binds a variable it inherited, 'present'.
+An expression for values of the variables follows them. The predicate,
+for example, is an instance of the category 'relative-time', which
+itself has variables for it relativizer and reference-time.
+
+This a description of the semantic content of the input text.
+In a application that provided the necessary context, this description
+could be grounded and its terms given a denotation in actual calendar
+time. Presumably along with an application-specific model of
+what 'almost' means. (And an appreciation that the pronoun "it"
+should be understood as an empty grammatical marker, though that
+would be a reasonable extension to Sparser's own time model.)
 
 There is much more that could be illustrated, but getting into much
 more depth is usually best done by taking a guided tour in conjunction
-with exploring the grammar directly. 
+with exploring the grammar directly.
+
 Sparser is written in Lisp, and until we restore some form
 of the interactive workbench it had on earlier versions of
 the MacOS, extending Sparser's abilities and understanding
