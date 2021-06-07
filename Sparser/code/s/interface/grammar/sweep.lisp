@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "sweep"
 ;;;    Module:   interface/grammar/
-;;;   Version:   April 2021
+;;;   Version:   June 2021
 
 ;; Routines for sweeping down through the structure of Krisp referents.
 ;; Initiated 1/11/15 with code from December. 
@@ -47,34 +47,36 @@
     clean-items))
 
 (defun strip-model-description (tree)
-  ;; it's a tree, e.g. 
+  "Walks down a cons tree to collect all the individuals.
+   Returns them as a list."
+  ;; e.g. 
   ;; (agent
-  ;; (#<pathway 4020>
-  ;;  (modifier
-  ;;   (#<protein-pair 4030> (right #<human-protein-family "MAPK" 397>)
-  ;;    (left #<human-protein-family "Ras" 401>)))))
-  (push-debug `(,tree))
-  (nconc
-   (strip-model-description1 (car tree))
-   (strip-model-description1 (cdr tree))))
+  ;;  (#<pathway 4020>
+  ;;    (modifier
+  ;;      (#<protein-pair 4030>
+  ;;          (right #<human-protein-family "MAPK" 397>)
+  ;;          (left #<human-protein-family "Ras" 401>)))))
+  (flet ((strip-model-description1 (item)
+           "returns a list or nil"
+           (typecase item
+             (symbol nil)
+             (individual `(,item))
+             (category nil)
+             (lambda-variable nil) ;; ??
+             (cons
+              (strip-model-description item))
+             (number)
+             (string)
+             (word)
+             (edge) ;; in sequence of number-sequence
+             (otherwise
+              (push-debug `(,item))
+              (break "New case to strip: ~a~%~a"
+                     (type-of item) item)))))
+    (nconc ; drops the nil's
+     (strip-model-description1 (car tree))
+     (strip-model-description1 (cdr tree)))))
 
-(defun strip-model-description1 (item)
-  ;; return a list or nil 
-  (typecase item
-    (symbol nil)
-    (individual `(,item))
-    (category nil)
-    (lambda-variable nil) ;; ??
-    (cons
-     (strip-model-description item))
-    (number)
-    (string)
-    (word)
-    (edge) ;; in sequence of number-sequence
-    (otherwise
-     (push-debug `(,item))
-     (break "New case to strip: ~a~%~a"
-            (type-of item) item))))
 
 
 
@@ -231,48 +233,6 @@
 (defmethod collect-model ((c category)) nil) ;;`(,c))
 ;; anything else to be dropped on the floor?
 
-;;(defparameter *original-collect-mode-recursion-on-individuals* t)
-
-(defvar *categories-seen-by-collect-model* nil)
-(define-per-run-init-form
-    (setq *categories-seen-by-collect-model* nil))
-
-(defgeneric filter-bindings-by-category (i)
-  (:documentation "For selected categories, remove certain bindings
-    from the recursive collection walk over bind values.
-    Returns the list of bindings to use.")
-  (:method ((i individual))
-    ;; Evolve into eql signatures if this starts to get large
-    (let* ((i-cat (cat-name (itype-of i)))
-           (bindings (indiv-binds i))
-           (redundant (redundant-bindings i i-cat)))
-      (push i-cat *categories-seen-by-collect-model*)
-      (if redundant
-        (suppress-bindings bindings redundant)
-        bindings))))
-
-(defun redundant-bindings (i category-name)
-  "When we are tallying what kinds of individuals were encountered
-   in a document we get a skewed result if we also include normal
-   'parts' of this individuals. Returns a list of variables whose
-   bindings should be suppressed from a count, depending on the
-   category of the individual."
-  (labels ((find-var (name i)
-             "Return the specific lambda-variable object with
-            this name for the category of this individual"
-             (find-variable-for-category name i))
-           (map-names (list-of-names)
-             (loop for n in list-of-names collect (find-var n i))))
-    (case category-name
-      (company (map-names '(name)))
-      (month (map-names '(name next previous number-of-days-position-in-year)))
-      (year (map-names '(name value year-of-century)))
-      (date (map-names '(year day month)))
-      (number (map-names '(value)))
-      (money (map-names '(currency number)))
-      (denomination/money '(name symbol))
-      )))
-
 
 (defmethod collect-model ((i individual))
 
@@ -347,6 +307,48 @@
     objects))
 
 
+;;(defparameter *original-collect-mode-recursion-on-individuals* t)
+
+(defvar *categories-seen-by-collect-model* nil)
+(define-per-run-init-form
+    (setq *categories-seen-by-collect-model* nil))
+
+(defgeneric filter-bindings-by-category (i)
+  (:documentation "For selected categories, remove certain bindings
+    from the recursive collection walk over bind values.
+    Returns the list of bindings to use.")
+  (:method ((i individual))
+    ;; Evolve into eql signatures if this starts to get large
+    (let* ((i-cat (cat-name (itype-of i)))
+           (bindings (indiv-binds i))
+           (redundant (redundant-bindings i i-cat)))
+      (push i-cat *categories-seen-by-collect-model*)
+      (if redundant
+        (suppress-bindings bindings redundant)
+        bindings))))
+
+(defun redundant-bindings (i category-name)
+  "When we are tallying what kinds of individuals were encountered
+   in a document we get a skewed result if we also include normal
+   'parts' of this individuals. Returns a list of variables whose
+   bindings should be suppressed from a count, depending on the
+   category of the individual."
+  (labels ((find-var (name i)
+             "Return the specific lambda-variable object with
+            this name for the category of this individual"
+             (find-variable-for-category name i))
+           (map-names (list-of-names)
+             (loop for n in list-of-names collect (find-var n i))))
+    (case category-name
+      (company (map-names '(name)))
+      (month (map-names '(name next previous number-of-days-position-in-year)))
+      (year (map-names '(name value year-of-century)))
+      (date (map-names '(year day month)))
+      (number (map-names '(value)))
+      (money (map-names '(currency number)))
+      (denomination/money '(name symbol))
+      )))
+
 ;;;--------------------------------------------------------------------
 ;;; collecting sentences & new vocabulary automatically from a passage
 ;;;--------------------------------------------------------------------
@@ -392,11 +394,10 @@
           (length *from-computation*)))
 
 #| make-word/all-properties/or-primed => objects/chart/words/lookup/new-words
-The real call is to establish-unknown-word, which gets set by the switch
-call what-to-do-with-unknown-words according to what protocol 
-we're using in the switch settings. The precursor feeder routines are
-find-word, really-known-word?, and word-has-associated-category who encounter
-unknown words.|#
+The real call is to establish-unknown-word, which gets set by the 
+call to what-to-do-with-unknown-words (which dispatches on the protocol 
+we're using. The precursor feeder routines are find-word, really-known-word?, 
+and word-has-associated-category who encounter unknown words.|#
 
 (defun add-new-word-to-catalog (word source &optional instance-string)
   "Called as part of cataloging any new word. The 'source' encodes
