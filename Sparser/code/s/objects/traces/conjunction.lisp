@@ -32,19 +32,33 @@
   (untrace-conjunction-edges))
 
 
+(defvar *trace-conjunction-edges* nil)
+
+(defun trace-conjunction-edges ()
+  (setq *trace-conjunction-edges* t))
+(defun untrace-conjunction-edges ()
+  (setq *trace-conjunction-edges* nil))
+
+
+(defparameter *trace-conjunction-algorithm* nil)
+
+(defun trace-conjunction-algorithm ()
+  (setq *trace-conjunction-algorithm* t))
+(defun untrace-conjunction-algorithm ()
+  (setq *trace-conjunction-algorithm* nil))
+
+(defparameter *trace-conjunction-hook* nil)
+
+(defun trace-conjunction-hook ()
+  (setq *trace-conjunction-hook* t))
+(defun untrace-conjunction-hook ()
+  (setq *trace-conjunction-hook* nil))
+
+
 
 ;;;-------------------------------------
 ;;; inside the algorithm and its checks
 ;;;-------------------------------------
-
-(defparameter *trace-conjunction-algorithm* nil)
-(defparameter *trace-conjunction-hook* nil)
-
-(defun trace-conjunction-algorithm ()
-  (setq *trace-conjunction-algorithm* t))
-
-(defun untrace-conjunction-algorithm ()
-  (setq *trace-conjunction-algorithm* nil))
 
 
 (deftrace :conj-edges-to-each-side (edge-before edge-after)
@@ -68,6 +82,21 @@
     (trace-msg "[conj] Oxford comma pattern detected.~
               ~%   Using ~a as the left edge" edge-left-of-comma)))
 
+(deftrace :no-pending-conjunctions ()
+  ;;; called from short-conjunctions-sweep
+  (when *trace-conjunction-algorithm*
+    (trace-msg "[conj] there are no pending conjunctions")))
+
+(deftrace :trying-conjunction-at (pos)
+  ;;; called from short-conjunctions-sweep
+  (when *trace-conjunction-algorithm*
+    (trace-msg "[conj] trying the conjunction at ~a" pos)))
+
+(deftrace :conj-pos-exceeded-bound (bound)
+   ;;; called from short-conjunctions-sweep
+  (when *trace-conjunction-algorithm*
+    (trace-msg "[conj] rejecting position as less than ~a" bound)))
+
 (deftrace :short-conjoined-edge (edge)
   ;; called from try-spanning-conjunctions and from
   ;; create-short-conjunction-edge-if-possible
@@ -81,10 +110,17 @@
     (trace-msg "[conj] moved over comma: ~a" edge-before)))
 
 (deftrace :checking-conj (left-edge right-edge)
-  ;; called from look-for-possible-conjunction
+  ;; called from look-for-possible-conjunction and
+  ;; create-short-conjunction-edge-if-possible
   (when *trace-conjunction-algorithm*
-    (trace-msg "[conj]   considering conjoining ~a and ~a"
+    (trace-msg "[conj]  considering conjoining ~a and ~a"
                left-edge right-edge)))
+
+(deftrace :found-conjunction-heuristic (heuristic)
+  ;; called from create-short-conjunction-edge-if-possible
+  (when *trace-conjunction-algorithm*
+    (trace-msg "[conj]  identified the heuristic ~a" heuristic)))
+
 
 (deftrace :turning-off-conj-flag-w/o-any-action ()
   ;; called from sf-action/no-edges
@@ -98,13 +134,6 @@
 ;;; the 'hook', notes whether conjunction is triggered
 ;;;----------------------------------------------------
 
-
-
-(defun trace-conjunction-hook ()
-  (setq *trace-conjunction-hook* t))
-
-(defun untrace-conjunction-hook ()
-  (setq *trace-conjunction-hook* nil))
 
 
 (deftrace :setting-conjunction-pos-before (pos)
@@ -166,14 +195,6 @@
 ;;;-------------------------------------------------
 ;;; announce edges formed by conjunction operations
 ;;;-------------------------------------------------
-
-(defvar *trace-conjunction-edges* nil)
-
-(defun trace-conjunction-edges ()
-  (setq *trace-conjunction-edges* t))
-
-(defun untrace-conjunction-edges ()
-  (setq *trace-conjunction-edges* nil))
 
 (deftrace :conjoining-two-edges (edge left-edge right-edge heuristic)
   ;; called from Conjoin-two-edges

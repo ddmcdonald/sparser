@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1996,2013-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1996,2013-2021 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "pts"  --  "parse the segment"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  May 2020
+;;;  Version:  June 2021
 
 ;; initiated 4/22/91, extended 4/23, tweeked 4/24,26
 ;; 5/6, "march/seg" saves version that doesn't check for an extensible
@@ -419,14 +419,15 @@ have to be tail recursion to the next thing to do.
    one edge. Site for segment-finished hook and a conjunction check."
   (tr :spanned-segment)
   (segment-finished-hook)
-  (when *pending-conjunction*
-    ;; This flag stays up throughout. It consists of one or more
-    ;; positions that contain a conjunction. We run the conjunction
-    ;; routine only if the start of this segment is just to the left
-    ;; of one of these positions.
-    (let ((conj-pos (conjunction-just-before-this-segment *left-segment-boundary*)))
-      (when conj-pos
-        (look-for-possible-conjunction conj-pos))))
+  (unless (sucessive-sweeps?) ;; use short-conjunctions-sweep instead
+    (when *pending-conjunction*
+      ;; This flag stays up throughout. It consists of one or more
+      ;; positions that contain a conjunction. We run the conjunction
+      ;; routine only if the start of this segment is just to the left
+      ;; of one of these positions.
+      (let ((conj-pos (conjunction-just-before-this-segment *left-segment-boundary*)))
+        (when conj-pos
+          (look-for-possible-conjunction conj-pos)))))
   (sf-action/spanned-segment1))
 
 (defun sf-action/spanned-segment1 ()

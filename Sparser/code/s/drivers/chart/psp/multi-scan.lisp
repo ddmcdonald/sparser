@@ -1154,16 +1154,18 @@
   (let ((left-bound (starts-at-pos sentence))
         (right-bound (ends-at-pos sentence)))
     (tr :short-conjunctions-sweep)
-    (when *pending-conjunction*
+    (if *pending-conjunction*
       (dolist (position (remove-duplicates *pending-conjunction*))
-        (when (position/<= position left-bound)
+        (tr :trying-conjunction-at position)
+        
+        (if (position/>= position left-bound)
           (let ((left-edge (left-treetop-at/only-edges position))
                 (right-edge (right-treetop-at/edge 
                              (chart-position-after position)))
                 (*allow-form-conjunction-heuristic* 
                  *use-form-heuristic-in-conj-sweep*))
             (declare (special *allow-form-conjunction-heuristic*))
-            (setq *pending-conjunction* (remove position *pending-conjunction*))
+            ;;(setq *pending-conjunction* (remove position *pending-conjunction*))
             (unless (or (word-p left-edge)
                         (word-p right-edge))
               (when left-edge
@@ -1176,7 +1178,10 @@
                        new-left-edge right-edge)))
                   (else ;; it's the simple case
                     (create-short-conjunction-edge-if-possible
-                     left-edge right-edge)))))))))))
+                     left-edge right-edge))))))
+
+          (tr :conj-pos-exceeded-bound left-bound)))
+      (tr :no-pending-conjunctions))))
 
 
 (defun create-short-conjunction-edge-if-possible (left-edge right-edge)
@@ -1189,12 +1194,15 @@
     (dolist (right (if (edge-vector-p right-edge) 
 		       (ev-edges right-edge)
 		       (list right-edge)))
+      (tr :checking-conj left right)
       (let ((heuristic (conjunction-heuristics left right)))
 	(if heuristic
-          ;; conjoin/2 looks for leftwards for more comma-separated conjuncts
-          (let ((edge (conjoin/2 left right heuristic :pass 'short-conjunctions-sweep)))
-            (tr :short-conjoined-edge edge)
-            (return-from create-short-conjunction-edge-if-possible edge))
+          (then
+            (tr :found-conjunction-heuristic heuristic)
+            ;; conjoin/2 looks for leftwards for more comma-separated conjuncts
+            (let ((edge (conjoin/2 left right heuristic :pass 'short-conjunctions-sweep)))
+              (tr :short-conjoined-edge edge)
+              (return-from create-short-conjunction-edge-if-possible edge)))
           (tr :no-heuristics-for left-edge right-edge))))))
 
 

@@ -1415,7 +1415,10 @@
 (deftrace :short-conjunctions-sweep ()
   (declare (special *trace-conjunction-hook*))
   (when (or *trace-network-flow* *trace-conjunction-hook*)
-    (trace-msg "[scan] entered short-conjunctions-sweep")))
+    (trace-msg "[scan] entered short-conjunctions-sweep")
+    (when *trace-conjunction-hook*
+      (trace-msg "Treetops at start of short-conjunctions-sweep")
+      (tts))))
 
 (deftrace :sweep-to-span-parentheses ()
   (when *trace-network-flow*
