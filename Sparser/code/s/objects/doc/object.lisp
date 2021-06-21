@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2013-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  August 2020
+;;;  Version:  June 2021
 
 ;; Created 2/6/13 to solve the problem of keeping document/section context.
 ;; [sfriedman:20130206.2038CST] I'm writing this using /objects/chart/edges/object3.lisp as an analog.
@@ -267,14 +267,14 @@
     (setf (name obj) (or name (known-in-context :name)))
     (setf (article-location obj)
           (or location (known-in-context :location)))
-    #+ignore(setf (article-date obj)
+    (setf (article-date obj)
           (or date (date-&-time-as-formatted-string)))
     (setf (article-source obj)
           (or source (known-in-context :source)))
     (setf (contents obj)
           (install-contents obj))
     (setf *current-article* obj)
-    (add-to-document-set obj)
+    ;; (add-to-document-set obj) -- not using document sets
     (initialize-sections) ;; make the 1st section
     obj))
 
