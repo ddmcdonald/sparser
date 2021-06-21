@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "file"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:   March 2021
+;;;  Version:   June 2021
 
 ;; initiated 2/91, added Analyze-text-from-file/at-filepos 12/14/94
 ;; 2/15/13 Folded in initializations from do-document-as-stream-of-files,
@@ -13,7 +13,6 @@
 
 (in-package :sparser)
 
-(export 'analyze-text-from-file)
 
 (defun analyze-text-from-file (file &key
                                       ((:paragraph make-orthographic-paragraphs)
@@ -24,7 +23,8 @@
                                       (ext-format :utf-8)
                                       ((:trace traces-on) t)
                                       quiet
-                                      ((:skip ignore-errors?) t))
+                                      ((:skip ignore-errors?) t)
+                                      name )
 
   "Opens the indicated file an passes it to analysis-core to be parsed.
      :paragraph signals that the file should be interpreted as a multi-paragraph
@@ -41,10 +41,13 @@
      :quiet turns off all normal during-parse printing such as segment
    boundaries. Overrides trace so that end-of-paragraph printing is off.
      :skip enables the alternate parsing path for sentences that traps and
-   reports errors when they occur rather than bringing up the debugger."
+   reports errors when they occur rather than bringing up the debugger.
+     :name should be a string that will be communicated to the paragraph
+   handlers to be assigned to the article. Defaults to the file name."
   
   (declare (special *open-stream-of-source-characters* *paragraphs-from-orthography*
                     *prescan-character-input-buffer*))
+  
   (when *open-stream-of-source-characters*
     (close-character-source-file))
 
@@ -57,8 +60,9 @@
 
     (start-timer '*time-to-read-document*)
 
-    (set-initial-state :name file-name :location pathname)
-
+    (set-initial-state :name (or name file-name)
+                       :location pathname)
+    
     (establish-character-source/file pathname :ext-format ext-format )
 
     (let ((*paragraphs-from-orthography* make-orthographic-paragraphs)
@@ -77,7 +81,7 @@
     (when *open-stream-of-source-characters*
       (close-character-source-file))
 
-    (article) ))
+    (article)))
 
 
 
