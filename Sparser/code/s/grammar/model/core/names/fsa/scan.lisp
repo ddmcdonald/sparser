@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "scan"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  Version:  May 2021
+;;;  Version:  June 2021
 
 ;; initiated 5/15/93 v2.3 on a few pieces of names:fsa:fsa8
 ;; 5/21 fixed a bug, 5/26 added traces
@@ -228,12 +228,13 @@
 
       (else
         (tr :lc-introduces-]-but-actual-doesnt position-before)
+        #+ignore ;; when did this partial continuation get distorted?
         (;;checkout-continuation-for-non-punctuation
          non-boundary-continuation/bracket-checked
          position-before
          position-after
          cap-state)
-        ))))
+        position-before))))
 
 
 
