@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "initials"
 ;;;   Module:  "grammar;rules:FSAs:"
-;;;  Version:  May 2021
+;;;  Version:  June 2021
 
 ;; 2.0 (11/9 v2.3) Threw out the old version as capitalization trigger changed
 ;; 2.1 (12/29/93) Added a check against polywords that start with the letter.
@@ -102,6 +102,7 @@
     (let ((next-word (pos-terminal position-before)))
 
       (and (= 1 (length (word-pname next-word)))
+           (not (eq (pos-capitalization position-before) :lower-case))
            (eq (pos-terminal position-after)
                word::period)))))
 
