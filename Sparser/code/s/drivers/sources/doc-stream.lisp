@@ -29,6 +29,12 @@
 
 (in-package :sparser)
 
+;; OBSOLETE -- Goes with Grok-era and earlier document model
+;;  where we organized files into streams. This code could be
+;;  resurected, but the conception of what an article (etc.) is
+;;  was throughly changed to support Big Mechanism's volume of
+;;  documents and now (2016) permiates most handlers.
+
 
 ;;;-------------------
 ;;; top-level routine
