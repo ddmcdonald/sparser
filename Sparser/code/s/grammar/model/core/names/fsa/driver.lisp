@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  Version:  April 2021
+;;;  Version:  June 2021
 
 ;; initiated 5/15/93 v2.3, added traces 5/26
 ;; 0.1 (12/9) Added pre-emptive state variable
@@ -62,7 +62,7 @@
   "Set in checkout-hyphen-for-capseq to the position of the hyphen.
    Read in examine")
 
-(defparameter *pnf-scan-respects-segment-boundaries* t
+(defparameter *pnf-scan-respects-segment-boundaries* nil
   "If so, the scan will lookahead for anticipated cases but otherwise
    stop when a segment ']' boundary is seen.  Bound by the PNF routine.")
 
@@ -110,11 +110,8 @@
 
 (defun pnf/scan-classify-record (starting-position)
   (declare (special *show-note-candidates*))
-
   (tr :initiating-pnf starting-position)
-  (set-status :pnf-checked starting-position) ;; move below when coordinated
-                                              ;; with the scan differently
-  ;;(break "PNF starting with ~a" starting-position)
+  (set-status :pnf-checked starting-position)
   (cond
    (*capitalization-is-uninformative*
     (tr :pnf/preempted)
