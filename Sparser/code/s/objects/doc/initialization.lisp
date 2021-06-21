@@ -8,6 +8,8 @@
 ;; Initiated 10/3/13 to consolitate calls to initialize document
 ;; elements into a single place.
 
+;; OBSOLETE -- goes with Grok-era document model
+
 (in-package :sparser)
 
 
@@ -21,10 +23,3 @@
     (initialize-sentence-resource))
   (when *note-text-relations*
     (initialize-text-relationships)))
-
-
-(defun set-initial-state (&key name location)
-  (when name
-    (set-context-variable :name name))
-  (when location
-    (set-context-variable :location location)))
