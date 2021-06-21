@@ -60,7 +60,7 @@ Evaluation took:
          (wps-string (compute-words-per-second
                       word-count *time-to-read-document* units))
          (total-time *time-to-read-document*))
-    (format stream "~& ~a words  time to parse: ~a msec  ~a~%"
+    (format stream "~&~a words.  Time to parse: ~a msec  ~a~%"
             ;; (name article) "Parsing article: ~s,"
             (insert-commas-into-number-string word-count)
             (insert-commas-into-number-string total-time)
