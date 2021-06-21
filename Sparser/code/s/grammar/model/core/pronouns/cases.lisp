@@ -85,24 +85,35 @@
 (define-pronoun "each other" 'neutral        'reflexive/pronoun)
 
 
+
 ;;-- indefinites
 
 (define-indefinite-pronoun "something")
 (define-indefinite-pronoun "someone")
 (define-indefinite-pronoun "somebody")
-(define-indefinite-pronoun "somewhere")
-(define-indefinite-pronoun "sometimes")
+
 (define-indefinite-pronoun "nothing")
 (define-indefinite-pronoun "no one")
 (define-indefinite-pronoun "nobody")
 (define-indefinite-pronoun "anything")
 (define-indefinite-pronoun "anyone")
 (define-indefinite-pronoun "anybody")
-(define-indefinite-pronoun "anywhere")
-(define-indefinite-pronoun "anymore")
+
 (define-indefinite-pronoun "everything")
 (define-indefinite-pronoun "everyone")
 (define-indefinite-pronoun "everybody")
-(define-indefinite-pronoun "everywhere")
 
 (define-indefinite-pronoun "one")
+
+
+;;--- adverbial indefinites
+
+;;//// in progress (6/21) to identify/create a reasonable
+;;  adverb for time and duration.
+(define-adverb "anywhere")
+(define-adverb "everywhere")
+(define-adverb "somewhere")
+
+(define-adverb "anymore")
+
+(define-relative-time-adverb "sometimes")
