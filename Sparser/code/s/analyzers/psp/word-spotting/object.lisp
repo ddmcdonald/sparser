@@ -9,9 +9,22 @@
 
 (in-package :sparser)
 
+
+(defvar *words-to-triggers* (make-hash-table)
+  "Associates words or polywords with a instance of the spotter
+   class that is executed when the word is encountered.")
+
+(defun add-word-to-spot (word spotter)
+  (setf (gethash word *words-to-triggers*) spotter))
+
+(defun remove-word-to-spot (word)
+  (remhash word *words-to-triggers*))
+
+
+
 (defclass spotter (named-object)
   ((word :initarg :for :accessor backpointer)
-   (note :initform nil :accessor note-category)
+   (note :initarg :note :initform nil :accessor note-category)
    )
   (:documentation ""))
 

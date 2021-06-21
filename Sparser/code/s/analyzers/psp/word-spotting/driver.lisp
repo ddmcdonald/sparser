@@ -9,16 +9,7 @@
 
 (in-package :sparser)
 
-
-(defvar *words-to-triggers* (make-hash-table)
-  "Associates words or polywords with a spotter instance
-   that is executed when the word is encountered.")
-
-(defun add-word-to-spot (word spotter)
-  (setf (gethash word *words-to-triggers*) spotter))
-
-(defun remove-word-to-spot (word)
-  (remhash word *words-to-triggers*))
+;;--- hookup
 
 (defgeneric target-word-to-spot (term)
   (:documentation "Accesses the table to see if there is an entry
@@ -30,6 +21,8 @@
     (let ((entry (gethash pw *words-to-triggers*)))
       entry)))
 
+
+;;--- Recognizers
 
 (defgeneric spot-word (term)
   (:documentation "This function is seeded into the runtime
@@ -48,7 +41,7 @@
         (handle-spotted-word spotter p (chart-position-after p))))))
 
 (defgeneric spot-polyword (term)
-  (:documentation "Same operations as spot word except that we have
+  (:documentation "Same operations as spot-word except that we have
     to retrieve the position from this position, which we know to be
     immediately after where the pw ended.
     If the pattern of edges over a polyword ever changes,
