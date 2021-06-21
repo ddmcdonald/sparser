@@ -62,6 +62,12 @@
 ;;; initialization
 ;;;----------------
 
+(defun set-initial-state (&key name location)
+  (when name
+    (set-context-variable :name name))
+  (when location
+    (set-context-variable :location location)))
+
 (defun initialize-context-variables ()
   (dolist (pair *context-variables-and-init-values*)
     (set (car pair) (cdr pair))))
