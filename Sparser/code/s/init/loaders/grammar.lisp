@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:  "grammar"
 ;;;    Module:  "init;loaders;"
-;;;   version:  February 2021
+;;;   version:  June 2021
 
 ;; broken out from loaders;master-loader 4/19/94. Added Whos-news-post-dossiers-loader
 ;;  4/29 added [words;whitespace assignments].  5/25 consolidated the
@@ -92,6 +92,9 @@ omitted and then run (perhaps) after the image has been launched."
   (gate-grammar *tree-families*
     (gload "tree-families;shortcut-loader"))
 
+  (gate-grammar *default-semantics-for-NP*
+    (gload "syntax-art;early-syntactic-categories")) ;; tree-family for NP references these categories
+
   (gate-grammar *tree-families*
     ;; This should come after any of the modules whose categories
     ;; it references
@@ -102,8 +105,8 @@ omitted and then run (perhaps) after the image has been launched."
     (gload "kinds;loader")) ;; leftover categories on their way  out
 
   (gate-grammar *general-words*
-    (gload "words;loader")
     ;; the function words make reference to bracket types and upper model categories
+    (gload "words;loader")
     (gload "words;whitespace assignments"))
 
   (gate-grammar *comparatives*

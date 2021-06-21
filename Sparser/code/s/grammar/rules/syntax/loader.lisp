@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1997,2013-2020  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1997,2013-2021  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  March 2020
+;;;  Version:  June 2021
 
 ;; 3.0 (10/11/92 v2.3) Bumped to shadow old versions from extensive
 ;;      changes involving form rules and the new semantics
@@ -25,15 +25,13 @@
 ;;     (9/7/14) added [syntactic rules]. 9/11/14 added [subcategorization]
 ;;     (10/27/14) added [syntax functions]
 
-(in-package :sparser)
-
 (gate-grammar *standard-syntactic-categories*
   ;;(gload "syntax;categories") -- logically this goes here,
   ;;  but it needs to be loaded before bracket definitions that
-  ;;  reference these categories, so it's been moved into the
-  ;;  master loader
+  ;;  reference these categories, so it's been moved into
+  ;;  load-the-grammar
   ;; Same is the case for subcategorization, which needs to
-  ;;  be upstream from any category definitions
+  ;;  be upstream from any category definitions and is in the master loader
   (gload "syntax;category-predicates")
   (gload "syntax;syntactic-classes")
   (gload "syntax;syntax-methods")
@@ -55,6 +53,7 @@
 
 
 (gate-grammar *default-semantics-for-NP*
+  ;; early-syntactic-categories is in load-the-grammar by itself
   (gload "syntax-art;articles")
   (gload "syntax-art;adjectives")
   (gload "syntax-art;prepositions")
@@ -69,8 +68,7 @@
 (gate-grammar *default-quantifier-semantics*
   (gload "syntax-quant;quantifiers"))
 
-;;(gload "syntax-comp;comparatives"))
-;; Loading moved to load-the-grammar by itself
+;;(gload "syntax-comp;comparatives") Loaded directly by load-the-grammar 
 
 (gate-grammar *semantics-of-WH-words*
   (gload "syntax-comp;WH-word-semantics")
