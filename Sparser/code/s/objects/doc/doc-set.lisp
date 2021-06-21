@@ -8,9 +8,11 @@
 ;; initiated 9/2/12 to provide an object to represent a set of documents and
 ;; facts about them. Use-case in frequency calculations.
 ;; 3/29/13 Added real content.  5/1/13 Tweaked initialization. 9/17/13 fan-out
-;; from acticle makeober. 
+;; from acticle makeover. 
 
 (in-package :sparser)
+
+;; OBSOLETE -- Goes with Grok-era and earlier work
 
 ;;;--------
 ;;; object
@@ -22,8 +24,7 @@
    (merged-contents :accessor contents-of-doc-set
      :documentation "A text-relations-contents object whose fields
        are populated by summing the relations from each of the articles.
-       See collect-relations-from-articles ")
-   )
+       See collect-relations-from-articles "))
   (:documentation
    "In general there would be many document sets. For the moment (3/13)
     there is just one, assigned to a global and cleared with successive
