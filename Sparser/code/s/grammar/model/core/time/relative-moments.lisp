@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "relative moments"
 ;;;   Module:  "model;core:time:"
-;;;  version:  February 2021
+;;;  version:  June 2021
 
 ;; initiated 7/8/93 v2.3.
 ;; 0.1 (5/24/94) redid the rdata as 'time-deictic'. 6/26 fixed omission of
@@ -37,12 +37,14 @@
   :realization (:adverb name))
 
 (defun define-relative-time-adverb (string)
-  (define-individual 'relative-time-adverb :name string))
+  (define-adverb string :super-category 'relative-time-adverb))
+
+;; These are a section in dossiers/modifiers
 
 
-;; These are the phrases formed from the adverbs
-;;
-(define-category  relative-time ;; "next month"
+;;---- relative time - "next month"
+
+(define-category  relative-time
   :instantiates time
   :specializes time
   :binds ((relativizer (:or relative-time-adverb approximator sequencer))
@@ -69,8 +71,7 @@
 
 ;;--- times relative to an event
 
-;; "seven days before he arrives"
-(define-category offset-time
+(define-category offset-time ;; "seven days before he arrives"
   :instantiates time
   :specializes time
   :binds ((offset (:or amount-of-time time-unit))
