@@ -39,6 +39,13 @@
 ;;; traces
 ;;;--------
 
+(defvar *trace-note-announce* nil
+  "Minimal trace. Just one stmt per note")
+(defun announce-notes ()
+  (setq *trace-note-announce* t))
+(defun unannounce-notes ()
+  (setq *trace-note-announce* nil))
+
 (defvar *trace-note* nil
   "For tracking what we're laying down. Helps debug the cases
    when we have subsumed edges")
@@ -47,22 +54,16 @@
 (defun untrace-notes ()
   (setq *trace-note* nil))
 
-(defvar *trace-note-announce* nil
-  "Minimal trace. Just one stmt per note")
-(defun announce-notes ()
-  (setq *trace-note-announce* t))
-(defun unannounce-notes ()
-  (setq *trace-note-announce* nil))
-
-
-(deftrace :noting-category (cat-name count)
-  ;; called from note
+(deftrace :noting-category (entry edge)
+  ;; called from maybe-note
   (when (or *trace-note* *trace-note-announce*)
-    (trace-msg "NOTE: ~a ~a" cat-name count)))
+    (trace-msg "NOTE: ~a ~a ~s"
+               (name entry) (1+ (instance-count entry))
+               (string-for-edge edge))))
 
 (deftrace :edge-is-noteworthy (edge)
   ;; edge method of note?
-  (when *trace-note* =
+  (when *trace-note*
     (trace-msg "noteworthy: ~a" edge)))
 
 (deftrace :calling-cache-noteworthy-edge (edge)
@@ -148,6 +149,7 @@ discourse history.
   (cached-edge *cached-note-edge*))
 
 
+
 (defparameter *debug-cached-new-adjudication* nil)
 ;; gate around large set of unseen cases
 
@@ -176,8 +178,7 @@ discourse history.
     (cond
       ((null cached-edge)
        (tr :initializing-note-cache)
-       (load-edge-into-note-cache edge)
-       #+ignore(pass-cached-edge-to-note))
+       (load-edge-into-note-cache edge))
 
       ((edge-precedes cached-edge edge)
        ;; send the both in? or save the new one to see
@@ -189,7 +190,7 @@ discourse history.
 
       ((edge-subsumes-edge? edge cached-edge)
        (tr :edge-subsumes-cached)
-       ;; higher, lower
+       ;; edge:higher, cached-edge:lower
        (if (eq category (edge-category cached-edge))
          (load-edge-into-note-cache edge) ; replace it
          (else
@@ -235,6 +236,7 @@ discourse history.
          (break "What do we do?~%new: ~a~%cached: ~a"
                 edge cached-edge)))))
 
+;;--- possible cache actions
 
 (defun empty-note-cache ()
   (setf (cached-edge *cached-note-edge*) nil))
@@ -242,13 +244,6 @@ discourse history.
 (defun load-edge-into-note-cache (edge)
   (tr :loading-note-cache edge)
   (setf (cached-edge *cached-note-edge*) edge))
-
-
-(defun maybe-note (edge)
-  (declare (special *edges-noted*))
-  (if (memq edge *edges-noted*)
-    (tr :blocking-redundant-note edge)
-    (note edge)))
 
 (defun pass-cached-edge-to-note ()
   (let ((e (cached-note-edge)))
@@ -259,9 +254,31 @@ discourse history.
   (tr :passing-edge-to-note edge)
   (maybe-note edge))
 
-       
 (defun clear-note-edge-cache ()
   (let ((e (cached-note-edge)))
     (when e
       (tr :leftover-note e)
       (maybe-note e))))
+
+
+;;--- final step out of the cache.
+
+(defun maybe-note (edge)
+  "Check whether we're seen this edge earlier, and if not then
+   lookup the entry for the notable category on this edge,
+   take a copy of the edge's span to add to the entry and pass it
+   to the final step to get its count incremented."
+  (declare (special *edges-noted*))
+  (if (memq edge *edges-noted*)
+    (tr :blocking-redundant-note edge)
+    (else
+      (push edge *edges-noted*)
+      (let* ((value (get-entry-for-notable edge))
+             (entry (etypecase value
+                      (note-entry value)
+                      (cons (cadr value)))))
+        (add-edge-to-note-entry edge entry)
+        (tr :noting-category entry edge)
+        (note entry)))))
+  
+

@@ -3,50 +3,62 @@
 ;;;
 ;;;      File: "noteworthy"
 ;;;    Module: "grammar;rules:SDM&P:
-;;;   Version: May 2021
+;;;   Version: June 2021
 
 ;; Initiated 1/29/20 to hold the actual notes and their generalization
 
 (in-package :sparser)
 
+#+ignore ;; original -- moved to note-classes.lisp
 (defun mark-as-noteworthy (list-of-categories)
   (loop for name in list-of-categories
      as category = (category-named name :error)
      do (noteworthy category)))
 
-(mark-as-noteworthy
- '(person named-object
-   name name-word proper-name
-   initial
 
-   company
+(defparameter *noteworthy-categories*
+ 
+ '((vague-names
+    named-object pronoun
+    name name-word proper-name
+    initial)
 
-   title role-based-person
+   (identified-names
+    person
+    company
+    title
+    role-based-person)
 
-   location  location-of
-   direction
-   city us-state country
+   (places
+    location  location-of
+    direction
+    city us-state country)
 
-   time
-   date day-of-the-month
-   year month weekday time-unit
+   (time
+    time
+    date day-of-the-month
+    year month weekday time-unit)
 
-   amount
-   measurement unit-of-measure
-   number ordinal multiplier
+   (quantities
+    amount
+    measurement unit-of-measure
+    number ordinal multiplier
+    approximator)
 
-   approximator
+   (finance
+     money currency)
 
-   money currency
+   (verbs modal)
 
-   modal
-   pronoun  ;;plural --> texture
-
-   acknowledgement
-
+   (speech-acts
+    acknowledgement)
 
    ))
-;; (noteworthy 'xxxx)
+
+
+(defparameter *note-groups* ;; parameter so we can update it
+  (takeup-noteworthy-categories *noteworthy-categories*))
+
 
 ;; commas, colons, semicolons, slashes
 ;; exclamation-points

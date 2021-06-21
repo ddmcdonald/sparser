@@ -78,9 +78,14 @@ and make that file easier to understand. |#
   (when *apply-document-after-actions*
     (let ((*current-article* a))
       (declare (special *current-article*))
-      (do-section-level-after-actions a)
+      (summarize-parse-performance a)
+      (aggregate-text-characteristics a)
       (when (typep (contents a) 'aggregated-bio-terms)
-        (consolidate-aggregations a)))))
+        (consolidate-aggregations a))
+      (when (typep (contents a) 'accumulate-items)
+        (aggregate-noted-items a)
+        (consolidate-notes a))
+      a)))
 
 
       
@@ -362,6 +367,14 @@ and make that file easier to understand. |#
           (*readout-segments-inline-with-text*
            ;; proxy for with-total-quiet
            (format stream "~&~%~%")))))))
+
+(defun show-noted-categories (document-element &optional detail? (stream *standard-output*))
+  (let ((group-instances (items (contents document-element))))
+    (loop for i in group-instances
+       do (summarize-note-group i stream))))
+
+(defun summarize-note-group (group stream)
+  (format stream "~&~a: ~a" (name group) (group-count group)))
 
 
 (defgeneric display-top-bio-terms (document-element &optional stream)

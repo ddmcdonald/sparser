@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "articles"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  May 2021
+;;;  Version:  June 2021
 
 ;; 1.1  (3/28/91 v1.8.1)  Added Clear-individuals, and improved the
 ;;      conditionalization according to the load-time switches
@@ -51,6 +51,9 @@
 ;;;--------
 
 (defun per-article-initializations ()
+  "Invoked from analysis-core before any analysis starts provided
+   that the *initialize-with-each-unit-of-analysis* flag is up
+"
   (declare (special *saved-toplevel-parsing-protocol*))
 
   (when *saved-toplevel-parsing-protocol*
@@ -58,11 +61,9 @@
     (resume-old-parsing-protocol))
 
   (clear-debug) ;; zero's the stack
-  (clear-context-variables)
 
   (when *load-the-grammar*
-    (when *context-variables*
-      (initialize-context-variables))
+ 
     (clear-traversal-state)
     (clear-stack-of-pending-left-openers)
 
@@ -78,7 +79,11 @@
     (when *recognize-sections-within-articles*
       (initialize-document-element-resources)
       (begin-new-article))
-
+    
+    (when *context-variables* ; read by article initialization
+      (clear-context-variables)
+      (initialize-context-variables))
+   
     (when *include-model-facilities*
       (unless *accumulate-content-across-documents*
         ;; See description on this variable, but note
@@ -89,7 +94,7 @@
         (clean-out-history-and-temp-objects))))
 
     ;; These flags are grammar modules
-#|    (when *paragraph-detection*
+#|  (when *paragraph-detection*
       (initialize-paragraph-state))
     (when *recognize-sections-within-articles*
       (initialize-section-state)))  |#
@@ -127,6 +132,7 @@ set in. This initialization manages them.|#
   ;; what to reap
   (reclaim-temporary-individuals)
   (zero-bound-in-fields)
+  (clear-note-tables)
   (initialize-discourse-history))
 
 

@@ -327,9 +327,12 @@
 ;;;--------------------------------------------
 ;;; what 'noteworthy' individuals have we seen
 ;;;--------------------------------------------
+#| Convenient viewer. 'a' is bound to the article
 
-;; accumulate-items class holds an alist of count of
-;;  noted categories.
+(loop for p in (paragraphs-in-doc-element a)
+   do (loop for s in (sentences-in-paragraph p)
+         do (print (items (contents s)))))
+|#
 
 (defgeneric collect-noted-items (doc-element)
   (:documentation "The accumulate-items class holds
@@ -340,12 +343,12 @@
     (let* ((sentences (sentences-in-paragraph p))
            (contents (loop for s in sentences collect (contents s)))
            (alists (loop for c in contents
-                      when (items c) collect (items c))))         
+                      when (items c) collect (items c))))       
       (when alists
         ;;(format t "~&Items alists for ~a~%~a~%" p alists)
+        ;;(push-debug `(,alists)) (break "do merge")
         (setf (items (contents p))
-              (merge-items-alist alists))
-        #+ignore(format t "~&merged alist: ~a~%~%" (items (contents p))))
+              (merge-items-alist alists)))
       p)))
 
 (defgeneric aggregate-noted-items (doc-element)
@@ -362,33 +365,72 @@
               (merge-items-alist alists)))
       parent)))
 
-
 (defun merge-items-alist (alists)
   (let ((merged-alist (first alists))) ; prime the pump
     (loop for alist in (cdr alists)
-       do (loop for (name number) in alist
-             ;; walk through the alist
-             do (let ((entry (assoc name merged-alist :test #'eq)))
+       do (loop for (name note-entry) in alist
+             do (let ((known-entry (cadr (assoc name merged-alist :test #'eq))))
                   (cond
-                    (entry ;; bump up the number
-                     (let* ((base (cadr entry))
-                            (sum (+ base number)))
-                       (setf (cadr entry) sum)))
+                    (known-entry ;; bump up the number
+                     (let* ((base (instance-count known-entry))
+                            (increment (instance-count note-entry))
+                            (sum (+ base increment)))
+                       (setf (instance-count known-entry) sum))
+                     (let* ((base-strings (edge-strings known-entry))
+                            (incr-strings (edge-strings note-entry))
+                            (merge (append incr-strings base-strings)))
+                       (setf (edge-strings known-entry) merge)))
                     (t ;; add this pair to the merged list
-                     (push `(,name ,number) merged-alist))))))
+                     (push `(,name ,note-entry) merged-alist))))))
     merged-alist))
-          
 
-#| Convenient viewer. 'a' is bound to the article
 
-(loop for p in (paragraphs-in-doc-element a)
-   do (loop for s in (sentences-in-paragraph p)
-         do (print (items (contents s)))))
+(defgeneric consolidate-notes (doc-element)
+  (:documentation "The noteworthy categories are organized into groups.
+    At this step we aggregate the individual note-instances into their
+    groups, replacing the items field with a list of note-group-instance(s)")
+  (:method ((a article))
+    (let* ((content (contents a))
+           (entries (items content))
+           alist  groups )
+      ;; 1st distribute the note entries in an alist by group name
+      (flet ((add-to-alist (group note-entry)
+               (let* ((group-name (name group))
+                      (group-entry (assoc group-name alist)))
+                 (cond
+                   ((null alist) ; very first time
+                    (setq alist (list (list group-name note-entry))))
+                   ((null group-entry) ; nothing for this one
+                    (push (list group-name note-entry) alist))
+                   (group-entry
+                    (push note-entry (cdr group-entry)))
+                   (t (break "shouldn't get here"))))))
+        (loop for pair in entries
+           as note-entry = (second pair)
+           as notable = (notable note-entry)
+           as group = (part-of-group notable)
+           do (add-to-alist group note-entry)))
 
-(run-specific-acumen-file 217 :quiet nil)
-
-|#
-
+      ;; 2d convert the alist into a list of group instances
+      (flet ((create-group-instance (name entries)
+               (let ((gi (find-or-make-note-group-instance name))
+                     (sum (loop for entry in entries
+                             sum (instance-count entry))))
+                 (setf (for gi) a)
+                 (setf (note-entries gi) entries)
+                 (setf (group-count gi) sum)
+                 gi)))
+        (let ((group-instances
+               (loop for alist-entry in alist
+                  as group-name = (car alist-entry)
+                  as note-entries = (cdr alist-entry)
+                  collect (create-group-instance group-name note-entries))))
+          (let ((sorted-instances (sort (copy-list group-instances)
+                                        'sort-note-group-instances)))
+            (setf (items content) sorted-instances)
+            a ))))))
+    
+    
                               
 
 ;;;--------------------------------

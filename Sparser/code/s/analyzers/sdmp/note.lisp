@@ -10,6 +10,7 @@
 
 (in-package :sparser)
 
+
 ;;--- record what we want to note
 
 (defvar *noteworthy-categories* nil)
@@ -35,27 +36,30 @@
 
 ;;--- runtime lookup
 
-;; (trace-notes)
+;; (trace-notes) ; verbose
+;; (announce-notes) ; just the act of noting
 
 (defgeneric noteworthy? (item)
   (:documentation "Is this item something that is noteworthy?
     An item, usually an individiual of a particular category,
     is noteworthy if there is a statement to that effect in
     the grammar.
-    Used as a gate controling whether this is an item to record.")
+S    Used as a gate controling whether this is an item to record.")
 
   (:method ((e edge))
-    (or (noteworthy? (edge-referent e))
-        (noteworthy? (edge-category e))
-        (noteworthy? (edge-form e))))
-  
+    (cond ;; this is effectively an OR but we want values not the boolean
+      ((noteworthy? (edge-referent e)))
+      ((noteworthy? (edge-category e)))
+      ((noteworthy? (edge-form e)))
+      (t nil)))
+
   (:method ((w word)) nil)
   (:method ((pw polyword)) nil)
   (:method ((ignore null)) nil)
 
   (:method ((i individual))
     (loop for c in (indiv-type i)
-       when (noteworthy? c) return t))
+       when (noteworthy? c) return (noteworthy? c)))
 
   (:method ((c category))
     (get-tag :noteworthy c)))
@@ -84,7 +88,7 @@
   (:method ((list cons))
     "Call from pnf/scan-classify-record will return a list of edges
      when it can't decide between them"
-    ;; drop on the floor. Hits in 200, 201, 202, 203
+    ;; Hits in 200, 201, 202, 203
     (let ((noteworthy (loop for item in list
                          when (noteworthy? item) collect item)))
       (when noteworthy
@@ -125,7 +129,9 @@
     class. For now, an alist on the category recording the count
     of how many we got. Like entities-and-relations we could make
     this more interesting at higher layers of document structure.")
+  ;; All but the last signature are OBE because of the cache machinery
 
+  #+ignore
   (:method ((e edge))
     (declare (special *edges-noted*))
     (push e *edges-noted*)
@@ -138,10 +144,12 @@
                    (t (break "no noteworthy info on ~a" e)))))
       (note c)))
 
+  #+ignore
    (:method ((i individual))
     (loop for c in (indiv-type i)
        do (note c)))
 
+  #+ignore
   (:method ((c category)) 
     (unless (current-script :biology)
       (let ((s (sentence))
@@ -151,16 +159,14 @@
           (unless (and container (typep container 'accumulate-items))
             (error "wrong kind of container"))
 
-          (let* ((alist ;;(slot-value container 'items-alist))
-                  (items container))
+          (let* ((alist (items container))
                  (entry (assoc name alist :test #'eq)))
-            (push-debug `(,container ,entry ,alist))
             (cond
-              ((null alist)
-               (setf (items container) (list (list name 1))))
-              (entry
+              ((null alist) ; initialization
+               (setf (items container) (list (list name 1)))) ; never backquote!
+              (entry ; another instance of a category we've seen
                (incf (cadr entry)))
-              (t
+              (t ; a new category
                (setf (items container)
                      (cons (list name 1) alist))))
 
@@ -169,52 +175,11 @@
                    (count (cadr entry1)))
               (when (null count)
                 (push-debug `(,entry1 ,alist1)) (break "no counts"))
-              (tr :noting-category name count)) ))))))
+              ) )))))
 
-#+ignore ;; instrumented version to look at cases.
-;; original problem was that `((,item 1)) let SBCL share the
-;; (cons 1 nil) across the whole list.
-  (:method ((c category))
-    (unless (current-script :biology)
-      (let ((s (sentence))
-            (name (cat-name c)))
-        (unless s (error "Current-sentence is not defined"))
-        (let ((container (contents s)))
-          (unless (and container (typep container 'accumulate-items))
-            (error "wrong kind of container"))
-
-          (format t "~&~%noting ~a~%" name)
-          (let* ((alist ;;(slot-value container 'items-alist))
-                  (items container))
-                 (entry (assoc name alist :test #'eq)))
-            (push-debug `(,container ,entry ,alist))
-            
-            (cond
-              ((null alist)
-               (setf (items container)
-                     ;;(slot-value container 'items-alist)
-                     (list (list name 1)))
-               (format t "~&Null alist. items: ~a~%" (items container))
-               )
-              (entry
-               (format t "~&Before Increment: entry: ~a~%" entry)
-               (push-debug `(,entry ,alist ,container)) (break "incr")
-               (incf (cadr entry))
-               (format t "~&After Increment: entry: ~a~%" entry)
-               )
-              (t
-               ;; (slot-value container 'items-alist)
-               (format t "~&New item.")
-               (setf (items container)
-                     (cons (list name 1) alist))
-               (format t "~&after alist: ~a" (items container))))
-
-            (format t "~&Final alist: ~a~%" (items container)) (break "Break ?")
-
-            (let* ((alist1 (items container))
-                   (entry1 (assoc name alist1 :test #'eq))
-                   (count (cadr entry1)))
-              (when (null count)
-                (push-debug `(,entry1 ,alist1)) (break "no counts"))
-              (tr :noting-category name count))))))) 
+  (:method ((entry note-entry))
+    "Increment the count. Everything else has been handled upstream,
+     The call to get-entry-for-notable within maybe-note did most all
+     of what the earlier version of this did."
+    (increment-note-entry entry)))
 

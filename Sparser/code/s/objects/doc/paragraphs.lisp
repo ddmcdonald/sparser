@@ -268,6 +268,7 @@ set up the sentences state (initialize-sentences)  |#
     (stop-timer '*time-to-read-document*)
     (report-time-to-read-article article)
     (show-parse-performance article)
+    (show-noted-categories article)
 
     article))
     

@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1999,2011-2020  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2021  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "sort"
 ;;;    Module:  "interface;grammar:"
-;;;   version:  May 2020
+;;;   version:  June 2021
 
 ;; initiated 3/10/92 v2.2, elaborated 3/19,21,26
 ;; 0.1 (6/7/93 v2.3) Added appreciation of form rules to the combined
@@ -416,3 +416,13 @@
     ((> (second entry2) (second entry1)) nil)
     (t (string< (car entry1) (car entry2)))))
 
+
+;;;--------------------------------------------------
+;;; lists of items with the count embedded in a slot
+;;;--------------------------------------------------
+
+(defun sort-note-group-instances (ngi1 ngi2)
+  (cond
+    ((> (group-count ngi1) (group-count ngi2)) t)
+    ((> (group-count ngi2) (group-count ngi1)) nil)
+    (t (string< (name ngi1) (name ngi2)))))
