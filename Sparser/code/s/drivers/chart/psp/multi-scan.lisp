@@ -274,6 +274,11 @@
                  (pos-token-index position-before)
                  (or word edge)
                  position-after))
+       (when edge
+         (when (memq (edge-cat-name edge) '(person-prefix)) ; what else?
+           ;; Check for polyword edge (from the first sweep) masking
+           ;; the start of a proper name
+           (setq word (pos-terminal (pos-edge-starts-at edge)))))
        (when word
          (tr :check-word-level-fsa-trigger position-before)
          (multiple-value-bind (fsa word-variant)
@@ -282,7 +287,8 @@
                             *pnf-routine*)))
              (when (or fsa pnf?)
                (flet ((apply-fsa (fsa) (run-fsa fsa word-variant position-before))
-                      (apply-pnf () (pnf position-before)))
+                      (apply-pnf ()
+                        (pnf position-before (when edge (pos-edge-ends-at edge)))))
                  (let ((where-fsa-ended
                         (cond
                           ((and fsa pnf?) (apply-pnf))

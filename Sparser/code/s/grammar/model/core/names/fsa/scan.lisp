@@ -228,11 +228,9 @@
 
       (else
         (tr :lc-introduces-]-but-actual-doesnt position-before)
-        #+ignore ;; when did this partial continuation get distorted?
-        (;;checkout-continuation-for-non-punctuation
-         non-boundary-continuation/bracket-checked
+        (checkout-continuation-for-non-punctuation
          position-before
-         position-after
+         'non-boundary-continuation/bracket-checked
          cap-state)
         position-before))))
 

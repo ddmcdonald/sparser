@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1995,2012-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2012-2013,2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "names"
 ;;;   Module:  "model;core:people:"
-;;;  version:  1.5 September 2013
+;;;  version:  June 2021
 
 ;; initiated 6/8/93 v2.3, added indexes 6/15.
 ;; 1.1 (1/7/94) Beginning to simplify the indexing.  Tweeked that 10/3.
@@ -82,7 +82,7 @@
 
 ;;--- make
 
-(defun make-person-name-from-items (items &key version sequence)
+(defun make-person-name-from-items (items &key version sequence prefix)
   ;; Called from Categorize-and-form-name
   ;; The 'version' argument is an index into the list of items.
   (let ((sequence (or sequence
@@ -97,6 +97,11 @@
                   (define-individual 'person-name
                     :sequence sequence
                     :last-name last-name))
+                 ((and (null first-name) prefix) ;; "St. Patrick"
+                  (define-individual 'person-name/first-last
+                    :sequence sequence
+                    :last-name last-name
+                    :standard-prefix prefix))
                  (first-name ;; check for initials, multiple terms
                   (define-individual 'person-name/first-last
                     :sequence sequence

@@ -134,7 +134,7 @@
         (position starting-position)
         tt  tt-category  label  items  next-position already-pushed?
         name-state  edge-labeled-by-word multiple-treetops
-        &-sign  initials?  person-version  inc-term?  of  and  the  slash
+        &-sign  initials?  person-version person-prefix  inc-term?  of  and  the  slash
         generic-co co-activity koc?  ordinal  flush-suffix  tt-before-hyphen hyphen
         country  title  weekday music-note month  other
         location-head  location  hurricane)
@@ -366,17 +366,10 @@
               (setq ordinal `(,count . ,(edge-referent tt))))
 
              (category::person-prefix  ;; e.g. "Mr."
-              ;; we don't want this included as part of the name, so we use
-              ;; the escape route through the catch in Classify-&-record-span
-              ;; and indicate that this part of the sequence should be rejected
-              ;; from the proper name, leaving the rest of it to be picked up
-              ;; again and resumed in a moment by an independent call to PNF.
-              (if *hyphen-seen*
-                (if (eq *hyphen-seen* (pos-edge-ends-at tt))
-                  ;; can't leave out the prefix. It will bind to the following term
-                  (setq tt-before-hyphen tt)
-                  (throw :leave-out-prefix (pos-edge-ends-at tt)))
-                (throw :leave-out-prefix (pos-edge-ends-at tt))))
+              (when (and *hyphen-seen*
+                         (eq *hyphen-seen* (pos-edge-ends-at tt)))
+                (setq tt-before-hyphen tt))
+              (setq person-prefix (cons count (edge-referent tt))))
                
              (category::person-version    ;; e.g. "Jr."
               (setq person-version (cons count (edge-referent tt))))
@@ -560,7 +553,7 @@
         (let ((name
                (categorize-and-form-name (referents-of-list-of-edges items)
                                          name-state country title
-                                         &-sign initials? person-version
+                                         &-sign initials? person-version person-prefix
                                          inc-term? of and the generic-co co-activity
                                          koc? ordinal location-head hurricane
                                          other)))
@@ -578,7 +571,7 @@
 
 (defun categorize-and-form-name (items 
                                  name-state country title
-                                 &-sign initials? person-version
+                                 &-sign initials? person-version person-prefix
                                  inc-term? of and the generic-co co-activity
                                  koc? ordinal location-head hurricane
                                  other )
@@ -623,6 +616,7 @@
                   (ordinal ;; this is weak evidence --> limited partnerships
                    category::person-name )
                   (person-version category::person-name)
+                  (person-prefix category::person-name)
                   ;;////(hurricane category::hurricane) ;; sl dependent
                   (t category::name)))
           name )
@@ -670,6 +664,12 @@
             (error "Oddly formatted person-version: ~a" person-version))
           (setq person-version (cdr person-version))))
 
+      (when person-prefix ;; 'St.'
+        (if (= (car person-prefix) 1)
+          (setq items (cdr items))
+          (break "Funny person-prefix: ~a" person-prefix))
+        (setq person-prefix (cdr person-prefix)))
+
       ;;--- Make the name
       (tr :name-category-is category)
       (setq name
@@ -684,7 +684,8 @@
               (category::person-name
                (if and
                  (make-a-collection-of-person-names items and person-version)
-                 (make-person-name-from-items items :version person-version)))
+                 (make-person-name-from-items
+                  items :version person-version :prefix person-prefix)))
               (category::company-name
                (make-company-name-from-items items
                  :&-sign &-sign          :ordinal ordinal

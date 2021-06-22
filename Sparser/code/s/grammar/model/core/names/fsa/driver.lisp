@@ -87,7 +87,7 @@
   (setq *pnf-routine* keyword))
 
 
-(defun pnf (starting-position)
+(defun pnf (starting-position &optional continue-pos)
   "Invoked from word-level-fsa-sweep when pnf is loaded,
    *pnf-routine* has been given a value, and the
    word that the sweep has reached is capitalized. "
@@ -95,7 +95,7 @@
     (error "no value supplied for the PNF routine"))
   (ecase *pnf-routine*
     (:scan-classify-record
-     (pnf/scan-classify-record starting-position))
+     (pnf/scan-classify-record starting-position continue-pos))
     (:scan/ignore-boundaries
      (pnf/scan/ignore-boundaries starting-position))
     (:scan/ignore-boundaries/initials-ok
@@ -108,7 +108,7 @@
 
 ; (establish-pnf-routine :scan-classify-record)
 
-(defun pnf/scan-classify-record (starting-position)
+(defun pnf/scan-classify-record (starting-position &optional continue-pos)
   (declare (special *show-note-candidates*))
   (tr :initiating-pnf starting-position)
   (set-status :pnf-checked starting-position)
@@ -126,12 +126,12 @@
     (set-status :pnf-checked
                 starting-position)
     (let ((*pnf-has-control* t)
-          (*pnf-scan-starts-here* starting-position)
-          (*pnf-scan-respects-segment-boundaries* t))
+          (*pnf-scan-starts-here* starting-position))
 
       (let* ((*pnf-end-of-span*
-              (cap-seq-continues-from-here? (chart-position-after
-                                             starting-position)))
+              (cap-seq-continues-from-here?
+               (or continue-pos
+                   (chart-position-after starting-position))))
              (*text-span-of-pnf-analysis*
               (extract-characters-between-positions *pnf-scan-starts-here*
                                                     *pnf-end-of-span*)))

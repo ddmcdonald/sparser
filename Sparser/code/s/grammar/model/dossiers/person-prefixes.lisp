@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1995,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2013,2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "person prefixes"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  July 2013
+;;;  version:  June 2021
 
 ;; initiated 6/8/93 v2.3.  Moved the form to main file 2/23/95
 ;; 7/15/13 added "Saint".
@@ -20,4 +20,9 @@
 (define-person-prefix :abbrev "dr")
 (define-person-prefix :full "Saint" :abbrev "St")
 (define-person-prefix :full "sir")
+
+(define-person-prefix :full "el")
+
+(define-person-prefix :full "Right" :abbrev "Rt")
+(define-person-prefix :full "Honorable" :abbrev "Hon")
 
