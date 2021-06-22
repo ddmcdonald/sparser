@@ -348,7 +348,7 @@
     (adverb (setup-adverb word))
     (adjective (setup-adjective word))
     (verb (setup-verb word nil))
-    (noun (setup-common-noun word))))
+    ((noun common-noun) (setup-common-noun word))))
 
 
 ;;--- gofers

@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "affix rules"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  April 2021
+;;;  Version:  June 2021
 
 ;; moved over from preterminals code 5/11/93, v2.3
 ;; 0.1 (3/28/94) changed the 'rule' on these edges from :known-affix to
@@ -297,7 +297,7 @@
   (when (eq form-category category::ends-in-s)
     ;; They punted. Somebody needs to decide plural noun vs. verb
     ;; /// default w/o thinking
-    (setq form-category category::noun))
+    (setq form-category category::common-noun))
   
   (let* ((edge (make-edge-over-unknown-word
                 word pos-before pos-after
