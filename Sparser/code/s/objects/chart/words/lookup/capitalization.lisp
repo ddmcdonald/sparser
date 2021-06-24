@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990-1996,2012-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1996,2012-2021 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "capitalization"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:  August 2017
+;;;  Version:  Junw 2021
 
 ;; initiated 10/90
 ;; 0.1 (11/23/92 v2.3) Revised slightly to appreciate the case where the
@@ -178,7 +178,8 @@
   ;; and they need the word it corresponds to. If it doesn't already
   ;; exist they want it made.   This is essentially the routine just
   ;; above except that the caller doesn't have to know how to look up
-  ;; caps-type of the position. 
+  ;; caps-type of the position.
+  (declare (special *pnf-has-control*))
   (let ((caps-type (pos-capitalization position)))
     (or (capitalized-version lc-word caps-type)
         (let ((new-string
@@ -191,6 +192,10 @@
                   (string-upcase (word-pname lc-word)))
                  (:mixed-case
                   (get-word-string-from-position lc-word position))
+                 (:lower-case
+                  (if *pnf-has-control*
+                    (break "new lower-case word in PNF: ~a" lc-word)
+                    (break "lowercase in unknown situation: ~a" lc-word)))
                  (:punctuation (word-pname lc-word))
                  (:digits (word-pname lc-word)))))
 
