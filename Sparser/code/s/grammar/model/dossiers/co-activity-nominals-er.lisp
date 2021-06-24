@@ -9,6 +9,8 @@
 
 (in-package :sparser)
 
+
+(define-co-activity-nominal/er "broadcaster")
 (define-co-activity-nominal/er "contractor")
 (define-co-activity-nominal/er "developer")
 (define-co-activity-nominal/er "drugmaker")
