@@ -21,7 +21,7 @@
   "If this flag is on, Unexpected situations in the code that are
    marked by calls to Break/debug will cause breaks.  Otherwise they
    will lead to format statements with the same information the
-   break would have supplied."
+   break would have supplied.")
   
 
 (defparameter *stream-for-bug-messages* *standard-output*)
