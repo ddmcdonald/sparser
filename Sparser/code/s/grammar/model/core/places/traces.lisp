@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2017-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2017-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "traces"
 ;;;   Module:  "model;core:places:"
-;;;  version:  June 2019
+;;;  version:  June 2021
 
 ;; For trace functions about location. Initially mostly the methods.
 ;; N.b. now holds other methods traces so they can be in the same file.
@@ -133,13 +133,19 @@
  
 (deftrace :next+month (month)
   ;; in modifier+noun method
-  (when *trace-referent-creation*
+  (when *trace-methods*
     (trace-msg "Method call: next + ~a" month)))
+
+(deftrace ::a+time-unit (determiner unit)
+  ;; in apply-determiner in time-methods file
+  (when *trace-methods*
+    (trace-msg "Composing determiner (i~a) with time-unit (i~a)"
+               (indiv-uid determiner) (indiv-uid  unit))))
 
 (deftrace :phase+time (phase time)
   (when *trace-methods*
-    (trace-msg "Compose-of: i~a + i~a" phase time)))
-
+    (trace-msg "Compose-of: i~a + i~a"
+               (indiv-uid phase)  (indiv-uid time))))
 
 
 ;;--- For related syntax-functions functions.

@@ -3,12 +3,30 @@
 ;;;
 ;;;      File:   "time-methods"
 ;;;    Module:   "grammar/model/core/time/"
-;;;   Version:   February 2021
+;;;   Version:   June 2021
 
 ;; created 6/1/14 to load preposition and sequencer methods after the dossiers
 ;; that load them. 
 
 (in-package :sparser)
+
+;; (trace-methods)
+
+
+;; "a month" -> amount-of-time
+(def-k-method apply-determiner ((determiner category::a) (unit category::time-unit))
+  "This is implements interpreting the determiner 'a' as though it were
+   a number - the same as 'one'"
+  ;; runs in determiner-noun
+  (declare (special *subcat-test*))
+  (if *subcat-test*
+    t
+    (else
+      (tr :a+time-unit determiner unit)  
+      (let ((n (find-number 1)))
+        (revise-parent-edge :category (category-named 'amount-of-time))
+        (make-amount-of-time n unit)))))
+  
 
 
 ;; "before today"
