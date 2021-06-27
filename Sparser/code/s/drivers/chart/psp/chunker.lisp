@@ -430,7 +430,7 @@
                                      edge
                                      (cdr (member ev (chunk-ev-list chunk))))))
                             (vg (vg-compatible?
-                                 (cat-symbol (edge-form edge))))
+                                 (edge-form-name edge)))
                             (adjg (adjg-compatible? edge))))))
        do
          (unless  (member (edge-cat-name edge)
