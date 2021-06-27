@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "multi-scan"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  May 2021
+;;;  version:  June 2021
 
 ;; Broken out of no-brackets-protocol 11/17/14 as part of turning the
 ;; original single-pass sweep into a succession of passes. Drafts of
@@ -876,6 +876,7 @@
          (eq (edge-category right-edge) category::number))
 
         (itypep (edge-referent left-edge) 'approximator) ; "only 35%"
+        (itypep (edge-referent right-edge) 'time-unit) ; 'a month'
 
         (not (pos-preceding-whitespace mid-pos))
         (and (eq script :biology)
