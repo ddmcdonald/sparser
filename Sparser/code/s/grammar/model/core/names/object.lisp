@@ -392,7 +392,7 @@ with sequences we'd prefer that PNF handled directly.
       ;; The catch is in collect-no-space-segment-into-word
       (throw :punt-on-nospace-without-resolution nil))
 
-    (break "OK? Will reify ~s" string)
+    (format t "Spelled-name reifying ~s" string)
     ;;(push-debug `(,words ,string)) (break "look here")
 
     (let* ((pnames (actual-strings-for-list-of-words words string))
