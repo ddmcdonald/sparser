@@ -215,11 +215,13 @@
        (tr :ns-looking-at-hyphen-patterns)
        (or (resolve-hyphen-pattern pattern start-pos end-pos)
            (reify-ns-name-and-make-edge start-pos end-pos)))
+      
       ((find-if #'(lambda(x)(other-punct? x)) pattern)
        ;; this probably has to be spread over the other cases
        ;; in some sort of combination, but this is a start
        ;;(tr :ns-other-punct other-punct)
        (resolve-other-punctuation-pattern pattern start-pos end-pos))
+      
       (t 
        (tr :ns-taking-default)
        (or (resolve-ns-pattern pattern start-pos end-pos)
@@ -247,6 +249,23 @@
           (and (category-p label)
                (memq label *categories-based-on-apostrophe*)))))))
 
+
+(defgeneric punct-never-ending-no-space (last-edge)
+  (:documentation "Called as one of the criteria in reason-to-not-span-ns
+     which is sort of compensating for not having a thorough coverge of
+     no-space patterns. Inital targets are comma and period.
+     The call is based on the treetops between start and end, so it can
+     pass a word as the final TT. ")
+  (:method ((e edge))
+    (let ((category-label (edge-category e)))
+      (when (word-p category-label)
+        (punct-never-ending-no-space category-label))))
+  (:method ((w word)) ;; (breast) "cancer."
+    (declare (special word::comma word::period word::question-mark
+                      word::exclamation-point word::close-angle-bracket))
+    (memq (word-symbol w) '(word::comma word::period word::question-mark
+                            word::exclamation-point word::close-angle-bracket))))
+ 
 
 
 ;;;-------------------------------------------
@@ -407,6 +426,7 @@
 (defun reason-to-not-span-ns (start-pos end-pos)
   (declare (special word::|s|))
   (let* ((edges (treetops-between start-pos end-pos))
+         (last-edge (car (last edges)))
          (form-labels
           (loop for e in edges
              when (edge-p e)
@@ -423,8 +443,10 @@
                            ;;(pushnew symbol *no-form-cats*)
                            symbol))))
          (form-symbols (loop for l in form-labels
-                             when l collect (if (category-p l) (cat-symbol l) l))))
-    (or (and (edge-p (car edges))
+                          when l collect (if (category-p l) (cat-symbol l) l))))
+    
+    (or (punct-never-ending-no-space last-edge)
+        (and (edge-p (car edges))
              (itypep (edge-referent (car edges)) 'year)
              (edge-p (second edges))
              (eq (edge-category (second edges)) word::|s|))

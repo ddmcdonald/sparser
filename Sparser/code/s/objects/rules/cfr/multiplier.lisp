@@ -127,8 +127,10 @@ then we immediately return from the call without creating an edge.
              '(cellular-location cell-type cell-line
                protein transcription-factor ; protein
                protein-domain binding-domain ; protein-domain
+               molecule ; "Ct" in bio;other-defs-from-reach
                fiscal-quarter ; core/time/fiscal
                amino-acid ; "his"
+               timezone ; dossiers/timezones, masks some state names - "CT"
                )))
       (:nothing
        (setq *rule-categories-to-ignore* nil)))))

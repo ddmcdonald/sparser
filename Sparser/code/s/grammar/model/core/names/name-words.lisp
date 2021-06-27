@@ -277,9 +277,12 @@
            (word (typecase daughter
                    (word daughter)
                    (edge (find-word-under daughter)))))
-
-      (or (name-word-for-word word)
-          (make-name-word-for/silent word (pos-edge-starts-at edge))))
+      (if (memq word *lc-person-words*)
+        (make-name-word-for/silent word (pos-edge-starts-at edge)
+                                   :use-lowercase-word t)
+        (else
+          (or (name-word-for-word word)
+              (make-name-word-for/silent word (pos-edge-starts-at edge))))))
 
     ;; more than one word (e.g. "Per Share")
     (let* ((pw-string (polyword-multiword-string-for-list-of-words

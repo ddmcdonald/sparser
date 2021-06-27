@@ -1557,9 +1557,6 @@ new file to append to new-prot-fam, those without get filtered to "
 (defparameter *suspect-trips-defs* nil)
 (defvar *trips-words-hash* (make-hash-table :size 5000 :test #'equal))
 
-(defun capitalized? (string)
-  (and (upper-case-p (char string 0))
-       (every #'lower-case-p (subseq string 1))))
 
 (defun new-trips-defs->krisp-defs (file &optional (suppress-redef nil)) ;; ADD covid-rxiv-defs; to filename
   (setq *suppress-redefinitions* suppress-redef)

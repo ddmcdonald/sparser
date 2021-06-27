@@ -74,6 +74,9 @@
 
 (define-approximator/determiner "around")
 
+(define-approximator/determiner "a bit") ; "just a bit more unpopular"
+(define-approximator/determiner "a little bit")
+
 (define-approximator/determiner "approximately")
 (define-approximator/determiner "at least")
 (define-approximator/determiner "at most")
@@ -441,6 +444,7 @@
 (define-adverb "erroneously")
 (define-adverb "essentially")
 (define-adverb "ethically")
+(define-adverb "even")
 (define-adverb "evenly")
 (define-adverb "evidently")
 (define-adverb "evocatively")

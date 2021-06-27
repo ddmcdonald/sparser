@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1995,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2013,2021 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "debugging"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  August 2013
+;;;  Version:  June 2021
 
 ;; initiated 3/91. Added *..new-cases* 6/13/95.  Started the debugging flags
 ;; accumulator 7/25. Added to it 8/9.  Moved the two pre-existing flags into
@@ -11,33 +11,20 @@
 ;; 8/22/13 added *debug-pronouns*.
 
 (in-package :sparser)
-(defvar *ANNOUNCE-MISSING-SORT-ROUTINES*)
-(defvar *DEBUG-PRONOUNS*)
-(defvar *DEBUG-PNF*)
-(defvar *BREAK-ON-NEW-CATEGORIES-IN-CAP-SEQ*)
-(defvar *BREAK-ON-NEW-NAME-CONVERTER-CASES*)
-(defvar *BREAK-ON-NEW-BRACKET-SITUATIONS*)
-(defvar *ANNOUNCE-MISSING-SORT-ROUTINES*)
-(defvar *DEBUG-PRONOUNS*)
 
 
-(defparameter *break-on-new-cases* t
+(defparameter *break-on-new-cases* nil
   "Intended as a gate on any stubs that are put in the grammar code
    in the course of developing new rules.")
-
-
-;;;---------------------------------------------
-;;; 3/91 scheme for turning off all breakpoints
-;;;---------------------------------------------
 
 (defparameter *break-on-unexpected-cases* nil
   "If this flag is on, Unexpected situations in the code that are
    marked by calls to Break/debug will cause breaks.  Otherwise they
    will lead to format statements with the same information the
-   break would have supplied.")
+   break would have supplied."
+  
 
 (defparameter *stream-for-bug-messages* *standard-output*)
-
 
 (defun break/debug (format-string &rest args)
   (if *break-on-unexpected-cases*
@@ -45,12 +32,22 @@
     (apply #'format *stream-for-bug-messages* format-string args)))
 
 
+(defparameter *warn-or-error-choice* :warn) ;; :error)
+
+(defun warn-or-error (datum &rest arguments)
+  (case *warn-or-error-choice*
+    (:error (apply #'error (cons datum arguments)))
+    (:warn (apply #'warn (cons datum arguments)))))
+
 
 ;;;-----------------------------------------------
 ;;; aggregating point for all the debugging flags
 ;;;-----------------------------------------------
 
 (defun turn-on-debugging-flags ()
+  (declare (special *announce-missing-sort-routines* *debug-pronouns* *debug-pnf
+                    *break-on-new-categories-in-cap-seq* *break-on-new-name-converter-cases*
+                    *break-on-new-bracket-situations* *announce-missing-sort-routines*))
   (setq *announce-missing-sort-routines* t
         *debug-treetops* t
         *debug-pronouns* t
@@ -67,6 +64,9 @@
         ))
 
 (defun turn-off-debugging-flags ()
+  (declare (special *announce-missing-sort-routines* *debug-pronouns* *debug-pnf
+                    *break-on-new-categories-in-cap-seq* *break-on-new-name-converter-cases*
+                    *break-on-new-bracket-situations* *announce-missing-sort-routines*))
   (setq *announce-missing-sort-routines* nil
         *debug-treetops* nil
         *debug-pronouns* nil

@@ -303,7 +303,7 @@
 
         (when *print-text-stats*
           (format t "~&Paragraph ~a.  ~a sentences  ~a words.
-                   ~%~%"
+                   ~%"
                   p (length sentences) word-count
                   ))
         word-count ))))
@@ -327,44 +327,57 @@
 ;;;--------------------------------------------
 ;;; what 'noteworthy' individuals have we seen
 ;;;--------------------------------------------
-#| Convenient viewer. 'a' is bound to the article
-
-(loop for p in (paragraphs-in-doc-element a)
-   do (loop for s in (sentences-in-paragraph p)
-         do (print (items (contents s)))))
-|#
 
 (defgeneric collect-noted-items (doc-element)
   (:documentation "The accumulate-items class holds
     an alist of the count of noted categories. See the
     function 'note' for details. Specialized to the relationship
-    between a paragraph and the sentences in it.")
+    between a paragraph and the sentences in it.
+    This is called during the paragraph after-action method
+    to merge sentence-level notes to the paragraph level.")
   (:method ((p paragraph))
     (let* ((sentences (sentences-in-paragraph p))
            (contents (loop for s in sentences collect (contents s)))
            (alists (loop for c in contents
                       when (items c) collect (items c))))       
       (when alists
-        ;;(format t "~&Items alists for ~a~%~a~%" p alists)
-        ;;(push-debug `(,alists)) (break "do merge")
-        (setf (items (contents p))
-              (merge-items-alist alists)))
-      p)))
+        (let ((merged-alist (merge-items-alist alists)))
+          (setf (items (contents p)) merged-alist)
+          p)))))
 
 (defgeneric aggregate-noted-items (doc-element)
-  (:documentation"Carries out the same thing as collect-noted-items
-    but over the elements children uniformly")
+  (:documentation "Called as part the section level after-actions and
+    again at the article level before it consolidates them.
+    Modeled on paragraph level, but pulling from the paragraphs.")
   (:method ((parent has-children))
     (let* ((children (children parent))
            (contents (loop for c in children collect (contents c)))
            (alists (loop for d in contents
                       when (items d) collect (items d))))
       (when alists
-        ;;(push-debug `(,alists)) (print alists) (break "sect alist")
-        (setf (items (contents parent))
-              (merge-items-alist alists)))
+        (let ((merged-alist (merge-items-alist alists)))
+          (setf (items (contents parent)) merged-alist)))
       parent)))
 
+(defun merge-items-alist (alists)
+  "Since they're built by using find-or-make on their notables (see their
+   constructor: get-entry-for-notable) the note-entries are the same individuals
+   at every level. They just accumulate edge-strings. Consequently, merging
+   the entries in the input alists is just a matter of adding new entries
+   to the 'merged-alist' when they're encountered."
+  (let ((merged-alist (first alists))) ; prime the pump
+    (loop for alist in (cdr alists)
+       do (loop for (name note-entry) in alist
+             unless (assoc name merged-alist :test #'eq)
+             do (push `(,name ,note-entry) merged-alist)))
+    merged-alist))
+  
+#+ignore
+;; This version doesn't appreciate the fact that there's only one note-entry
+;; for a notable, ever.  It assumed that the entries were new objects from
+;; one sentence to the next and so it was necessary to sum their individual counts
+;; and append their strings.  That much consing will blow through the memory
+;; of the lisp process, with nasty consequences.
 (defun merge-items-alist (alists)
   (let ((merged-alist (first alists))) ; prime the pump
     (loop for alist in (cdr alists)

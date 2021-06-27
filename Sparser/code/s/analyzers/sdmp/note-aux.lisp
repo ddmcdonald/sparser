@@ -3,7 +3,7 @@
 
 ;;;      File: "note-aux"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: May 2021
+;;;   Version: June 2021
 
 ;; Initiated 5/19/21 to hold helper routines and details so the base
 ;; code in note.lisp stays cleaner.
@@ -34,6 +34,37 @@
    on the same edge more than once.")
 
 (define-per-run-init-form '(setq *edges-noted* nil))
+
+
+;;;-----------
+;;; debugging
+;;;-----------
+
+;; "pretty print"
+(defun pp-note-entry (ne &optional (stream t))
+  (format stream "~&Note: ~a  ~a~{~%  ~a ~}"
+          (name ne) (instance-count ne)
+          (massage-note-edge-strings (edge-strings ne))))
+
+(defun massage-note-edge-strings (list)
+  (loop for edge-expr in list
+     as string = (first edge-expr)
+     as count = (second edge-expr)
+     collect (format nil "~s  e~a" string count)))
+
+(defun pp-alist-of-notes (alist &optional (stream t))
+  (let ((index -1))
+    (loop for pair in alist
+       as label = (car pair)
+       as entry = (cadr pair)
+       as count = (instance-count entry)
+       as strings = (massage-note-edge-strings (edge-strings entry))
+       do (format stream "~&~a: ~a: ~a~{~%    ~a ~}"
+                  (incf index) label count strings))))
+#|
+(trace scan-terminals-and-do-core)
+w/ contents format in get-entry-for-notable
+|#
 
 ;;;--------
 ;;; traces

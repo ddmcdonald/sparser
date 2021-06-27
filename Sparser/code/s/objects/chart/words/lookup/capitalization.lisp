@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "capitalization"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:  Junw 2021
+;;;  Version:  June 2021
 
 ;; initiated 10/90
 ;; 0.1 (11/23/92 v2.3) Revised slightly to appreciate the case where the
@@ -284,6 +284,11 @@
       (eq result :all-caps)))
   (:method ((w word))
     (eq :all-caps (word-capitalization w))))
+
+
+(defun capitalized? (string)
+  (and (upper-case-p (char string 0))
+       (every #'lower-case-p (subseq string 1))))
 
 
 ;;;------------------

@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "paragraphs"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  April 2021
+;;;  Version:  June 2021
 
 #| Aggregates the special handling of paragraph objects that
 are found incrementally during the handling of large texts.
@@ -29,7 +29,7 @@ the original orthographic paragraph handling of the early 1990s
    This flag is read by initiate-successive-sweeps the driver of
    the whole analysis. It signals that the text should be handled
    by parse-successive-paragraphs below.
-   The usual standard protocol is for analyze-text-from-file to
+   The usual protocol is for analyze-text-from-file to
    dynamically bind this to t.")
 
 ;;;--------
@@ -76,6 +76,8 @@ the original orthographic paragraph handling of the early 1990s
    newline character. Used in setting the bounds of the paragraphs.")
 
 (define-per-run-init-form
+    ;; reset to inits initial value at the start of each pass through
+    ;; analysis-core.
     '(setq *prior-para-newline-pos* (position# 0)))
 
 
@@ -113,8 +115,8 @@ the original orthographic paragraph handling of the early 1990s
         (setf (previous terminating) *previous-paragraph*))
       
       ;; Much of this is slightly, but importantly, different from
-      ;; what begin-new-paragraph does, so consider making a tailored
-      ;; version of it.
+      ;; what begin-new-paragraph does. ///Consider making a tailored
+      ;; version of that.
       (setf (ends-at-pos terminating) end-pos)
       (setf (ends-at-char terminating) (pos-character-index end-pos))
       (setq *prior-para-newline-pos* end-pos)
@@ -208,7 +210,7 @@ the original orthographic paragraph handling of the early 1990s
                (when *tts-after-each-section*
                  (format t "~^&~%")
                  (tts t (starts-at-pos p) (ends-at-pos p))
-                 (format t "~^&~%"))
+                 #+ignore(format t "~^&~%"))
 
                ;; Run the method in objects/content-methods
                (after-actions p)
@@ -221,7 +223,7 @@ the original orthographic paragraph handling of the early 1990s
                (push-debug `(,p))
                (error "paragraph ~a not terminated" p))
 
-             ;;--- loop
+             ;;--- bottom of the loop
              
              (setq previous-paragraph p)
              (setq start-pos (chart-position-after (ends-at-pos p)))

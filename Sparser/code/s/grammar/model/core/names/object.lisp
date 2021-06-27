@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:names:"
-;;;  version:  May 2019
+;;;  version:  June 2019
 
 ;; initiated 5/28/93 v2.3. Broke name word routines out to their own file 4/20/95. 
 ;; 0.1 (5/2) added an explicit name-creator to hack "and".   5/12 remodularized
@@ -380,10 +380,10 @@ with sequences we'd prefer that PNF handled directly.
    get words with the correct capitalization. 
    There are some pathological cases that the no-space machinery
    gets (e.g. 'Wise Men's/King') where a smarter ns handler would have
-   rejected the sequence deliberated, but instead we end up here. This
-   example involves treetop edge over 'Wise Men's' that was created by
+   rejected the sequence and deliberated, but instead we end up here.
+   This example involves treetop edge over 'Wise Men's' that was created by
    PNF and yields a polyword. This function operates at the word level
-   so it misses the polyword (or any other sort of mulit-word edge).
+   so it misses the polyword (or any other sort of multi-word edge).
    We look for evidence that a polyword is involved."
   (let* ((words (words-between pos-before pos-after))
          (string (extract-characters-between-positions pos-before pos-after)))
@@ -391,6 +391,9 @@ with sequences we'd prefer that PNF handled directly.
     (when (position #\space string) ;; hit a polyword
       ;; The catch is in collect-no-space-segment-into-word
       (throw :punt-on-nospace-without-resolution nil))
+
+    (break "OK? Will reify ~s" string)
+    ;;(push-debug `(,words ,string)) (break "look here")
 
     (let* ((pnames (actual-strings-for-list-of-words words string))
            (name-words (loop for p in pnames
@@ -405,17 +408,21 @@ with sequences we'd prefer that PNF handled directly.
         ;; Return value designed to feed edge creation in 
         ;; reify-ns-name-and-make-edge
         (let* ((polyword (resolve/make string))
-               (concatenated-name
-                (intern string *category-package*))
+               (concatenated-name (intern string *category-package*))
                (category (find-or-make-category-object
                           concatenated-name :referential))
+               (proper? (capitalized-instance pos-before))
                (rule (define-cfr category `(,polyword)
-                       :form category::proper-name
+                       :form (if proper?
+                               category::proper-name
+                               category::common-noun)
                        :referent name
                        ;; If we include a :source we can assign it
                        ;; to a particular grammar module, but default
                        ;; is ok.
-                       :schema (get-schematic-word-rule :proper-noun))))
+                       :schema (if proper?
+                                 (get-schematic-word-rule :proper-noun)
+                                 (get-schematic-word-rule :common-noun)))))
           (values category rule name))))))
 
 

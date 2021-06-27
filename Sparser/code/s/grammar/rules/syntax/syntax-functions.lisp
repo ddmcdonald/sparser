@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  January 2021
+;;;  Version:  June 2021
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -1906,13 +1906,16 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
          (value-of 'theme vp) ;; don't allow intransitive reading
          (assimilate-subject-for-control-verb subj vp vp-edge)))
 
+    #+ignore ; blocks, e.g. "I am still the only one"), which starts with "I" + "am"
     ((or (and (eq (cat-name (itype-of  vp)) 'be)
-              ;; was itypep, but REMAIN (and other pseudo copulars) are subcategories of BE
-              ;; block "what are" as a transitive-clause-without-object
+              ;; was itypep, but REMAIN (and other pseudo copulars)
+              ;; are subcategories of BE. The point is to block "what are" as a
+              ;; transitive-clause-without-object
               (null (value-of 'predicate vp)))
          #+ignore(itypep vp 'do)) ;; block "what does" as a transitive-clause-without-object         
      ;; Blocking it blocks "Tell me what you want to do now"
      (return-from assimilate-subject nil))
+    
     ((itypep vp 'copular-predication-of-pp)
      (assimilate-subject-for-copular-predication subj vp vp-edge))
     ((itypep vp 'copular-predication)

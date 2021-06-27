@@ -11,8 +11,6 @@
 ;;      breakpoint in looking-for-end and fixed the value it returns
 
 (in-package :sparser)
-(defvar WORD::OPEN-ANGLE-BRACKET)
-(defvar WORD::CLOSE-ANGLE-BRACKET)
 
 ;;;--------------------------
 ;;; routine to connect it up
@@ -38,6 +36,7 @@
 ;;;---------------
 
 (defun detect-and-process-invisible-markup ()
+  (declare (special word::open-angle-bracket))
   (if *buffered-token*
     (kpop *buffered-token*)
 
@@ -431,7 +430,7 @@
   ;; we have a tag we can shift to doing real consumption of tokens
   ;; from the stream until we reach that angle bracket.
 
-  (declare (ignore position))
+  (declare (ignore position) (special word::close-angle-bracket))
 
   ;; 1st reset the character index to point to just after the tag
   (setq *index-of-next-character*

@@ -64,7 +64,13 @@
 
 (defgeneric get-entry-for-notable (notable)
   (:documentation "Given an edge, look up the corresponding notable,
-    then find or make its note-entry in the current sentence.")
+    then find or make its note-entry in the current sentence.
+    The note-entry instances are created by find-or-make on the
+    identity of the notable. That means that they will exist until
+    the note-entry cache is cleared, which happens between runs.
+    Spreading them onto the contents fields of the currently active
+    sentence is just book keeping, and doesn't carry any information
+    as an analysis continues.")
   (:method ((e edge))
     (let ((n (noteworthy? e)))
       (get-entry-for-notable n)))

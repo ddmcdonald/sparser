@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "terminal edges"
 ;;;   Module:  "analyzers;psp:assess:"
-;;;  Version:  April 2021
+;;;  Version:  June 2021
 
 ;; initiated 9/12 v2.3
 ;; 1.1 (10/23) reorganized what kinds of property edges are created
@@ -146,16 +146,20 @@
 
       (cond
        ((eq :digits actual-state)
-        ;; It's a new number, i.e. a number that wasn't defined
-        ;; in the dossier and hasn't already gone through this
-        ;; path --  37 rather than 2. 
-        (when (or *make-edges-over-new-digit-sequences*
-                  *make-edges-for-unknown-words-from-their-properties*)
-          (let ((edge (make-edge-over-unknown-digit-sequence
-                       word position-scanned)))
-            (tr :making-edge-over-digit-sequence edge)
-            (reify-digit-word word edge)
-            (list edge))))
+        (cond
+          ((digits-denote-a-year word)
+           (make-edge-over-new-year word position-scanned next-position))
+          (t
+           ;; It's a new number, i.e. a number that wasn't defined
+           ;; in the dossier and hasn't already gone through this
+           ;; path --  37 rather than 2.
+           (when (or *make-edges-over-new-digit-sequences*
+                     *make-edges-for-unknown-words-from-their-properties*)
+             (let ((edge (make-edge-over-unknown-digit-sequence
+                          word position-scanned)))
+               (tr :making-edge-over-digit-sequence edge)
+               (reify-digit-word word edge)
+               (list edge))))))
        
        (capitalization-counts
         ;; This the lowercase version of a word that has rules for

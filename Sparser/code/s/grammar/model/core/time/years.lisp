@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "years"
 ;;;   Module:  "model;core:time:"
-;;;  version:  January 2021
+;;;  version:  June 2021
 
 ;; initiated in February 1991
 ;; 0.1 (4/9 v1.8.2)  Added the years from 1959 to 1979
@@ -71,18 +71,50 @@
     (let ((n (read-from-string s)))
       (get-year n))))
 
-#+ignore
-;; Original definition -- When using the description lattice this tends
-;; to not return the whole number, just one of its v+v components
-  (if *description-lattice*
-    (let ((word
-           (etypecase name
-             (string (resolve/make name))
-             (number
-              (resolve/make (format nil "~a" name)))
-             (word name))))  
-      (get-by-name category::year word))
-    (find-individual 'year :name name))
+
+
+(defgeneric digits-denote-a-year (word)
+  (:documentation "Called from preterminals-for-unknown with a fresh
+    word. We look at its pname and heuristically decide whether it could
+    be the name of a year. Only considers four digit years. Shorter strings
+    will need to go through as regular numbers and be converted by
+    context-sensitive rules, e.g. 'Augustus Caesar dies in A.D. 14'.")
+  (:method ((w word))
+    (digits-denote-a-year (word-pname w)))
+  (:method ((pname string))
+    ;; from Acumen corpus #705
+    ;; "1938 - Time capsule, to be opened in 6939, ..."
+    (= 4 (length pname))))
+     
+(defun make-edge-over-new-year (word position-scanned next-position)
+  "Called from preterminals-for-unknown if the digits of the word passed
+   digits-denote-a-year. We define the year and then put an edge over it
+   like make-edge-over-unknown-digit-sequence does with other digit sequences."
+  (let* ((string (word-pname word))
+         (lisp-number (read-from-string string))
+         (century (read-from-string (subseq string 0 2)))
+         (year (define-year string century)))
+    (let ((edge (make-completed-unary-edge
+                 (pos-starts-here position-scanned) ; starting-vector
+                 (pos-ends-here next-position)      ; ending-vector
+                 'make-edge-over-new-year ; rule
+                 word ; daughter
+                 (category-named 'year) ;  category
+                 (category-named 'common-noun) ; form
+                 year))) ; referent
+      (tr :making-edge-over-new-year edge)
+      (reify-year-word word edge)
+      edge)))
+
+(defun reify-year-word (word edge)
+  "Analogous to reify-digit-word -- we to write a rule
+   so we get the right thing the next time we see these 4 digits."
+  (let ((i (edge-referent edge)))
+    (define-cfr (category-named 'year) `(,word)
+      :form (category-named 'common-noun)
+      :referent i
+      :schema (get-schematic-word-rule :common-noun))))
+
 
 ;;;-----------
 ;;; functions

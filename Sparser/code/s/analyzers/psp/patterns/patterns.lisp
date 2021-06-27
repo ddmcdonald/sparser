@@ -115,7 +115,7 @@
          (look-before-punting)
          (reify-ns-name-and-make-edge start-pos end-pos))
 
-        ((equal pattern '(:capitalized :digits))
+        ((equal pattern '(:capitalized :digits)) ;; "No.1" <-- needs handling
          (or (reify-residue-and-make-edge start-pos end-pos)
              (look-before-punting)
              (reify-ns-name-and-make-edge start-pos end-pos)))

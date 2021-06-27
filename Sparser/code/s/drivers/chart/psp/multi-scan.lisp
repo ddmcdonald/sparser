@@ -971,6 +971,10 @@
       ;; modeled on sweep-sentence-treetops
       (multiple-value-setq (treetop position-after multiple?)
         (next-treetop/rightward position-before))
+
+       (when (eq treetop *newline*) ; pathology in document
+         (return))
+
       (when multiple?
         ;; This is built-into a variant next-treetop function,
         ;; but perhaps we want to look at variations on this
@@ -1014,10 +1018,11 @@
              (when where-pattern-scan-ended
                (tr :successful-ns-pattern-reached where-pattern-scan-ended)
                (setq position-after where-pattern-scan-ended))))))
+
                  
-      ;; The pattern could have taken us just past the period
-      (when (position-precedes end-pos position-after)
-        (return))
+       ;; The pattern could have taken us just past the period
+       (when (position-precedes end-pos position-after)
+         (return))
       (setq position-before position-after))))
 
 (defun check-for-pattern (position-after)  ;; (trace-scan-patterns)

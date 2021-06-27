@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2019-2020 David D. McDonald -- all rights reserved
+;;; copyright (c) 2019-2021 David D. McDonald -- all rights reserved
 ;;;
 ;;;     File:  "content-actions"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  September 2020
+;;;  Version:  June 2021
 
 #| Created 8/27/19 to move general action out of content-methods.lisp
 and make that file easier to understand. |#

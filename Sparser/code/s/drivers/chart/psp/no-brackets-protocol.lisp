@@ -82,15 +82,6 @@
   "some errors or interesting events happen in the sentence creating sweep, 
    and we want to se the entire sentence context")
 
-;;----//// move
-
-(defparameter *warn-or-error-choice* :warn) ;; :error)
-
-(defun warn-or-error (datum &rest arguments)
-  (case *warn-or-error-choice*
-    (:error (apply #'error (cons datum arguments)))
-    (:warn (apply #'warn (cons datum arguments)))))
-
 
 
 ;;;------------------------------------------------

@@ -11,14 +11,12 @@ be biology specific, since they aren't. |#
 
 
 
-
+#| moved to modifiers
 (define-adverb "a bit more")
-(define-adverb "even")
+(define-adverb "even") |#
 
 
 (define-adverb "namely")
-
-
 
 (define-adverb "readily")
 
@@ -284,9 +282,11 @@ be biology specific, since they aren't. |#
 (delete-adj-cfr (resolve "direct"))
 (adj "direct" :super bio-predication)
 
-(adj "forward" :super bio-predication) ;; added to avoid problem with complex lookup
+;; in dossier/directions.lisp
+;;(adj "forward" :super bio-predication) ;; added to avoid problem with complex lookup
 ;;Error: Comlex -- new POS combination for
 ;; "#<word "forward">:: (ADJECTIVE ADVERB ADVPART NOUN VERB)
+
 (adj "full" :super bio-predication)
 
 
@@ -294,8 +294,8 @@ be biology specific, since they aren't. |#
 (define-adverb "further")
 
 
-
-(adj "least" :super bio-predication)
+;; In words/quantifiers.lisp
+;;(adj "least" :super bio-predication)
 
 (delete-adj-cfr (resolve "novel"))
 (adj "novel" :super bio-predication)

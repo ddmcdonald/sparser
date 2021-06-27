@@ -387,7 +387,9 @@
               (unless items
                 (tr :throwing-out-prefix tt)
                 (throw :leave-out-prefix (pos-edge-ends-at tt))))
-               
+
+             #+ignore ;; not clear how fits in multple sweeps
+                 ;; "That'll Be Day" 
              (category::be  ;; "Is AppleTalk ..."
               (if items
                 (then
