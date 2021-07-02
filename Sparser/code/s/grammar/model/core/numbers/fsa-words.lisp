@@ -1,10 +1,10 @@
  ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1999,2012-2020  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1999,2012-2021  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "fsa words"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  October 2020
+;;;  Version:  July 2021
 
 ;; initiated (redesigned from scratch) 11/30/93 v2.3, finished the first
 ;; version with stubs for the multi-word case 12/6.  Fixed a bug 1/14/94.
@@ -34,7 +34,7 @@
    such as in call signs: 'assassin one seven'")
 
 (defparameter *debug-numbers* nil
-  "Protect things that are in progress from bad interactions")
+  "Gate to protect things that are in progress from bad interactions")
 
 ;;;-------------------
 ;;; state information
@@ -58,6 +58,8 @@
 ;;; driver
 ;;;--------
 
+;; (trace-number-words)
+
 (defun number-word-fsa (triggering-edge starting-position)
   "The extent of the word sequence is established by scan-for-more-number-words
    which traverses the state space. Most of this function is devoted to getting the
@@ -79,18 +81,28 @@
 
 
 (defun package-number-edges (starting-position end-of-number-word-sequence)
-  
-  (let (#+ignore(end-of-number-word-sequence ;; position just after the sequence
-         (scan-for-more-number-words
-          (chart-position-after starting-position)))
-        (prior-number-edge
+  "Collect the sequence of number words. Handle the one word (edge) case here
+   including looking for a prior number ('10 million'). Handle the multi-edge
+   case in parse-number-sequence."
+  (let ((prior-number-edge
          (preceded-by-digit-based-number starting-position)))
     (tr :nw-ended-with prior-number-edge)
 
     (if (eq end-of-number-word-sequence
             (chart-position-after starting-position)) ; one word long
-      (let ((single-edge (edge-between starting-position end-of-number-word-sequence)))
-        (if prior-number-edge ; "10 million"
+      (let* ((single-edge (edge-between starting-position end-of-number-word-sequence))
+             (left-daughter (edge-left-daughter single-edge)))
+        
+        (cond
+          ((and (word-p left-daughter)
+                (string-equal (word-pname left-daughter) "one"))
+           ;; The pname "one" is ambiguous between its reading as a number
+           ;; and as an indefinite-pronoun. We can't decide that here because
+           ;; we don't have the necessary context, so we punt and don't
+           ;; respan this edge
+           (tr :nw-is-one))
+
+          (prior-number-edge ; "10 million"
           ;; a frequent enough case that it's worth looking for right
           ;; here. Also lets us get around the fact that if we waited
           ;; the number-word's original category would have been respanned
@@ -104,10 +116,10 @@
                 (error "Unexpected situation: no definition for number -> ~
                       number multiplier"))
               (make-completed-binary-edge 
-               prior-number-edge single-edge rule)))
+               prior-number-edge single-edge rule))))
           
           ;; no prior number, but just one edge
-          (else
+          (t
             (if *keep-number-sequence-raw*
               (assemble-raw-number-sequence
                starting-position end-of-number-word-sequence prior-number-edge)

@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2020-2021 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "fsa-aux"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  December 2020
+;;;  Version:  July 2021
 
 ;; Broken out of fsa-words 12/8/20
 
@@ -65,14 +65,19 @@ completed a battery of items")
     (trace-msg "[number-words] encounters 'and' at p~a"
                (pos-token-index pos))))
 
+(deftrace :nw-terminating-at (pos)
+  ;; called in package-number-edges
+  (when *trace-number-word-fsa*
+    (trace-msg "[number-words] terminating at p~a"
+               (pos-token-index pos))))
+
+(deftrace :nw-is-one ()
+  (when *trace-number-word-fsa*
+    (trace-msg "[number-words] the sole number word is 'one', not respanning")))
+
 (deftrace :nw-fsa-hit-a-comma (pos)
   (when *trace-number-word-fsa*
     (trace-msg "[number-words] encountered a comma at p~a"
-               (pos-token-index pos))))
-
-(deftrace :nw-terminating-at (pos)
-  (when *trace-number-word-fsa*
-    (trace-msg "[number-words] terminating at p~a"
                (pos-token-index pos))))
 
 (deftrace :nw-installing-edge (word cfr)
