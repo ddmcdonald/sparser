@@ -482,11 +482,15 @@
 
 
 (defun find-verb (edge)
+  "Caller believes there ought to be an edge somewhere along the tree
+   that's rooted on this edge. Walks down recursively until it either
+   finds it or returns nil if it's heuristically sure there isn't one."
   (declare (special category::pp))
   (let ((form (edge-form edge)))
     (unless (or (vp-category? form)
-                ;; this is for predication edges formed over vp+ing
-                ;; as in "suggesting that terminally differentiated myotube nuclei are competent "
+                ;; this is for predication edges formed over vp+ing as
+                ;; in "suggesting that terminally differentiated
+                ;; myotube nuclei are competent "
                 (eq (edge-form-name edge) 'lambda-form))
       (push-debug `(,edge))
       (error "Not a VP category: ~a in e~a"
@@ -498,6 +502,11 @@
                 ;; "the drug up-regulates..."
                 (polyword-p (edge-category (edge-left-daughter edge)))))
        edge)
+      ((eq (form-cat-name edge) 'subj+verb) ; 'there' construction
+       (let ((right-daughter (edge-right-daughter edge)))
+         (if (verb-category? right-daughter)
+           right-daughter
+           (find-verb right-daughter))))
       ((member (edge-rule edge) '(attach-to-comp-comma-to-s
                                   attach-trailing-participle-to-clause-with-comma))
        (find-verb (car (last (edge-constituents edge)))))
