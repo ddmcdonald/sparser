@@ -499,6 +499,11 @@
             ((and (word-at-this-position-is-capitalized? next-position) ; "O'Gill"
                   (null (pos-preceding-whitespace next-position)))
              (cap-seq-continues-from-here? next-position))
+
+            ((and (word-at-this-position-is-capitalized? next-position)
+                  (eq :single-capitalized-letter ; "Chain O' Lakes
+                      (pos-capitalization (chart-position-before position))))
+             (cap-seq-continues-from-here? next-position))
             
             ((memq next-word *lc-person-words*)
              ;;//// There's a bug here in the threading that happens
