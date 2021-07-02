@@ -32,18 +32,19 @@
 ;;;--------------
 
 (defun dereference-proper-noun (edge)
-  ;; called by sortout-single-edge-over-capitalized-word
-  ;; The form label on this edge is proper-noun. This means it's
-  ;; probably a single word reference to an individual we already
-  ;; know. If we confirm that, we construct a new edge with the
-  ;; appropriate labels. If we can't improve on the analysis we
-  ;; return nil.
+  "Called by sortout-single-edge-over-capitalized-word
+   The form label on this edge is proper-noun. This means it's
+   probably a single word reference to an individual we already
+   know. If we confirm that, we construct a new edge with the
+   appropriate labels. If we can't improve on the analysis we
+   return nil.  "
   (let ((referent (edge-referent edge)))
     (when (individual-p referent)
       (multiple-value-bind (category its-referent rule)
-                           ;; checkout various subsequent reference patterns
-                           (subseqent-reference-by-shortened-name
-                              referent)
+          ;; checkout various subsequent reference patterns
+          ;; or return nil (for the category) because it's a different kind of
+          ;; proper-noun, like a weekday or a month
+          (subseqent-reference-by-shortened-name referent)
         (when category
           (let ((new-edge
                  (edge-over-proper-name
@@ -87,6 +88,10 @@
 ;;;----------------
 
 (defun subseqent-reference-by-shortened-name (i)
+  "Called by deference-proper-noun to see whether the referent of
+   the edge it got is a name-word, in which case we should see if that
+   name part can be tied to a full name, otherwise we return nil
+   to signal that the edge/referent shouldn't be modified"
   (case (cat-symbol (itype-of i))
     (category::name-word
      (subsequent-reference-off-name-word i))
