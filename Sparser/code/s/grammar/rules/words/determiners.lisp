@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1995,2012-2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2012-2021  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "determiners"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   August 2017
+;;;   Version:   June 2021
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3
 ;; 0.1 (6/8) added Define-determiner
@@ -53,6 +53,10 @@
         object))))
 
 
+(define-determiner "the")
+(define-determiner "an")
+(define-determiner "a")
+
 
 (define-category demonstrative
   :specializes requires-context
@@ -94,15 +98,6 @@ type for variable restrictions and reference. |#
                  :referent object)))
         (add-rule cfr object)
         object))))
-
-;;;-------
-;;; cases
-;;;-------
-
-(define-determiner "the")
-(define-determiner "an")
-(define-determiner "a")
-(define-determiner "A") ;;/// still needed?
 
 
 ;; 'that' gets its own brackets because of its functional ambiguity
