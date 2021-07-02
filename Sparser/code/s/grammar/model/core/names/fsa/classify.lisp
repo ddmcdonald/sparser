@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "classify"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  April 2021
+;;;  version:  July 2021
 
 ;; initiated 5/15/93 v2.3 to fit PNF paper
 ;; 0.1 (6/10) tweeked judgement over single words
@@ -163,40 +163,24 @@
   (let ((word (pos-terminal position))
         (status (pos-assessed? position))
         (ev (pos-starts-here position)))
-
     (tr :pnf/classifying-one-word-span word)
-    ;;  (break "position: ~a" position)
 
     ;; Do we have to install the terminal edge(s)?
-    (case status
-      ;; has to have some status because we scanned it in order 
-      ;; to reach this point
-      (:pnf-checked  ;; Toronto in "(Toronto)"
-       (unless (ev-top-node ev)
-         ;; check whether this is the second time around and
-         ;; edges were installed then.  "Is Appletalk"
-         ;;//// Multiple-words case does parse-from-within-pnf
-         (install-terminal-edges word position next-position)))
-      (:preterminals-installed)  ;; Dalton in "Messrs. Dalton and ..."
-      (otherwise
-       (break "Unexpected value for status: ~a~%Expected :pnf-checked  ~
-               or :preterminals-installed" status)))
-    ;;  (push-debug `(,ev)) (break "status: ~a" status)
+    (unless (includes-state position :preterminals-installed)
+      (install-terminal-edges word position next-position))
+
     (if (ev-top-node ev)
       (then ;; there are some edges 
         (tr :pnf/edges-over-word word ev)
-        ;;  (break "some edges")
         (sortout-edges-over-single-cap-word position next-position))
       (else
         ;; No edges.
         ;; The word is capitalized, so the question is whether it's a
         ;; function word (and then maybe we also check whether we're
         ;; at beginning of the sentence).  If it is, we return
-        ;; function to the fsa driver that we're rejecting this one
+        ;; nil to the fsa driver indicating that we're rejecting this one
         ;; as a name and the regular processing should get a crack at it.
         (tr :pnf/no-edges-over-word word)
-        ;; (break "no edges over ~a" word)
-        ;;   There ought to be an edge from the constructed category
         (if (function-word? word)
           nil
           ;; when (unknown-word? word)
@@ -214,12 +198,14 @@
 ;;;---------------------
 
 (defun do-single-word-name (word position next-position)
-  ;; Called from c&r-single-word
-  ;; We know that there's no individual with this name yet
-  ;; because if there were we'd have a name-word edge instead
-  ;; of this unknown word, so we go ahead and create the individual
-  ;; (of type "uncategorized-name") that has this word as their name
+  "Called from c&r-single-word
+   We know that there's no individual with this name yet
+   because if there were we'd have a name-word edge instead
+   of this unknown word, so we go ahead and create the individual
+   (of type 'uncategorized-name') that has this word as their name"
+  
   ;;   (push-debug `(,word ,position)) (break "single word: ~a" word)
+
   (let ((name (make-unindexed-individual category::uncategorized-name))
         (name-word (make-name-word-for-unknown-word-in-name word position)))
     (tr :pnf/items-for-unknown-word word name name-word)
@@ -234,19 +220,18 @@
                    category::name
                    category::proper-name
                    name   ;; referent
-                   :single-unknown-capitalized-word   ;; rule
+                   'do-single-word-name   ;; rule
                    nil))) ;; daughter edges
         edge ))))
 
 
 
 (defun span-as-capitalized-word (word position next-position)
-  ;; same idea as do-single-word-name, but the flag to interpret
-  ;; otherwise unknown words as 'names' is down, so we just call
-  ;; it a 'capitalized-word'
-  ;;   N.b. this is a final call in PNF, so returning this edge
-  ;; means that the fsa overall will be interpreted as 'succeeding'
-
+  "Same idea as do-single-word-name, but the flag to interpret
+   otherwise unknown words as 'names' is down, so we just call
+   it a 'capitalized-word'
+     N.b. this is a final call in PNF, so returning this edge
+   means that the fsa overall will be interpreted as 'succeeding'."
   (make-chart-edge :starting-position position
                    :ending-position next-position
                    :category category::capitalized-word
@@ -262,24 +247,21 @@
 ;;;-------------------
 
 (defun sortout-edges-over-single-cap-word (position next-position)
-  ;; subroutine of C&R-single-word for the case where there's
-  ;; some analysis for it in the grammar. We have to decide whether
-  ;; the edge over this word (or one of them) is something that
-  ;; the Proper Name Facility should record as a name or not.
-  ;; If it is, then the fsa has succeeded and we return the edge.
-  ;; If it isn't we return nil and some other fsa or rule gets
-  ;; a crack at it.
+  "Subroutine of C&R-single-word for the case where there's
+   some analysis for it in the grammar. We have to decide whether
+   the edge over this word (or one of them) is something that
+   the Proper Name Facility should record as a name or not.
+   If it is, then the fsa has succeeded and we return the edge.
+   If it isn't we return nil and some other fsa or rule gets
+   a crack at it."
   (let ((ev (pos-starts-here position)))
     (if (= 1 (ev-number-of-edges ev))
       (sortout-single-edge-over-capitalized-word ev position)
-
       (if (= 2 (ev-number-of-edges ev))
         (sortout-two-edges-over-single-capitalized-word position next-position)
-        
         (else
           (sortout-multiple-edges-over-single-capitalized-word position next-position))))))
 
-;;--- one edge over the word
 
 (defun sortout-single-edge-over-capitalized-word (ev position)
   ;; subroutine of sortout-edges-over-single-cap-word
@@ -287,7 +269,6 @@
     (cond
      ((or (eq (edge-form edge) category::proper-noun)
           (eq (edge-form edge) category::proper-adjective))
-
       (let ((new-edge (dereference-proper-noun edge)))
         ;; Is this the name of someone/something?  If so,
         ;; we should respan it with an edge with their
@@ -298,7 +279,7 @@
         ;; return nil.                      
         (or new-edge
             nil )))
-
+     
      ((eq (edge-form edge) category::common-noun) ; e.g. from a protein
       edge)
 
@@ -309,7 +290,6 @@
 
      (t (other-single-cap-words edge)))))
 
-;;--- subroutine for the 2 edges case
 
 (defun sortout-two-edges-over-single-capitalized-word (position next-position)
   ;; subroutine of Sortout-edges-over-single-cap-word
@@ -335,7 +315,6 @@
         (else
           (two-edges/one-literal good-edge literal))))
 
-
      ;; if one is a respan of the other, check for various anticipated cases
      ((edges-all-chain position :start)
       (let ((top-edge (ev-top-node (pos-starts-here position))))
@@ -347,11 +326,9 @@
                       capitalized word~%where all the edges chain~%~%"))
             (car (last edges))))))  ;; assumes most specific goes on last
 
-
      ;; scan the edges looking for one that's a name-word
      ((setq name-word (one-of-the-edges-is-a-name-word edges))
       (take-the-other-edge name-word edges))
-
     
      (t  ;; they're both real things, so let them both go through
       (car (last edges))))))
@@ -382,7 +359,7 @@
      ;; "he asked that professor of morals: please pray that I may be martyred."
      (find category::pronoun edges :key #'edge-form :test #'eq)
 
-     (else
+     (progn
       ;; Take them all, and dereference the name words since they probably
       ;; would lead to anaphors of companies or people
       (dolist (edge edges)
