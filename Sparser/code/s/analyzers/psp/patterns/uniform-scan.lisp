@@ -262,9 +262,11 @@
         (punct-never-ending-no-space category-label))))
   (:method ((w word)) ;; (breast) "cancer."
     (declare (special word::comma word::period word::question-mark
-                      word::exclamation-point word::close-angle-bracket))
+                      word::exclamation-point word::close-angle-bracket
+                      word::vertical-bar))
     (memq (word-symbol w) '(word::comma word::period word::question-mark
-                            word::exclamation-point word::close-angle-bracket))))
+                            word::exclamation-point word::close-angle-bracket
+                            word::vertical-bar))))
  
 
 
