@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993,2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "currencies"
 ;;;   Module:  "grammar;model:dossiers:"
@@ -23,3 +23,5 @@
 (define-individual 'currency  :denomination "pence"
                               :country "Britain" )
 
+(define-individual 'currency  :denomination "ps"
+                              :country "Mexico")
