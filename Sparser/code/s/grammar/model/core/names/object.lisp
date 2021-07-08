@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2013-2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2013-2021  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:names:"
-;;;  version:  June 2019
+;;;  version:  July 2021
 
 ;; initiated 5/28/93 v2.3. Broke name word routines out to their own file 4/20/95. 
 ;; 0.1 (5/2) added an explicit name-creator to hack "and".   5/12 remodularized
@@ -81,7 +81,7 @@
 
 (defun convert-to-canonical-name-form (raw-name)
   "Because they have different sources, a referent of an edge
- that denotes a name migh be a real type of name, or it might
+ that denotes a name might be a real type of name, or it might
  be one of the constituents of a name such as a name word or more.
  This code tracks those cases and takes them all to
  an uncategorized-name object. ///Might want another argument
@@ -371,6 +371,11 @@ with sequences we'd prefer that PNF handled directly.
   :index (:special-case))
 
 
+(defparameter *announce-new-spelled-names* nil
+  "Useful to turn this on some times to see what's being turned up
+   since there may be more patterns we can be systematic about")
+
+
 (defun reify-spelled-name (pos-before pos-after)
   "Presently only called from reify-ns-name-and-make-edge when no specific
    pattern has been found for this set of tokens (and we're -not- in big-
@@ -378,7 +383,7 @@ with sequences we'd prefer that PNF handled directly.
    For any name we need a sequence of name-words. Spelled names will always
    have no spaces between the words so we use the polyword machinery to
    get words with the correct capitalization. 
-   There are some pathological cases that the no-space machinery
+      There are some pathological cases that the no-space machinery
    gets (e.g. 'Wise Men's/King') where a smarter ns handler would have
    rejected the sequence and deliberated, but instead we end up here.
    This example involves treetop edge over 'Wise Men's' that was created by
@@ -392,38 +397,40 @@ with sequences we'd prefer that PNF handled directly.
       ;; The catch is in collect-no-space-segment-into-word
       (throw :punt-on-nospace-without-resolution nil))
 
-    (format t "~&Spelled-name reifying ~s" string)
-    ;;(push-debug `(,words ,string)) (break "look here")
+    (or (probably-partial-url string)
+        (probably-a-hashtag string)
 
-    (let* ((pnames (actual-strings-for-list-of-words words string))
-           (name-words (loop for p in pnames
-                          collect (define-name-word/actual p))))
-      (push-debug `(,words ,string ,pnames ,name-words))
+        (let* ((pnames (actual-strings-for-list-of-words words string))
+               (name-words (loop for p in pnames
+                              collect (define-name-word/actual p))))
+          ;;(push-debug `(,words ,string ,pnames ,name-words))
+          (when *announce-new-spelled-names*
+            (format t "~&Spelled-name reifying ~s" string))
+    
+          (let ((sequence (define-sequence name-words))
+                (name (make-unindexed-individual category::spelled-name)))
+            (setq name (bind-variable :name/s sequence name category::spelled-name))
 
-      (let ((sequence (define-sequence name-words))
-            (name (make-unindexed-individual category::spelled-name)))
-        (setq name (bind-variable :name/s sequence name category::spelled-name))
-
-        ;; This part is taken from make/uncategorized-name
-        ;; Return value designed to feed edge creation in 
-        ;; reify-ns-name-and-make-edge
-        (let* ((polyword (resolve/make string))
-               (concatenated-name (intern string *category-package*))
-               (category (find-or-make-category-object
-                          concatenated-name :referential))
-               (proper? (capitalized-instance pos-before))
-               (rule (define-cfr category `(,polyword)
-                       :form (if proper?
-                               category::proper-name
-                               category::common-noun)
-                       :referent name
-                       ;; If we include a :source we can assign it
-                       ;; to a particular grammar module, but default
-                       ;; is ok.
-                       :schema (if proper?
-                                 (get-schematic-word-rule :proper-noun)
-                                 (get-schematic-word-rule :common-noun)))))
-          (values category rule name))))))
+            ;; This part is taken from make/uncategorized-name
+            ;; Return value designed to feed edge creation in 
+            ;; reify-ns-name-and-make-edge
+            (let* ((polyword (resolve/make string))
+                   (concatenated-name (intern string *category-package*))
+                   (category (find-or-make-category-object
+                              concatenated-name :referential))
+                   (proper? (capitalized-instance pos-before))
+                   (rule (define-cfr category `(,polyword)
+                           :form (if proper?
+                                   category::proper-name
+                                   category::common-noun)
+                           :referent name
+                           ;; If we include a :source we can assign it
+                           ;; to a particular grammar module, but default
+                           ;; is ok.
+                           :schema (if proper?
+                                     (get-schematic-word-rule :proper-noun)
+                                     (get-schematic-word-rule :common-noun)))))
+              (values category rule name)))))))
 
 
 (defun actual-strings-for-list-of-words (words string)
@@ -435,8 +442,7 @@ with sequences we'd prefer that PNF handled directly.
   (let ((start 0)
         (pnames nil))
     (dolist (word words)
-      (push (subseq string start (+ start (length (pname word))))
-            pnames)
+      (push (subseq string start (+ start (length (pname word)))) pnames)
       (setq start (+ start (length (pname word)))))
     (nreverse pnames)))
  
