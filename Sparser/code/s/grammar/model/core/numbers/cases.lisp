@@ -2,13 +2,15 @@
 ;;; copyright (c) 1990  Content Technologies Inc.
 ;;; copyright (c) 1992,2020 David D. McDonald  -- all rights reserved
 ;;; 
-;;;     File:  "numbers"
-;;;   Module:  "model:dossiers:"
+;;;     File:  "cases"
+;;;   Module:  model/core/numbers/
 ;;;  Version:  July 2020
 
 ;; initiated 10/90.  Moved out of [numbers;] 1/7/94 v2.3 
 
 (in-package :sparser)
+
+#| SUPERCEDED by dossiers/numbers.lisp
 
 
 (define-number "1"  :ones "one")
@@ -49,3 +51,4 @@
 (define-number "1000000000000000" :multiplicand "quadrillion")
 (define-number "1000000000000000000" :multiplicand "quintillion")
 
+|#
