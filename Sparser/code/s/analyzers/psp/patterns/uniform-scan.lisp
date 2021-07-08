@@ -263,10 +263,10 @@
   (:method ((w word)) ;; (breast) "cancer."
     (declare (special word::comma word::period word::question-mark
                       word::exclamation-point word::close-angle-bracket
-                      word::vertical-bar))
+                      word::vertical-bar word::semi-colon))
     (memq (word-symbol w) '(word::comma word::period word::question-mark
                             word::exclamation-point word::close-angle-bracket
-                            word::vertical-bar))))
+                            word::vertical-bar word::semi-colon))))
  
 
 
