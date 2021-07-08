@@ -130,7 +130,6 @@ the functional value of the former to that of the latter."
   (if (eq (readtable-case *readtable*) :preserve)
     (push :mlisp *features*)
     (push :alisp *features*)) ; corresponds to :upcase
-
   #+sbcl
   (setq sb-impl::*default-external-format* :utf-8))
 
@@ -147,6 +146,7 @@ the functional value of the former to that of the latter."
   (load "loaders/logical")
   (load "loaders/logicals")
   (load "loaders/lload"))
+
 (lload "init;parameters")
 (lload "loaders;scripts")
 (lload "loaders;grammar-module")

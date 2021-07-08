@@ -1,9 +1,9 @@
 ;;; -*- Mode: LISP; Syntax: Common-Lisp; Package: SPARSER -*-
-;;; Copyright (c) 2016-2020 SIFT LLC. All Rights Reserved.
+;;; Copyright (c) 2016-2021 SIFT LLC. All Rights Reserved.
 ;;;
 ;;;      File: "parameters"
 ;;;    Module: "init;"
-;;;   Version: September 2020
+;;;   Version: June 2021
 
 ;;;----------------------------
 ;;; parameterizing the loading
@@ -174,6 +174,11 @@ whose rules get in the way.")
 (defvar *CwC* nil
   "Uses a configuration similar a bit larger than the one for C3,
 along with a grammar module (sublanguage) for the blocks world.")
+
+(defvar *acumen* nil
+  "Tries to use the largest vocabulary that isn't filled with biology-specific
+words. The reference corpus tends to be sloppy, so this is used to ward-off
+heuristic operations that are more likely than not to fail.")
 
 (defvar *fire*  nil
   "Fire stands for 'Free-text Information and Relation Extraction'.
