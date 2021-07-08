@@ -84,13 +84,13 @@
                 (or (find category::single-capitalized-letter edges
                           :key #'edge-category)
                     (find category::greek-letter edges :key #'edge-category))))
-
           (unless single-caps-edge
             ;; Extend the set.
             ;;(lsp-break "make sure positions are the right ones")
             (multiple-value-bind (letter rule)
                 (define-single-capitalized-letter (pname prior-word))
-              (assert rule)
+              (assert rule (prior-word)
+                      "No new capitalized letter created for ~a" prior-word)
               (let ((edge (install-preterminal-edge
                            rule prior-word prior-pos pos-before)))
                 (setq single-caps-edge edge))))
