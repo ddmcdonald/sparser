@@ -1,5 +1,5 @@
 ;;; -*- Mode: Lisp; Syntax: Common-Lisp; -*-
-;;; Copyright (c) 2016-2020 SIFT LLC. All Rights Reserved.
+;;; Copyright (c) 2016-2021 SIFT LLC. All Rights Reserved.
 
 (defvar cl-user::script :default
   "The script specifies a set of Sparser parameters, switch values, grammar files, etc.
@@ -25,6 +25,7 @@ This variable must be set before loading Sparser to have the correct effect.")
   (define-sparser-system :fire)
   (define-sparser-system :biology)
   (define-sparser-system :score)
+  (define-sparser-system :acumen)
   (define-sparser-system :blocks-world)
   (define-sparser-system :grok)
   (define-sparser-system :c3)
