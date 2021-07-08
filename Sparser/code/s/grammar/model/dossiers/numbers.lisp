@@ -1,9 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2000, 2011-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990  Content Technologies Inc.
+;;; copyright (c) 1992-2000, 2011-2021 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "numbers"
 ;;;   Module:  "model:dossiers:"
-;;;  Version:  May 2017
+;;;  Version:  July 2021
 
 ;; Moved out of [numbers;] 1/7/94 v2.3
 ;; 7/19/94 added zero.  5/13/95 added 'permanent' wrapper
@@ -23,7 +24,7 @@
   (define-number "1"  :ones "one") 
     ;; goes here because 100 needs it. 
 
-  (unless (eq COMMON-LISP-USER::script :biology)
+  (unless (eq (script) :biology)
     (define-individual 'multiplier :name "fraction"))
   
   (define-number "100" :multiplicand "hundred")
@@ -31,6 +32,8 @@
   (define-number "1000000" :multiplicand "million")
   (define-number "1000000000" :multiplicand "billion")
   (define-number "1000000000000" :multiplicand "trillion")
+  (define-number "1000000000000000" :multiplicand "quadrillion")
+  (define-number "1000000000000000000" :multiplicand "quintillion")
 
   (define-number "0"  :ones "zero")
   (define-number "2"  :ones "two")
