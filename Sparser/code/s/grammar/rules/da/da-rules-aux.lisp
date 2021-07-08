@@ -395,6 +395,14 @@
               :test #'equal)))
       (declare (special right-fringe ambigs)) ; for debugging
 
+      (when (eq (edge-cat-name pp-edge) 'of-name)
+        ;; Heuristically identifying things that are likely to be bad parses
+        ;;  (p "Wild waters lead the tales of Peter Rabbit
+        ;; Discover Cyprus as Britain prepares for MORE snow chaos")
+        ;; Wanted to adjoin 'as Britain' to 'Cyprus' but PNF didn't break the span
+        ;; properly given the lack off punctuation (a period after 'rabbit')
+        (return-from add-adjunctive-pp nil))
+
       (cond ((cdr ambigs)
              (when *break-adjunctive-pp*
                (lsp-break "breaking add-adjunctive-pp for ~%s=~s, ~% fringe: ~s~%"
@@ -414,7 +422,7 @@
                                  (sentence-string (sentence)))
                          (edge-referent head-edge)
                          pobj-referent)
-                   *adjunctive-attachments*)
+                   *adjunctive-attachments*)             
              (make-edge-spec
               :category (edge-category edge-taking-adjunct)
               :form (edge-form edge-taking-adjunct)
