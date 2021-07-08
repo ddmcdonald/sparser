@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2015-2021 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "da-rules"
 ;;;   Module:  "grammar;rules:DA:"
-;;;  Version:  January 2020
+;;;  Version:  June 2021
 
 ;; initiated 9/18/15 for da patterns and interpreters that had been
 ;; stashed in biology. Small tweaks and additions of the same kind
@@ -1622,10 +1622,13 @@
 (define-debris-analysis-rule s-comma-np-and-np
   :pattern ( pp "," np  and np)  
   :action (:function
-           s-comma-np-comma-and-np
-           first second third  nil fifth sixth))
+           s-comma-np-and-np
+           first second third fourth fifth))
 
-(defun s-comma-np-comma-and-np ( s comma-1 np-1 comma-2 and-wd np-2)
+(defun s-comma-np-and-np (s comma-1 np-1 and-wd np-2)
+  (s-comma-np-comma-and-np s comma-1 np-1 nil and-wd np-2))
+
+(defun s-comma-np-comma-and-np (s comma-1 np-1 comma-2 and-wd np-2)
   (declare (ignore comma-1 comma-2))
   (let* ((target (find-target-satisfying
                   (right-fringe-of s)
