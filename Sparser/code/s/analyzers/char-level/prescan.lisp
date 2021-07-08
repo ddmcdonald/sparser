@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "prescan"
 ;;;   Module:  "analyzers;char-level:"   ("character level processing")
-;;;  Version:   April 2021
+;;;  Version:   July 2021
 
 ;; Initiated 4/16/19 -- Before doing any analysis, sweep through the input
 ;; text at the character level to normalize newlines (paragraphs), convert
@@ -63,9 +63,12 @@ scan-name-position -> add-terminal-to-chart
     (let ((end (position #\^B *character-buffer-in-use*)))
       (subseq *character-buffer-in-use* 0 (1+ end)))))
 
+
+
 ;;--- driver
 
-(defparameter *post-hyphen-chars* nil)
+(defvar *post-hyphen-chars* nil
+  "Collects characters that follow hyphen is that line is uncommented out")
 
 
 (defun scan-and-swap-character-buffer (&key (echo nil))
@@ -131,6 +134,14 @@ scan-name-position -> add-terminal-to-chart
                (incf index-into-source)
                (else (when echo (write-char #\space))
                      (push-char char))))
+
+            (#\<
+             (if (embedded-html-newline index-into-source source) ;; "<nl/>"
+               (then
+                 (unless (eql #\newline (aref source (1- index-into-source)))
+                   (push-char #\newline)) ;; double newlines confuses paragraphing
+                 (setf index-into-source (+ 4 index-into-source)))                    
+               (push-char char)))
 
             (#\&
              (multiple-value-setq (replacement-char index-into-source)
@@ -254,3 +265,14 @@ scan-name-position -> add-terminal-to-chart
                 (1+ index-of-semicolon)))
       (else
         (values #\& (1+ index))))))
+
+(defun embedded-html-newline (index source)
+  "There is an angle bracket at the index. Search ahead to see whether
+   it's the start of the html pattern for a newline"
+  ;; 
+  #+ignore(push-debug `(,index
+                  ,(subseq source 0 (position #\^B source))))
+  (let* ((characters (loop for i from index to (+ 4 index) collect (aref source i)))
+         (string (apply #'string-append characters)))
+    (search "<nl/>" string)))
+
