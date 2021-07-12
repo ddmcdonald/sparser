@@ -20,16 +20,19 @@
  by define-note-group and stashed on *note-groups* when defined."))
 
 (defclass note-group-instance (named-object)
-  ((doc-element :initform nil :accessor for)
+  (;;(doc-element :initform nil :accessor for) -- moot given FoM
    (note-instances :initform nil :accessor note-entries)
    (count :initform 0 :accessor group-count))
   (:documentation "Created after an article is finished
     as a sort of summary."))
 
 (defclass notable (named-object)
-  ((kind :initform nil :accessor kind-of-notable)
-   (group :initform nil :accessor part-of-group)
-   (trigger :initform nil :accessor note-trigger))
+  ((kind :initform nil :initarg :kind :accessor kind-of-notable)
+   (group :initform nil :initarg :group :accessor part-of-group)
+   (trigger :initform nil :initarg :trigger :accessor note-trigger
+     :documentation "the category specified as being noteworthy.
+       It's cat-name becomes the key under which instantiating
+       note-entry's are store on the contents alist"))
   (:documentation "A noteworthy category or something we identify
  via word-spotting and treat like a note for reporting purposes.
  This is the type for which a note-entry is the token."))
@@ -41,7 +44,7 @@
      :documentation "A list of the edge-span strings and edge-numbers
         that motivated this instance of the notable."))
   (:documentation "Represents the instances of a notable throughout
- a particular document. Does what the base implentation did, i.e.
+ a particular document. Does what the base implementation did, i.e.
  keep a count of the instances and facilitate their aggregation
  at higher levels of the document, but adds things like tracking
  the edges (text strings) involved to facilitate debugging."))
