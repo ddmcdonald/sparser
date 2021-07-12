@@ -182,7 +182,6 @@
 (lload "analyzers;psp;threading;loader")
 ;; (lload "march;loader") directory & load-file empty so flushed 9/22/11
 (lload "complete;loader")
-(lload "spot;loader")
 (lload "referent;loader")
 (lload "kinds of edges;loader") ;; use with-referent-edges macro
 
@@ -205,6 +204,7 @@
 
 (when *SDM&P*
   (lload "analyzers;SDM&P;loader"))
+(lload "spot;loader") ; word-spotting depends on note classes
 
 (when (and *orthographic-structure*
            *include-model-facilities*)
