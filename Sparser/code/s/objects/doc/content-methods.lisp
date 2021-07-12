@@ -371,35 +371,11 @@
              unless (assoc name merged-alist :test #'eq)
              do (push `(,name ,note-entry) merged-alist)))
     merged-alist))
-  
-#+ignore
-;; This version doesn't appreciate the fact that there's only one note-entry
-;; for a notable, ever.  It assumed that the entries were new objects from
-;; one sentence to the next and so it was necessary to sum their individual counts
-;; and append their strings.  That much consing will blow through the memory
-;; of the lisp process, with nasty consequences.
-(defun merge-items-alist (alists)
-  (let ((merged-alist (first alists))) ; prime the pump
-    (loop for alist in (cdr alists)
-       do (loop for (name note-entry) in alist
-             do (let ((known-entry (cadr (assoc name merged-alist :test #'eq))))
-                  (cond
-                    (known-entry ;; bump up the number
-                     (let* ((base (instance-count known-entry))
-                            (increment (instance-count note-entry))
-                            (sum (+ base increment)))
-                       (setf (instance-count known-entry) sum))
-                     (let* ((base-strings (edge-strings known-entry))
-                            (incr-strings (edge-strings note-entry))
-                            (merge (append incr-strings base-strings)))
-                       (setf (edge-strings known-entry) merge)))
-                    (t ;; add this pair to the merged list
-                     (push `(,name ,note-entry) merged-alist))))))
-    merged-alist))
-
+ 
 
 (defgeneric consolidate-notes (doc-element)
-  (:documentation "The noteworthy categories are organized into groups.
+  (:documentation "Called from the article after-actions method.
+    The noteworthy categories are organized into groups.
     At this step we aggregate the individual note-instances into their
     groups, replacing the items field with a list of note-group-instance(s)")
   (:method ((a article))
