@@ -123,13 +123,12 @@ in conjunction with an early version of Hark. Notable for using the
   (:switches neo-fire-setting)) ; score-setting
 
 (defscript acumen ()
-  " "
   (:script-variable *acumen*)
   (:parameters
    (*description-lattice* t)
    (*ignore-literal-edges* nil)
    (*index-under-permanent-instances* t)
-   )
+   (*filter-vocabulary* :acumen))
   (:grammar-configuration "score-grammar")
   (:switches neo-fire-setting))
 
