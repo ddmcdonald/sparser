@@ -1756,6 +1756,7 @@
       ((FOR top))
      :realization (:verb  "criticize" :s SUBJECT :o OBJECT :for FOR))
 
+#+ignore ;; conflicts with movement verb definition of "cross"
 (define-category cross :specializes comlex-verb
      :binds
       ((AGAINST top)
@@ -3237,6 +3238,7 @@ sp> (comlex-entry "fall")
        (ON top))
      :realization (:verb  "fold" :s SUBJECT :o OBJECT :in IN :into INTO :on ON))
 
+#+ignore ;; conflicts with movement verb
 (define-category follow :specializes comlex-verb
      :binds
       ((THROUGH top)
@@ -3244,6 +3246,7 @@ sp> (comlex-entry "fall")
        (WITH top)
        (ON top))
      :realization (:verb  "follow" :s SUBJECT :o OBJECT :through THROUGH :to TO :with WITH :on ON))
+
 
 (define-category foot :specializes comlex-verb
      :realization (:verb  "foot" :s SUBJECT :o OBJECT))
@@ -8092,6 +8095,7 @@ sp> (comlex-entry "fall")
        (IN top))
      :realization (:verb  "train" :s SUBJECT :o OBJECT :on ON :to TO :for FOR :in IN))
 
+#+ignore ;; conflicts with movement verb
 (define-category travel :specializes comlex-verb
      :mixins (with-p-dir)
      :binds
@@ -8160,6 +8164,7 @@ sp> (comlex-entry "fall")
        (FOR top))
      :realization (:verb  "try" :s SUBJECT :o OBJECT :on ON :for FOR))
 
+#+ignore ;; conflicts with movement verb
 (define-category turn :specializes comlex-verb
      :binds
       ((ALONG top)
