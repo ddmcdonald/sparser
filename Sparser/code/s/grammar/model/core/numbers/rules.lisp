@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2000,2014-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2000,2014-2021 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "rules"
 ;;;   Module:  "grammar;model:core:numbers:"
-;;;  Version:  November 2020
+;;;  Version:  July 2021
 
 ;; trivial instance 10/91.  Added prefix rules for ordinals 8/16/94
 ;; 0.1 (6/24/99) Pulled the empty '10 million' rule. 
@@ -25,7 +25,7 @@ is easiest with a cs rule.  |#
 (unless (eq script :biology)
   (def-cfr comma-number ( "," number )
     :form appositive-prefix
-    :referent (:daughter right-edge)))
+    :referent (:function plausible-age-in-years right-edge)))
 
 
 ;;;-----------------------------------------

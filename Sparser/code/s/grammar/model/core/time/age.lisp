@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "age"
 ;;;   Module:  "model;core:time:"
-;;;  version:  March 2021
+;;;  version:  July 2021
 
 ;; 0.1 (7/18 v1.8.6) Flushed the CA routines as redundant w/ the CS rules
 ;; 0.2 (4/16/92 v2.2) added two more rules to handle "60-year-old"
@@ -72,6 +72,17 @@
 (define-qualitative-age "young" :er "younger" :est "youngest")
 (define-qualitative-age "old" :er "older" :est "oldest")
 
+
+(defun plausible-age-in-years (number)
+  "Syntax function to vet the comma-number rule as a feeder into
+   age via the CS rules in people/names-to-people.lisp to rule out
+   composing, e.g. 'Jacob Edler and Tom Littell, 5.4 each' from
+   AC #297 where the subject is scores in games."
+  (declare (special *subcat-test*))
+  (let ((lisp-number (number-value number)))
+    (cond
+      (*subcat-test* (typep lisp-number 'integer))
+      (t number))))
 
 
 (defun interpret-number-as-years-of-age (number)

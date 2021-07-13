@@ -104,6 +104,10 @@ the fsa would be identified at the word level rather than the category level.
 ;;; state variables
 ;;;-----------------
 
+(defvar *inside-digit-fsa* nil
+  "Used for context that's consulted by other routines that look at
+   digits, such as digits-denote-a-year")
+
 (defvar *period-within-digit-sequence* nil
   "Boolean used to indicate that there is a decimal point")
 
@@ -176,79 +180,89 @@ the fsa would be identified at the word level rather than the category level.
   (declare (special *interpretation-of-digit-sequence* category::number
                     category::hyphenated-number))
   
-  (initialize-state-for-digit-fsa)
-  (tr :digit-fsa-scanned (edge-left-daughter treetop) 'digit-fsa)
+  (let ((*inside-digit-fsa* t))
+    (declare (special *inside-digit-fsa*))
 
-  ;; store the first segment, the one we were called with
-  (setf (aref *digit-position-array* 0) treetop)
+    (initialize-state-for-digit-fsa)
+    (tr :digit-fsa-scanned (edge-left-daughter treetop) 'digit-fsa)
 
-  ;; look for more segments, count how many we get in "index"
-  ;; and store them in the array as we go along
-  (multiple-value-bind (ending-position
-                        number-of-segments)
-         (expect-digit-delimiter-as-next-treetop
-                        1  ;; the array cell to put the next word into
-                        *digit-position-array*
-                        treetop)  ;; the first digit-seq. 
+    ;; store the first segment, the one we were called with
+    (setf (aref *digit-position-array* 0) treetop)
 
-    (tr :digit-fsa-returned-to-start ending-position number-of-segments)
+    ;; look for more segments, count how many we get in "index"
+    ;; and store them in the array as we go along
+    (multiple-value-bind (ending-position
+                          number-of-segments)
+        (expect-digit-delimiter-as-next-treetop
+         1  ;; the array cell to put the next word into
+         *digit-position-array*
+         treetop)  ;; the first digit-seq. 
 
-    (ecase *interpretation-of-digit-sequence*
-      (:not-a-number
-       (make-edge-for-not-a-number starting-position ending-position
-                                   number-of-segments *digit-position-array*))
-      (:number
-       (span-digits-number starting-position
-                           ending-position
-                           number-of-segments
-                           *digit-position-array*))
-      (:hypenated-numbers
-       (if (eq ending-position (chart-position-after starting-position))
-         ;; this is a fencepost condition, e.g. "44-" as in "44-years-old"
+      (tr :digit-fsa-returned-to-start ending-position number-of-segments)
+
+     (ecase *interpretation-of-digit-sequence*
+        (:not-a-number
+         (make-edge-for-not-a-number starting-position ending-position
+                                     number-of-segments *digit-position-array*))
+        (:number
          (span-digits-number starting-position
                              ending-position
                              number-of-segments
-                             *digit-position-array*)
-         (let* ((left-edge (aref *digit-position-array* 0))
-                (left-ref (edge-referent left-edge))
-                (right-edge (aref *digit-position-array* 1))
-                (right-ref (edge-referent right-edge))
-                (i (find-or-make-individual 'hyphenated-number
-                      :left left-ref :right right-ref)))
-           (make-chart-edge :starting-position starting-position
-                            :ending-position ending-position
-                            :left-daughter left-edge
-                            :right-daughter right-edge
-                            :category category::hyphenated-number
-                            :form category::number
-                            :referent  i
-                            :rule 'digit-fsa))))
+                             *digit-position-array*))
+        (:hypenated-numbers
+         (if (eq ending-position (chart-position-after starting-position))
+           ;; this is a fencepost condition, e.g. "44-" as in "44-years-old"
+           (span-digits-number starting-position
+                               ending-position
+                               number-of-segments
+                               *digit-position-array*)
+           (let* ((left-edge (aref *digit-position-array* 0))
+                  (left-ref (edge-referent left-edge))
+                  (right-edge (aref *digit-position-array* 1))
+                  (right-ref (edge-referent right-edge))
+                  (i (find-or-make-individual 'hyphenated-number
+                                              :left left-ref :right right-ref)))
+             (make-chart-edge :starting-position starting-position
+                              :ending-position ending-position
+                              :left-daughter left-edge
+                              :right-daughter right-edge
+                              :category category::hyphenated-number
+                              :form category::number
+                              :referent  i
+                              :rule 'digit-fsa))))
+        
+        ;; These two drop the middle words on the floor ("-", "through")
+        ;; They're not plausible :constituent in the edges because there
+        ;; aren't edge over them, though that could be accommodated.
+        ;; Anything wandering into one of these edges might be puzzled.
+        (:through-range
+         ;; Construct the range, put a edge over the whole span
+         (let* ((edge-1 (aref *digit-position-array* 0))
+                (edge-2 (aref *digit-position-array* 1))
+                (i (when (and (edge-p edge-1)
+                              (edge-p edge-2))
+                     ;; failed at "at Ser-854"
+                     (define-or-find-individual 'range
+                         :from (edge-referent edge-1)
+                         :to (edge-referent edge-2)))))
+           (when i
+             (make-chart-edge :starting-position starting-position
+                              :ending-position ending-position
+                              :category category::range
+                              :form category::number ;; ??
+                              :referent i
+                              :left-daughter edge-1
+                              :right-daughter edge-2
+                              :rule 'digit-fsa))))
+
+        (:phone-number
+         ;; notice in continue-digit-sequence-after-hyphen based on pname lengths
+         (make-an-edge-over-phone-number (aref *digit-position-array* 0)
+                                         (aref *digit-position-array* 1)
+                                         starting-position)))
+ 
       
-      ;; These two drop the middle words on the floor ("-", "through")
-      ;; They're not plausible :constituent in the edges because there
-      ;; aren't edge over them, though that could be accommodated.
-      ;; Anything wandering into one of these edges might be puzzled.
-      (:through-range
-       ;; Construct the range, put a edge over the whole span
-       (let* ((edge-1 (aref *digit-position-array* 0))
-              (edge-2 (aref *digit-position-array* 1))
-              (i (when (and (edge-p edge-1)
-                            (edge-p edge-2))
-                   ;; failed at "at Ser-854"
-                   (define-or-find-individual 'range
-                     :from (edge-referent edge-1)
-                     :to (edge-referent edge-2)))))
-         (when i
-           (make-chart-edge :starting-position starting-position
-                            :ending-position ending-position
-                            :category category::range
-                            :form category::number ;; ??
-                            :referent i
-                            :left-daughter edge-1
-                            :right-daughter edge-2
-                            :rule 'digit-fsa)))))
-    
-    ending-position ))
+      ending-position )))
 
 
   
@@ -915,20 +929,29 @@ unknown---in any event, we're taking the first edge that is installed.
 
     (if (null (pos-preceding-whitespace next-position))
       (if (eq :digits (pos-capitalization next-position))
+
         (let ((digits-edge
                (car (install-terminal-edges
                      (pos-terminal next-position)
                      next-position
                      (chart-position-after next-position)))))
           (if digits-edge
-            (then
-              (when (> index-of-cell-to-fill (1- (length array)))
-                (error "Too many digits accumulated - ~A - to fit in ~
+            (if (and (= 4 (length (pname (pos-terminal next-position))))
+                     (= 3 (length (pname (pos-terminal
+                                          (chart-position-before position-before-hyphen))))))
+              (then
+                (setq *interpretation-of-digit-sequence* :phone-number)
+                (setf (aref array index-of-cell-to-fill) digits-edge)
+                (values next-position (1+ index-of-cell-to-fill)))
+
+              (else
+                (when (> index-of-cell-to-fill (1- (length array)))
+                  (error "Too many digits accumulated - ~A - to fit in ~
                         the digits array" index-of-cell-to-fill))
-              (setf (aref array index-of-cell-to-fill) digits-edge)
-              (look-for-hyphen-as-next-treetop (1+ index-of-cell-to-fill)
-                                               array
-                                               next-position))
+                (setf (aref array index-of-cell-to-fill) digits-edge)
+                (look-for-hyphen-as-next-treetop (1+ index-of-cell-to-fill)
+                                                 array
+                                                 next-position)))
             (else
               ;; install-terminal-edges returns nil if the word
               ;; has already been spanned, e.g. by a polyword.

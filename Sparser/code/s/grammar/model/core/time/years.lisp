@@ -73,18 +73,21 @@
 
 
 
-(defgeneric digits-denote-a-year (word)
+(defgeneric digits-denote-a-year (word position-scanned)
   (:documentation "Called from preterminals-for-unknown with a fresh
     word. We look at its pname and heuristically decide whether it could
     be the name of a year. Only considers four digit years. Shorter strings
     will need to go through as regular numbers and be converted by
     context-sensitive rules, e.g. 'Augustus Caesar dies in A.D. 14'.")
-  (:method ((w word))
-    (digits-denote-a-year (word-pname w)))
-  (:method ((pname string))
+  (:method ((w word) (position-scanned position))
+    (digits-denote-a-year (word-pname w) position-scanned))
+  (:method ((pname string) (position-scanned position ))
     ;; from Acumen corpus #705
     ;; "1938 - Time capsule, to be opened in 6939, ..."
-    (= 4 (length pname))))
+    (declare (special *inside-digit-fsa*))
+    (unless (or *inside-digit-fsa* ;; it will deal with it
+                (null (pos-preceding-whitespace position-scanned)))
+      (= 4 (length pname)))))
      
 (defun make-edge-over-new-year (word position-scanned next-position)
   "Called from preterminals-for-unknown if the digits of the word passed

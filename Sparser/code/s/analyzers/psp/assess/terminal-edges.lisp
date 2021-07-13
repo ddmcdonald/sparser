@@ -147,7 +147,7 @@
       (cond
        ((eq :digits actual-state)
         (cond
-          ((digits-denote-a-year word)
+          ((digits-denote-a-year word position-scanned)
            (make-edge-over-new-year word position-scanned next-position))
           (t
            ;; It's a new number, i.e. a number that wasn't defined
