@@ -6,19 +6,9 @@
 ;;;    Version: July 2021
 
 ;; Copied from acumen/trunk/code/LuceneSearchTest/lm_rules.txt
-;; Modified to drive word-spotting starting 6/9/21
+;; and modified to drive word-spotting starting 6/9/21
 
 (in-package :sparser)
-
-;; Do we need also a group-level class?
-
-(defclass motif-spotter (spotter)
-  ((kind :initarg :type :accessor kind-of-notable
-     :documentation "one of the symbols char(acter) prop, event"))
-  (:documentation "This the analog of notable (which spotter indeed inherits
-    from). The name is formed from the word/polyword this goes with."))
-
-(setup-find-or-make motif-spotter)
 
 
 (defun make-spotter-for-motif-pair (pair) ; e.g. ("salmon_PROP" . "salmon of wisdom")
@@ -51,8 +41,8 @@
             (setf (kind-of-notable spotter) kind)
             (setf (part-of-group spotter) spotting-group)
             (setf (note-trigger spotter) word)
-            (setf (backpointer spotter) word) ; redundant?
-  
+
+            (setup-motifs-language-spec spotter kind)
             (setup-word-to-spotter word spotter)
 
             (values spotter spotting-group)))))))
@@ -158,3 +148,6 @@
     ("pava_PROP" . "la pava")
     ("chupacabra_CHAR" . "chupacabra")
     ))
+
+(eval-when (:load-toplevel :execute)
+  (assimiate-motif-type-word-pairs *motif-type-word-pairs*))
