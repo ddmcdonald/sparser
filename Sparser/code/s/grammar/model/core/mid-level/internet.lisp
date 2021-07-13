@@ -144,13 +144,14 @@ e66   BIO-ENTITY    9 "com/rrwick/Porechop" 14
   (:documentation "Does this string returned from no-space via
     reify-ns-name-and-make-edge start with a #\# character?")
   (:method ((string string))
-    (let* ((known? (resolve string))
-           (pw (resolve/make string))
-           (i (define-or-find-individual 'hashtag :string pw))
-           (rule
-            (if known?
-              (lookup/cfr category::hashtag `(,pw))
-              (define-cfr category::url `(,pw)
-                :form category::proper-name ;/// is this right?
-                :referent i))))
-      (values category::hashtag rule i))))
+    (when (eq #\# (aref string 0))
+      (let* ((known? (resolve string))
+             (pw (resolve/make string))
+             (i (define-or-find-individual 'hashtag :string pw))
+             (rule
+              (if known?
+                (lookup/cfr category::hashtag `(,pw))
+                (define-cfr category::url `(,pw)
+                  :form category::proper-name ;/// is this right?
+                  :referent i))))
+        (values category::hashtag rule i)))))
