@@ -1,10 +1,10 @@
 ;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1999,2010-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1999,2010-2021 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:  "grammar modules"
 ;;;    Module:  "init;loaders;"
-;;;   version:  October 2016
+;;;   version:  July 2021
 
 ;; 12/4/92 pulled word options made irrelevant in master-loader
 ;; 5/11/93 added refinements in words and syntax
@@ -360,6 +360,9 @@
 
 (define-summary-grammar-module  *sublanguages*)
 
+(define-grammar-module  *acumen-motifs*
+                        :name "acumen motifs"
+                        :parent *sublanguages*)
 
 
 (define-grammar-module  *load-Tipster-grammar-into-image*

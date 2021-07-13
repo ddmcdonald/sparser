@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:  "grammar"
 ;;;    Module:  "init;loaders;"
-;;;   version:  June 2021
+;;;   version:  July 2021
 
 ;; broken out from loaders;master-loader 4/19/94. Added Whos-news-post-dossiers-loader
 ;;  4/29 added [words;whitespace assignments].  5/25 consolidated the
@@ -193,6 +193,8 @@ omitted and then run (perhaps) after the image has been launched."
   (gate-grammar *finance*
     (gload "finance;loader"))
 
+  (gate-grammar *acumen-motifs*
+    (gload "motifs;loader"))
 
   (gate-grammar *ambush*
     (gload "ambush;loader"))
@@ -317,7 +319,7 @@ omitted and then run (perhaps) after the image has been launched."
     (make-temporal-sequences))
 
   (gate-grammar *score-stats*
-        (gload "score-stats;loader"))
+    (gload "score-stats;loader"))
 
   (let ((*inhibit-construction-of-systematic-semantic-rules* t))
     (declare (special *inhibit-construction-of-systematic-semantic-rules*))
@@ -332,8 +334,8 @@ omitted and then run (perhaps) after the image has been launched."
   ;; support them.
 
   (gate-grammar *score-verbs*
-                (gload "bio;score-verbs.lisp")
-                (gload "bio;score-nouns.lisp"))
+     (gload "bio;score-verbs.lisp")
+     (gload "bio;score-nouns.lisp"))
 
   (setup-vocabulary-suppression)
 

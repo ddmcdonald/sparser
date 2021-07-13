@@ -129,7 +129,7 @@ in conjunction with an early version of Hark. Notable for using the
    (*ignore-literal-edges* nil)
    (*index-under-permanent-instances* t)
    (*filter-vocabulary* :acumen))
-  (:grammar-configuration "score-grammar")
+  (:grammar-configuration "acumen-grammar")
   (:switches neo-fire-setting))
 
 (defscript fire ()

@@ -1,68 +1,19 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2000,2010-2021 David D. McDonald  -- all rights reserved
-;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
+;;; copyright (c) 2021 David D. McDonald  -- all rights reserved
 ;;;
-;;;      File:  "full grammar"
+;;;      File:  "acumen-grammar"
 ;;;    Module:  "init/config/grammars/"
 ;;;   version:  July 2021
 
-;; This records every grammar module that is currently defined,
-;; even though loading them all at once could lead to an inconsistent
-;; ontology. 
-;; Specific efforts will use some derivative of this file, as dictated
-;; by the :grammar-configuration of the script that was used to
-;; load it (see init/loaders/scripts.lisp)
-
-
-;; 7/18/92 v2.3 blocked out the gl and Tipster grammar
-;; 12/4 pulled word options made irrelevant in master-loader
-;; added cases 5/11/93, rearranged and added 5/16
-;; 6/11 added pct module
-;; 7/21 added some omitted summary modules
-;; 8/23 promulgated renaming of *resolve-pronouns*
-;; 9/13 added *da*.  9/21 added *standard-adjuncts* and below
-;; 3/15/94 added cases for companies and titles, 3/17 added *brackets*
-;; 3/28 added *hyphen* and *DM&P*.  4/4 added 'other' & 'core' to locations
-;; 4/11 added *whos-news/core*. 4/13 added *tree-families and *standard-
-;; syntactic-constructions*.  4/24 added the parameters to control the menus
-;; 4/26 broke out heuristics, adding *ca* and *ha*. 5/12 added *glifs*
-;; 7/25 added *irregular-verbs*  7/29 added *comparatives*  9/28 added *company-activity-words
-;; 1/9/95 added *adjectives*.  1/26 added *specific-sources*
-;; 2/28 added *collections*  4/28 added *verbs-with-weak-semantics* and *known-verbs*
-;; 7/13 broke *resolve-pronouns* into that and *pronoun-objects*
-;; 9/21 added *internet*  12/26 added *ern*  7/21/96 added *nih*   10/17/97 broke
-;; out *digits-fsa*. 11/23/00 added *kinds*. 2/9/07 added *SDM&P*. 7/16 added 
-;; ambush. 8/8 added *semantics-of-WH-words*. 7/08 added *disease* and
-;; *call-signs*. 6/09 added *checkpoint-ops*. 8/27/09 added *poirot*.
-;; 11/15/10 removed it, added *reversable*. 6/14/11 removed *poirot*.
-;; 7/19/11 added *generic-military*. 8/31/11 added *default-quantifier-semantics*.
-;; 12/15/11 added *hurricanes*. 10/16/13 added *qualities*, sl's for strider,
-;; grok. 11/30/13 *waypoints*. 6/4/14 *NIH* => *biology* 10/6/15 *blocks-world*
-;; 12/3/15 added *mid-level-ontology*
+;; created 8/13/21 from a copy of the score grammar configuration.
 
 (in-package :sparser)
-
-
-;;;-------------------------------------------------
-;;; flags controlling what goes on the Sparser menu
-;;;-------------------------------------------------
-;;  n.b. these aren't grammar modules, but there's a utility to
-;;  being able to conditionalize the contents of the menu by version,
-;;  and this is just such a place.
-
-(defparameter *spm/include-grammar-modules* t)
-(defparameter *spm/include-backup* t)
-(defparameter *spm/include-citations* t)
-(defparameter *spm/include-workbench* t)
-
-
-;;---------------------------------------------------------
-
 
 (include-grammar-module  *other*)
 (include-grammar-module  *testing*)
 (include-grammar-module  *citations*)
 (include-grammar-module  *miscellaneous*)
+
 
 ;;;-----------------------------------
 ;;; large-scale structure of the text
@@ -150,9 +101,9 @@
 (include-grammar-module  *kinds*)
 (include-grammar-module  *mid-level-ontology*)
 (include-grammar-module  *standard-adjuncts*)
-(include-grammar-module  *approximators*)
-(include-grammar-module  *frequency*)
-(include-grammar-module  *sequencers*)
+  (include-grammar-module  *approximators*)
+  (include-grammar-module  *frequency*)
+  (include-grammar-module  *sequencers*)
 
 (include-grammar-module *qualities*)
 
@@ -175,21 +126,27 @@
 
 (include-grammar-module  *time*)
 (include-grammar-module  *money*)
-(include-grammar-module  *finance*)
+;; (include-grammar-module  *finance*)
 
+;; May want a narrower breakdown here to avoid gratuitous
+;; overlap with abbreviations of statistical properties
 (include-grammar-module  *titles*)
   (include-grammar-module *titles-core*)
   (include-grammar-module *full-titles*)
   (include-grammar-module *title-heads*)
   (include-grammar-module *title-modifiers*)
-  (include-grammar-module *title-qualifiers*)
+(include-grammar-module *title-qualifiers*)
 
 (include-grammar-module  *location*)
+ (include-grammar-module  *locations-core*)
+
  (include-grammar-module  *countries*)
  (include-grammar-module  *US-States*)
  (include-grammar-module  *cities*)
+
  (include-grammar-module  *other-locations*)
- (include-grammar-module  *locations-core*)
+
+
 
 
 ;;;-----------------------
@@ -222,7 +179,7 @@
 ;;; domain mining and populating
 ;;;------------------------------
 
-(include-grammar-module  *DM&P*)
+;;(include-grammar-module  *DM&P*)
 (include-grammar-module  *SDM&P*)
 
 
@@ -241,39 +198,41 @@
 
 (include-grammar-module *acumen-motifs*)
 
-(include-grammar-module  *pct*)
+;; (include-grammar-module  *pct*)
 
-(include-grammar-module  *whos-news*)
-(include-grammar-module  *whos-news/core*)
-(include-grammar-module  *job-events*)
-(include-grammar-module  *whos-news-special-grammar*)
+;; (include-grammar-module  *whos-news*)
+;; (include-grammar-module  *whos-news/core*)
+;; (include-grammar-module  *job-events*)
+;; (include-grammar-module  *whos-news-special-grammar*)
 
-(include-grammar-module  *ern*)
+;; (include-grammar-module  *ern*)
+
+
 
 (include-grammar-module  *reports*)
 
 (include-grammar-module  *internet*)
 
-(include-grammar-module  *ambush*) 2/21/19 too many fragments
-(include-grammar-module  *call-signs*)
-(include-grammar-module  *checkpoint-ops*)
-(include-grammar-module  *disease*) ; disease too tightly entwined w/ bio types
+;; (include-grammar-module  *ambush*)
+;; (include-grammar-module  *call-signs*)
+;; (include-grammar-module  *checkpoint-ops*)
+(include-grammar-module  *disease*)
 (include-grammar-module  *biology*)
+
+;; preliminary version of sublanguage where statistical tests and measures are getting defined - temporarily commented out until it's more functional
 (include-grammar-module  *score-stats*)
-(include-grammar-module  *hurricanes*)
-(include-grammar-module  *musica*)
-(include-grammar-module  *generic-military*)
+(include-grammar-module *score-verbs*)
 
-(include-grammar-module *middle-east*)
-(include-grammar-module *Banking*)
-(include-grammar-module *ISR*)
-(include-grammar-module *waypoints*)
-(include-grammar-module *blocks-world*)
-(include-grammar-module *biocuration*)
+;; (include-grammar-module  *hurricanes*)
+;;(include-grammar-module  *generic-military*)
 
-(include-grammar-module  *load-Tipster-grammar-into-image*)
-(include-grammar-module  *jv/phrases*)
-(include-grammar-module  *jv/relations-via-categories*)
+;; (include-grammar-module *middle-east*)
+;; (include-grammar-module *Banking*)
+;; (include-grammar-module *ISR*)
+;; (include-grammar-module *waypoints*)
 
+;; (include-grammar-module  *load-Tipster-grammar-into-image*)
+;; (include-grammar-module  *jv/phrases*)
+;; (include-grammar-module  *jv/relations-via-categories*)
 
 

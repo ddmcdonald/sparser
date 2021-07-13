@@ -302,6 +302,7 @@
 (def-logical-pathname "banking;"      "sl;banking;")
 (def-logical-pathname "isr;"          "sl;isr;")
 (def-logical-pathname "waypoints;"    "sl;waypoints;")
+(def-logical-pathname "motifs;"       "sl;motifs;")
 
 (def-logical-pathname "Who's News;"   "sl;Who's News;")
 (def-logical-pathname "acts;"         "Who's News;acts;")
