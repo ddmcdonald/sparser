@@ -128,11 +128,12 @@
                     (scan-next-position))
                   (setq word (pos-terminal where-pw-ended)))
 
-                (unless where-pw-ended
-                  (spot-word position))
-                
                 (unless (includes-state position-after :scanned)
                   (scan-next-position))
+                
+                (unless where-pw-ended
+                  ;; spotter needs the next word to have been scanned and have indexes
+                  (spot-word position))
 
                 (let ((next-word (pos-terminal position-after)))
                   (tr :next-terminal-to-scan position-after next-word)

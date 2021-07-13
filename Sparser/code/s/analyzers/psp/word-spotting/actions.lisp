@@ -37,17 +37,16 @@
         ((null entry)
          (setq entry (make-initial-spotter-entry spotter))
          (setf (items container)
-               (cons (list name entry) alist))))
+               (cons (list name entry) alist)))
+        (entry ; we've seen it before
+         (when (consp entry) ; e.g. (shamock #<shamrock 2>)
+           (setq entry (second entry)))))
 
-      ;; now it needs a count
-      (increment-note-entry entry)
-      (break "entry: ~a" entry)
-
-      (unless edge
-        (break "find the edge between ~a and ~a" pos-before pos-after))
-
+      (increment-note-entry entry) ;; now it needs a count
+      (if edge 
+        (massage-spotted-edge edge entry) ; give the right labels
+        (setq edge (make-edge-over-motif-word entry pos-before pos-after)))
       (add-edge-to-note-entry edge entry)
-      
 
       entry)))
       

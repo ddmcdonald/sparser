@@ -10,18 +10,9 @@
 (in-package :sparser)
 
 
-(defvar *words-to-triggers* (make-hash-table)
-  "Associates words or polywords with a instance of the spotter
-   class that is executed when the word is encountered.
-   This table feeds spot-word and spot-polyword via the
-   lookup function target-word-to-spot")
-
-(defun add-word-to-spot (word spotter)
-  (setf (gethash word *words-to-triggers*) spotter))
-
-(defun remove-word-to-spot (word)
-  (remhash word *words-to-triggers*))
-
+;;;--------------------------------------------
+;;; Word spotter versions of the note classes
+;;;--------------------------------------------
 
 (defclass word-spotting-group (note-group)
   ()
@@ -32,9 +23,10 @@
   ()
   (:documentation "An instance of a set of spotters in a particular document"))
      
-
 (defclass spotter (notable)
-  ((word :initarg :for :accessor backpointer))
+  ((rdata :initarg :for :accessor language-spec
+     :documentation "The information we use to make the referent for
+       the edge we put over the span driver identifies"))
   (:documentation "This is the type of thing we want to identify
     via word-spotting -- a particular word or polyword. The setup
     routine supplies a name for it (in the name slot). We also use
@@ -53,10 +45,27 @@
 (setup-find-or-make word-spotting-group) ;note-group)
 (setup-find-or-make word-spotting-group-instance) ;note-group-instance)
 
-;; (defmethod print-object ((s spotter) stream)
-;;   (print-unreadable-object (s stream)
-;;     (let ((na
+(defmethod print-object ((se spot-entry) stream)
+  (print-unreadable-object (se stream)
+    (let ((count (instance-count se)))
+      (format stream "~a ~a" (name se) count))))
 
+
+;;;-----------------------
+;;; tables for the driver
+;;;-----------------------
+
+(defvar *words-to-triggers* (make-hash-table)
+  "Associates words or polywords with a instance of the spotter
+   class that is executed when the word is encountered.
+   This table feeds spot-word and spot-polyword via the
+   lookup function target-word-to-spot")
+
+(defun add-word-to-spot (word spotter)
+  (setf (gethash word *words-to-triggers*) spotter))
+
+(defun remove-word-to-spot (word)
+  (remhash word *words-to-triggers*))
 
 
 (defgeneric setup-word-to-spotter (phrase spotter)
@@ -70,29 +79,18 @@
     (add-word-to-spot pw s)))
 
 
-#+ignore ;; mine for when there's not pre-build spotter
-(defun setup-word-to-spot  (string &key ((:name supplied-name)) note)
-  "Instantiate a spotter based on the supplied keys and add it
-   to the table the driver - spot - uses.
-   Constructs a name to instantiate the spotter, then populates
-   it given what's in the keys"
-  (let* ((word (resolve/make string)) ;; word or polyword
-         (name-to-use supplied-name))
-    (let ((s (make-instance 'spotter
-                            :name name-to-use
-                            :for word)))
-      (when note (setup-note-for-spotting s note))
-      (add-word-to-spot word s)
-      s)))
-#+ignore
-(defun setup-note-for-spotting (spotter note)
-  (let* ((name
-          (etypecase note
-            (string (intern (string-upcase note)
-                            (find-package :sparser)))
-            (symbol (unless (eq (string-package note) (find-package :sparser))
-                      (intern (symbol-name note) (find-package :sparser))))))
-         (category (define-category/expr name)))
-    (setf (note-category spotter) category)))
-    
-           
+;;;--------------------------
+;;; versions of what to spot
+;;;--------------------------
+;; Also see grammar/sl/motifs/base-categories.lisp
+
+;; Do we need also a group-level class?
+
+(defclass motif-spotter (spotter)
+  ((kind :initarg :type :accessor kind-of-notable
+     :documentation "one of the symbols char(acter) prop, event"))
+  (:documentation "This the analog of notable (which spotter indeed inherits
+    from). The name is formed from the word/polyword this goes with."))
+
+(setup-find-or-make motif-spotter)
+
