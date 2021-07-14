@@ -34,7 +34,7 @@
 (gload "numbers;fsa words")
 (gload "numbers;ordinals")
 (gload "numbers;percentages")
-(gload "number;phone-numbers")
+(gload "numbers;phone-numbers")
 (gload "numbers;rules")
 (gload "numbers;relation")
 
