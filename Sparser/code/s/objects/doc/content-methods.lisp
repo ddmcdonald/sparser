@@ -405,7 +405,7 @@
                (let ((gi (find-or-make-note-group-instance name))
                      (sum (loop for entry in entries
                              sum (instance-count entry))))
-                 (setf (for gi) a)
+                 ;(setf (for gi) a) ;; I think this is "moot given FoM"??
                  (setf (note-entries gi) entries)
                  (setf (group-count gi) sum)
                  gi)))
