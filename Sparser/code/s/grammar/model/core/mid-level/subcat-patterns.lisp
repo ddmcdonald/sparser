@@ -442,11 +442,6 @@ subcategorization-pattern is a daughter of linguistic, abstract
  to this is weak choice of variables"
   :realization (:of theme))
 
-(define-mixin-category takes-of-prototype-description
-  :mixins (with-prototype-description) 
-  :realization (:of prototype))
-
-
 (define-mixin-category takes-as
   :specializes subcategorization-pattern
   :mixins (with-role-or-purpose)

@@ -145,3 +145,19 @@ files once an area looks big enough to warrant it.  |#
  of even whether it actually exists or is only imagined (though 'object'
  does imply existence/location. /// so worth recasting when looking at
  inferences/consequences and envisionment vs. construction.")
+
+
+;;;------------------
+;;; specializations
+;;;------------------
+
+(define-mixin-category takes-of-prototype ;; takes-of-prototype-description
+  :specializes variant-on
+  :realization (:of prototype)
+  :documentation "Intended for kinds of variant-on that can compose
+ with their type-identifying complements ('prototype') using 'of'.
+ Part of a hack in the grammar and syntactic functions. Using this
+ category as the :rule-label of a variant-on will trigger a tailored
+ rule in syntactic rules which invokes the create-prototype-of-np
+ syntax-function to blend the variant and its prototype together.")
+
