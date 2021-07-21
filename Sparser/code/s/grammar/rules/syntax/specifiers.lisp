@@ -222,7 +222,7 @@ demonstratives.)
 
     (t
      (push-debug `(,spec ,head))
-     (warn #|break|# "sort-out-specifier/of: no handler specifier: ~a~
+     (warn-or-error "sort-out-specifier/of: no handler specifier: ~a~
             ~%of type: ~a~%in ~s"
            spec (itype-of spec) (current-string))
      ;; drop the spec on the floor
