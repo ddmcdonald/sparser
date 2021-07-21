@@ -221,13 +221,14 @@
  to be grounded.")
 
 
-(define-category with-prototype-description ;; terrible name -- David?
+
+(define-category variant-on  ;; had been with-prototype-description
   :specializes requires-context
   :binds ((prototype top))
-  :documentation "Intended for things like type (of), variant(of), ...
- whose category is unclear without either an explicit argument (of) or
- a context"
-)
+  :documentation "Intended for things like type (of), or variant (of)
+ where the word can be used with an explicit complement identifying
+ the type of the phrase, but also by itself ('another variant is')
+ where the type has to be determined from context.")
 
 
 (define-category subcategorization-pattern
