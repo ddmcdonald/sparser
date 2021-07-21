@@ -348,40 +348,38 @@ be biology specific, since they aren't. |#
 
 ;;---- other
 
-
-(define-category variant :specializes takes-of-prototype-description
+(define-category variant :specializes variant-on
   ;; was "protein" which is not true, but the most common case
   ;; need to write rules that make the class of the result of "Pak variant"
   ;;  be the class of "Pak" bio-chemical-entity 
   ;; not sure this is the correct term, but intended for things like "forms of ras" 
   :instantiates :self
-  :rule-label takes-of-prototype-description
-  :realization
-    (:noun ("variant" "form")
-))
+  :mixins (takes-of-prototype)
+  :rule-label takes-of-prototype
+  :realization (:noun ("variant" "form")))
 
-;;; These have been moved here to allow state to be a variant
 
-(define-category bio-state :specializes variant
-  :documentation  "not quite right, but it is almost always a protein
+
+(when (or (current-script :biology) ;; i.e. not in Acumen or Fire
+          (current-script :score))
+  
+  (define-category bio-state :specializes variant
+    :documentation  "not quite right, but it is almost always a protein
       for things like activated state"
-  :realization
-    (:noun "state"))
+    :realization (:noun "state"))
+
+  (noun "position" :super residue-on-protein)
+
+  )
 
 
 (noun "example" :super variant)
 
+  
 (noun "homolog" :super variant)
 (def-synonym homolog (:noun "homologue"))
 
-(noun "position" :super residue-on-protein)
 
-(define-category region-of-molecule
-  :specializes molecular-location
-  :binds ((bounds biological))
-  :realization
-    (:noun "region"
-     :between bounds))
 
 
 
