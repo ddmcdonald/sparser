@@ -839,12 +839,20 @@ val-pred-var (pred vs modifier - left or right?)
 ;;---- prototype-of rule
 
 (defun create-prototype-of-np (prototype-word of-pp)
-  (cond (*subcat-test* (not (eq (edge-form-name (right-edge-for-referent)) 'preposition)))
-        (t
-         (let* ((prototype-np (value-of 'pobj of-pp)))
-           (setq prototype-word (bind-variable 'prototype prototype-np prototype-word))
-           (revise-parent-edge :category (itype-of prototype-np))
-           (specialize-object prototype-word (itype-of prototype-np))))))
+  "Invoked from np -> (takes-of-prototype of), where takes-prototype-of
+   is the 'rule-label of variant words like 'strain' or 'kind'. Those are
+   descriptions of the complement of the pp (pobj), so here we turn things
+   on their head by making the edge have the label of the pobj and specializing
+   the referent to have both categories."
+  (cond
+    (*subcat-test* (not (eq (edge-form-name (right-edge-for-referent))
+                            'preposition)))
+    (t
+     (let* ((prototype-np (value-of 'pobj of-pp)))
+       (setq prototype-word ;; e.g. an individual for "strain"
+             (bind-variable 'prototype prototype-np prototype-word))
+       (revise-parent-edge :category (itype-of prototype-np))
+       (specialize-object prototype-word (itype-of prototype-np))))))
 
 
 ;;--- determiners
