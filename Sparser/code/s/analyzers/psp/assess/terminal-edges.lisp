@@ -349,10 +349,11 @@
     ;; Don't bother to make edges unless there's some affix to react to.
     (when (and *make-edges-for-unknown-words-from-their-suffixes*
                (not (eq :all-caps (pos-capitalization position-scanned))))
-      (list ;; install-terminal-edges will expect list
+   ;   (list ;; install-terminal-edges will expect list, but apparently this already return a list with a single edge -- possibly revisit 
        (make-edge-based-on-morphology word
                                      position-scanned
-                                     next-position)))))
+                                     next-position))))
+  ;)
 
 
 
