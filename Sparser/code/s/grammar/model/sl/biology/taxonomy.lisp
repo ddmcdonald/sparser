@@ -1011,7 +1011,7 @@
   :instantiates self
   :index (:permanent :key name)
   :realization
-    (:noun "region"
+    (#|:noun "region"|#
      :of substrate))
 
 (define-category protein-domain
@@ -1025,8 +1025,19 @@
       :m domain      
       :of substrate))
 
-(def-synonym protein-domain (:noun "region"))
+#+ignore(def-synonym protein-domain (:noun "region"))
 (def-synonym protein-domain (:noun "segment")) ;"C-terminal segment of PEA-15"
+
+#| (show-sents "region") in R3 gets quite specific phrases ('linker-region')
+ or instances of region-of-molecule
+|#
+(define-category region-of-molecule
+  :specializes molecular-location
+  :binds ((bounds biological))
+  :realization
+    (:noun "region"
+     :between bounds))
+
 
 (define-category peptide :specializes molecule
   :binds ((residue residue-on-protein))
