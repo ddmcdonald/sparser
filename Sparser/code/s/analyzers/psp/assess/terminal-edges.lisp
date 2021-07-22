@@ -44,7 +44,7 @@
 ;;; entry point
 ;;;-------------
 
-;; (trace-network)
+;; (trace-network) see all traces
 
 (defun install-terminal-edges (word position-scanned next-position)
   "Called from introduce-terminal-edges or from do-just-terminal-edges which
@@ -148,7 +148,7 @@
        ((eq :digits actual-state)
         (cond
           ((digits-denote-a-year word position-scanned)
-           (make-edge-over-new-year word position-scanned next-position))
+           (list (make-edge-over-new-year word position-scanned next-position)))
           (t
            ;; It's a new number, i.e. a number that wasn't defined
            ;; in the dossier and hasn't already gone through this
@@ -349,14 +349,15 @@
     ;; Don't bother to make edges unless there's some affix to react to.
     (when (and *make-edges-for-unknown-words-from-their-suffixes*
                (not (eq :all-caps (pos-capitalization position-scanned))))
-      (make-edge-based-on-morphology word
+      (list ;; install-terminal-edges will expect list
+       (make-edge-based-on-morphology word
                                      position-scanned
-                                     next-position))))
+                                     next-position)))))
 
 
 
 ;;;-------------------------------------------------
-;;; bookeeping used by the Top-edges-only algorithm
+;;; bookkeeping used by the Top-edges-only algorithm
 ;;;-------------------------------------------------
 
 (defun setup-multiple-initial-edges (position-before
