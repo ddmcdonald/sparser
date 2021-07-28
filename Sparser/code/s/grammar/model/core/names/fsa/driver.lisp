@@ -120,14 +120,14 @@
  called. We check for some cases that typically mean the capitalization is not
  signalling a name and return nil signalling to the word-level-fsa-sweep that
  we've failed. 
-   Then we call cap-seq-continues-fro-here? to locate where the capitalized
+   Then we call cap-seq-continues-from-here? to locate where the capitalized
  sequence ends (*pnf-end-of-span*). Classify-and-record-name does the heavy lifting
  and either returns an edge or returns nil if it aborted from some reason.
  If we got an edge we return the position where the span ended, i.e. the position
  just after the final capitalized word in the span.
     When there is more than one word in the span that has been delimited,
- c&r-multi-word-span does the orchestration ('classify and record). It runs
- pfwpnf ('parse from within pnf') to check for word FSAs and run
+ c&r-multi-word-span ('classify and record) orchestrates what happens.
+ It runs pfwpnf ('parse from within pnf') to check for word FSAs and do
  install-terminal-edges. At that point a tailored mini-parser that is only
  permitted to use semantic rules), parse-between-boundaries, runs.
 "

@@ -405,24 +405,27 @@
 
              (category::month
               (setq month (cons count (edge-referent tt))))
+
+             (category::motif-trigger
+              (spot-motif-trigger tt))
                
              (otherwise
-              (or (valid-name-category? tt-category)
-                  (if *break-on-new-categories-in-cap-seq*
-                    (break "New category in capitalized sequence: ~A" label)
-                    (else
-                      ;; Want to be able to provide these words with another
-                      ;; reading as a name-word. Record the treetop edge rather
-                      ;; than just the category so we can get the needed information.
-                      ;; The conversion is done by referents-of-list-of-edges when
-                      ;; it is going through the list of items in the call here
-                      ;; to categorize-and-form-name and the bottom of this function.
-                      (setq other (cons count tt))))))))
-         
-         ;; That was the end of check-cases flet function,
+              (or (valid-name-category? tt-category) ; checks a value on category's plist
+                  (else
+                    (when *break-on-new-categories-in-cap-seq*
+                      (break "New category in capitalized sequence: ~A" label))                      
+                    ;; Want to be able to provide these words with another
+                    ;; reading as a name-word. Record the treetop edge rather
+                    ;; than just the category so we can get the needed information.
+                    ;; The conversion is done by referents-of-list-of-edges when
+                    ;; it is going through the list of items in the call here
+                    ;; to categorize-and-form-name and the bottom of this function.
+                    (push (cons count tt) other))))
+             
+             )) ;;  end of check-cases flet function,
 
          (label-for (tt)
-           "What kind of thing is this treetop, which clause of check-cases
+           "What kind of thing is this treetop, i.e. which clause of check-cases
             should it go through"
            (typecase tt 
              (edge
@@ -629,12 +632,26 @@
       ;;   original that started eariler. 
       ;;--- Look for things that would restructure the elements of the name
       
-      (when other ;; "George K. Ball" -- where "ball" is an ordinary word
+      (when other
+        ;; As in "George K. Ball" -- where "ball" is an ordinary word
+        ;; but we want it to also act as a name-word for purposes of being
+        ;; in the name
+        (when (typep (car other) 'integer) ;; e.g. (2 . #<edge ...>)
+          (setq other (list other)))
+        (loop for pair in other
+           as item-index = (car pair)
+           as edge = (cdr pair)
+           as ref = (edge-referent edge)
+           unless (eq (form-cat-name edge) 'preposition)
+           do (let ((nw (find/make-silent-nw-for-word-under-edge edge)))
+                (setq items (substitute nw ref items)))))
+        #+ignore ; original for singleton
         (let* ((item-index (car other))
                (edge (cdr other))
                (ref (edge-referent edge))
                (nw (find/make-silent-nw-for-word-under-edge edge)))
-          (setq items (substitute nw ref items))))
+          (setq items (substitute nw ref items)))
+
 
       (when ordinal  ;; e.g. "III", "Fourth"
         ;; a cons of the count and an ordinal unit
@@ -669,7 +686,7 @@
       (when person-prefix ;; 'St.'
         (if (= (car person-prefix) 1)
           (setq items (cdr items))
-          (break "Funny person-prefix: ~a" person-prefix))
+          #+ignore(warn-or-error "person-prefix isn't initial: ~a" person-prefix))
         (setq person-prefix (cdr person-prefix)))
 
       ;;--- Make the name

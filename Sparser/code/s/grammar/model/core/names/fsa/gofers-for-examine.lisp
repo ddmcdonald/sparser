@@ -3,7 +3,7 @@
 ;;;
 ;;;      File: "gofers-for-examine"
 ;;;    Module: model/core/names/fsa/
-;;;   Version: March 2021
+;;;   Version: July 2021
 
 ;; Initiated 3/28/13 by pulling out the odd tests and checks 
 ;; from examine. 
@@ -544,8 +544,8 @@ a minimal category and rule set for every word.
 (defun referents-of-list-of-edges (reversed-list-of-edges)
   "Called by Examine-capitalized-sequence to make the item list
    for Categorize-and-form-name. Returns a list of terms from
-   the model to put into the name object. Expects name-words rather
-   than raw individuals. Makes them when it's clear how to do it."
+   the model to put into the name object. Wants name-words rather
+   than raw individuals. Makes them  on the flyw when it's clear how to."
   (let ( value  referents )
     (dolist (item reversed-list-of-edges)
       ;; Collect one item per pass through this loop and
@@ -556,25 +556,32 @@ a minimal category and rule set for every word.
             (typecase item
               (edge
                (let ((referent (edge-referent item)))
-                 (if (null referent)
-                   (get-name-referent-of-odd-edge item :pnf)
-                   (typecase referent
-                     (individual
-                      (find/make-silent-nw-for-word-under-edge item))
+                 (cond
+                   ((null referent)
+                    (get-name-referent-of-odd-edge item :pnf))
+                   ((memq (form-cat-name item)
+                          '(preposition ; 'except for'
+                            reflexive/pronoun ; 'each other'
+                            ))
+                    :drop)
+                   (t
+                    (typecase referent
+                      (individual
+                       (find/make-silent-nw-for-word-under-edge item))
 
-                     ((or referential-category category mixin-category)
-                      (find/make-silent-nw-for-word-under-edge item))
+                      ((or referential-category category mixin-category)
+                       (find/make-silent-nw-for-word-under-edge item))
 
-                     ((or word section-marker)
-                      ;; This is here for "ORANGE-CO, INC.", where the
-                      ;; "CO" is interpreted as a header.
-                      referent)
+                      ((or word section-marker)
+                       ;; This is here for "ORANGE-CO, INC.", where the
+                       ;; "CO" is interpreted as a header.
+                       referent)
 
-                     (otherwise
+                      (otherwise
                        (when *debug-pnf*
-                        (push-debug `(,referent ,item ,reversed-list-of-edges))
-                        (break "Unexpected type of edge referent: ~a~%~a"
-                               (type-of referent) referent)))))))
+                         (push-debug `(,referent ,item ,reversed-list-of-edges))
+                         (break "Unexpected type of edge referent: ~a~%~a"
+                                (type-of referent) referent))))))))
                    
               (individual ;; e.g. the name-word that is made for
                ;; an unknown capitalized word

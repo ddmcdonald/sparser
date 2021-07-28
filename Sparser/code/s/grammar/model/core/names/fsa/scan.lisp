@@ -86,6 +86,8 @@
         ((and edge ;; probably the result of the polyword pass
               (edge-p edge) ;; vs. an edge-vector for :multiple-initial-edges
               (capitalized-instance position-before))
+         ;;//// "FORWARD-LOOKING INFORMATION Except for statements"
+         ;; 'except for' is a preposition. We should stop the scan here
          (tr :cont-caps-edge edge)
          (cap-seq-continues-from-here? (pos-edge-ends-at edge)))
 
@@ -321,8 +323,11 @@
 ;;;-------------
 
 (defun checkout-punctuation-for-capseq (position-before)
-  ;; the terminal at this position is punctuation of some sort.
-  ;; Decide what to do on a case-by-case basis
+  "The terminal at this position is punctuation of some sort.
+   Decide what to do on a case-by-case basis. If we don't want to
+   include the punctuation in the span then we return 'position-before'
+   which will terminate the scan. Otherwise we let the case-by-case
+   function make that determination."
   (tr :checkout-punctuation-for-capseq position-before)
   (let ((punct (pos-terminal position-before)))
     (cond
@@ -343,7 +348,11 @@
       (checkout-forward-slash-for-capseq position-before))
      ((eq punct word::\') 
       (checkout-single-quote-for-capseq position-before))
+     ((word-never-in-ns-sequence punct)
+      position-before)
      (t
+      (when *debug-pnf*
+        (break "Continue PNF span over the character ~a ?" punct))
       position-before))))
 #|
           ((eq punct word::\,) (checkout-comma-for-capseq position-before))
@@ -471,7 +480,7 @@
   ;; In all these cases we just pass judgement on whether to continue
   ;; the sequence -- handling the meaning of these cases is left to
   ;; classification.
-  ;;   Good list of chars in word-never-in-ns-sequence
+  ;;   Good list of chars in the word-never-in-ns-sequence function
   (declare (special *lc-person-words*))
   (unless *lc-person-words* (populate-lc-person-words))
 ;;#########################################################################
