@@ -11,6 +11,8 @@
 (in-package :sparser)
 
 
+;; (make-spotter-for-motif-pair '("salmon_PROP" . "salmon of wisdom"))
+
 (defun make-spotter-for-motif-pair (pair) ; e.g. ("salmon_PROP" . "salmon of wisdom")
   "Same basic function as setup-word-to-spot, but adapted to work
    from the pairs derived from lm_rules.txt"
@@ -42,21 +44,14 @@
             (setf (part-of-group spotter) spotting-group)
             (setf (note-trigger spotter) word)
 
-            (setup-motifs-language-spec spotter kind)
+            (setup-motifs-language-spec word spotter kind)
             (setup-word-to-spotter word spotter)
 
             (values spotter spotting-group)))))))
 
-(defun clear-motif-spotting-data ()
-  "For debugging. Removes the types, not the tokens"
-  (clear-motif-spotter)
-  (clear-spotter)
-  (clear-word-spotting-group))
 
-;; (make-spotter-for-motif-pair '("salmon_PROP" . "salmon of wisdom"))
 
 ;; (assimiate-motif-type-word-pairs *motif-type-word-pairs*)
-
 
 (defun assimiate-motif-type-word-pairs (list-of-pairs)
   "Pass each pair through the constructor. Collect raw statistics
