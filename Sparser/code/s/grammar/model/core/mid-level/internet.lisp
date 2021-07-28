@@ -113,6 +113,11 @@ e66   BIO-ENTITY    9 "com/rrwick/Porechop" 14
     (values rule i)))
 
 
+(defun string-is-probably-partial-url (s)
+  "Had to break this apart to convert reify-spelled-name to a cond from an or"
+  (or (search ".com" s)
+      (search ".net" s)
+      (search ".ca" s)))
 
 (defgeneric probably-partial-url (item)
   (:documentation "Does any portion of this string look like it

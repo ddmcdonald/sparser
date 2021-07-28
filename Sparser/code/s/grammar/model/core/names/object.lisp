@@ -397,9 +397,12 @@ with sequences we'd prefer that PNF handled directly.
       ;; The catch is in collect-no-space-segment-into-word
       (throw :punt-on-nospace-without-resolution nil))
 
-    (or (probably-partial-url string)
-        (probably-a-hashtag string)
-
+    (cond
+      ((string-is-probably-partial-url string)
+       (probably-partial-url string))
+      ((eq #\# (aref string 0))
+       (probably-a-hashtag string))
+      (t
         (let* ((pnames (actual-strings-for-list-of-words words string))
                (name-words (loop for p in pnames
                               collect (define-name-word/actual p))))
@@ -430,7 +433,7 @@ with sequences we'd prefer that PNF handled directly.
                            :schema (if proper?
                                      (get-schematic-word-rule :proper-noun)
                                      (get-schematic-word-rule :common-noun)))))
-              (values category rule name)))))))
+              (values category rule name))))))))
 
 
 (defun actual-strings-for-list-of-words (words string)
