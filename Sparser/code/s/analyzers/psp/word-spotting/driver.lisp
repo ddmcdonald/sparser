@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "driver"
 ;;;    Module:   "analyzers;psp:word-spotting:"
-;;;   Version:   May 2021
+;;;   Version:   July 2021
 
 ;; Initiated 5/18/21
 
@@ -60,4 +60,21 @@
         (let ((spotter (target-word-to-spot pw)))
           (when spotter
             (handle-spotted-word spotter (pos-edge-starts-at e1) p :edge e1)))))))
+
+
+(defgeneric spot-motif-trigger (edge)
+  (:documentation "Invoked from examine-capitalized-sequence because the motif
+    word/pw has an associated rule created by setup-motifs-language-spec whose
+    category label is noticed. The link to the spotter is through the trigger
+    word, which is bound to a slot on the referent.")
+  (:method ((e edge))
+    (let* ((j (edge-referent e))
+           (word (value-of 'spotter-index j))
+           (spotter (target-word-to-spot word)))
+      (unless spotter (break "connection to spotter didn't work"))
+      (handle-spotted-word spotter
+                           (pos-edge-starts-at e)
+                           (pos-edge-ends-at e)
+                           :edge e))))
+
 
