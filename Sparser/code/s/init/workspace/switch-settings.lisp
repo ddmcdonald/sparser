@@ -15,7 +15,7 @@
 ;;; debugging alternatives
 ;;;------------------------
 
-(setq *break-on-unexpected-cases* t)
+;(setq *break-on-unexpected-cases* t)
 ;(setq *break-on-unexpected-cases* nil)
 
 
