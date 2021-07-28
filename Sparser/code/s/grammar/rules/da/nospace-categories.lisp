@@ -121,6 +121,14 @@
       ((and (itypep left 'fractional-term) ; "quarter-million"s
             (itypep right 'multiplier))
        (make-edge-over-fraction-of-illion left right start-pos end-pos))
+      
+      ((and (itypep left 'number) ; ""March 13-Chicago ..." AC #11
+            (itypep (edge-referent (edge-ending-at start-pos)) 'month))
+       (let* ((edge-before (edge-ending-at start-pos))
+              (rule (multiply-edges edge-before left-edge)))
+         (unless rule (break "no rule for month+number"))
+         (make-completed-binary-edge edge-before left-edge rule)))
+
       (t
        (let ((i (find-or-make-individual 'hyphenated-pair
                                          :left (maybe-make-individual left)
