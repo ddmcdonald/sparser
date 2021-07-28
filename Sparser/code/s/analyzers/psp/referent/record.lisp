@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2018-2020 David D. McDonald -- all rights reserved
+;;; copyright (c) 2018-2021 David D. McDonald -- all rights reserved
 ;;;
 ;;;      File:   "record"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   June 2020
+;;;   Version:   July 2020
 
 ;; Initiated 12/28/18 to tabulate rule and semantic function usage
 ;; and correlation with test passages in texts.
@@ -169,39 +169,43 @@ rules, including any DA rules.
 
 ;;--- Driver
 
+(defparameter *record-rules* nil "Gates execution of record-rule")
+
 (defun record-rule (rule)
-  "Called from referent-from-rule. Always on.
+  "Called from referent-from-rule. Always on provided that
+   the flag *record-rules* is non-nil.
    Adds to the incidence count of the rule.
    If the rule involves a semantic function it is listed and
    counted as well (if the semantic function structures have been
    initialized.)
    Regular rules are indexed off the rule. DA rules are indexed off
    the da rule object."
-  (declare (special *subcat-test*))
-  (unless *subcat-test* ; otherwise the count is doubled
-    (pushnew rule *rules-ever-fired*)
-    (let* ((rule-name
-            (etypecase rule
-              (cfr (rule-name rule))
-              (da-rule (da-name rule))))
-           (record (find-or-make-record-of-rule rule-name))
-           (fn-data (when (typep rule 'cfr) (syntactic-function-data rule))))
-      ;;/// don't yet know how to reliably identify the equivalent of a syntactic
-      ;; function for a DA rule. They're often usually a couple steps down
-      ;; the calling chain
-      (setf (gethash rule *rules-to-records*) record)
-      (incf (instance-count record))
-      (when fn-data
-        (let* ((table (callers fn-data))
-               (rule-entry (gethash rule table)))
-          ;;(push-debug `(,fn-data ,table ,rule-entry)) (break "rule-entry: ~a" rule-entry)
-          (if rule-entry
-            (incf (gethash rule table))
-            (setf (gethash rule table) 1))))
-      (when (typep rule 'cfr) ; DA rules need different collectors
-        (setup-rule-citations record rule-name))
-      ;; (break "rule = ~a" rule)
-      record)))
+  (declare (special *subcat-test* *record-rules*))
+  (when *record-rules*
+    (unless *subcat-test* ; otherwise the count is doubled
+      (pushnew rule *rules-ever-fired*)
+      (let* ((rule-name
+              (etypecase rule
+                (cfr (rule-name rule))
+                (da-rule (da-name rule))))
+             (record (find-or-make-record-of-rule rule-name))
+             (fn-data (when (typep rule 'cfr) (syntactic-function-data rule))))
+        ;;/// don't yet know how to reliably identify the equivalent of a syntactic
+        ;; function for a DA rule. They're often usually a couple steps down
+        ;; the calling chain
+        (setf (gethash rule *rules-to-records*) record)
+        (incf (instance-count record))
+        (when fn-data
+          (let* ((table (callers fn-data))
+                 (rule-entry (gethash rule table)))
+            ;;(push-debug `(,fn-data ,table ,rule-entry)) (break "rule-entry: ~a" rule-entry)
+            (if rule-entry
+              (incf (gethash rule table))
+              (setf (gethash rule table) 1))))
+        (when (typep rule 'cfr) ; DA rules need different collectors
+          (setup-rule-citations record rule-name))
+        ;; (break "rule = ~a" rule)
+        record))))
 
 (defun setup-rule-citations (record rule-name)
   "Record what text strings were involved. Assumes we're looking at a binary
@@ -401,7 +405,8 @@ rules, including any DA rules.
                 (referent-uses-method? r))
         (let* ((fn-name (second (cfr-referent r)))
                (data (update-fixed-data-for-syntactic-function fn-name r)))
-          (setf (gethash r *uses-syntactic-function*) data))))))
+          (setf (gethash r *uses-syntactic-function*) data)))))
+  (setq *record-rules* t))
 
 (defun update-fixed-data-for-syntactic-function (name rule)
   "There is a rule that references this function ('name').
