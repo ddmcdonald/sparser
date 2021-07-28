@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  Version:  June 2021
+;;;  Version:  July 2021
 
 ;; initiated 5/15/93 v2.3, added traces 5/26
 ;; 0.1 (12/9) Added pre-emptive state variable
@@ -87,6 +87,12 @@
   (setq *pnf-routine* keyword))
 
 
+#| (trace-pnf)
+(setq *break-before-examining* t ;; Before examine-capitalized-sequence starts
+      *break-on-new-categories-in-cap-seq* t ;; bottom of its first flet fn.
+      *break-before-creating-name* t) |#
+
+
 (defun pnf (starting-position &optional continue-pos)
   "Invoked from word-level-fsa-sweep when pnf is loaded,
    *pnf-routine* has been given a value, and the
@@ -109,6 +115,22 @@
 ; (establish-pnf-routine :scan-classify-record)
 
 (defun pnf/scan-classify-record (starting-position &optional continue-pos)
+  "The default version of the Proper Name Facility.
+ There is a capitalized word at the starting-position. That's why we were
+ called. We check for some cases that typically mean the capitalization is not
+ signalling a name and return nil signalling to the word-level-fsa-sweep that
+ we've failed. 
+   Then we call cap-seq-continues-fro-here? to locate where the capitalized
+ sequence ends (*pnf-end-of-span*). Classify-and-record-name does the heavy lifting
+ and either returns an edge or returns nil if it aborted from some reason.
+ If we got an edge we return the position where the span ended, i.e. the position
+ just after the final capitalized word in the span.
+    When there is more than one word in the span that has been delimited,
+ c&r-multi-word-span does the orchestration ('classify and record). It runs
+ pfwpnf ('parse from within pnf') to check for word FSAs and run
+ install-terminal-edges. At that point a tailored mini-parser that is only
+ permitted to use semantic rules), parse-between-boundaries, runs.
+"
   (declare (special *show-note-candidates*))
   (tr :initiating-pnf starting-position)
   (set-status :pnf-checked starting-position)
