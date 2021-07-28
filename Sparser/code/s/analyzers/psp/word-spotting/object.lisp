@@ -50,6 +50,13 @@
     (let ((count (instance-count se)))
       (format stream "~a ~a" (name se) count))))
 
+(defun clear-spotting-tables ()
+  "Called from clean-out-history-and-temp-objects just before
+   the next text analysis is about to start. Clearing the instances
+   removes any influence from instances in earlier documents."
+  (clear-spot-entry)
+  (clear-word-spotting-group-instance))
+
 
 ;;;-----------------------
 ;;; tables for the driver

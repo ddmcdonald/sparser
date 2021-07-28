@@ -9,6 +9,7 @@
 
 (in-package :sparser)
 
+;; (trace-word-spotting)
 
 (defun handle-spotted-word (spotter pos-before pos-after &key edge)
   "Called from spot-word, which supplies the two positions, and from
@@ -17,7 +18,7 @@
    can get an edge we include it in the entry. "
 
   (tr :spotted spotter)
-  (push-debug `(,spotter ,pos-before ,pos-after ,edge)) ;(break "handle")
+  ;;(push-debug `(,spotter ,pos-before ,pos-after ,edge)) ;(break "handle")
 
   ;; This part is a straight copy of get-entry-for-notable
   (let* ((name (name spotter))
@@ -47,6 +48,7 @@
         (massage-spotted-edge edge entry) ; give the right labels
         (setq edge (make-edge-over-motif-word entry pos-before pos-after)))
       (add-edge-to-note-entry edge entry)
+      (tr :spotting-edge edge entry)
 
       entry)))
       
@@ -68,3 +70,8 @@
   (when *trace-word-spotting*
     (trace-msg "Spotted ~s"
                (pname (note-trigger spotter)))))
+
+(deftrace :spotting-edge (edge entry)
+  ;; called from handle-spotted-word
+  (when *trace-word-spotting*
+    (trace-msg "Adding ~a to ~a~" edge entry)))
