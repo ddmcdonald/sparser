@@ -127,12 +127,13 @@ set in. This initialization manages them.|#
 ;;;--------------------------------------
 
 (defun clean-out-history-and-temp-objects ()
-  ;; the reap is ordered before the initialization
+  ;; the temp. individuals reap is ordered before the initialization
   ;; because it uses the discourse history to tell it
   ;; what to reap
   (reclaim-temporary-individuals)
   (zero-bound-in-fields)
   (clear-note-tables)
+  (clear-spotting-tables)
   (initialize-discourse-history))
 
 
