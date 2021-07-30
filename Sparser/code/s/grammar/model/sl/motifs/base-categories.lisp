@@ -102,7 +102,7 @@ a Krisp individual. |#
     (let* ((cat-name (first rdata))
            (name (second rdata))
            (i (define-or-find-individual cat-name :name name))
-           (j (bind-variable 'spotter-index word i) v)
+           (j (bind-variable 'spotter-index word i))
            (capitalized? (capitalized-instance start-pos)))
       (let ((edge
              (make-completed-unary-edge
