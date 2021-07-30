@@ -74,4 +74,4 @@
 (deftrace :spotting-edge (edge entry)
   ;; called from handle-spotted-word
   (when *trace-word-spotting*
-    (trace-msg "Adding ~a to ~a~" edge entry)))
+    (trace-msg "Adding ~a to ~a" edge entry)))
