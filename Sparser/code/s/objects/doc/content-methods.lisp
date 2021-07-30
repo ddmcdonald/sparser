@@ -290,7 +290,7 @@
     paragraph to get a coarse style marker of a sort.")
   
   (:method ((p paragraph))
-    (declare (special *print-text-stats*))
+    (declare (special *print-text-stats* *show-article-progress*))
     (when (and (starts-at-pos p) (ends-at-pos p))
       (let* ((content (contents p))
              (sentences (sentences-in-paragraph p)) ; list of sentence objects
@@ -301,7 +301,8 @@
         (setf (word-count content) word-count)
         (setf (token-count p) word-count)
 
-        (when *print-text-stats*
+        (when (and *print-text-stats*
+                   *show-article-progress*)
           (format t "~&Paragraph ~a.  ~a sentences  ~a words.
                    ~%"
                   p (length sentences) word-count
@@ -406,7 +407,7 @@
                      (sum (loop for entry in entries
                              sum (instance-count entry))))
                  ;(setf (for gi) a) ;; I think this is "moot given FoM"??
-                 (setf (note-entries gi) entries)
+                 (setf (note-instances gi) entries)
                  (setf (group-count gi) sum)
                  gi)))
         (let ((group-instances
@@ -419,7 +420,8 @@
             (setf (items content) sorted-instances)
             a ))))))
     
-    
+
+
                               
 
 ;;;--------------------------------
