@@ -15,7 +15,13 @@
 
 (defun make-spotter-for-motif-pair (pair) ; e.g. ("salmon_PROP" . "salmon of wisdom")
   "Same basic function as setup-word-to-spot, but adapted to work
-   from the pairs derived from lm_rules.txt"
+   from the pairs derived from LuceneSearchTest/lm_rules.txt.
+      We decompose the type (e.g. 'salmon_PROP') into the kind of motif
+   ('PROP') and the tag ('salmon') that groups different phrases together
+   as triggering the same motif.
+      A 'spotter' looks for an instance of one particular phrase. A group
+   of spotters/phrases is based on the tag that several phases share."
+  
   (flet ((extract-kind-from-lm-string (note-string)
            (let* ((underbar (position #\_ note-string))
                   (tag (subseq note-string 0 underbar)) ; "salmon"
@@ -30,7 +36,7 @@
                   (string-upcase (substitute #\- #\space string))
                   (find-package :sparser))))
       
-      ;; decompose thr note and shift to symbols
+      ;; decompose the note and shift from strings to symbols
       (multiple-value-bind (kind ; PROP
                             tag) ; salmon
           (extract-kind-from-lm-string note)
@@ -50,18 +56,22 @@
             (values spotter spotting-group)))))))
 
 
+(defvar *motif-groups* nil)
+(defvar *motif-spotters* nil)
 
 ;; (assimiate-motif-type-word-pairs *motif-type-word-pairs*)
 
 (defun assimiate-motif-type-word-pairs (list-of-pairs)
   "Pass each pair through the constructor. Collect raw statistics
-   along the way to provide something to report"
+   along the way to provide something to record and report"
   (let ( spotters  groups )
     (loop for pair in list-of-pairs
        do (multiple-value-bind (spotter group)
               (make-spotter-for-motif-pair pair)
             (pushnew spotter spotters)
             (pushnew group groups)))
+    (setq *motif-groups* groups
+           *motif-spotters* spotters)
     (format t "~&~%~a spotters in ~a groups"
             (length spotters) (length groups))
     :done))
@@ -97,6 +107,7 @@
     ("cu-chulainn_CHAR" . "cuhullin")
     ("cu-chulainn_CHAR" . "setanta")
     ("cu-chulainn_CHAR" . "culann's hound")
+    
     ("haman_CHAR" . "haman")
     ("golem_CHAR" . "golem")
     ("amalek_CHAR" . "amalek")
@@ -113,6 +124,7 @@
     ("kiddush_EVENT" . "kiddush hashem")
     ("70-languages_PROP" . "seventy languages")
     ("70-languages_PROP" . "70 languages")
+    
     ("reyes_CHAR" . "reyes magos")
     ("reyes_CHAR" . "three kings")
     ("agueybana_CHAR" . "agueybana")
