@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995,2011-2013,2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2011-2013,2019-2021  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "do action"
 ;;;   Module:  "analyzers;DA:"
-;;;  Version:  January 2019
+;;;  Version:  July 2021
 
 ;; initiated 5/7/95. Debugging, refining ..5/12. 11/3/11 Extending
 ;; cases for schematic actions to :function. 7/29/13 Added more traces
@@ -132,14 +132,14 @@ SP> (stree 51)
     (let ((result (apply fn constituents)))
       (cond
         ((edge-p result)
-         (record-rule rule)
+         (record-rule rule :fn fn :constituents constituents)
          (tr :da-fn-returned-edge result)
          result)
         ((null result) ;; the rule failed
          (tr :da-fn-failed)
          nil)
         ((typep result 'edge-spec)
-         (record-rule rule)
+         (record-rule rule :fn fn :constituents constituents)
          (tr :da-edge-spec result)
          (let* ((*edge-spec* result)
                 (target (edge-spec-target *edge-spec*))

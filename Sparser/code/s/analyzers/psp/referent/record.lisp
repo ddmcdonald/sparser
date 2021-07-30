@@ -171,7 +171,7 @@ rules, including any DA rules.
 
 (defparameter *record-rules* nil "Gates execution of record-rule")
 
-(defun record-rule (rule)
+(defun record-rule (rule &key fn constituents)
   "Called from referent-from-rule. Always on provided that
    the flag *record-rules* is non-nil.
    Adds to the incidence count of the rule.
@@ -179,7 +179,8 @@ rules, including any DA rules.
    counted as well (if the semantic function structures have been
    initialized.)
    Regular rules are indexed off the rule. DA rules are indexed off
-   the da rule object."
+   the da rule object and noticed in standardized-apply-da-function-action
+   always supplying fn and constituents information."
   (declare (special *subcat-test* *record-rules*))
   (when *record-rules*
     (unless *subcat-test* ; otherwise the count is doubled
