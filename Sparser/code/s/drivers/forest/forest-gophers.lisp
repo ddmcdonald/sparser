@@ -496,6 +496,9 @@
       (error "Not a VP category: ~a in e~a"
              form (edge-position-in-resource-array edge)))
     (cond
+      ((eq (edge-rule edge) 'add-adjunctive-pp)
+       (find-verb (edge-left-daughter edge)))
+
       ((and (verb-category? (edge-form edge))
             (null (edge-left-daughter edge))) ;; e.g. have → "have"
        edge)
