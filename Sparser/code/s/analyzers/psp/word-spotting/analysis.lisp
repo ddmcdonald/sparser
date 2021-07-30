@@ -9,28 +9,49 @@
 
 (in-package :sparser)
 
+#| (defvar a *)
+sp> (items (contents a))
+(#<note-group-instance quantities> #<note-group-instance vague-names>
+ #<note-group-instance identified-names> #<note-group-instance places>
+ #<note-group-instance leprechaun> #<note-group-instance time>
+ #<note-group-instance verbs> #<note-group-instance speech-acts>)
 
-(defgeneric find-note-group (name container)
-  (:documentation "Retrieve the note-group-instance
-    with this name from an article's contents.")
-  (:method ((name symbol) (a article))
-    (let ((group-list (items (contents a))))
-      (find name group-list :key #'name :test #'eq))))
+sp> (find-note-group 'quantities a)
+#<note-group-instance quantities>
+
+sp> (find-note-group 'leprechaun a)
+#<note-group-instance leprechaun>
+
+|#
+
+(defgeneric find-note-group (name)
+  (:documentation "Retrieve from the contents field of the
+    current article the note-group-instance with this name.")
+  (:method ((name symbol))
+    (let* ((group-list (items (contents (article))))
+           (group (find name group-list :key #'name :test #'eq)))
+      (unless group (break "There is no note-group-instance of ~a ~
+                            in the current article" name))
+      group)))
 
 
+;;--- for exploration
+;;
 (defgeneric print-used-in-context (note)
-  (:documentation "Starting with a group-instance (or the symbol
- that names a group-instance) then walk down to the edge-strings
+  (:documentation "Starting with a note-group-instance (or the
+ symbol that names one), walk down to the edge-strings
  and call upward-used-in-chain to make an easily examined view
  of the chart context about that instance.")
   (:method ((name symbol))
     (let ((group (get-note-group-instance name)))
-      (print-used-in-content group)))
+      (print-used-in-context group)))
+
   (:method ((group note-group-instance))
     (let ((entries (note-instances group)))
       (format t "~&Note-group-instance ~a" (name group))
       (loop for note-entry in entries
          do (print-used-in-context note-entry))))
+
   (:method ((entry note-entry))
     (let ((edge-strings (text-strings entry)))
       (format t "~%Note-entry ~a" (name entry))
@@ -40,9 +61,34 @@
          do (format t "~&  e~a  ~a" edge-number chain)))))
 
 
+;;--- predicate
+;;
+(defgeneric all-instances-are-inside-proper-names (group)
+  (:documentation "Does every instance of one of the entries in
+    this group occur inside a proper name?  Return those that
+    do not, and compute the ratio.")
+  ;;  How to represent the others?
+  (:method ((name symbol))
+    (all-instances-are-inside-proper-names (find-note-group name)))
+  (:method ((group note-group-instance))
+    (let ( satisfy  fail  )
+      (loop for entry in (note-instances group)
+         do (loop for edge-string in (text-strings entry)
+               as edge-number = (second edge-string)
+               as chain = (upward-used-in-chain edge-number)
+               do (if (edge-context-for-name? chain)
+                    (push (list edge-number entry) satisfy)
+                    (push (list edge-number entry) fail))))
+      (format t "~&~a pass, ~a fail~%" (length satisfy) (length fail))
+      (cond
+        ((null fail) t)
+))))
+
+
+
 (defparameter *categories-over-names*
   '(name  named-object )
-  "List the category labels that indicate we have a name")
+  "List of the category labels that indicate we have a name")
 
 (defgeneric edge-context-for-name? (edge-list)
   (:documentation "Does this chain of edges include an edge
@@ -52,3 +98,4 @@
     (dolist (edge edge-list nil)
       (when (memq (edge-cat-name edge) *categories-over-names*)
         (return t)))))
+
