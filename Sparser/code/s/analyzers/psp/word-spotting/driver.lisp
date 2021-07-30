@@ -69,12 +69,15 @@
     word, which is bound to a slot on the referent.")
   (:method ((e edge))
     (let* ((j (edge-referent e))
-           (word (value-of 'spotter-index j))
-           (spotter (target-word-to-spot word)))
-      (unless spotter (break "connection to spotter didn't work"))
-      (handle-spotted-word spotter
-                           (pos-edge-starts-at e)
-                           (pos-edge-ends-at e)
-                           :edge e))))
+           (word (value-of 'spotter-index j)))
+      (unless word
+        (push-debug `(,j ,edge))
+        (break "no spotter-index recorded on ~a" j))
+      (let ((spotter (target-word-to-spot word)))
+        (unless spotter (break "connection to spotter didn't work"))
+        (handle-spotted-word spotter
+                             (pos-edge-starts-at e)
+                             (pos-edge-ends-at e)
+                             :edge e)))))
 
 

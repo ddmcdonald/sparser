@@ -77,18 +77,21 @@ a Krisp individual. |#
       (let* ((cat-name (first rdata))
              (name (second rdata))
              (i (define-or-find-individual cat-name :name name))
+             (word (edge-left-daughter edge))
+             (j (bind-variable 'spotter-index word i))
              (capitalized? (capitalized-instance (pos-edge-starts-at edge))))
+
         (revise-edge-labels edge
                             :category category::motif-trigger
                             :form (if capitalized?        
                                     (category-named 'proper-noun)
                                     (category-named 'common-noun))
-                            :referent i)
+                            :referent j)
         edge))))
 
 (defun make-edge-over-motif-word (entry start-pos end-pos)
   "called from handle-spotted-word when the driver doesn't have
-   a ready-make edge. We make the equivalent of a single-term
+   a ready-made edge. We make the equivalent of a single-term
    edge, using the same convention for its labels as in the
    'massage' case. We know that this case is over a single word,
    but otherwise it engages the same machinery."
@@ -99,6 +102,7 @@ a Krisp individual. |#
     (let* ((cat-name (first rdata))
            (name (second rdata))
            (i (define-or-find-individual cat-name :name name))
+           (j (bind-variable 'spotter-index word i) v)
            (capitalized? (capitalized-instance start-pos)))
       (let ((edge
              (make-completed-unary-edge
@@ -110,5 +114,5 @@ a Krisp individual. |#
               (if capitalized?        ; form
                 (category-named 'proper-noun)
                 (category-named 'common-noun))
-              i))) ; referent
+              j))) ; referent
         edge))))

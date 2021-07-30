@@ -21,7 +21,7 @@
 
 (defclass note-group-instance (named-object)
   (;;(doc-element :initform nil :accessor for) -- moot given FoM
-   (note-instances :initform nil :accessor note-entries)
+   (note-instances :initform nil :accessor note-instances)
    (count :initform 0 :accessor group-count))
   (:documentation "Created after an article is finished
     as a sort of summary."))
@@ -40,7 +40,7 @@
 (defclass note-entry (named-object)
   ((notable :initform nil :accessor notable) ; backpointer
    (count :initform 0 :accessor instance-count)
-   (text-strings :initform nil :accessor edge-strings
+   (text-strings :initform nil :accessor text-strings
      :documentation "A list of the edge-span strings and edge-numbers
         that motivated this instance of the notable."))
   (:documentation "Represents the instances of a notable throughout
@@ -106,7 +106,7 @@
   (let* ((string (string-for-edge edge))
          (number (edge-position-in-resource-array edge))
          (pair (list string number)))
-    (push pair (edge-strings entry))
+    (push pair (text-strings entry))
     entry))
 
 (defun increment-note-entry (entry)
