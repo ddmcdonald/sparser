@@ -499,20 +499,29 @@
       ((and (verb-category? (edge-form edge))
             (null (edge-left-daughter edge))) ;; e.g. have → "have"
        edge)
+
       ((and (vp-category? (edge-form edge))
             (or (word-p (edge-left-daughter edge))
                 (polyword-p (edge-left-daughter edge))
                 ;; "the drug up-regulates..."
                 (polyword-p (edge-category (edge-left-daughter edge)))))
        edge)
+      
+      ((and (vp-category? (edge-form (edge-left-daughter edge)))
+            (vp-category? (edge-form (edge-right-daughter edge))))
+       ;; "won't be" -- switch to the right side
+       (find-verb (edge-right-daughter edge)))
+      
       ((eq (form-cat-name edge) 'subj+verb) ; 'there' construction
        (let ((right-daughter (edge-right-daughter edge)))
          (if (verb-category? right-daughter)
            right-daughter
            (find-verb right-daughter))))
+      
       ((member (edge-rule edge) '(attach-to-comp-comma-to-s
                                   attach-trailing-participle-to-clause-with-comma))
        (find-verb (car (last (edge-constituents edge)))))
+      
       (t
        (let* ((left (edge-left-daughter edge))
               (left-form (edge-form left))
