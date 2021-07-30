@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2021 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "tuck"
 ;;;   Module:  "objects/chart/edge vectors/"
-;;;  Version:  May 2020
+;;;  Version:  July 2021
 
 ;; Initiated 9/19/13 from code formerly in DA. 9/22/13 modifying it
 ;; to work in either direction. 9/29/14 fixed tuck-in-just-above to
@@ -51,17 +51,21 @@
        
          ((eq direction :right)
           (unless (eq (edge-right-daughter dominating-edge) subsumed-edge)
-            (error  "~%in tuck-new-edge-under-already-knit for rule ~s: ~
+            ;; When we get this error, the problem is invariably in how
+            ;; the tucking specification was formulated by the DA rule
+            ;; as interpreted by standardized-apply-da-function-action
+            ;; since the whole purpose of trapping this is to help debug
+            ;; what the rule does.
+            (warn-or-error  "~%in tuck-new-edge-under-already-knit for rule ~s: ~
                     ~%edge-right-daughter in dominating edge ~s ~
                     ~%is not subsumed-edge ~s in sentence:~%~s~%"
-                    
                     *current-da-rule* dominating-edge subsumed-edge
                     (current-string)))
           (setf (edge-right-daughter dominating-edge) new-edge))
          
          ((eq direction :left)
           (unless (eq (edge-left-daughter dominating-edge) subsumed-edge)
-            (error "~%in tuck-new-edge-under-already-knit: ~
+            (warn-or-error "~%in tuck-new-edge-under-already-knit: ~
                     ~%edge-left-daughter in dominating edge ~s ~
                     ~%is not subsumed-edge ~s~%in sentence: ~s~%"
                    dominating-edge subsumed-edge (current-string)))
