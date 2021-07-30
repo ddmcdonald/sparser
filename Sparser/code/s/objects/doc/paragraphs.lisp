@@ -208,7 +208,7 @@ the original orthographic paragraph handling of the early 1990s
                  (sweep-successive-sentences-from s1))
 
                (when *tts-after-each-section*
-                 (format t "~^&~%")
+                 (format t "~&~%")
                  (tts t (starts-at-pos p) (ends-at-pos p))
                  #+ignore(format t "~^&~%"))
 
