@@ -351,7 +351,7 @@ and make that file easier to understand. |#
 
 (defun show-parse-performance (doc-element &optional (stream *standard-output*))
   "Report the crude parse-quality stats for this particular element"
-  (declare (special *readout-segments-inline-with-text*))
+  (declare (special *readout-segments-inline-with-text* *show-article-progress*))
   (let ((content (contents doc-element)))
     (if (not (typep content 'sentence-parse-quality))
       (format stream "~a does not record parse quality" doc-element)
@@ -363,10 +363,11 @@ and make that file easier to understand. |#
            (format stream "~&Parsing coverage: ~a (1 edge), ~a (2-5), ~a (> 5)~%"
                    great medium horrible))
           ((typep doc-element 'paragraph)
-           (format  stream "~&~a, ~a, ~a~%" great medium horrible))
+           (when *show-article-progress*
+             (format  stream "~&~a, ~a, ~a~%" great medium horrible)))
           (*readout-segments-inline-with-text*
            ;; proxy for with-total-quiet
-           (format stream "~&~%~%")))))))
+           (format stream "~&~%")))))))
 
 (defun show-noted-categories (document-element &optional detail? (stream *standard-output*))
   (let ((group-instances (items (contents document-element))))
