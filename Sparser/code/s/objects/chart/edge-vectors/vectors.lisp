@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "vectors"
 ;;;   Module:  "objects/chart/edge vectors/"
-;;;  Version:  June 2021
+;;;  Version:  August 2021
 
 ;; 2.0 (11/26/92 v2.3) bumped on general principles anticipating changes.
 ;; 2.1 (4/6/93) Put in switch for kcons vs. vector versions
@@ -54,9 +54,11 @@
         (setf (ev-edge-vector vector)
               (setq array (make-edge-vector-array)))))
 
+    ;;/// there's something wrong with the format expression in
+    ;; this break but I can't see it yet (ddm 7/31/21)
     (when (>= count *maximum-number-of-edges-in-an-edge-vector*)
       (break "Reached the maximum number of edges (~a) allowed on ~
-            ~an edge-vector.~
+            ~%an edge-vector.~
             ~%    next edge to add: ~A~
             ~%      at edge-vector: ~A"
              *maximum-number-of-edges-in-an-edge-vector*
@@ -120,17 +122,15 @@
              ~%edge-vector based on kcons lists."))))
 
 (defun remove-edge-from-vector-ev (ev edge)
-  "Remove 'edge' from the the edge vector ev, adjusting
+  "Remove 'edge' from the the edge vector 'ev', adjusting
    the other edges in its array and its meta data accordingly."
   (let ((array (ev-edge-vector ev))
         (count (ev-number-of-edges ev))
         (top-node (ev-top-node ev)))
     (cond
      ((eq edge (aref array (1- count))) ;; it the top
-      (setf (aref array (decf (ev-number-of-edges ev)))
-            nil)
+      (setf (aref array (decf (ev-number-of-edges ev))) nil)
       (reset-ev-top-node ev))
-     ;;/// what if it's the top edge of multiple initial edges?
      (t
       (reset-ev-edges ;; it's in the middle somewhere
        ev (loop for e in (ev-edges ev)
@@ -138,14 +138,17 @@
     edge ))
 
 (defun reset-ev-top-node (ev)
-  "Helper -- When the dust has settled after the ev has been edited
-   this uses the count and actual vector to do the right thing."
-  (let ((count (ev-number-of-edges ev)))
-    (cond ((= count 0) ;; doesn't try ot re-compute :multiple-initial=edges
-           (setf (ev-top-node ev) nil))
-          ((= count 1)
-           (setf (ev-top-node ev) (aref (ev-edge-vector ev) (1- count))))
-          (t (setf (ev-top-node ev) :multiple-initial-edges)))))
+  "Fixes the top-node after remove-edge-from-vector-ev has taken away
+   the edge it was told to remove. The ev-number-of-edges of the ev
+   is now correct, and the edge was removed from the array."
+  (let ((count (ev-number-of-edges ev))
+        (edge-list (all-edges-on ev)))
+    (push-debug `(,ev ,edge-list ,count))
+    (if (every #'one-word-long? edge-list)
+      (setf (ev-top-node ev) :multiple-initial-edges)
+      (setf (ev-top-node ev) (aref (ev-edge-vector ev) (1- count))))
+    ev))
+
 
 (defun reset-ev-edges (ev edge-list) ;; moved from psp/chunker.lisp
   ;; Prime use is the chunker, and it knows its dealing with
