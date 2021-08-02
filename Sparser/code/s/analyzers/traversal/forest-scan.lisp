@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1995,2014-2020  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1995,2014-2021  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "forest scan"
 ;;;   Module:  "analyzers;traversal:"
-;;;  Version:  May 2020
+;;;  Version:  July 2021
 
 ;; initiated 5/7/94 v2.3
 ;; 0.1 (10/24) it was attempting to do checks with words rather than literals
@@ -58,6 +58,7 @@
       (:otherwise
        coverage))))
 
+
 (defparameter *parse-between-parentheses-action* t) ;; is it permited
 
 (defun parse-between-parentheses-boundaries (left-bound right-bound)
@@ -98,27 +99,69 @@
       (values layout
               edge))))
 
+
 ;;;----------------------------------
 ;;; an unassuming triple application
 ;;;----------------------------------
 
 (defun parse-all-options-in-region (start-pos end-pos &optional used-triples)
-  (if (> (length used-triples) 100) ;; happened in a number of cases
-    (then
-      (push-debug `(,start-pos ,end-pos ,used-triples))
-      (error "parse-all-options-in-region in infinite loop? on sentence ~s ~%"
-             (sentence-string (sentence))))
-    (let* ((pairs (adjacent-edges-in-region start-pos end-pos))
-           (triples (form-triples-from-pairs pairs)))
-      (when (setq triples
-                  (loop for tr in triples
-                     unless (member tr used-triples :test #'equal)
-                     collect tr))
-        (let ((triple-to-use (select-triple-for-region triples)))
-          (push triple-to-use used-triples)
-          (execute-triple triple-to-use)
-          (parse-all-options-in-region start-pos end-pos used-triples))))))
+  "Rewritten as a loop following whack-a-rule-cycle pattern as in drivers/forest/edge-search"
+  (declare (special *executed-triples*))
+  ;; trace goes here
+  (clrhash *rules-for-pairs*)
+  (clrhash *executed-triples*)
+  ;;(format t "~&~%~%start parse-all-options-in-region") (tts)
+  ;;(break "run treetop-in-segment")
+  (let ((loop-index 0)
+        pairs   triples  edge  triples-to-try )
+    (declare (special *rules-for-pairs* *executed-triples*))
+    (loop
+       (setq pairs (adjacent-edges-in-region start-pos end-pos))
+       ;;(format t "~&~%Cycle ~a~%  ~a pairs~%" (incf loop-index) (length pairs))
+       (setq triples (when pairs (form-triples-from-pairs pairs)))
+       ;;(format t "~&  ~a raw triples~%" (length triples))
+       (setq triples-to-try (when triples (region-filter-for-already-executed triples)))
+       ;;(format t "~&  ~a filtered triples~%" (length triples-to-try))
+       ;;(push-debug `(,triples-to-try))
+       (if triples-to-try
+         (let ((triple-to-use (select-triple-for-region triples-to-try)))
+           (let ((edge (execute-triple triple-to-use)))
+             ;;(format t "~&edge = ~a~%  for ~a~%" edge (format-triple triple-to-use))
+             ;; When there's no edge still have to provide a value, else the filter
+             ;;  will see a nil and think it's ok to use this triple again
+             (setf (gethash triple-to-use *executed-triples*) (or edge triple-to-use))
+             #+ignore(break "End of cycle ~a" loop-index)))
+         (return)))))
 
+(defun region-filter-for-already-executed (triples)
+  ;; straight copy of the one in edge-search
+  (declare (special *executed-triples*))
+  (loop for triple in triples
+     unless (gethash triple *executed-triples*)
+     collect triple))
+
+(defun form-triples-from-pairs (pairs)
+  (loop for pair in pairs
+     as rule = (rule-for-region-edge-pair pair)
+     when rule
+     collect (make-edge-triple (car pair) (cadr pair) rule)))
+
+(defun rule-for-region-edge-pair (pair)
+  "Modeled on rule-for-edge-pair in whack-a-rule. Uses the cache
+   but drops its applicability checks"
+  (declare (special *rules-for-pairs*))
+  (multiple-value-bind (cached-rule pair-seen)
+      (gethash pair *rules-for-pairs*)
+    (let ((rule (if pair-seen
+                  cached-rule
+                  (setf (gethash pair *rules-for-pairs*)
+                        (multiply-edges (car pair) (second pair))))))
+      rule)))
+
+(defun select-triple-for-region (triples)
+  ;; select-best-triple is close to this. Depending on
+  ;; the region we may have different criteria
+  (car triples))
 
 (defun adjacent-edges-in-region (start-pos end-pos)
   (let ((tt-or-ev-in-region (treetops-in-segment start-pos end-pos))
@@ -161,21 +204,7 @@
              (return)))
         pairs))))
 
-(defun select-triple-for-region (triples)
-  ;; select-best-triple is close to this. Depending on
-  ;; the region we may have different criteria
-  (car triples))
-
-(defun form-triples-from-pairs (pairs)
-  (flet ((rule-combines-pair (pair)
-           (let ((left-edge (car pair))
-                 (right-edge (cadr pair)))
-             (multiply-edges left-edge right-edge))))
-    (loop for pair in pairs
-       when (rule-combines-pair pair)
-       collect (cons (rule-combines-pair pair) pair))))
-    
-        
+   
 
 
 ;;;---------------------------------------------------
@@ -263,6 +292,7 @@
       (if new-edge
         (try-combination-to-the-left/bounded left-bound new-edge)
         (parse-from-to/topmost left-bound middle-pos)))))
+
 
 ;;;----------------------------
 ;;; All-edges for special case
