@@ -107,7 +107,7 @@
 
 (defun remove-edge-from-chart (edge)
   ;; Called by form-rule-completion and by
-  ;; ensure-edge-consistent-with-chunk
+  ;; filter-chunk-compatible-edges-from-ev in the chunker
   (let ((edges (ev-edges (edge-starts-at edge)))
         (starting-vector (edge-starts-at edge))
         (ending-vector (edge-ends-at edge)))
@@ -128,35 +128,40 @@
         (count (ev-number-of-edges ev))
         (top-node (ev-top-node ev)))
     (cond
-     ((eq edge (aref array (1- count))) ;; it the top
+     ((eq edge (aref array (1- count))) ;; it is the last one added
       (setf (aref array (decf (ev-number-of-edges ev))) nil)
       (reset-ev-top-node ev))
      (t
       (reset-ev-edges ;; it's in the middle somewhere
-       ev (loop for e in (ev-edges ev)
+       ev (loop for e in (all-edges-on ev)
              unless (eq e edge) collect e))))
     edge ))
 
 (defun reset-ev-top-node (ev)
-  "Fixes the top-node after remove-edge-from-vector-ev has taken away
+  "Fixes the top-node field after remove-edge-from-vector-ev has taken away
    the edge it was told to remove. The ev-number-of-edges of the ev
-   is now correct, and the edge was removed from the array."
+   is already correct, and the edge has been removed from the array."
   (let ((count (ev-number-of-edges ev))
         (edge-list (all-edges-on ev)))
-    (push-debug `(,ev ,edge-list ,count))
-    (if (every #'one-word-long? edge-list)
-      (setf (ev-top-node ev) :multiple-initial-edges)
-      (setf (ev-top-node ev) (aref (ev-edge-vector ev) (1- count))))
+    (cond
+      ((= count 1)
+       (setf (ev-top-node ev) (car edge-list)))
+      ((every #'one-word-long? edge-list)
+       (setf (ev-top-node ev) :multiple-initial-edges))
+      (t
+       (setf (ev-top-node ev) (aref (ev-edge-vector ev) (1- count)))))
     ev))
 
 
 (defun reset-ev-edges (ev edge-list) ;; moved from psp/chunker.lisp
-  ;; Prime use is the chunker, and it knows its dealing with
-  ;; multiple initial edges, so it tacitly knows they're all
-  ;; over the same single word.
-  ;;/// check case when we get here from form-rule-completion
+  "Called from remove-edge-from-vector-ev when the edge to be
+   removed is not the last one that was added.
+   The edge-list contains all of the edges that should still be on
+   the vector after the removal. This code first clears the array
+   (sets the cells to nil) and then repopulates it from the
+   edge-list."
   (when ev
-    (if (null (cdr edge-list))
+    #+ignore(if (null (cdr edge-list))
       (setf (ev-top-node ev) (car edge-list))
       (setf (ev-top-node ev) :multiple-initial-edges))
     (loop for i from 0 to (- (length (ev-edge-vector ev)) 1)
@@ -166,8 +171,7 @@
        as e in edge-list
        do (setf (aref (ev-edge-vector ev) i)
                 e))
-    (setf (ev-number-of-edges ev)
-          (length edge-list))
+    (setf (ev-number-of-edges ev) (length edge-list))
     (reset-ev-top-node ev)))
 
 
@@ -178,7 +182,7 @@
    edges on the vector and return a list of edges that omits
    any that are literals."
   ;; Called by check-out-possible-conjunction and
-  ;; look-for-da-patterns though could review what they're
+  ;; look-for-da-patterns though should review what they're
   ;; up to
   (let ((count (ev-number-of-edges ev))
         (vector (ev-edge-vector ev))
