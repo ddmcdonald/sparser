@@ -246,26 +246,6 @@ code is make-edge-over-abbreviation and its feeders. |#
     edges ))
 
 
-
-(defgeneric upward-used-in-chain (edge)
-  (:documentation "Collect the chain of edges walking up
-    the 'used-in' field starting at a particular edge.
-    Returns all the edges including the last one that wasn't used-in
-    anything, ordered from lowest to highest.")
-  (:method ((n integer))
-    (upward-used-in-chain (edge# n)))
-  (:method ((e edge))
-    (let ((next e) ; prime pump 
-          (chain (list e))
-          used-in )
-      (loop
-         (setq used-in (edge-used-in next))
-         (if used-in
-           (then (push used-in chain)
-                 (setq next used-in))
-           (return (nreverse chain)))))))
-
-
 ;;;-------------------
 ;;; Access functions
 ;;;-------------------
