@@ -41,8 +41,8 @@
   ((notable :initform nil :accessor notable) ; backpointer
    (count :initform 0 :accessor instance-count)
    (text-strings :initform nil :accessor text-strings
-     :documentation "A list of the edge-span strings and edge-numbers
-        that motivated this instance of the notable."))
+     :documentation "A list of the edge-record instances for
+        the edges that motivated this instance of the notable."))
   (:documentation "Represents the instances of a notable throughout
  a particular document. Does what the base implementation did, i.e.
  keep a count of the instances and facilitate their aggregation
@@ -59,6 +59,7 @@
     (let ((name (cat-name (note-trigger (notable ne))))
           (count (instance-count ne)))
       (format stream "~a ~a" name count))))
+
 
 
 ;;;------------
@@ -98,20 +99,22 @@
                  (cons (list name entry) alist))))
         entry))))
 
+(defun increment-note-entry (entry)
+  (incf (instance-count entry)))
+
 
 (defun add-edge-to-note-entry (edge entry)
   "Look up the span of text the edge covers, and push that
    along with the index number of the edge onto the
    edge-strings slot of the entry."
   (let* ((string (string-for-edge edge))
-         (number (edge-position-in-resource-array edge))
-         (pair (list string number)))
-    (push pair (text-strings entry))
+         (number (edge-position-in-resource-array edge)))
+    (unless (find number (text-strings entry) :key #'edge-record-number)
+      (let ((record (make-edge-record :number number
+                                      :string string)))
+        (push record (text-strings entry))))
     entry))
 
-(defun increment-note-entry (entry)
-  (incf (instance-count entry)))
-  
 
 ;;;----------------------------------------------
 ;;; construction from noteworthy categories list
