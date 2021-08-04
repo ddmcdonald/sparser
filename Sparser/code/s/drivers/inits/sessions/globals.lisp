@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1997,2011-2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1997,2011-2021  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "globals"
 ;;;   Module:  "drivers;inits:sessions:"
-;;;  Version:  July 2019
+;;;  Version:  August 2021
 
 ;;;  Flags and the code to initialize them, as pertain to the state
 ;;;  of an entire session with the analyzer.
@@ -442,6 +442,11 @@
 (defparameter *actions-on-treetops* t
   "Flag examined in Do-treetop-triggers. Controls whether conceptual
    analysis or generic actions are done on treetops.")
+
+(defparameter *compute-items-contexts* nil
+  "Flag read during the after-actions on articles. If it is up we
+   construct chains of edges and such to facilitate determining the
+   grammatical context a item (the edge for an item) has occurred in.")
 
 (defparameter *use-subtypes* t ;; this is a TEST
   "Flag read in dispatch-on-unary-ref-actions and similar places to govern
