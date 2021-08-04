@@ -3,7 +3,7 @@
 ;;;
 ;;;      File: "loader"
 ;;;    Module: "analyzers;psp:word-spotting:"
-;;;   Version:  July 2021
+;;;   Version:  August 2021
 
 ;; Initiated 5/18/21
 
@@ -12,5 +12,6 @@
 (lload "spot;driver")
 (lload "spot;object")
 (lload "spot;actions")
+(lload "spot;context")
 (lload "spot;analysis")
 ;; (lload "spot;tests")
