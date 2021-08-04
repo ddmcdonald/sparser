@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  May 2021
+;;;  Version:  August 2021
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -638,6 +638,8 @@
   
   (setq *use-subtypes* t) ;; e.g. plurals, refining types of individuals
 
+  (setq *compute-items-contexts* t) ;; enable context analysis over motifs
+
   ;; variation on segment-analysis-settings
   (setq *after-action-on-segments* 'sdm/analyze-segment)
   (setq *do-strong-domain-modeling* t)
@@ -652,7 +654,7 @@
   (designate-section-container :texture)
   (designate-article-container :texture)
   
-  (setq *recognize-sections-within-articles* t) ;; otherwise no sentences
+  (setq *recognize-sections-within-articles* t) ;; otherwise won't be sentences
  
   (setq *switch-setting* :neo-fire))
 
