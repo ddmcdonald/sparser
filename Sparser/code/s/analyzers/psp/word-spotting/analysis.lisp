@@ -55,9 +55,9 @@ sp> (find-note-group 'leprechaun a)
   (:method ((entry note-entry))
     (let ((edge-strings (text-strings entry)))
       (format t "~%Note-entry ~a" (name entry))
-      (loop for pair in edge-strings
-         as edge-number = (second pair)
-         as chain = (upward-used-in-chain edge-number)
+      (loop for record in edge-strings
+         as edge-number = (edge-record-number record)
+         as chain = (edge-record-chain record)
          do (format t "~&  e~a  ~a" edge-number chain)))))
 
 
@@ -73,16 +73,14 @@ sp> (find-note-group 'leprechaun a)
   (:method ((group note-group-instance))
     (let ( satisfy  fail  )
       (loop for entry in (note-instances group)
-         do (loop for edge-string in (text-strings entry)
-               as edge-number = (second edge-string)
-               as chain = (upward-used-in-chain edge-number)
+         do (loop for record in (text-strings entry)
+               as edge-number = (edge-record-number record)
+               as chain = (edge-record-chain record)
                do (if (edge-context-for-name? chain)
-                    (push (list edge-number entry) satisfy)
-                    (push (list edge-number entry) fail))))
+                    (push record satisfy)
+                    (push record fail))))
       (format t "~&~a pass, ~a fail~%" (length satisfy) (length fail))
-      (cond
-        ((null fail) t)
-))))
+      (if (null fail) t fail))))
 
 
 
