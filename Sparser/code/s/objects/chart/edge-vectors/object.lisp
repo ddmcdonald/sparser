@@ -145,6 +145,16 @@
     (loop for i from 0 upto (1- (ev-number-of-edges ev))
        collect (aref vector i))))
 
+(defun ev-edges (ev)
+  "Return a list of all the edges on this edge vector.
+   Filtering out any literals (edges whose category is a word)."
+  (when ev
+    (let ((edges (all-edges-on ev)))
+      (loop for edge in edges
+         unless (literal-edge? edge)
+         collect edge))))
+
+
 
 (defgeneric connected-fringe (ev)
   (:documentation "Return a fresh list of the edges on this vector
