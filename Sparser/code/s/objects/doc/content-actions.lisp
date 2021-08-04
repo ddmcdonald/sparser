@@ -84,7 +84,8 @@ and make that file easier to understand. |#
         (consolidate-aggregations a))
       (when (typep (contents a) 'accumulate-items)
         (aggregate-noted-items a)
-        (consolidate-notes a))
+        (consolidate-notes a)
+        (apply-context-predicates a))
       a)))
 
 
