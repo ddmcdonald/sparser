@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "chunker"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  December 2019
+;;;  version:  August 2021
 
 ;; Initiated 10/8/14
 ;; ddm: 10/16/14 Rewrote identify-chunks. Commented out lines anticipating 
@@ -280,7 +280,7 @@
    forms for the initial ev. This list is paired down as positions are
    examined and checked for consistency with those forms. Chunks are
    closed off when the edges on the next position are not consistent
-   with the remaining form."
+   with the remaining forms."
   (let* ((start (ev-position ev))
          (prev-chunk (car *chunks*))
          (*chunk* (make-instance 'chunk :forms forms
@@ -292,6 +292,7 @@
          possible-heads)
     (declare (special *chunk*))
     (tr :dlc-before-loop prev-chunk *chunk*)
+    
     (loop until (or (chunk-end-pos *chunk*)
                     (eq pos sentence-end))
        do
@@ -553,7 +554,6 @@
                 (loop for e in multi-edges ;; but "present" is ADJ/V ambiguous
                    thereis (member (cat-symbol (edge-form e))
                                    *vg-head-categories*)))
-
                (not (loop for edge in multi-edges
                        thereis (memq (form-cat-name edge)
                                      '(subordinate-conjunction))))                             
@@ -1493,29 +1493,22 @@ than a bare "to".  |#
        (ev-top-edges (pos-ends-here (chunk-start-pos chunk)))))
 
 
-(defun ev-edges (ev)
-  "Return a list of all the edges on this edge vector.
-   Filter out any literals (edges whose category is a word)."
-  (when ev ;; can be called with nil, when there is no previous ev in a chunk
-    (let ((edges (all-edges-on ev)))
-      (loop for edge in edges
-         unless (literal-edge? edge)
-            collect edge))))
-
 (defun ev-top-edges (ev &optional (no-literals nil))
   "all the edges on an edge-vector which are as long as the top edge, 
    possibly dropping literal edges"
   (when ev
     (let ((top-edge (top-edge-on-ev ev)))
       ;; MAJOR CHANGE HERE -- if there is a "chosen" top edge (in ev-top-node) then
-      ;;  don't create a list with other edges of the same length
-      ;; To make use of code in WH question routines that chooses an
+      ;;  don't create a list with other edges of the same length.
+      ;; Done to make use of code in WH question routines that chooses an
       ;;  edge from a group of ambiguous edges
+      (when (eq top-edge :multiple-initial-edges)
+        (error "Edge vector not managed correctly: ~a" ev))
       (when (edge-p top-edge)
         (if (eq top-edge (ev-top-node ev))
             (list top-edge)
             (loop for edge in (all-edges-on ev)
-               ;; Shouldn't loop over these (ev-edges ev) because we want
+               ;; Shouldn't loop over these using (ev-edges ev) because we want
                ;; the option of including literal edges.
                when (and
                      ;; is this edge as long as the top edge?
@@ -1560,12 +1553,17 @@ than a bare "to".  |#
 (defparameter *warn-on-multiple-heads* nil)
 
 (defun find-consistent-edges (chunk &optional end)
-  "Called as the finally clause in the delimit-next-chunk loop. Assuming there
-   are forms associated with this chunk then we have
-   determined the type of the chunk and collected the starting-edge vectors
-   of all of the position in the span of the chunk (in reverse order from
+  "Called within the finally clause in the delimit-next-chunk loop as the return
+   value of the main loop.
+   Assuming there are forms associated with this chunk then we have
+   determined the type of the chunk and collected the starting edge-vectors
+   of all of the positions in the span of the chunk (in reverse order from
    rightmost to leftmost). Extract compatible edges from those vectors
-   for the chunk's edge list."
+   for the chunk's edge list.
+   If we return nil, e.g. because compatible-head-edges returned nil which has
+   happened because of a bug in remove-edge-from-chart, then the end-conditions
+   on the loop termination conditions in delimit-next-chunk will not be
+   satisfied and we'll go into a loop. //// Install a work-around for that case."
   (let ((forms (chunk-forms chunk))
         (ev-list (return-possibly-fixed-chunk-ev-list chunk)))
     (when forms ;; otherwise the chunk region wasn't consistent with anything
