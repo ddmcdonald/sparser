@@ -16,7 +16,7 @@
    spot-polyword which also supplies the edge. We lookup the corresponding
    spot-entry (or create it) and bump up its number. When we have or
    can get an edge we include it in the entry. "
-
+  (declare (special *pnf-has-control*))
   (tr :spotted spotter)
   ;;(push-debug `(,spotter ,pos-before ,pos-after ,edge)) ;(break "handle")
 
@@ -43,7 +43,12 @@
          (when (consp entry) ; e.g. (shamock #<shamrock 2>)
            (setq entry (second entry)))))
 
-      (increment-note-entry entry) ;; now it needs a count
+      (unless *pnf-has-control*
+        ;; If the trigger term is capitalized there wiil be a call
+        ;; in examine that's redundant with the one during 
+        ;; scan-sentences-and-pws-to-eof -- on the same edge
+        (increment-note-entry entry))
+
       (if edge 
         (massage-spotted-edge edge entry) ; give the right labels
         (setq edge (make-edge-over-motif-word entry pos-before pos-after)))
