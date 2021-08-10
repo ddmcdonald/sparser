@@ -342,7 +342,7 @@
            (alists (loop for c in contents
                       when (items c) collect (items c))))       
       (when alists
-        (let ((merged-alist (merge-items-alist alists)))
+        (let ((merged-alist (merge-items-alists alists)))
           (setf (items (contents p)) merged-alist)
           p)))))
 
@@ -356,11 +356,11 @@
            (alists (loop for d in contents
                       when (items d) collect (items d))))
       (when alists
-        (let ((merged-alist (merge-items-alist alists)))
+        (let ((merged-alist (merge-items-alists alists)))
           (setf (items (contents parent)) merged-alist)))
       parent)))
 
-(defun merge-items-alist (alists)
+(defun merge-items-alists (alists)
   "Since they're built by using find-or-make on their notables (see their
    constructor: get-entry-for-notable) the note-entries are the same individuals
    at every level. They just accumulate edge-strings. Consequently, merging
@@ -406,7 +406,6 @@
                (let ((gi (find-or-make-note-group-instance name))
                      (sum (loop for entry in entries
                              sum (instance-count entry))))
-                 ;(setf (for gi) a) ;; I think this is "moot given FoM"??
                  (setf (note-instances gi) entries)
                  (setf (group-count gi) sum)
                  gi)))
