@@ -271,7 +271,7 @@ set up the sentences state (initialize-sentences)  |#
     (report-time-to-read-article article)
     (show-parse-performance article)
     (show-noted-categories article)
-
+    (show-motif-term-context)
     article))
     
     
