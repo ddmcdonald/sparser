@@ -7,11 +7,14 @@
 
 ;; Initiated 5/18/21
 
+;; Spotting motif-triggers also involves motif-key-words in
+;; dossiers and a file of categories in model/sl/motifs/basic-categories
+
 (in-package :sparser)
 
 (lload "spot;driver")
 (lload "spot;object")
 (lload "spot;actions")
-(lload "spot;context")
 (lload "spot;analysis")
+(lload "spot;context")
 ;; (lload "spot;tests")

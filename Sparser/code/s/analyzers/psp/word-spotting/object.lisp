@@ -9,7 +9,6 @@
 
 (in-package :sparser)
 
-
 ;;;--------------------------------------------
 ;;; Word spotter versions of the note classes
 ;;;--------------------------------------------
@@ -50,13 +49,6 @@
     (let ((count (instance-count se)))
       (format stream "~a ~a" (name se) count))))
 
-(defun clear-spotting-tables ()
-  "Called from clean-out-history-and-temp-objects just before
-   the next text analysis is about to start. Clearing the instances
-   removes any influence from instances in earlier documents."
-  (clear-spot-entry)
-  (clear-word-spotting-group-instance))
-
 
 ;;;-----------------------
 ;;; tables for the driver
@@ -73,7 +65,6 @@
 
 (defun remove-word-to-spot (word)
   (remhash word *words-to-triggers*))
-
 
 (defgeneric setup-word-to-spotter (phrase spotter)
   (:documentation "Add the word or polyword ('phrase') to the table
@@ -101,3 +92,10 @@
 
 (setup-find-or-make motif-spotter)
 
+
+(defun clear-spotting-tables ()
+  "Called from clean-out-history-and-temp-objects just before
+   the next text analysis is about to start. Clearing the instances
+   removes any influence from instances in earlier documents."
+  (clear-spot-entry)
+  (clear-word-spotting-group-instance))
