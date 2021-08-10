@@ -9,6 +9,10 @@
 
 (in-package :sparser)
 
+;;;---------------                                        ;
+;;; for exploring
+;;;---------------                                        ;
+
 #| (defvar a *)
 sp> (items (contents a))
 (#<note-group-instance quantities> #<note-group-instance vague-names>
@@ -21,22 +25,20 @@ sp> (find-note-group 'quantities a)
 
 sp> (find-note-group 'leprechaun a)
 #<note-group-instance leprechaun>
-
 |#
 
 (defgeneric find-note-group (name)
   (:documentation "Retrieve from the contents field of the
-    current article the note-group-instance with this name.")
+    current article the note-group-instance with this name.
+    Signal an error if there is no instance with this name.")
   (:method ((name symbol))
     (let* ((group-list (items (contents (article))))
            (group (find name group-list :key #'name :test #'eq)))
-      (unless group (break "There is no note-group-instance of ~a ~
+      (unless group (error "There is no note-group-instance of ~a ~
                             in the current article" name))
       group)))
 
 
-;;--- for exploration
-;;
 (defgeneric print-used-in-context (note)
   (:documentation "Starting with a note-group-instance (or the
  symbol that names one), walk down to the edge-strings
@@ -53,12 +55,9 @@ sp> (find-note-group 'leprechaun a)
          do (print-used-in-context note-entry))))
 
   (:method ((entry note-entry))
-    (let ((edge-strings (text-strings entry)))
-      (format t "~%Note-entry ~a" (name entry))
-      (loop for record in edge-strings
-         as edge-number = (edge-record-number record)
-         as chain = (edge-record-chain record)
-         do (format t "~&  e~a  ~a" edge-number chain)))))
+    (format t "~%Note-entry ~a" (name entry))
+    (show-edge-records entry)))
+
 
 
 ;;--- predicate
@@ -83,17 +82,66 @@ sp> (find-note-group 'leprechaun a)
       (if (null fail) t fail))))
 
 
+(defparameter *debug-context-predicates* nil
+  "Incorporated into predicates to flag cases that go beyond what they
+ anticipated that we want to look into. If this flag is up we'll go into
+ a break, otherwise the predicate will return nil")
 
-(defparameter *categories-over-names*
-  '(name  named-object )
-  "List of the category labels that indicate we have a name")
+(defgeneric analyze-trigger-contexts (key)
+  (:documentation "Walk down through the germane note-group instances in
+ the current article. Each instance contains one or more note-entry objects.
+ Each note-entry contains a list of more or more edge-record instances,
+ one for each edge the spotter creates over that notable's trigger phrase.
+   We pass these edge records through a set of increasingly more heuristic
+ categorizing predicates on their chains, storing their conclusions on the
+ edge-record, presently just as a keyword.
+   Called from apply-context-predicates, which has the germane group instances
+ in its hand already")
+  
+  (:method ((name symbol)) ; for debugging
+    "We are systematically using 'group' as shorthand for what are
+     actually note-group-instance objects"
+    (analyze-trigger-contexts (find-note-group name)))
+  
+  (:method ((group note-group-instance))
+    (loop for entry in (note-instances group)
+       do (loop for record in (text-strings entry)
+             as number = (edge-record-number record)
+             as edge = (edge# number)
+             as chain = (edge-record-chain record)
+             do (identify-edge-configuration record edge chain)))))
 
-(defgeneric edge-context-for-name? (edge-list)
-  (:documentation "Does this chain of edges include an edge
-    whose label indicates that spans some sort of names?
-    Note that the chain is from lowest to highest.")
-  (:method ((edge-list list))
-    (dolist (edge edge-list nil)
-      (when (memq (edge-cat-name edge) *categories-over-names*)
-        (return t)))))
 
+(defun identify-edge-configuration (record edge chain)
+  "Try the edge and its chain against the context predicates looking for
+   one that succeeds and provides a categorization of the edge configuration
+   that this edge is in"
+  (declare (special *debug-context-predicates*))
+  (let ((configuration nil))
+    (setq configuration
+          (edge-context-for-name? chain))
+    (unless configuration
+      (setq configuration
+            (position-in-np-head edge chain)))
+    (if configuration
+      (setf (edge-record-configuration record) configuration)
+      (else
+        (when *debug-context-predicates*
+          (push-debug `(,edge ,chain))
+          (break "New configuration~
+                ~%  chain ~a~
+                ~%  edge ~a" chain configuration))
+        nil))))
+
+(defgeneric edge-config (edge)
+  (:documentation "For testing individual cases. Depends on the tables
+   managed by store-edge-chain to get the edge-record and the chain from
+   just the edge.")
+  (:method ((number integer))
+    (edge-config (edge# number)))
+  (:method ((edge edge))
+    (when (polyword-p (edge-category edge)) ;; "tir na nog"
+      (setq edge (edge-used-in edge)))
+    (let ((record (get-edge-record edge))
+          (chain (get-chain edge)))
+      (identify-edge-configuration record edge chain))))

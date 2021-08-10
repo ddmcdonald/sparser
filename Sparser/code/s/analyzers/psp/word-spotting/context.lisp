@@ -1,8 +1,7 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 2021 David D. McDonald  -- all rights reserved
 ;;;
-;;;      File: "context"+
-
+;;;      File: "context"
 ;;;    Module: "analyzers;psp:word-spotting:"
 ;;;   Version:  August 2021
 
@@ -11,6 +10,9 @@
 
 (in-package :sparser)
 
+;;;--------------------------------------------
+;;; setup the context after parsing an article
+;;;--------------------------------------------
 
 (defgeneric apply-context-predicates (article)
   (:documentation "Called as part of the after-actions method on articles.
@@ -20,6 +22,7 @@
  of developing the predicates.")
   (:method ((a article))
     (declare (special *compute-items-contexts*))
+    (initialize-spotter-records)
     (when *compute-items-contexts*
       (let* ((items-field (items (contents a)))
              (group-instances (collect-germane-group-instances items-field)))
@@ -28,72 +31,86 @@
                  do (loop for record in (text-strings entry)
                        as edge-number = (edge-record-number record)
                        as chain = (upward-used-in-chain edge-number)
-                       do (store-edge-chain record chain))))))))
+                       do (store-edge-chain record chain))))
+        (loop for gi in group-instances
+             do (analyze-trigger-contexts gi))))))
 
+(defvar *germaine-spotter-group-instances* nil)
 
 (defun collect-germane-group-instances (list-of-group-instances)
   "We want the motif-spotting group instances. Right now we only want
  word spotters since those are where the motifs have been stored."
   (declare (special  *motif-groups*))
-  (loop for group in list-of-group-instances
-     as name = (name group)
-     when (find name *motif-groups* :key #'name)
-     collect group))
+  (let ((groups
+         (loop for group in list-of-group-instances
+            as name = (name group)
+            when (find name *motif-groups* :key #'name)
+            collect group)))
+    (setq *germaine-spotter-group-instances* groups)
+    groups))
 
 
 
-;;--- records for instances of edges and chains of them
-
-(defstruct (edge-record
-             (:print-function print-edge-record))
-  number
-  string
-  chain)
-
-(defun print-edge-record (obj stream depth)
-  (declare (ignore depth))
-  (write-string "#<e" stream)
-  (format stream "~a" (edge-record-number obj))
-  (write-string ">" stream))
+(defun initialize-spotter-records ()
+  (clrhash *current-edge-records*)
+  (clrhash *current-edge-chains*))
 
 
-(defclass edge-chain ()
-  ((list :initarg :list :accessor edges
-         :documentation "The list as created by upward-used-in-chain")
-   (top :initform nil :accessor top-edge)
-   (labels :initform nil :accessor form-labels)))
-
-(defmethod print-object ((ec edge-chain) stream)
-  (print-unreadable-object (ec stream)
-    (let* ((first (first (edges ec)))
-           (n1 (edge-position-in-resource-array first))
-           (last (top-edge ec))
-           (n2 (edge-position-in-resource-array last)))
-      (format stream "e~a..e~a " n1 n2))))
+;;--- predicates, precursors
 
 
-(defun store-edge-chain (record list-of-edges)
-  (let ((ec (make-instance 'edge-chain :list list-of-edges)))
-    (setf (top-edge ec) (car (last list-of-edges)))
-    (setf (form-labels ec) (mapcar #'form-cat-name list-of-edges))
-    (setf (edge-record-chain record) ec)
-    ec))
+;;--- proper name
+
+(defparameter *categories-over-names*
+  '(name named-object
+    person proper-name ) ; the motif-triggers are proper-nouns
+  "List of the category labels that indicate we have a name")
+
+(defparameter *categories-over-np*
+  '(np n-bar))
+
+(defgeneric edge-context-for-name? (chain)
+  (:documentation "Does this chain of edges include an edge
+    whose label indicates that spans some sort of names?
+    Note that the chain is from lowest to highest.")
+  (:method ((chain edge-chain))
+    (dolist (edge (edges chain) nil)
+      (when (or (memq (edge-cat-name edge) *categories-over-names*)
+                (memq (form-cat-name edge) *categories-over-names*))
+        (return :part-of-a-name)))))
 
 
-(defgeneric upward-used-in-chain (edge)
-  (:documentation "Collect the chain of edges walking up
-    the 'used-in' field starting at a particular edge.
-    Returns all the edges including the last one that wasn't used-in
-    anything, ordered from lowest to highest.")
-  (:method ((n integer))
-    (upward-used-in-chain (edge# n)))
-  (:method ((e edge))
-    (let ((next e) ; prime pump 
-          (chain (list e))
-          used-in )
-      (loop
-         (setq used-in (edge-used-in next))
-         (if used-in
-           (then (push used-in chain)
-                 (setq next used-in))
-           (return (nreverse chain)))))))
+
+(defgeneric covered-by-person? (chain) ;; "El Chupacabra"
+  (:documentation "Does any edge on this chain have the category
+    person, if so return that edge.")
+  (:method ((chain edge-chain))
+    (let* ((edges (edges chain)))
+      (loop for edge in edges
+         when (eq (edge-cat-name edge) 'person)
+         return edge))))
+
+(defgeneric covered-by-np? (chain)
+  (:documentation "return the lowest edge in this chain whose form
+    is one of the np categories")
+  (:method ((chain edge-chain))
+    (loop for edge in (edges chain)
+       when (memq (form-cat-name edge) *categories-over-np*)
+       return edge)))
+
+(defgeneric position-in-np-head (edge chain)
+  (:documentation "if this edge is covered by a minimal np, it will be
+    one of the daughters of that np edge. 
+    We return :np-head or :np-modifier depending on which
+    daughter it's part of. If there's no nearby np we return nil.")
+  (:method ((target-edge edge) (chain edge-chain))
+    (let ((np-edge (covered-by-np? chain)))
+      (when np-edge
+        (let ((left (edge-left-daughter np-edge))
+              (right (edge-right-daughter np-edge)))
+          (cond
+            ((eq target-edge left) :np-modifier)
+            ((eq target-edge right) :np-head)
+            (t (when *debug-context-predicates*
+                 (break "No head criteria for ~a" np-edge)))))))))
+           
