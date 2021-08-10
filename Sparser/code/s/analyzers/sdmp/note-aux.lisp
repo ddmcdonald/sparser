@@ -3,7 +3,7 @@
 
 ;;;      File: "note-aux"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: June 2021
+;;;   Version: August 2021
 
 ;; Initiated 5/19/21 to hold helper routines and details so the base
 ;; code in note.lisp stays cleaner.
@@ -18,15 +18,6 @@
   "Flag in the various place that note is used to report the
    full list of things they've seen, noteworthy or not.
    Useful in gauging what groups of categories might be")
-
-(defgeneric list-notes-in (a)
-  (:documentation "Loop over the paragraphs and their sentences
-    an print the value of their items alist")
-  (:method ((a article))
-    (loop for p in (paragraphs-in-doc-element a)
-       do (loop for s in (sentences-in-paragraph p)
-             do (print (items (contents s)))))))
-
 
 (defvar *edges-noted* nil
   "Every edges that is passed to note gets pushed onto this.
