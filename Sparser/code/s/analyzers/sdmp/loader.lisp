@@ -4,7 +4,7 @@
 
 ;;;      File: "loader"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: June 2021
+;;;   Version: August 2021
 
 ;; Initiated 2/9/07. Bumped scan to 1 to completely revamp it 1/21/13. Added
 ;; [form-march] 1/23/13. Added [reify-individuals] 2/28/13 and also broke out
@@ -23,9 +23,17 @@
 (lload "do-SDM&P;form-march")
 
 (lload "do-SDM&P;note-classes")
+(lload "do-SDM&P;edge-classes")
 (lload "do-SDM&P;note-aux")
 (lload "do-SDM&P;note")
 
+;; package to distinguish text-relations
+(or (boundp '*text-relationships-package*)
+    (defconstant *text-relationships-package*
+      (or (find-package :text-relationships)
+          (make-package :text-relationships
+                        ::nicknames '(:tr)
+                        :use nil))))
 (lload "do-SDM&P;text-relations")
 (lload "do-SDM&P;text-relation-class")
 (lload "do-SDM&P;text-relation-form")

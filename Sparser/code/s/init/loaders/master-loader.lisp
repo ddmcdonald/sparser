@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "master-loader"
 ;;;   module:  "init;loaders;"
-;;;  Version:   May 2021
+;;;  Version:   August 2021
 
 ;; 4/21  added loading of chart-drivers;new:loader
 ;; 4/25  split fsas into basics and model
@@ -197,14 +197,16 @@
 ;;  These are just enabling fns. they aren't heuristics
 (lload "do ca;loader")
 
-(lload "objects;doc;loader") ;; refer to discourse-mention class in CA
-
 (when *DM&P*
   (lload "analyzers;DM&P;loader"))
 
-(when *SDM&P*
+(when *SDM&P* ; includes notes
   (lload "analyzers;SDM&P;loader"))
-(lload "spot;loader") ; word-spotting depends on note classes
+
+(lload "objects;doc;loader") ;; refers to discourse-mention class in CA
+   ;; and to the note classes in SDM&P
+
+(lload "spot;loader") ; word-spotting depends on note classes in SDM&P
 
 (when (and *orthographic-structure*
            *include-model-facilities*)
