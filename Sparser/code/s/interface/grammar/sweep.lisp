@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "sweep"
 ;;;    Module:   interface/grammar/
-;;;   Version:   June 2021
+;;;   Version:   August  2021
 
 ;; Routines for sweeping down through the structure of Krisp referents.
 ;; Initiated 1/11/15 with code from December. 
@@ -300,6 +300,9 @@
       (protein-family ;; no longer use bio-family
        (push (list var-name value)
              objects))
+
+      (prop-motif) ;; ignore
+
       (otherwise
        (push (list var-name (collect-model value))
              objects)))
