@@ -370,6 +370,9 @@ and make that file easier to understand. |#
            ;; proxy for with-total-quiet
            (format stream "~&~%")))))))
 
+
+;;--- notes, word-spotting
+
 (defun show-noted-categories (document-element &optional detail? (stream *standard-output*))
   (let ((group-instances (items (contents document-element))))
     (loop for i in group-instances
@@ -378,6 +381,29 @@ and make that file easier to understand. |#
 (defun summarize-note-group (group stream)
   (format stream "~&~a: ~a" (name group) (group-count group)))
 
+
+
+(defun show-motif-term-context (&optional (stream *standard-output*))
+  (declare (special *germaine-spotter-group-instances*))
+  (unless *germaine-spotter-group-instances*
+    (format stream  "~&No motif triggers in article~%"))
+  (when *germaine-spotter-group-instances*
+    (loop for group in *germaine-spotter-group-instances*
+       do (show-motif-edge-contexts group stream))))
+
+(defgeneric show-motif-edge-contexts (group &optional stream)
+  (:method ((group note-group-instance) &optional stream)
+    (unless stream (setq stream *standard-output*))
+    (format stream "~&~%For ~a~%" (name group))
+    (let ((entries (note-instances group)))
+      (loop for note-entry in entries
+         do (show-edge-records note-entry)))))
+
+ 
+
+
+
+;;--- bio-terms
 
 (defgeneric display-top-bio-terms (document-element &optional stream)
   (:documentation "Called as part of summary-document-stats on any article.
