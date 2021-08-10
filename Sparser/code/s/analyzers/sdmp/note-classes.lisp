@@ -15,16 +15,21 @@
 
 (defclass note-group (named-object)
   ((notables :initform nil :accessor get-notables))
-  (:documentation "Holds a group of notables that have something
- in common semantically or textually. For notes, these are created
- by define-note-group and stashed on *note-groups* when defined."))
+  (:documentation "Holds a list of instances of the notable class
+ that have something in common semantically or textually.
+ Instances of note-group are the types for which note-group-instance
+ objects are the tokens.
+   For notes, these are created by define-note-group and stashed on
+ *note-groups*."))
 
 (defclass note-group-instance (named-object)
-  (;;(doc-element :initform nil :accessor for) -- moot given FoM
-   (note-instances :initform nil :accessor note-instances)
+  ((note-instances :initform nil :accessor note-instances
+     :documentation "a 'count' long list of note-entry objects")
    (count :initform 0 :accessor group-count))
-  (:documentation "Created after an article is finished
-    as a sort of summary."))
+  (:documentation "Aggregates all of the note-entry objects created
+ in the process of reading a particular article. Created in the
+ after-actions method of an article. One instance for each
+ note-group. See consolidate-notes in content-methods.lisp."))
 
 (defclass notable (named-object)
   ((kind :initform nil :initarg :kind :accessor kind-of-notable)
@@ -47,7 +52,7 @@
  a particular document. Does what the base implementation did, i.e.
  keep a count of the instances and facilitate their aggregation
  at higher levels of the document, but adds things like tracking
- the edges (text strings) involved to facilitate debugging."))
+ the edges involved to facilitate debugging."))
 
 (setup-find-or-make notable)
 (setup-find-or-make note-entry)
@@ -71,8 +76,17 @@
     then find or make its note-entry in the current sentence.
     The note-entry instances are created by find-or-make on the
     identity of the notable. That means that they will exist until
-    the note-entry cache is cleared, which happens between runs.
-    Spreading them onto the contents fields of the currently active
+    the note-entry cache is cleared, which happens at the start of
+    the next run of analysis-core when the per-run initialization
+    functions all clear-note-tables.
+      Note entries are stored in alists in the items slots of
+    the contents object of the sentence in which they were identified,
+    then aggreggated and merged with others as we move up the
+    levels of document structure. See, collect-noted-items and
+    merge-items-alists in objects/doc/content-methods.lisp.
+      We use the Sparser package version category name of the
+    note-trigger as the key in each alist.
+      Spreading these onto the contents fields of the currently active
     sentence is just book keeping, and doesn't carry any information
     as an analysis continues.")
   (:method ((e edge))
@@ -99,21 +113,10 @@
                  (cons (list name entry) alist))))
         entry))))
 
+
 (defun increment-note-entry (entry)
   (incf (instance-count entry)))
 
-
-(defun add-edge-to-note-entry (edge entry)
-  "Look up the span of text the edge covers, and push that
-   along with the index number of the edge onto the
-   edge-strings slot of the entry."
-  (let* ((string (string-for-edge edge))
-         (number (edge-position-in-resource-array edge)))
-    (unless (find number (text-strings entry) :key #'edge-record-number)
-      (let ((record (make-edge-record :number number
-                                      :string string)))
-        (push record (text-strings entry))))
-    entry))
 
 
 ;;;----------------------------------------------
