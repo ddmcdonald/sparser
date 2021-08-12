@@ -59,9 +59,9 @@
 (defvar *motif-groups* nil)
 (defvar *motif-spotters* nil)
 
-;; (assimiate-motif-type-word-pairs *motif-type-word-pairs*)
+;; (assimilate-motif-type-word-pairs *motif-type-word-pairs*)
 
-(defun assimiate-motif-type-word-pairs (list-of-pairs)
+(defun assimilate-motif-type-word-pairs (list-of-pairs)
   "Pass each pair through the constructor. Collect raw statistics
    along the way to provide something to record and report"
   (let ( spotters  groups )
@@ -157,4 +157,4 @@
     ))
 
 (eval-when (:load-toplevel :execute)
-  (assimiate-motif-type-word-pairs *motif-type-word-pairs*))
+  (assimilate-motif-type-word-pairs *motif-type-word-pairs*))

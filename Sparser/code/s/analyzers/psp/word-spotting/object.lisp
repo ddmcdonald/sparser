@@ -80,7 +80,7 @@
 ;;;--------------------------
 ;;; versions of what to spot
 ;;;--------------------------
-;; Also see grammar/sl/motifs/base-categories.lisp
+;; Also see grammar/model/sl/motifs/base-categories.lisp
 
 ;; Do we need also a group-level class?
 
