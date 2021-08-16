@@ -70,6 +70,11 @@
   "Guards ad-hoc debugging statements, i.e. temporary info that
    won't be converted to traces.")
 
+(defparameter *abbreviated* t
+  "Controls how verbose the display is. If this flag is up then
+   the presentation should be as compact as possible. What is done
+   varies case by case.")
+
 (defparameter *debug-segment-handling* nil
   "Guards errors and breaks within the segment handling code that traps
    new cases or violations of standing assumptions.")
