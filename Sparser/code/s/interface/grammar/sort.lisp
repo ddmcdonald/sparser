@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:  "sort"
 ;;;    Module:  "interface;grammar:"
-;;;   version:  June 2021
+;;;   version:  August 2021
 
 ;; initiated 3/10/92 v2.2, elaborated 3/19,21,26
 ;; 0.1 (6/7/93 v2.3) Added appreciation of form rules to the combined
@@ -426,3 +426,22 @@
     ((> (group-count ngi1) (group-count ngi2)) t)
     ((> (group-count ngi2) (group-count ngi1)) nil)
     (t (string< (name ngi1) (name ngi2)))))
+
+
+;;;-------------------------
+;;; lists of terms to count
+;;;-------------------------
+
+#| e.g (:np-modifier :np-modifier :np-head :np-modifier :np-modifier :np-modifier
+ :part-of-a-name :part-of-a-name :part-of-a-name :part-of-a-name
+ :part-of-a-name :part-of-a-name :part-of-a-name)
+   -> ((:part-of-a-name 7) (:np-modifier 5) (:np-head 1))
+|# 
+(defun gather-and-count-terms (raw-list)
+  (let ((alist (list (list (car raw-list) 1) )))
+    (loop for term in (cdr raw-list)
+       as entry = (assq term alist)
+       do (cond
+            (entry (incf (cadr entry)))
+            (t (push (list term 1) alist))))
+    (sort alist #'sort-aggregation-table-entries)))
