@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "content-actions"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  June 2021
+;;;  Version:  August 2021
 
 #| Created 8/27/19 to move general action out of content-methods.lisp
 and make that file easier to understand. |#
@@ -374,22 +374,34 @@ and make that file easier to understand. |#
 ;;--- notes, word-spotting
 
 (defun show-noted-categories (document-element &optional detail? (stream *standard-output*))
+  (declare (special *abbreviated*))
   (let ((group-instances (items (contents document-element))))
-    (loop for i in group-instances
-       do (summarize-note-group i stream))))
+    (if *abbreviated*
+      (let ((index 0))
+        (loop for group in group-instances
+           do (progn
+                (format stream "~a: ~a  " (name group) (group-count group))
+                (when (= 5 (incf index)) (then (terpri stream) (setq index 0))))))
+      (loop for i in group-instances
+         ;; one per-line
+         do (summarize-note-group i stream)))))
 
 (defun summarize-note-group (group stream)
   (format stream "~&~a: ~a" (name group) (group-count group)))
 
 
 
+
+
 (defun show-motif-term-context (&optional (stream *standard-output*))
-  (declare (special *germaine-spotter-group-instances*))
+  (declare (special *germaine-spotter-group-instances* *abbreviated*))
   (unless *germaine-spotter-group-instances*
-    (format stream  "~&No motif triggers in article~%"))
+    (format stream  "~&No motif triggers in article~%"))  
   (when *germaine-spotter-group-instances*
-    (loop for group in *germaine-spotter-group-instances*
-       do (show-motif-edge-contexts group stream))))
+    (if *abbreviated*
+      (show-abbreviated-motif-edge-contexts stream)
+      (loop for group in *germaine-spotter-group-instances*
+         do (show-motif-edge-contexts group stream)))))
 
 (defgeneric show-motif-edge-contexts (group &optional stream)
   (:method ((group note-group-instance) &optional stream)
@@ -399,7 +411,21 @@ and make that file easier to understand. |#
       (loop for note-entry in entries
          do (show-edge-records note-entry)))))
 
- 
+(defgeneric show-abbreviated-motif-edge-contexts (&optional stream)
+  (:documentation "Gets data for the whole set of germaine groups
+    and reports it compactly.")
+  (:method (&optional stream)
+    (unless stream (setq stream *standard-output*))
+    (multiple-value-bind (configurations ratio per-group uncategoried)
+        (edge-record-summary)
+      (format stream "~&Functional categorizations for ~a out of ~a~
+                      ~%   ~{~a  ~}"
+              (first ratio) (second ratio) 
+              configurations)
+      (when uncategoried
+        (format stream "~&Uncategoried:")
+        (loop for record in uncategoried
+             do (report-edge-record record stream))))))
 
 
 
