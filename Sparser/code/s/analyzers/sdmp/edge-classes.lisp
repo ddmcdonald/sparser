@@ -80,6 +80,31 @@
                     (string-for-edge (top-edge chain)))
     (when config
       (format stream "~&~10T:~a" config))))
+
+
+(defun edge-record-summary ()
+  "Return the statistics on the motific edge records of
+   the current article. Analogous to show-motif-term-context and
+   show-edge-records without the display."
+  (declare (special *germaine-spotter-group-instances*))
+  (let ((group-count (length *germaine-spotter-group-instances*))
+        records-per-group  records  configurations  uncategorized )
+    ;; collect the records
+    (loop for group in *germaine-spotter-group-instances*
+       as entries = (note-instances group)
+       do (loop for note-entry in entries
+             as entry-records = (text-strings note-entry)
+             do (progn (push (list group entry-records) records-per-group)
+                       (setq records (append entry-records records)))))
+    ;; determine what categories they have and which ones aren't categorized
+    (loop for r in records
+       as config = (edge-record-configuration r)
+       do (if config (push config configurations) (push r uncategorized)))
+    (values (gather-and-count-terms configurations)
+            (list (length records)
+                  (length uncategorized))
+            records-per-group
+            uncategorized)))
            
 
 

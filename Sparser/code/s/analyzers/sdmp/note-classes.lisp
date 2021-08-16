@@ -3,7 +3,7 @@
 ;;;
 ;;;      File: "note-classes"
 ;;;    Module: analyzers/sdmp/note-classes
-;;;   Version: June 2021
+;;;   Version: August 2021
 
 ;; Initiated 6/14/21 to separate out the classes and code from their use.
 

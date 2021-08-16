@@ -1,8 +1,9 @@
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File: "analysis"
 ;;;    Module: "analyzers;psp:word-spotting:"
-;;;   Version:  July 2021
+;;;   Version:  August 2021
 
 ;; Initiated 7/29/21 to hold routines to explore the context
 ;; of motif triggers in their articles
