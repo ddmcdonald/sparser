@@ -845,14 +845,18 @@ val-pred-var (pred vs modifier - left or right?)
    on their head by making the edge have the label of the pobj and specializing
    the referent to have both categories."
   (cond
-    (*subcat-test* (not (eq (edge-form-name (right-edge-for-referent))
-                            'preposition)))
+    (*subcat-test* (and (not (eq (edge-form-name (right-edge-for-referent))
+                                 'preposition))
+                        ;; "They {kind of come} to an agreement"
+                        ;; right-edge has to be a pp. That's a prep-comp
+                        (value-of 'pobj of-pp)))
     (t
      (let* ((prototype-np (value-of 'pobj of-pp)))
-       (setq prototype-word ;; e.g. an individual for "strain"
-             (bind-variable 'prototype prototype-np prototype-word))
-       (revise-parent-edge :category (itype-of prototype-np))
-       (specialize-object prototype-word (itype-of prototype-np))))))
+       (when prototype-np
+         (setq prototype-word ;; e.g. an individual for "strain"
+               (bind-variable 'prototype prototype-np prototype-word))
+         (revise-parent-edge :category (itype-of prototype-np))
+         (specialize-object prototype-word (itype-of prototype-np)))))))
 
 
 ;;--- determiners
@@ -2850,9 +2854,10 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
   (unless (and adjp pp)
     (return-from adjoin-pp-to-adjp nil))
   (when (itypep pp 'collection)
-    (warn-or-error "Adjoining adjp to a pp that is a collection")
-    ;; See treatment in adjoin-pp-to-vg
-    (return-from adjoin-pp-to-adjp nil))
+    (unless (collection-is-compound-name pp)
+      (warn-or-error "Adjoining adjp to a pp that is a collection")
+      ;; See treatment in adjoin-pp-to-vg
+      (return-from adjoin-pp-to-adjp nil)))
   
   (let* ((adjp-edge (left-edge-for-referent))
          (adjp-form (edge-form adjp-edge))
