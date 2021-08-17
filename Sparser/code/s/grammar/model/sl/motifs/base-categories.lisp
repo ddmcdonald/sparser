@@ -79,10 +79,10 @@ a Krisp individual. |#
              (i (define-or-find-individual cat-name :name name))
              (left-daughter (edge-left-daughter edge))
              (word (typecase left-daughter
-               (polyword left-daughter) ;; "in order to"
-               (edge
-                (edge-category left-daughter))
-               (otherwise (break "polyword not where expected"))))
+                     (polyword left-daughter) ;; "in order to"
+                     (word left-daughter)
+                     (edge (edge-category left-daughter)) ; look deeper?
+                     (otherwise (break "polyword not where expected"))))
              (j (bind-variable 'spotter-index word i))
              (capitalized? (capitalized-instance (pos-edge-starts-at edge))))
 
