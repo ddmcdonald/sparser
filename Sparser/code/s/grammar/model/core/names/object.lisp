@@ -245,6 +245,15 @@
            collection )))))
 
 
+(defun collection-is-compound-name (collection)
+  (let ((type (value-of 'type collection)))
+    (if (eq 'named-object (cat-name type))
+      t
+      (else (when *debug-pnf*
+              (break "is ~a a collection of names?" collection))
+            nil))))
+
+
 (defun convert-collection-of-names-to-single-name (compound-name)
   ;; This name was build by Make-collection-of-uncategorized-names
   ;; and now somebody has a rationale for seeing it as a single name.
