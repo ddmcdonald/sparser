@@ -102,7 +102,7 @@
        do (if config (push config configurations) (push r uncategorized)))
     (values (gather-and-count-terms configurations)
             (list (length records)
-                  (length uncategorized))
+                  (+ (length records) (length uncategorized)))
             records-per-group
             uncategorized)))
            
