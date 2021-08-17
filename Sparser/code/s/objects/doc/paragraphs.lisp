@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "paragraphs"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  June 2021
+;;;  Version:  August 2021
 
 #| Aggregates the special handling of paragraph objects that
 are found incrementally during the handling of large texts.
@@ -101,13 +101,25 @@ the original orthographic paragraph handling of the early 1990s
    was called by initialize-sections via begin-new-article when
    per-article-initializations is called at the start of a run."
 
-  (declare (special *prior-para-newline-pos*
+  (declare (special *prior-para-newline-pos* *newline*
                     *current-paragraph* *previous-paragraph*))
 
   (if (eq end-pos (chart-position-after *prior-para-newline-pos*))
-    (then ;; two (or more) newlines in a row
-      (tr :nl-immediate-newline end-pos)
-      (setq *prior-para-newline-pos* end-pos))
+    (then
+      ;; Two (or more) newlines in a row
+      ;; When newlines are introduced by the prescan converting '<nl\>', it can see
+      ;; two sequential tags, but doesn't have the state to see a pattern like
+      ;; "<nl/><nl/> <nl/> <nl/>" because of the spaces between the NL.
+      (when (eq (pos-terminal end-pos) *newline*)
+        (loop
+           until (not (eq (pos-terminal end-pos) *newline*))
+           do (progn (setq end-pos (chart-position-after end-pos)
+                           *prior-para-newline-pos* end-pos)
+                     (tr :nl-immediate-newline end-pos)))))
+
+      ;; (tr :nl-immediate-newline end-pos)
+      ;; (push-debug `(,end-pos)) (break "more newlines end-pos:~a" end-pos)
+      ;; (setq *prior-para-newline-pos* end-pos)
     
     (let ((terminating *current-paragraph*))
       (when *previous-paragraph*
@@ -136,7 +148,7 @@ the original orthographic paragraph handling of the early 1990s
           
           ;; remove the leading #\newline characters
           (setq string (remove-leading-whitespace string))
-          (setq string (remove-trailing-whitespace string))
+          (setq string (remove-trailing-whitespace string))          
           ;;/// Replace newlines with paragraph section marker?
           (setf (content-string terminating) string)
           
