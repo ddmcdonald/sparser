@@ -718,6 +718,10 @@
 ;;     Hurricane SL development interrupted. Should design and build the
 ;;   general pattern for this instead. Perhaps some code-generating macros
               ))
+      (unless name
+        (when *debug-pnf*
+          (break "No name choosen for items: ~a" items))
+        (make-uncategorized-name-from-items items :and and))
       name ))))
 
 
