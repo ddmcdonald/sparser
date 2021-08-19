@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "nospace-categories"
 ;;;   Module:  "grammar;rules:DA:"
-;;;  Version:  May 2020
+;;;  Version:  August 2020
 
 ;; Created 10/7/14 to hold categories and routines used by the
 ;; nospace character specialists (analyzers/psp/patterns/) since
@@ -117,7 +117,15 @@
         (right (edge-referent right-edge))
         (start-pos (pos-edge-starts-at left-edge))
         (end-pos (pos-edge-ends-at right-edge)))
+    
     (cond
+      ((and (itypep left 'adverbial) ;; "comes at me again-there was .."
+            (itypep right 'location))
+       (throw :punt-on-nospace-without-resolution nil))
+
+      ((itypep right 'conjunction) ;; "there never was-and I am ten years old"
+       (throw :punt-on-nospace-without-resolution nil))
+
       ((and (itypep left 'fractional-term) ; "quarter-million"s
             (itypep right 'multiplier))
        (make-edge-over-fraction-of-illion left right start-pos end-pos))
