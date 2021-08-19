@@ -503,6 +503,9 @@
             (null (edge-left-daughter edge))) ;; e.g. have → "have"
        edge)
 
+      ((eq :long-span (edge-right-daughter edge))
+       (find-verb (edge-left-daughter edge)))
+
       ((and (vp-category? (edge-form edge))
             (or (word-p (edge-left-daughter edge))
                 (polyword-p (edge-left-daughter edge))
