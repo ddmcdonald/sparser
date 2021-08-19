@@ -416,15 +416,18 @@ and make that file easier to understand. |#
     and reports it compactly.")
   (:method (&optional stream)
     (unless stream (setq stream *standard-output*))
-    (multiple-value-bind (configurations ratio per-group uncategoried)
+    (multiple-value-bind (configurations
+                          record-count categorized-count
+                          group-count uncategoried-records)
         (edge-record-summary)
-      (format stream "~&Functional categorizations for ~a out of ~a~
+      (format stream "~&Functional categorizations for ~a out of ~a instances~
                       ~%   ~{~a  ~}"
-              (first ratio) (second ratio) 
+              categorized-count
+              record-count
               configurations)
-      (when uncategoried
-        (format stream "~&Uncategoried:")
-        (loop for record in uncategoried
+      (when uncategoried-records
+        (format stream "~&Uncategoried instances:")
+        (loop for record in uncategoried-records
              do (report-edge-record record stream))))))
 
 

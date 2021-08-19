@@ -99,13 +99,15 @@
     ;; determine what categories they have and which ones aren't categorized
     (loop for r in records
        as config = (edge-record-configuration r)
-       do (if config (push config configurations) (push r uncategorized)))
+       do (if config
+            (push config configurations)
+            (push r uncategorized)))
     (values (gather-and-count-terms configurations)
-            (list (length records)
-                  (+ (length records) (length uncategorized)))
-            records-per-group
-            uncategorized)))
-           
+            (length records) ; record-count
+            (length configurations) ; categorized-count
+            group-count
+            uncategorized))) ; uncategorized-records
+
 
 
 
