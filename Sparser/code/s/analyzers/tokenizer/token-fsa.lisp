@@ -127,7 +127,7 @@
   (if (> length *word-lookup-buffer-length*)
     (format t "~%~%The token just found:~%  ~s~
                ~%is longer than the word lookup buffer can ~
-               accomodate (~A characters).~%It was ignored. ~
+               accomodate (~A characters).~%It has been ignored. ~
                If it should be accepted then you must increase ~
                ~%the buffer size. See the Sparser manual.~%~%"
             "<trunc>"
