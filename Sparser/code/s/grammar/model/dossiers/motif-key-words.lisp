@@ -3,10 +3,11 @@
 ;;;
 ;;;       File: "motif-key-words:
 ;;;     Module: grammar/model/dossiers/
-;;;    Version: July 2021
+;;;    Version: August 2021
 
 ;; Copied from acumen/trunk/code/LuceneSearchTest/lm_rules.txt
-;; and modified to drive word-spotting starting 6/9/21
+;; and modified to drive word-spotting starting 6/9/21.
+;; Added plural version of most prop's 8/19/21
 
 (in-package :sparser)
 
@@ -95,10 +96,13 @@
     ("tir-na-nog_PROP" . "tir na nog")
     ("tir-na-nog_PROP" . "tir na hoige")
     ("shamrock_PROP" . "shamrock")
+    ("shamrock_PROP" . "shamrocks")
     ("leprechaun_PROP" . "leprechaun")
+    ("leprechaun_PROP" . "leprechauns")
     ("king-conchobar_CHAR" . "king conchobar")
     ("king-conchobar_CHAR" . "king conchobar mac nessa")
     ("fairy-fort_PROP" . "fairy fort")
+    ("fairy-fort_PROP" . "fairy forts")
     ("aos-si_CHAR" . "aos si")
     ("banshee_CHAR" . "banshee")
     ("cu-chulainn_CHAR" . "cu chulainn")
@@ -110,14 +114,18 @@
     
     ("haman_CHAR" . "haman")
     ("golem_CHAR" . "golem")
+    ("golem_CHAR" . "golems")
     ("amalek_CHAR" . "amalek")
     ("amalek_CHAR" . "children of amalek")
     ("amalek_CHAR" . "amalekite")
     ("babel_PROP" . "tower of babel")
+    ("babel_PROP" . "towers of babel")
     ("dove_PROP" . "dove")
+    ("dove_PROP" . "doves")
     ("name-in-vain_EVENT" . "name in vain")
-    ("leviathan-behemoth_PROP" . "leviathan")
+    ("leviathan-behemoth_PROP" . "leviathan") ; plural too?
     ("leviathan-behemoth_PROP" . "behemoth")
+    ("leviathan-behemoth_PROP" . "behemoths")
     ("milk-with-meat_EVENT" . "milk with meat")
     ("ark-of-the-covenant_EVENT" . "ark of the covenant")
     ("kiddush_EVENT" . "kiddush")
