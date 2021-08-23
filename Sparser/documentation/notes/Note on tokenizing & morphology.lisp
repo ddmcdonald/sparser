@@ -1,105 +1,53 @@
 (in-package :sparser)
 
 ;; Note on tokenizing and word morphology
-;; version 7/28/14
+;; version 7/28/14. Revised 8/20/21
 
-For tokenizing -- for identifying the next token in the source being read
-from and converting it to a word in the chart -- we have the function 
-scan-next-pos, which in turn calls scan-next-position in the file analyzers/
-psp/scan/scan.lisp. 
+We tokenize the input character source incrementally as we populate the chart. In the standard arrangement, the populating happens when initiate-successive-sweeps the driver for the whole analysis (in drivers/chart/psp/no-bracket-protocol.lisp) makes a call to scan-sentences-and-pws-to-eos (in multi-scan.lisp in the same directory).
 
-That leads to calling add-terminal-to-chart (analyzers/psp/fill-chart/add.lisp)
-which calls next-terminal and adds the word (the struct, not the string)
-to the chart (along with some bookkeeping about whitespace and newlines).
+The function that sets tokenizing process in motion is scan-next-position (in analyzers/psp/scan/scan.lisp). Scan-next-position identifies the position it is to fill from a set of state variables that are wrapped in a set of functions such as the-next-position-to-scan.
 
-The next-terminal function is one of the ones that we parameterize by
-setting its symbol-function. The initializing routine is
-   establish-version-of-next-terminal-to-use (keyword &optional function)
-in drivers/tokens/next-terminal.lisp. The usual call (see 
-uncontroversial-settings in /drivers/inits/switches.lisp)
-is to next-terminal/pass-through-all-tokens which immediately calls
-next-token (analyzers/tokenizer/next-token.lisp) and all it does
-is call run-token-fsa where things start to happen (analyzers/tokenizer/
-token-FSA.lisp). 
+Scan-next-position calls add-terminal-to-chart. That gets that terminal by calling the function next-terminal, which returns a word. Note that 'tokens' in Sparser are always word objects, even spaces and punctuation.
 
-The token fsa works one character at a time. It accesses the next character
-from the *character-buffer-in-use* array indexed on *index-of-next-character* 
-which it bumps before using. It looks for an 'entry' for the character by 
-calling character-entry (which deserves a note for itself. Look in analyzers/
-tokenizer/alphabet-fns.lisp). 
+When next-terminal returns with the next word, add-terminal-to-chart puts in into the chart. This is a moderately elaborate procedure since we need to distinguish the different sorts of word since they go in different places. Whitespace is represented as words, and it goes onto the 'preceding-whitespace' field of the position. Newlines are handled specially (see sort-out-result-of-newline-analysis as called from add-terminal-to-chart). Every other kind of word returned from next-terminal is passed through bump-&-store-word.
+
+Bump-&-store-word (in analysers/psp/fill-chart/store.lisp) is responsible for managing all the state variables that govern the state of the chart and our location in the source character stream. The function was called with the position and the word to put there, and it uses the current state to set up all the fields of the position: It puts the word in the 'terminal' field of the position. It sets the 'capitalization' field to the capitalization that was computed by the token-fsa -- *capitalization-of-current-token*. The character-index field is computed here taking into account the possibility that the character-array has switched to its alternative array, but it is essentially the array-cell index of the next character (where we'll start when we want the word after this one) minus the length of the word.
+
+
+The guts of the tokenizer is run-token-fsa. (Next-terminal calls new-token which calls run-token-fsa -- rather Baroque but don't ask until you've looked at the code.) To Sparser, a token is comprised on a run of a particular character type -- contiguous alphabetic characters or contiguous digits. Punctuation characters are different in that each one is taken a token by itself and we don't group them at this level, we use rules while parsing. When the next character is not of the same time as what we've been accumulating, we terminate the ongoing token and setup to get the next token. 
+
+The token fsa works one character at a time. It accesses the next character from the *character-buffer-in-use* array indexed on *index-of-next-character* which it bumps before using it. It looks for an 'entry' for the character by calling character-entry (which deserves a note for itself. Look in analyzers/tokenizer/alphabet-fns.lisp).
+
+The entries for low range characters (e.g. ascii) are sorted in an array indexed by Lisp's numeric value for the character. These are all in analyzers/tokenizer/alphabet.lisp. Some examples:
+
+(setf (elt *character-dispatch-array* 40)  ;; #\(
+      `(:punctuation
+        . ,(punctuation-named #\( )))
+
+(setf (elt *character-dispatch-array* 57)  ;; #\9
+      `(:number
+        . (:digit . ,#\9 )))
+
+(setf (elt *character-dispatch-array* 65)  ;; #\A
+      `(:alphabetical
+        . (:uppercase . ,#\a )))
+
+(setf (elt *character-dispatch-array* 97)  ;; #\a
+      `(:alphabetical
+        . (:lowercase . ,#\a )))
 
 If there is no entry, we've encountered a character that is not in 
-Sparser's alphabet, perhaps a Greek character that's not yet been added,
-and everything will stop with an informative error message telling
-you how to add the new character. 
+Sparser's alphabet, perhaps a Greek character that's not yet been added. That leads to a call to announce-out-of-range-character which logs the new character by writing a message to the REPL, putting the character on an internal list we can handle afterwards (see write-lines-for-out-of-band-cache) and returns the entry for a space character to use in place of the unknown one.
 
-If the car of the entry is :punctuation then run-token-fsa returns via 
-do-punctuation. Otherwise it kcons' the cdr of the entry onto 
-a  list that it passes to continue-token. The *category-of-accumulating-token* 
-global is set on this first access.
 
-In continue-token we look for punctuation or the shift in the character
-type that demarcates the token. *pending-entry* is set if we switched
-character type and will get picked up on the next call to run-token-fsa.
-Otherwise we recurse on continue-token.
+The code for the fsa is in analyzers/tokenizer/token-fsa.lisp as three functions: Run-token-fsa is the start, and notices the cases of punctuation (calling do-punctuation) and unknown characters.
 
-When we're done with the token (because we've detected a shift in
-type) we call finish-token. It loops over the klist of accumulated
-entries and pushes them into the interning-array (a pointer to the
-global *word-lookup-buffer*), while calling the capitalization-fsa
-to work out the capitalization-state, which at the end is cleaned up
-and stashed on *capitalization-of-current-token*. 
+Continue-token is for a sequence of characters of the same character type. It looks for punctuation or the shift in the character type that demarcates the token. The global *pending-entry* is set when we switch character type and will get picked up on the next call to run-token-fsa. Otherwise we recurse on continue-token.
 
-Finish-token end with a call to find-word in analyzers/tokenizer/
-lookup.lisp. It does a lookup-word-symbol (objects/chart/words/
-lookup/buffer.lisp) using the lisp symbol table to do its hash lookup
-via find-symbol. 
+When we're done with the token (because we've detected a shift in type) we call finish-token. It loops over the klist of accumulated entries and pushes them into the interning-array (a pointer to the global *word-lookup-buffer*), while calling the capitalization-fsa to work out the capitalization-state, which at the end is cleaned up
+and stashed on *capitalization-of-current-token*. Finish-token end with a call to find-word in analyzers/tokenizer/lookup.lisp.
 
-The lookup returns a symbol in the *word-package*. If the token 
-corresponds to a known word, the word will be bound to that symbol
-and we return it and roll back up the call stack. Otherwise we call
-establish-unknown-word, which is another parameterized function 
-(set by what-to-do-with-unknown-words in /objects/chart/words/
-lookup/switch-new.lisp). 
+Find-word calls lookup-word-symbol (objects/chart/words/lookup/buffer.lisp) using the lisp symbol table to do a hash lookup via find-symbol. The lookup returns a symbol in the *word-package*. If the token corresponds to a known word, the word will be bound to that symbol and we return it and roll back up the call stack. Otherwise we call establish-unknown-word, which is a parameterized function (set by what-to-do-with-unknown-words in /objects/chart/words/lookup/switch-new.lisp).
 
-The usual setting for the *unknown-word-policy* is :capitalization-digits-
-&-morphology which corresponds to the function make-word/all-properties
-(in objects/chart/words/lookup/new-words.lisp). 
-
-The first thing that happens in make-word/all-properties is that we
-call make-word with the symbol and take the symbol-name of that symbol
-(the precise set of characters pulled from the source) to be the pname
-of the newly created word. 
-
-Since punctuation has already been handled (and already returned back
-to scan-next-position and into the chart), the only cases to handle
-are numbers (see establish-properties-of-new-digit-sequence) and
-alphabetics.  
-
-For the new words that consist of just alpahbetical characters, we first
-copy over the already-calculated description of its capitalization
-to the word object and then we see if it has an suffix that we know about.
-If it does, the morphology slot of the word struct (word-morphology) is
-set to a description of the suffix. 
-
-In the original version of the morphology lookup we just noticed 's',
-'ed', 'ing', and 'ly' using calculate-morphology-of-word/in-buffer which
-for the moment is still used. We recently added checks for a much more
-extensive set of suffixes using the function suffix-checker (both 
-functions and the *suffix-pos-table* are in objects/chart/words/lookup/
-morphology.lisp). 
-
-If the flag *introduce-brackets-for-unknown-words-from-their-suffixes* 
-is up, then assign-morph-brackets-to-unknown-word will be called just
-before the word is returned. 
-
-As with words introduced from the Comlex lexicon, this operation is
-sensitive to the flag *edge-for-unknown-words* (see grammar/rules/syntax/
-affix-rules1.lisp). If the flag is down (nil) then all we do is interpret
-the morphology (suffix) of the word as part of speech and add the set
-of brackets that are assigned to such words by default. 
-
-If the flag is up (t) then we call the same operations as used with
-Comlex that create a category based on the word and set it up with
-the usual set rules and bracket assignments (see, e.g., setup-common-noun).
+What happens with unknown-words is the subject of another note that is still being prepared.
 
