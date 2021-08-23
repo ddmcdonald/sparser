@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "comlex-verb-explorations"
 ;;;  Module: "grammar/model/sl/score/
-;;; version: February 2021
+;;; version: August 2021
 
 ;; Started 12/25/20 to collect verbs defined in COMLEX  that occur in
 ;; the SCORE articles that are not otherwise defined. Extended starting
@@ -219,6 +219,14 @@ extrap-adj-for-to-inf-np-omit -- pg.45  allows the logical object of the embeded
       'noun))
     :FEATURES))
 
+
+;; looks a word's comlex entry up and then grabs
+;; the subcat
+(defun subcat-from-word (word)
+  (cadr (entry-subcat (cdr (cls word)))))
+
+
+
 ;; True if one of the verb's frames is INTRANS,
 ;; INTRANS-RECIP, or ITRANS-ELLIPSIS
 (defun has-intrans-frame-p (subcat)
@@ -238,7 +246,7 @@ extrap-adj-for-to-inf-np-omit -- pg.45  allows the logical object of the embeded
 ;; words in *word-list* that don't have comlex entries
 ;; many are not being recognized because of affixes
 #+ignore(defparameter *not-in-comlex*
-  (not-in-comlex *word-list*)) ;; *word-list* was in former file
+  (not-in-comlex *word-list*)) ; see list at bottom of file
 
 (defparameter *transitive-frames*
   (list 'NP
@@ -327,7 +335,7 @@ extrap-adj-for-to-inf-np-omit -- pg.45  allows the logical object of the embeded
     
 
 
-;;/// subcat-from-word is gone -- what was it??
+
 (defun def-cl-verb-form (word)
   "Collects the data that goes into a define-category form as in
    score-verbs.lisp"
@@ -407,6 +415,33 @@ extrap-adj-for-to-inf-np-omit -- pg.45  allows the logical object of the embeded
     (dolist (w wordlist)
       (print (def-cat-form w) outfile))))
 
+
+(defun def-cat-form (word)
+  (let* ((subcat (subcat-from-word word))
+	 (preps (prep-complements subcat))
+	 (not-trans? (not-transitive-p subcat))
+	 (realizations
+	  (mapcar #'list
+		  (loop for prep in preps
+		     collect (intern (concatenate 'string ":" prep)))
+		  preps)))
+	       
+    `(define-category ,(intern word) :specializes bio-predication
+		      :binds ((subject biological)
+			      ,(mapcar (lambda (x) `(,(intern x) biological))
+				       preps))
+		      :realization
+		      ,(flatten (append
+				 '(:s subject)
+				 (if not-trans? nil '(:o object))
+				 realizations)))))
+			     			     
+(defun flatten (l)
+  (cond ((null l) nil)
+        ((atom l) (list l))
+        (t (loop for a in l appending (flatten a)))))
+
+
 (defun ppdef (def s) 
   (format s "(define-category ~a :specializes ~a~&   :binds"
 	  (string-downcase (symbol-name (second def)))
@@ -444,6 +479,90 @@ extrap-adj-for-to-inf-np-omit -- pg.45  allows the logical object of the embeded
 "according to"
 "as to"
 |#
+
+
+
+;;;;;;; utility functions to establish the defparameters used above
+(defun find-comlex-and-morphological-definitions ()
+  (defparameter *comlex-verbs*
+    (loop for ss  
+       in (group-by (sort
+                     (mapcar
+                      #'(lambda (x) (list (pname (car x)) (second x)))
+                      (remove-duplicates
+                       (loop for r in *context-free-rules-defined*
+                          when (and (null (cdr (cfr-rhs r)))
+                                    (member (car (cfr-rhs r)) *from-comlex*) 
+                                    (eq 0 (search "VERB" (pname (cat-name (cfr-form r))))))
+                          collect
+                            (list (stem-form (pname (car (cfr-rhs r))))
+                                  (cat-name (cfr-form r)))
+                            ) :test #'equal))
+                     #'string< :key #'car) ; end of sort call
+                    #'car #'second) ; group-by
+       when (not (gethash (subseq (car ss) 0 (1- (Length (car ss))))
+                          *primed-words*))
+       collect (car ss)))
+
+  (defparameter *comlex-other*
+    (loop for ss  
+            in
+            (group-by 
+             (sort
+              (mapcar
+               #'(lambda (x)(list (pname (car x)) (second x)))
+               (remove-duplicates
+                (loop for r in *context-free-rules-defined*
+                      when
+                      (and (null (cdr (cfr-rhs r)))
+                           (member (car (cfr-rhs r)) *from-comlex*)
+                           (not (eq 0 (search "VERB" (pname (cat-name (cfr-form r)))))))
+                      collect
+                      (list (stem-form (pname (car (cfr-rhs r)))) (cat-name (cfr-form r)))
+                      )
+                :test #'equal)) 
+              #'string< :key #'car)
+             #'car #'second)
+          when
+          (not (gethash (subseq (car ss) 0 (1- (Length (car ss))))
+                        *primed-words*))
+          collect (car ss)))
+
+  (defparameter *morph-comlex*
+    (sort
+     (remove-duplicates
+      (loop for w in *show-morphs*
+            when (or (gethash
+                      (pname (stem-form (second w)))*primed-words*)
+                     (gethash
+                      (pname (second w)) *primed-words*))
+              collect (if  (gethash (pname (stem-form (second w))) *primed-words*)
+                           (pname (stem-form (second w)))
+                           (pname (second w))))
+      :test #'equal)                        
+     #'string<))
+
+  (defparameter *morph-non-comlex*
+    (sort
+     (loop for w in *show-morphs*
+           unless
+           (or (gethash  
+                (pname (stem-form (second w))) *primed-words*)
+               (gethash
+                (pname (second w)) *primed-words*))
+           collect (pname
+                    (second w)))
+     #'string<)))
+
+;; given a list of words and a filename, writes the subcat entries
+;; for the words to the specified file
+(defun write-subcats-to-file (filename word-list)
+  (let ((subcat-list (make-subcat-list word-list)))
+    (with-open-file (outfile filename
+			     :direction :output
+			     :if-exists :supersede)
+      (dolist (l subcat-list)
+	(print l outfile))))) 
 
 
 ;;;------------------------------------------------------------------------
@@ -626,87 +745,108 @@ extrap-adj-for-to-inf-np-omit -- pg.45  allows the logical object of the embeded
 
 
 
-
-
-
-;;;;;;; utility functions to establish the defparameters used above
-(defun find-comlex-and-morphological-definitions ()
-  (defparameter *comlex-verbs*
-    (loop for ss  
-       in (group-by (sort
-                     (mapcar
-                      #'(lambda (x) (list (pname (car x)) (second x)))
-                      (remove-duplicates
-                       (loop for r in *context-free-rules-defined*
-                          when (and (null (cdr (cfr-rhs r)))
-                                    (member (car (cfr-rhs r)) *from-comlex*) 
-                                    (eq 0 (search "VERB" (pname (cat-name (cfr-form r))))))
-                          collect
-                            (list (stem-form (pname (car (cfr-rhs r))))
-                                  (cat-name (cfr-form r)))
-                            ) :test #'equal))
-                     #'string< :key #'car) ; end of sort call
-                    #'car #'second) ; group-by
-       when (not (gethash (subseq (car ss) 0 (1- (Length (car ss))))
-                          *primed-words*))
-       collect (car ss)))
-
-  (defparameter *comlex-other*
-    (loop for ss  
-            in
-            (group-by 
-             (sort
-              (mapcar
-               #'(lambda (x)(list (pname (car x)) (second x)))
-               (remove-duplicates
-                (loop for r in *context-free-rules-defined*
-                      when
-                      (and (null (cdr (cfr-rhs r)))
-                           (member (car (cfr-rhs r)) *from-comlex*)
-                           (not (eq 0 (search "VERB" (pname (cat-name (cfr-form r)))))))
-                      collect
-                      (list (stem-form (pname (car (cfr-rhs r)))) (cat-name (cfr-form r)))
-                      )
-                :test #'equal)) 
-              #'string< :key #'car)
-             #'car #'second)
-          when
-          (not (gethash (subseq (car ss) 0 (1- (Length (car ss))))
-                        *primed-words*))
-          collect (car ss)))
-
-  (defparameter *morph-comlex*
-    (sort
-     (remove-duplicates
-      (loop for w in *show-morphs*
-            when (or (gethash
-                      (pname (stem-form (second w)))*primed-words*)
-                     (gethash
-                      (pname (second w)) *primed-words*))
-              collect (if  (gethash (pname (stem-form (second w))) *primed-words*)
-                           (pname (stem-form (second w)))
-                           (pname (second w))))
-      :test #'equal)                        
-     #'string<))
-
-  (defparameter *morph-non-comlex*
-    (sort
-     (loop for w in *show-morphs*
-           unless
-           (or (gethash  
-                (pname (stem-form (second w))) *primed-words*)
-               (gethash
-                (pname (second w)) *primed-words*))
-           collect (pname
-                    (second w)))
-     #'string<)))
-
-;; given a list of words and a filename, writes the subcat entries
-;; for the words to the specified file
-(defun write-subcats-to-file (filename word-list)
-  (let ((subcat-list (make-subcat-list word-list)))
-    (with-open-file (outfile filename
-			     :direction :output
-			     :if-exists :supersede)
-      (dolist (l subcat-list)
-	(print l outfile))))) 
+(defparameter *word-list*
+  '(
+  "access" "accomplish" "address" "adhere" "adopt" "agree"
+  "alternate" "answer" "approximate" "arches" "argues" "arise"
+  "array" "ascertain" "assemble" "assess" "attempts"
+  "autoradiography" "average" "avoid" "awaits" "ax" "balloon" "bands"
+  "becomes" "belongs" "best" "biopsy" "blast" "blot" "blunt"
+  "borders" "bottom" "breast" "bred" "bridge" "brings" "bypass"
+  "capture" "cases" "center" "chain" "challenge" "channel" "charge"
+  "cluster" "color" "compensate" "compounds" "conclude" "conflict"
+  "constructs" "contacts" "contribute" "cooperate" "copy" "core"
+  "correlates" "counter" "course" "cross" "curves" "cut" "decay"
+  "deserve" "develop" "die" "differ" "discontinues" "discover"
+  "dishes" "displaces" "doses" "dot" "double" "dry" "duplicate"
+  "elicit" "emphasizes" "empty" "enable" "encompasses" "encounters"
+  "engage" "equal" "evade" "exaggerate" "excel" "exclude" "exerts"
+  "exists" "experiments" "explore" "extracts" "facilitates" "fields"
+  "film" "filter" "fit" "flag" "focus" "fork" "fret" "gag" "gain"
+  "gel" "gift" "glass" "halt" "ham" "hand" "head" "heat" "helps"
+  "highlight" "hinge" "hits" "holes" "host" "ice" "images"
+  "immunoblots" "impact" "impart" "includes" "instances" "institute"
+  "introduce" "issue" "japan" "joint" "layer" "lends" "lies" "limits"
+  "link" "lives" "log" "looks" "lowers" "lynch" "master" "mature"
+  "mean" "milk" "mix" "mock" "motor" "muscle" "nickel" "note" "offer"
+  "override" "pairs" "parallels" "participates" "patterns" "perk"
+  "perturb" "phase" "pierce" "pipes" "plate" "plays" "points"
+  "possesses" "precipitates" "produce" "progress" "project" "proof"
+  "prove" "pull" "quadruplicate" "question" "rabbit" "rays" "read"
+  "reason" "recapitulate" "regards" "relates" "renders" "repair"
+  "repeats" "research" "reside" "retard" "reverse" "revert" "rip"
+  "room" "rule" "run" "samples" "see" "sense" "sensitize" "serves"
+  "services" "set" "shanghai" "share" "shift" "shock" "side" "signs"
+  "single" "size" "skin" "slices" "slight" "slope" "smooth" "spaces"
+  "specify" "speculate" "spin" "split" "stack" "stem" "stock" "storm"
+  "strand" "stress" "stretch" "structures" "sum" "suspend" "tail"
+  "talk" "thin" "times" "total" "trace" "transplant" "traps" "trends"
+  "trigger" "types" "undergo" "underscores" "utilizes" "visualize"
+  "water" "weight" "wells"
+  "accelerating" "aging" "aligning" "alkylating" "antagonizing" "arresting"
+  "bearing" "changing" "circumventing" "coding" "collaborating"
+  "competing" "compiling" "complementing" "comprising" "connecting"
+  "covering" "damaging" "distinguishing" "disturbing" "dividing"
+  "docking" "enabling" "exceeding" "funding" "grafting" "harboring"
+  "heterodimerizing" "implying" "interesting" "inviting" "ionizing"
+  "joining" "lacking" "loosening" "meeting" "monitoring"
+  "neutralizing" "noncoding" "offspring" "overlying" "packaging"
+  "profiling" "promising" "quantifying" "quantitating" "ranging"
+  "recognizing" "reprobing" "residing" "rotating" "scaffolding"
+  "sequestering" "shuttling" "silencing" "splicing" "strengthening"
+  "striking" "suffering" "supporting" "surprising" "surrounding"
+  "switching" "tempting" "trading" "transforming" "varying"
+  "warranting" "working"
+  "abolished" "accepted" "accompanied" "achieved" "acknowledged"
+  "addressed" "allowed" "altered" "annealed" "annotated" "appeared"
+  "applied" "approved" "ascribed" "asked" "assayed" "assessed"
+  "assisted" "attributed" "augmented" "autophosphorylated"
+  "autoradiographied" "baked" "behaved" "believed" "biopsied"
+  "biotinylated" "boiled" "buffered" "calculated" "called" "carried"
+  "centered" "centrifuged" "characterized" "cleaned" "cleaved"
+  "cloned" "coated" "coiled" "coimmunoprecipitated" "collected"
+  "colocalized" "combined" "compartmentalized" "complexed"
+  "complicated" "composed" "conducted" "configured" "confirmed"
+  "conjugated" "consisted" "continued" "contrasted" "converted"
+  "coordinated" "corrected" "counted" "counteracted" "counterstained"
+  "coupled" "cultivated" "declared" "defined" "degraded" "dehydrated"
+  "denatured" "derived" "desalted" "designated" "designed" "detached"
+  "determined" "developed" "dialyzed" "differentiated" "diluted"
+  "directed" "discarded" "disconnected" "discovered" "discussed"
+  "displaed" "dissolved" "documented" "downmodulated" "drafted"
+  "elicited" "eliminated" "embedded" "emerged" "endowed" "enriched"
+  "ensured" "evaluated" "evidenced" "excised" "exhibited" "expanded"
+  "exposed" "extended" "failed" "filed" "fixed" "focused" "followed"
+  "formed" "fractionated" "fragmented" "fused" "generalized"
+  "harvested" "heightened" "held" "immortalized" "immunoblotted"
+  "immunocompromised" "immunostained" "implicated" "imported"
+  "imposed" "incubated" "infected" "infiltrated" "initiated"
+  "injected" "inserted" "integrated" "intercepted" "intercrossed"
+  "interfaced" "inverted" "irradiated" "isolated" "judged"
+  "juxtaposed" "kept" "labeled" "led" "left" "lessened" "limbed"
+  "limited" "listed" "loaded" "localized" "located" "lost" "lowered"
+  "lysed" "made" "mapped" "marked" "matched" "mentioned" "mirrored"
+  "mixed" "mobilized" "modeled" "monitored" "mounted" "multiplied"
+  "named" "normalized" "numbered" "opposed" "organized"
+  "overproduced" "paralleled" "permeabilized" "persisted"
+  "photographed" "piloted" "plotted" "pooled" "postfixed"
+  "postulated" "precleared" "precluded" "preformed" "prepared"
+  "pretreated" "prioritized" "processed" "prolonged" "prompted"
+  "pronounced" "propagated" "proteolyzed" "published" "pulled"
+  "pulverized" "purchased" "quantitated" "questioned" "reasoned"
+  "recommended" "recorded" "recovered" "reexamined" "referred"
+  "reflected" "rejoined" "rendered" "replaced" "repressed" "rescued"
+  "resolved" "responded" "restored" "restricted" "resuspended"
+  "retained" "returned" "reviewed" "rinsed" "rose" "scanned" "scored"
+  "scraped" "screened" "searched" "seeded" "separated" "sequenced"
+  "showed" "solubilized" "sonicated" "sought" "specialized"
+  "sponsored" "spotted" "stained" "started" "starved" "stopped"
+  "stored" "stratified" "subcloned" "subjected" "supervised"
+  "supplemented" "survived" "synthesized" "termed" "terminated"
+  "thought" "took" "tranfected" "transfected" "transferred"
+  "triggered" "unaffected" "unappreciated" "unchanged" "uncleaved"
+  "uncovered" "undefined" "unexplored" "unidentified" "united"
+  "unmatched" "unpaired" "unpublished" "unrelated" "unselected"
+  "unstimulated" "untranslated" "untreated" "vortexed" "washed"
+  "weakened" "wondered" "zymed"
+    ))
