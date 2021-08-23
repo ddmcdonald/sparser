@@ -76,7 +76,7 @@
 
 (defun edge-character-offsets (edge)
   (values (pos-character-index (pos-edge-starts-at edge))
-          (pos-character-index (pos-edge-starts-at edge))))
+          (pos-character-index (pos-edge-ends-at edge))))
 
 ;;;--------------------------------
 ;;; searching through edge vectors
