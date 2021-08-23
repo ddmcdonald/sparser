@@ -1,9 +1,9 @@
 ;;;-*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2021 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "nospace-categories"
 ;;;   Module:  "grammar;rules:DA:"
-;;;  Version:  August 2020
+;;;  Version:  August 2021
 
 ;; Created 10/7/14 to hold categories and routines used by the
 ;; nospace character specialists (analyzers/psp/patterns/) since
@@ -109,23 +109,46 @@
                   :constituents (list left-edge right-edge))))
       edge)))
 
+
+
+(defgeneric likely-spurious-hyphen (left-edge right-edge)
+  (:documentation "Summarizes the cases where we can be confident that
+    the hyphen is not a word-connector. In documents that weren't closely
+    edited (e.g. in Acumen) hyphens are used as sentence breaks. Better editing,
+    as in a book, would probably use a two-em dash in these cases.")
+  (:method ((e1 edge) (e2 edge))
+    (likely-spurious-hyphen (edge-referent e1) (edge-referent e2)))
+  (:method ((left individual) (right individual))
+    (or (itypep left 'indefinite-pronoun) ; "something"
+        (and (itypep left 'adverbial) ; "comes at me again-there was .."
+             (itypep right 'location))
+        (itypep right 'conjunction) ; "there never was-and I am ten years old"
+        (itypep right 'pronoun) ;; "he'd sent her-it had traveled to us ..."
+        (itypep right 'single-capitalized-letter) ;; "I" when not seen as a pronoun        
+        (itypep right 'there-exists) ;; "the same kind of realization-there's no such thing as God"
+        (itypep right 'determiner) ;; "Doesn't matter-the reverberations are ..."
+        (itypep right 'have) ;; "my wanting life-has yearned for the magical"
+        (itypep right 'subordinate-conjunction) ;; "pretend things-as opposed to realistic things"
+        (itypep right 'demonstrative) ; "that God-or something-that spoke to me"
+        (itypep right 'at-least) ; ""things do matter-at least to some people"
+        )))
+
+(defparameter *check-potentially-spurious-hyphens* nil
+  "gates the in make-hyphenated-structure")
+
 (defun make-hyphenated-structure (left-edge right-edge)
-  ;; called from nospace-hyphen-specialist or from
-  ;; resolve-hyphen-between-two-words when it has no better 
-  ;; idea for what to do.
+  "Called from nospace-hyphen-specialist or from
+   resolve-hyphen-between-two-words when it has no better 
+   idea for what to do.
+   Many specific patterns accidentally fall into this default. If we examined
+   the timing more closely we could probably handle these with early-running
+   rules. Also,"
   (let ((left (edge-referent left-edge))
         (right (edge-referent right-edge))
         (start-pos (pos-edge-starts-at left-edge))
         (end-pos (pos-edge-ends-at right-edge)))
-    
+
     (cond
-      ((and (itypep left 'adverbial) ;; "comes at me again-there was .."
-            (itypep right 'location))
-       (throw :punt-on-nospace-without-resolution nil))
-
-      ((itypep right 'conjunction) ;; "there never was-and I am ten years old"
-       (throw :punt-on-nospace-without-resolution nil))
-
       ((and (itypep left 'fractional-term) ; "quarter-million"s
             (itypep right 'multiplier))
        (make-edge-over-fraction-of-illion left right start-pos end-pos))
@@ -136,6 +159,16 @@
               (rule (multiply-edges edge-before left-edge)))
          (unless rule (break "no rule for month+number"))
          (make-completed-binary-edge edge-before left-edge rule)))
+
+      ((likely-spurious-hyphen left right)
+       (throw :punt-on-nospace-without-resolution nil))
+
+      (*acumen*
+       (when *check-potentially-spurious-hyphens*
+         (push-debug `(,left ,right))
+         (break "should we let this pair go through?~%left: ~a  right: ~a" left right))
+       ;; presume that it's spurious
+       (throw :punt-on-nospace-without-resolution nil))
 
       (t
        (let ((i (find-or-make-individual 'hyphenated-pair

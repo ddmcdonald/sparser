@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2015-2016,2021  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "hyphen-patterns"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  May 2016
+;;;  version:  August 2021
 
 ;; Broken out from patterns 7/20/15. 11/2/15 fanout from converting
 ;; edge patterns early. 
@@ -85,13 +85,15 @@
        (t (error "One hyphen NS: shouldn't be able to get here"))))        
 
 
-     ((and rel-edge (= 3 (length edges)))  ;; "Dimerization-independent" ERK #1
-      (do-relation-between-first-and-second
-        (when (edge-p (first edges))
-          (edge-referent (first edges)))
-        (edge-referent rel-edge)
-        (first edges)
-        rel-edge))
+      ((and rel-edge (= 3 (length edges)))  ;; "Dimerization-independent" ERK #1
+       (unless (likely-spurious-hyphen (first edges) (third edges))
+         ;; if that condition is true we drop the hyphen on the floor
+         (do-relation-between-first-and-second
+             (when (edge-p (first edges))
+               (edge-referent (first edges)))
+           (edge-referent rel-edge)
+           (first edges)
+           rel-edge)))
      
      ((equal pattern '(:lower :hyphen :protein))
       (resolve-protein-prefix (first edges) (third edges) start-pos end-pos))
