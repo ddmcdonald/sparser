@@ -3,7 +3,7 @@
 ;;;
 ;;;     File: "comlex-unpacking"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  April 2021
+;;;  Version:  August 2021
 
 ;; Extracted from one-offs/comlex 12/3/12. Adding cases through 2/22/13
 ;; and put in the ambiguous flag. 3/14/13 moved edge flag to globals.
@@ -11,7 +11,7 @@
 ;; 8/1/13 Added standalone-lexicon-unpacker. 9/23/13 sconj+verb
 ;; 6/2/14 The split in standalone-lexicon-unpacker had been between
 ;; words with an entry and then whether the word was known. Simplified
-;; is layout and added a parameter to quiet the complaints. 
+;; its layout and added a parameter to quiet the complaints. 
 
 (in-package :sparser)
 
@@ -57,20 +57,25 @@ places. ]]
 ;;; 'Activating' the primed words at parse-time
 ;;;---------------------------------------------
 
-(defparameter *comlex-primed-words* nil)
+(defparameter *comlex-primed-words* nil
+  "Contains a list of all the words that have been 'unpacked'
+   by continue-unpacking-lexical-entry during the current session")
 
 ;; This is where we end up when what-to-do-with-unknown-words
-;; (in objects/chart/words/lookup/switch-new1) is set to
+;; (in objects/chart/words/lookup/switch-new.lisp) is set to
 ;; :check-for-primed (vs. e.g. :ignore). That function switch
 ;; sets the function establish-unknown-word to the function
 ;; look-for-primed-word-else-all-properties (in objects/chart/
-;; words/lookup/new-words4).
+;; words/lookup/new-words).
 
 (defun unpack-primed-word (word symbol entry)
-  ;; Called from look-for-primed-word-else-all-properties when
-  ;; what-to-do-with-unknown-words is set to :check-for-primed.
-  ;; The lookup is (gethash (symbol-name symbol) *primed-words*)
-  ;; where the symbol is pulled out of the lookup buffer.
+  "Called from look-for-primed-word-else-all-properties when
+   what-to-do-with-unknown-words is set to :check-for-primed.
+   The lookup is (gethash (symbol-name symbol) *primed-words*)
+   where the symbol is pulled out of the lookup buffer.
+     We also get here in some cases where the word has been
+   categorized based on its morphology and can't make a
+   clean decision (e.g. :ends-in-s)."
   (unless (and (listp entry) (eq (car entry) :comlex))
     (push-debug `(,symbol ,entry))
     (error "Ill-formed entry:~%  ~a" entry))
@@ -79,12 +84,13 @@ places. ]]
 
 
 (defun continue-unpacking-lexical-entry (instance-word entry)
-  "All of the morphological variants of the lemma get the
-   same entry. If we see any one of them we fire up the
-   entire set (simpler that way). The 'instance' is what
-   we've just seen, and the 'lemma' is the head word of
-   the entry. The 'clauses' of the entry (cddr) are for 
-   each of the different parts of speech for the lemma that
+  "All of the morphological variants of the lemma are in the
+   same entry. If we see any one of them we unpack the
+   entire set (simpler that way).
+     The 'instance-word' is what we've just seen and the
+   'lemma' is the head word of the entry.
+      The 'clauses' of the full entry (cddr) include one clause
+   for each of the different parts of speech for the lemma that
    the lexicon records."
   (let ((*source-of-unknown-words-definition* :comlex))
     (declare (special *source-of-unknown-words-definition*))  
@@ -108,24 +114,6 @@ places. ]]
       (add-new-word-to-catalog lemma-word :comlex instance-string)
       instance-word )))
 
-(defgeneric standalone-lexicon-unpacker (word)
-  (:documentation "Used when we need to get the benefit of
-    the information in Comlex for a word that's been independently
-    defined. Notably in explicitly defined companies."))
-
-(defparameter *complain-about-words-missing-from-comlex* nil)
-
-(defmethod standalone-lexicon-unpacker ((s string))
-  (declare (special *primed-words*))
-  (let ((w (word-named s)))
-    (unless w (error "There is no defined word spelled ~s" s))
-    (let ((entry (gethash s *primed-words*)))
-      (if entry
-        (continue-unpacking-lexical-entry w entry)
-        (unless (known-word? w)
-          (when *complain-about-words-missing-from-comlex*
-            (format t "~&No entry in Comlex for ~a~%" w)))))))
-
 
 (defun unambiguous-comlex-primed-decoder (lemma clause)
   "Identify any inflected forms and define words for
@@ -134,6 +122,8 @@ places. ]]
   (tr :unpacking-unambiguous (car clause))
   (let ((pos-marker (car clause))
         (properties (cdr clause)))
+    (setf (get-tag :comlex lemma) properties)
+    
     (case pos-marker
       (noun 
        (if *edge-for-unknown-words*
@@ -158,7 +148,7 @@ places. ]]
          (loop for w in (cons lemma (verb-forms-of lemma))
             do (assign-brackets-as-a-main-verb w))))
 
-      ;; Prepositions and conjunctons don't have the instances
+      ;; Prepositions and conjunctions don't have the instances
       ;; and category structure of adverbs. Probably want to put it in
       ;; but can wait until there are axioms (methods) for them. 
       (prep
@@ -175,20 +165,23 @@ places. ]]
       (otherwise
        (push-debug `(,lemma ,clause))
        (warn-or-error "unambiguous-comlex-primed-decoder -- Unexpected ~
-               POS marker: '~a' on ~a, near ~s ~& in ~s" 
+                       POS marker: '~a' on ~a, near ~s ~& in ~s" 
                       pos-marker lemma
                       (cur-string) (sentence-string (sentence)))
-       nil))
+       nil))))
 
-    (setf (get-tag :comlex lemma) properties)))
+    
 
 
 (defun ambiguous-comlex-primed-decoder (lemma clauses)
+  "Sort the clauses alphabetically by their part of speech
+   symbol so that we can systematically organize the search
+   for different cases"
   (let ((combinations (sort (copy-list (mapcar #'car clauses))
                             #'alphabetize)))
     (tr ::unpacking-ambiguous combinations)
     (when (equal lemma "relative")
-      (lsp-break "defining relative"))
+      (break "defining relative"))
 
     (cond
      ((equal combinations '(adjective noun))
@@ -370,6 +363,69 @@ places. ]]
         (record-inflections clause-plural/s lemma :noun)
         clause-plural/s))))
 
+
+
+(defun lift-special-case-form-from-comlex-clause (clause)
+  "If the word is unambigously a verb then there is just one clause
+   otherwise there is a list of clauses -- one for each POS.
+   Called from setup-verb"
+  (flet ((launder-verb-keywords (plist)
+           ;; Make any needed changes so that the keywords supplied by
+           ;; Comlex are made to conform to those required by define-main-verb
+           ;; which is the consumer of this via setup-verb
+           (when (memq :pastpart plist)
+             (setq plist (subst :past-participle :pastpart plist)))
+           (when (memq '*none* plist)
+             (let ( revised-plist )
+               (do ((feature (car plist) (car rest))
+                    (value (cadr plist) (cadr rest))
+                    (rest (cddr plist) (cddr rest)))
+                   ((null feature))
+                 (unless (eq value '*none*)
+                   (setq revised-plist (cons feature (cons value revised-plist)))))
+               (setq plist revised-plist)
+               (break "plist: ~a" plist)))
+           plist))
+    
+    (when clause ;; "burnt" hack in Grok, which doesn't have an entry
+      (when (eq (car clause) :comlex)
+        ;; we've come in through a route like setup-verb where
+        ;; we have the full entry rather than just its clauses
+        (setq clause (cddr clause)))
+      (push-debug `(:lift-special-case ,clause))
+      (let ((verb-clause
+             (if (consp (car clause)) ;; multiple clauses
+               (assq 'verb clause)
+               clause)))
+        (unless (eq 'verb (car verb-clause))
+          (push-debug `(,verb-clause))
+          (error "Expected a verb clause and didn't get one"))
+        (let* ((2d-expr (cadr verb-clause))
+               ;; Information about irregulars is invariably here, but if there
+               ;; aren't any, then one of the other properties such as :features
+               ;; or subcategorization will be there, so we block them. 
+               (result
+                (case (car 2d-expr)
+                  ((or :infinitive :tensed/singular :past-tense
+                       :present-participle :pastpart)
+                   (launder-verb-keywords 2d-expr))
+                  (:subc nil)
+                  (:features nil)
+                  (otherwise
+                   (push-debug `(,2d-expr ,verb-clause))
+                   (error "New case in what's 2d in a verb clause")))))
+          (when (memq :subc result)
+            ;; Seen this with "prove", which had two past participles:
+            ;; (verb
+            ;;   (:pastpart ("proved" "proven") :subc ... )
+            (let ((clipped (cdr (memq :subc (reverse result)))))
+              (setq result (reverse clipped))))
+          
+          result)))))
+
+
+
+
 (defun is-known-definition? (lemma-word clause)
   ;; we had a case where "relative" was a known ADJECTIVE
   ;;  and the corpus had "relatives" as a lexical item
@@ -405,6 +461,9 @@ places. ]]
         (setup-verb lemma clauses))))
 
 
+
+
+;; No callers 8/25/21
 (defmethod decode-and-instantiate-primed-verb ((lemma word) clause)
   ;; As originally written, this supplied a category and referent
   ;; to define main-verb, which made it create rules for all the
@@ -415,70 +474,23 @@ places. ]]
     (apply #'define-main-verb nil ;; symbol-for-category
            :infinitive (word-pname lemma) special-case-plist)))
 
-(defun lift-special-case-form-from-comlex-clause (clause)
-  ;; if the word is unambigously a verb then there is a single clause
-  ;; otherwise there's a list of clauses. one for each POS.
-  ;; Called from setup-verb
-  (flet ((launder-verb-keywords (plist)
-           ;; Make any needed changes so that the keywords supplied by
-           ;; Comlex are made to conform to those required by define-main-verb
-           ;; which is the consumer of this via setup-verb
-           (when (memq :pastpart plist)
-             (setq plist (subst :past-participle :pastpart plist)))
-           plist))
-    (when clause ;; "burnt" hack in Grok -- want another way.
-      (when (eq (car clause) :comlex)
-        ;; we've come in through a route like setup-verb where
-        ;; we have the full entry rather than just its clauses
-        (setq clause (cddr clause)))
-      (push-debug `(lift-special-case ,clause))
-      (let ((verb-clause
-             (if (consp (car clause)) ;; multiple clauses
-               (assq 'verb clause)
-               clause)))
-        (unless (eq 'verb (car verb-clause))
-          (push-debug `(,verb-clause))
-          (error "Expected a verb clause and didn't get one"))
-        (let* ((2d-expr (cadr verb-clause))
-               ;; Information about irregulars is invariably here, but if there
-               ;; aren't any, then one of the other properties such as :features
-               ;; or subcategorization will be there, so we block them. 
-               (result
-                (case (car 2d-expr)
-                  ((or :infinitive :tensed/singular :past-tense
-                       :present-participle :pastpart)
-                   (launder-verb-keywords 2d-expr))
-                  (:subc nil)
-                  (:features nil)
-                  (otherwise
-                   (push-debug `(,2d-expr ,verb-clause))
-                   (error "New case in what's 2d in a verb clause")))))
-          (when (memq :subc result)
-            ;; Seen this with "prove", which had two past participles:
-            ;; (verb (:pastpart ("proved" "proven") :subc ... )
-            (let ((clipped (cdr (memq :subc (reverse result)))))
-              (setq result (reverse clipped))))
-          result)))))
 
+;;--- Used in Strider project, otherwise no callers.
+;; See init/workspaces/strider.lisp  Might have other uses
 
-;;--- for debugging / understanding word sources
+(defparameter *complain-about-words-missing-from-comlex* nil)
 
-(defgeneric get-comlex-entry (word)
-  (:documentation "Return the Comlex entry for the word or word-symbol
- if it exists. Recreates what the code does but not used by the code
- which is always working from unknown words (see discussion at top of
- the file) while we using this after the fact."))
-
-(defmethod get-comlex-entry ((s string))
-  (let ((w (word-named s)))
-    (unless w (error "~s is not a defined word" s))
-    (get-comlex-entry (word-symbol w))))
-
-(defmethod get-comlex-entry ((w word))
-  (get-comlex-entry (word-symbol w)))
-
-(defmethod get-comlex-entry ((s symbol))
-  (declare (special *primed-words*))
-  (gethash (symbol-name s) *primed-words*))
-
-
+(defgeneric standalone-lexicon-unpacker (word)
+  (:documentation "Used when we need to get the benefit of
+    the information in Comlex for a word that's been independently
+    defined. Notably in explicitly defined companies.")
+  (:method ((s string))
+    (declare (special *primed-words*))
+    (let ((w (word-named s)))
+      (unless w (error "There is no defined word spelled ~s" s))
+      (let ((entry (comlex-entry w)))
+        (if entry
+          (continue-unpacking-lexical-entry w entry)
+          (unless (known-word? w)
+            (when *complain-about-words-missing-from-comlex*
+              (format t "~&No entry in Comlex for ~a~%" w))))))))
