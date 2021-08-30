@@ -111,6 +111,7 @@
 
 (defun define-function-term (string form 
                              &key  brackets super-category
+                                   ((:use category-name-to-use))
                                    rule-label discriminator
                                    tree-families subcat-info
                                    word-variable mixins
@@ -182,7 +183,8 @@
                 (define-function-word string 
                   :brackets brackets ;; this does bracket assignment
                   :form form))))
-    (let* ((base-name (name-to-use-for-category string))
+    (let* ((base-name (or category-name-to-use
+                          (name-to-use-for-category string)))
            (category-name 
             (if discriminator
               (intern (string-append base-name "-" discriminator)

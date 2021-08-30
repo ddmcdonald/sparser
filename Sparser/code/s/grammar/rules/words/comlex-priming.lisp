@@ -1,8 +1,8 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; Copyright (c) 2010-2016 David D. McDonald  -- all rights reserved
 ;;;
-;;;     File: "comlex-unpacking"
-;;;   Module: "grammar;rules:brackets:"
+;;;     File: "comlex-priming"
+;;;   Module: "grammar/rules/words/
 ;;;  Version:  October 2016
 
 ;; Extracted from one-offs/comlex 12/3/12.

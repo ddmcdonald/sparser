@@ -92,7 +92,8 @@ abstract > abstract-region >
 
 
 (defun setup-anonymous-graded-adjective (base-word
-                                         comparative-entry superlative-entry)
+                                         comparative-entry superlative-entry
+                                         cat-name-to-use)
   "Called from setup-adjective for the case where the Comlex entry 
    includes explicit 'er' and 'est' words. These have no real
    meaning -- no associated attribute -- so we have to make
@@ -102,7 +103,7 @@ abstract > abstract-region >
          (attribute (create-scalar-attribute base-word))
          (comparative (first comparative-entry))
          (superlative (first superlative-entry))
-         (base-adjective (define-adjective pname)))
+         (base-adjective (define-adjective pname :use-cat-name cat-name-to-use)))
     (unless (and (> (length comparative) 5)
                  (string-equal "more" (subseq comparative 0 4)))
       ;; presumably the superlative is "most xx"
