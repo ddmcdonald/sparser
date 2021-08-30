@@ -31,7 +31,9 @@
   "Invoke the morphology and Comlex information to setup a category
    for this word just as though we were going through one of the
    standard routines for establishing unknown words but already
-   have the word to hand."
+   have the word to hand. This is called frm create-new-category
+   and handle-prep-if-necessary where we need to expand the vocabulary
+   on the fly."
   (declare (special *introduce-brackets-for-unknown-words-from-their-suffixes*
                     *edge-for-unknown-words* *source-of-unknown-words-definition*))
   (unless (and *introduce-brackets-for-unknown-words-from-their-suffixes*
@@ -62,7 +64,7 @@
           (assign-morph-brackets-to-unknown-word word morph-keyword))))))
 
 (defun setup-word-based-verb-category (word comlex-verb-entry)
-  "Given that this feeds handle-prep-if-necessary we have to return the
+  "Given that this feeds handle-prep-if-necessary, we have to return the
    verb, which will now have a minimal, capital-letter-semantics style
    category backing it. Uses the same amount of comlex information as
    unambiguous-comlex-primed-decoder does."
@@ -84,6 +86,9 @@
   "Controls whether we announce when a word goes through make-word
    routine. Only unknown words do that, so it can be a useful trace")
 
+
+
+;; (what-to-do-with-unknown-words :capitalization-digits-&-morphology/or-primed)
 
 (defun make-word/all-properties/or-primed (character-type 
                                            &optional existing-word)
@@ -174,16 +179,14 @@
        (setup-unknown-word-by-default word)))
       
     word ))
-; (what-to-do-with-unknown-words :capitalization-digits-&-morphology/or-primed)
 
 
 
+;; (what-to-do-with-unknown-words :check-for-primed)
 (defun look-for-primed-word-else-all-properties (character-type
                                                  &optional existing-word)
   "Stronger than make-word/all-properties because it looks for an entry
-   in Comlex before doing the 'all-properties' default. Though if the
-   word is capitalized we don't do the Comlex lookup because many name
-   elements correspond to ordinary words and that just confuses things."
+   in Comlex before doing the 'all-properties' default."
   (declare (special *capitalization-of-current-token* 
                     *primed-words* *show-word-defs*))
   
@@ -200,20 +203,26 @@
       (:number
        (establish-properties-of-new-digit-sequence word))
       (:alphabetical
-       (let ((entry (gethash (symbol-name symbol) *primed-words*)))
-         (if entry ;; used to only do it for :lower-case instances
+       (let ((entry (comlex-entry word))) ; had been open coded
+         (if entry
            (then
              (tr :make-word/entry entry)
              (unpack-primed-word word symbol entry))
            (make-word/all-properties character-type word)))))
     word))
-;(what-to-do-with-unknown-words :check-for-primed)
 
 
+
+;; (what-to-do-with-unknown-words :capitalization-digits-&-morphology)
 (defun make-word/all-properties (character-type &optional existing-word)
   "Called from Find-word as one of the  possible values for the function
    Establish-unknown-word, or from look-for-primed-word-else-all-properties
-   if the word didn't have a Comlex entry."
+   if the word didn't have a Comlex entry.
+     Uses the mophological properties of the word to determine what to do
+   for it. 
+     Can be called as the choice of what-to-do-with-unknown-words or as
+   a supplement to another entry point in which case 'existing-word' will
+   have that word."
   (declare (special *capitalization-of-current-token* *show-word-defs*
                     *introduce-brackets-for-unknown-words-from-their-suffixes*))
   (let* ((symbol (make-word-symbol))
@@ -246,10 +255,10 @@
               word morph-keyword)
              (setup-unknown-word-by-default word))))))
     word ))
-; (what-to-do-with-unknown-words :capitalization-digits-&-morphology)
 
 
 
+;;(what-to-do-with-unknown-words :capitalization-&-digits)
 (defun make-word/capitalization-&-digits (character-type &optional existing-word)
   ;; just like the all-properties version except that it does not
   ;; consider morphology
@@ -267,10 +276,10 @@
              *capitalization-of-current-token*)))
 
     word ))
-;(what-to-do-with-unknown-words :capitalization-&-digits)
 
 
 
+;;(what-to-do-with-unknown-words :make-word/no-properties)
 (defun make-word/no-properties (character-type &optional existing-word)
   ;; just sets up the word, doesn't calculate any of its properties
   (declare (ignore character-type))
@@ -280,7 +289,6 @@
                               :pname  (symbol-name symbol)))))
     (catalog/word word symbol)
     word ))
-;(what-to-do-with-unknown-words :make-word/no-properties)
 
 
 
