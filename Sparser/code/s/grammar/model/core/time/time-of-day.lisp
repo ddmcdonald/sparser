@@ -96,7 +96,9 @@
   :instantiates self
   :rule-label am-pm
   :index (:permanent :key name)
-  :realization (:noun ("am" "a.m.")))
+  :realization (:noun (#|"am"|# "a.m.")))
+;;/// Put AM back when we know the typical capitalization facts
+;;  about how it's used. Also learn the usual external context.
 
 (define-category post-meridian
   :specializes am-pm
