@@ -456,6 +456,7 @@
   (top-edges-setting)
   (standard-extras)
   (include-comlex)
+  (setq *incrementally-save-comlex-categories* nil)
   
   ;; cherry-pick, vary from sublangage-settings
   (use-unknown-words)
@@ -586,6 +587,7 @@
   (top-edges-setting)
   (standard-extras)
   (include-comlex)
+  (setq *incrementally-save-comlex-categories* t)
   (experimental-settings)
   
   ;;(parsing-protocol-for-documents) which is ...
@@ -888,7 +890,6 @@
 
 (defun cfg-setting ()
   (setq *ignore-parentheses* t)
-  (setq *timezones-off* t)
   (setq *cfg-flag* t))
 
 

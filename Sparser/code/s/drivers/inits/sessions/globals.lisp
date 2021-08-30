@@ -156,6 +156,12 @@
   "Provides a flag to gate operations that reference these lists.
    Set by load-comlex")
 
+(defvar *incrementally-save-comlex-categories* nil
+  "If this flag is up, every Comlex-mediated call to a 'setup' routine
+   (e.g. setup-verb) will call a 'score' category-generating routine
+   to reify the operations the setup does into a file when it can be
+   loaded later.")
+
 ;;;----------
 ;;; analysis
 ;;;----------
@@ -453,7 +459,7 @@
    construct chains of edges and such to facilitate determining the
    grammatical context a item (the edge for an item) has occurred in.")
 
-(defparameter *use-subtypes* t ;; this is a TEST
+(defparameter *use-subtypes* t
   "Flag read in dispatch-on-unary-ref-actions and similar places to govern
    the use of mixin categories that induce subtypes of the head category.
    Right now (9/09) it's not clear what the operational story should be
@@ -475,13 +481,8 @@
    span-parentheses. Setting the flag to t prevents default parsing of
    parenthetical expressions.")
 
-(defparameter *timezones-off* nil
-  "Flag examined prior to setting hooks for mark-open-paren and
-   span-parentheses. Setting the flag to t prevents default parsing of
-   parenthetical expressions.")
-
 (defparameter *cfg-flag* nil
-  "For debugging.")
+  "Used when debugging category-creation in SDM&P to ignore new cases")
 
 (defparameter *break-on-multiple-single-term-completions* nil
   "Read in check routines to look at or ignore the cases when more
