@@ -132,7 +132,7 @@ omitted and then run (perhaps) after the image has been launched."
   (gate-grammar *syntax*
     ;; be & have (etc) reference tree-families
     (gload "syntax;loader")
-    (gload "score;comlex-verb-explorations"))
+    (gload "score;loader"))
 
   (gate-grammar *general-words* ;; can depend on mid-level
     (gload "words;loader 2"))
@@ -333,7 +333,7 @@ omitted and then run (perhaps) after the image has been launched."
   ;; Defines lemmas for categories that don't naturally or easily
   ;; support them.
 
-  (gate-grammar *score-verbs*
+  #+ignore(gate-grammar *score-verbs*
      (gload "bio;score-verbs.lisp")
      (gload "bio;score-nouns.lisp"))
 
