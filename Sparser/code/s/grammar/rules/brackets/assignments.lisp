@@ -225,6 +225,10 @@
                 ((rule-set-for word) rs)
                 "Rule set for ~a changed by making rules." word))
       (add-rules rules category)
+      (make-category-form word 'noun comlex-clause
+                          :cat category-name :super super-category
+                          :mixins '(comlex-noun)
+                          :plural marked-plural)
       category)))
 
 
@@ -257,7 +261,8 @@
              (when comlex-clause
                (lift-special-case-form-from-comlex-clause comlex-clause)))
             (category-name (name-to-use-for-category word))
-            (super-category (super-category-for-POS :verb)))
+            (super-category (super-category-for-POS :verb))
+            (mixin (when comlex-clause (verb-subcat-frame word))))
         (when ambiguous
           (setq category-name
                 (construct-disambiguating-category-name
@@ -266,7 +271,7 @@
         (let ((category
                (define-category/expr category-name
                    `(:specializes ,super-category
-                     :mixins (comlex-verb)
+                     :mixins (,mixin)
                      :realization (:verb ,word ;;///analyze special-cases
                                   ;; :etf (svo)
                                          )))))
@@ -277,6 +282,9 @@
                  :referent category
                  special-cases)
           (mark-as-constructed-category-for-word category super-category)
+          (make-category-form word 'verb comlex-clause
+                              :cat category-name :super super-category
+                              :mixins (list mixin) :irreg special-cases)
           category)))))
     
 
@@ -301,15 +309,23 @@
                 (superlative (cadr (memq :superlative entry))))
             (mark-definition-source comparative)
             (mark-definition-source superlative)
+            (make-category-form word 'adj-graded comlex-clause
+                                :cat category-name
+                                :super super-category
+                                :er-est (cons comparative superlative))
             (setup-anonymous-graded-adjective
-             word comparative superlative))
+             word comparative superlative category-name))
           (else ;; has comlex entry but isn't an er-est
             (let ((category (define-adjective (word-pname word)
-                            :super-category super-category)))
+                              :cat category-name
+                              :super-category super-category)))
               (mark-as-constructed-category-for-word category super-category)
+              (make-category-form word 'adj-simple comlex-clause
+                                  :cat category-name :super super-category)
               category))))
       (else ;; no entry. Probably coming from morphology
         (let ((category (define-adjective (word-pname word)
+                            :use-cat-name category-name
                             :super-category super-category)))
           (mark-as-constructed-category-for-word category super-category)
           category)))))
@@ -336,12 +352,14 @@
            (rules (make-rules-for-head :adverb word category category)))
       (mark-as-constructed-category-for-word category super-category)
       (add-rules rules category)
+      (make-category-form word 'adverb nil
+                          :cat category-name :super super-category)
       category)))
 
 
 (defun form-dispatch-setup (word form-category)
   "Alternative path into the category-creating setup routines.
-   Motivated by make-edge-based-on-morphology."
+   Called by make-morph-edge-over-unknown-word"
   (check-type form-category category)
   (check-type word word)
   (ecase (cat-name form-category)
@@ -369,30 +387,11 @@
      (break "Unexpected pos: ~a" pos))))
   
 
-;;--- Probably simpler way to do this
-;; Want it for the reification code in analyzers/SDM&P/reify-individuals
-;; So that it generalizes correctly
-
-(defvar *constructed-categories-to-supercategory* (make-hash-table)
-  "Takes a category that we created here in this file and maps
-   it to its supercategory")
-
-(defun mark-as-constructed-category-for-word (category super-category)
-  "Serves same purpose as mark-definition-source, but applies to categories
-   rather than words"
-  (declare (special *source-of-unknown-words-definition*))
-  (let ((source *source-of-unknown-words-definition*))
-    (setf (get-tag :file-location category) source)
-    (setf (gethash category *constructed-categories-to-supercategory*)
-          super-category)))
-
-(defun supercategory-of-constructed-category (category)
-  (gethash category *constructed-categories-to-supercategory*))
-
-
 
 (defun explicit-plurals (comlex-clause)
-  ;; E.g. (noun (:plural "stimuli") (:features ((countable))))
+  "Called in setup-common-noun to launder the results on irregular plurals from
+   the comlex clause."
+   #| E.g. (:comlex "ox" (noun (:plural "oxen") (:features ((countable))))) |#
   (let ((alist (cdr comlex-clause)))
     (let ((plural-entry (cadr (assoc :plural alist))))
       (when plural-entry
@@ -403,13 +402,19 @@
           `(:plural ,plural-entry))))))
 
 
+
+;;--- disambiguating category names
+
 (defun construct-disambiguating-category-name (category-name super-category)
   "Something should constrain this to make sure that we only apply
    it in this case where we're doing general word -> category setup's
    out of a lexical store that discriminates on POS.
       We construct a name to distinguish e.g. the noun version of
    'die' (the stuff that changes the color of cloth) from the verb
-   version, by appending their type to their name."
+   version, by appending their type to their name.
+      This is the base case. In all the setup function this is followed
+   by a call to  maybe-distinguish-category below.
+      Name-to-use-for-category is a Lisp mechanics massaging of our result."
   (unless (and (symbolp category-name)
                (referential-category-p super-category))
     (push-debug `(,category-name ,super-category))
@@ -417,14 +422,13 @@
   (let* ((super-name (cat-symbol super-category))
          (super-pname (symbol-name super-name))
          (disambiguated (string-append category-name "-" super-pname)))
-    #+ignore
-    (format t "construct-disambiguating-category-name given ~a produces ~a~%"
-            category-name disambiguated)
-    ;;(lsp-break)
     (name-to-use-for-category disambiguated)))
 
+
 (defun maybe-distinguish-category (category-name)
-  (if (and *block-redefinition*
+  "Controls whether we need to distinguish the new category from one that
+   is already in use."
+  (if (and *block-redefinition* ; gate on this operation
            (not (gethash category-name *categories-created-by-setup*))
            (category-named category-name)
            ;; next is a temporary fix because it'll take a while to define plurals
@@ -440,7 +444,6 @@
     (setq category-name (distinguish-category category-name))
     (setf (gethash category-name *categories-created-by-setup*) t))
   category-name)
-
 
 (defparameter *report-distinguishing-auto-category* nil
   "Turn on to see the announcements of core-category overlaps or use the break")
@@ -458,7 +461,30 @@
         (format t "*** CORE CATEGORY OVERLAP distinguish-category given ~a~
                 produces ~a~%" original-name new-name)))
     (name-to-use-for-category new-name)))
-   
+
+
+
+
+;;--- There's probably simpler way to do this
+;; Want it for the reification code in analyzers/SDM&P/reify-individuals
+;; So that it generalizes correctly. See convert-referent-to-individual
+
+(defvar *constructed-categories-to-supercategory* (make-hash-table)
+  "Takes a category that we created here in this file and maps
+   it to its supercategory")
+
+(defun mark-as-constructed-category-for-word (category super-category)
+  "Serves same purpose as mark-definition-source, but applies to categories
+   rather than words. Table is used by the category distinction machinery."
+  (declare (special *source-of-unknown-words-definition*))
+  (let ((source *source-of-unknown-words-definition*))
+    (setf (get-tag :file-location category) source)
+    (setf (gethash category *constructed-categories-to-supercategory*)
+          super-category)))
+
+(defun supercategory-of-constructed-category (category)
+  (gethash category *constructed-categories-to-supercategory*))
+
 
 ;;;-------------------------------------------
 ;;; Making a category name from a word string
@@ -468,6 +494,7 @@
   (:documentation "Encapsulates the lisp-specific checks 
     for what case to use. Hyphenates category names that
     are based on a polyword")
+  
   (:method ((string string))
     (declare (special *break-on-pattern-outside-coverage?*))
     (when (string-equal string "top")
@@ -479,8 +506,8 @@
     (let* ((s #+mlisp string
               #-mlisp (string-upcase (substitute #\- #\space string))) 
            (symbol (intern s (find-package :sparser))))
-      ;; n.b. not the category package. The pname will be interned there
-      ;; as part of creating the category
+      ;; n.b. Not interning i the category package.
+      ;; The pname will be interned there as part of creating the category
       symbol))
 
   (:method ((w word))
