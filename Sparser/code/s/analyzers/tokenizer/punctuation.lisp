@@ -2,7 +2,7 @@
 ;;; copyright (c) 1992-1993,2014-2016 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "punctuation"
-;;;   Module:  "tokenizer;"
+;;;   Module:  analyzers/tokenizer/
 ;;;  Version:  December 2016
 
 ;; initated 9/28/92 v2.3
