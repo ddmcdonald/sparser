@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-2005 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2005,2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "printing"
 ;;;   Module:  "objects;model:categories:"
-;;;  version:  February 2005
+;;;  version:  August 2021
 
 ;; print routines grouped 8/12/94. Added string/category 4/19/95
 ;; Added case for subtypes 2/7/05.
@@ -11,12 +11,14 @@
 
 (in-package :sparser)
 
-;;;-------------------------------
-;;; print routines for categories
-;;;-------------------------------
 
 (defmethod pname ((c category))
   (pname (cat-symbol c)))
+
+
+;;;-------------------------------
+;;; print routines for categories
+;;;-------------------------------
 
 (defun print-model-category-structures (c stream depth)
   (declare (ignore depth))
@@ -52,6 +54,78 @@
 (defun string/object-as-list (o)
   (list (string-downcase (symbol-name (var-name o)))))
 
+
+;;;-----------------------------------
+;;; pretty print a full category form
+;;;-----------------------------------
+
+(defun pprint-category-form (form &optional (stream *standard-output*))
+  "Given the category definition as an sexp, write it to the stream
+   using reasonable indenting"
+ #| Raw output from make-category-form-for-a-noun
+  (define-category ox :instantiates :self :specializes endurant :mixins
+                   (comlex-noun) :realization (:common-noun "ox" :plural "oxen")) |#
+  (let ((name (second form))
+        (parameters (cddr form)))
+    (format stream "~&~%(define-category ~a" name)
+    (do ((parameter (first parameters) (first rest))
+         (value (second parameters) (second rest))
+         (rest (cddr parameters) (cddr rest)))
+        ((null parameter))
+      (if (eq parameter :realization)
+        (pprint-realization-form value stream)
+        (format stream "~&~2T:~a ~a" parameter value)))
+    (write-string ")" stream)
+    form))
+
+(defun pprint-realization-form (data-alist stream)
+  "Have to pay attention to keywords and strings as such since ~a will
+   drop them"
+  ;; e.g. :realization (:common-noun "ox" :plural "oxen"))
+  (format stream "~&~2T:realization (")
+  (do ((key (first data-alist) (first rest))
+       (value (second data-alist) (second rest))
+       (rest (cddr data-alist) (cddr rest))
+       (first? t nil))
+      ((null key))
+    (if first?
+      (format stream ":~a " key)
+      (format stream "~&~12T:~a " key))
+    (pprint-realization-value-form value stream))
+  (format stream ")"))
+
+(defun pprint-realization-value-form (value stream)
+  "Walk through the terms in the realization form.
+   We do the walking here, pprint-rterm does the actual printing"
+  (let ((index 0))
+    (typecase value
+      (string (pprint-rterm value stream (incf index)))
+      (list (write-string "(" stream)            
+            (loop for element in value
+               do (progn
+                    (pprint-rterm element stream)
+                    (write-string " " stream)
+                    (incf index)
+                    (when (>= index 4)
+                      (format stream "~&~15T")
+                      (setq index 0))))
+            (write-string ")" stream))
+      (otherwise (break "realization value ~a~%is a ~a"
+                        value (type-of value))))))
+
+(defun pprint-rterm (term stream)
+  (typecase term
+    (string (format stream "~s" term))
+    (keyword (format stream ":~a" term))
+    (cons ;; present-participle of "equal" -- (equalling equaling)
+     (let ((count (length term)))
+       (write-string "(" stream)
+       (dotimes (i count)
+         (pprint-rterm (nth i term) stream)
+         (write-string " " stream))
+       (write-string ")" stream)))
+    (otherwise (break "realization term ~a~%is a ~a"
+                      term (type-of term)))))
 
 ;;;-----------------------------------
 ;;; print routines for cat-operations
