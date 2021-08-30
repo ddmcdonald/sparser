@@ -519,18 +519,18 @@ and word-has-associated-category who encounter unknown words.|#
             (when (or (> (hash-table-count *first-names*) 0)
                       (> (hash-table-count *last-names*) 0))
               (setq *fnames*
-                    (loop for w in pnames when
-                            (and (gethash (pname w) *first-names*)
+                    (loop for w in pnames
+                       when (and (gethash (pname w) *first-names*)
                                  (not (equal (pname w)
                                              (string-downcase (pname w))))
                                  (not (< (length (pname w)) 3)))
-                          collect w))
+                       collect w))
               (setq *lnames*
-                    (loop for w in pnames when
-                            (and (gethash (pname w) *last-names*)
+                    (loop for w in pnames
+                       when (and (gethash (pname w) *last-names*)
                                  (not (equal (pname w)
                                              (string-downcase (pname w)))))
-                          collect w))
+                       collect w))
               (setq pnames (loop for w in pnames
                                  unless (or (gethash (pname w) *first-names*)
                                             (gethash (pname w) *last-names*))
@@ -542,14 +542,14 @@ and word-has-associated-category who encounter unknown words.|#
                                    out)
               (write-list-to-param (format nil "~a-All-Lower" var-name)
                                    (loop for w in pnames
-                                         when (equal (pname w) (string-downcase (pname w)))
-                                         collect w)
+                                      when (equal (pname w) (string-downcase (pname w)))
+                                      collect w)
                                    out)
               (write-list-to-param (format nil "~a-MixedCase" var-name)
                                    (loop for w in pnames
-                                         unless (or (equal (pname w) (string-downcase (pname w)))
-                                                    (equal (pname w) (string-upcase (pname w))))
-                                         collect w)
+                                      unless (or (equal (pname w) (string-downcase (pname w)))
+                                                 (equal (pname w) (string-upcase (pname w))))
+                                      collect w)
                                    out)
               (write-list-to-param "FirstNames" *fnames* out)
               (write-list-to-param "LastNames" *lnames* out)))
@@ -566,22 +566,22 @@ and word-has-associated-category who encounter unknown words.|#
                   (if (null *from-no-morph-default*)
                       *from-morphology*
                       (loop for word in *from-morphology*
-                            unless (memq word *from-no-morph-default*)
-                            collect word)))
+                         unless (memq word *from-no-morph-default*)
+                         collect word)))
                  (pnames (loop for word in (sort-words minus-default)
-                               collect (word-pname word)))
+                            collect (word-pname word)))
                  (var-name (tailored-string 'morph)))
             (format out "~&~%;; ~a extracted by morphology~%" (length pnames))
             (write-list-to-param var-name pnames out))
       
           (let ((pnames (loop for word in (sort-words *from-no-morph-default*)
-                              collect (word-pname word)))
+                           collect (word-pname word)))
                 (var-name (tailored-string 'defaulted)))
             (format out "~&~%;; ~a extracted with default mophology~%" (length pnames))
             (write-list-to-param var-name pnames out))
 
           (let ((pnames (loop for word in (sort-words *from-comlex*)
-                              collect (word-pname word)))
+                           collect (word-pname word)))
                 (var-name (tailored-string 'comlex)))
             (format out "~&~%;; ~a extracted from Comlex~%" (length pnames))
             (write-list-to-param var-name pnames out))))
@@ -687,9 +687,14 @@ and word-has-associated-category who encounter unknown words.|#
     (error (e)
       (format t "~&Error in dumping unknown word set: ~a, Error is: ~a~%" name e))))
 
+
 (defun write-list-to-param (param-name list stream)
   (format stream
-          "~%~%(defparameter ~a~%    (remove-duplicates~%      (append ~%         (when (boundp '~a) (symbol-value `~a))~%         '"
+          "~%~%(defparameter ~a~
+             ~%    (remove-duplicates~
+             ~%      (append~
+             ~%         (when (boundp '~a) (symbol-value `~a))~
+             ~%         '"
           param-name param-name param-name)
   (pprint list stream)
   #+gnore
@@ -703,8 +708,7 @@ and word-has-associated-category who encounter unknown words.|#
           (json-relative-pathname (decoded-file file-handle))
           file-handle)
   (pprint (second items) stream)
-  (format stream ")")
-  )
+  (format stream ")"))
 
 ;;;------------------------
 ;;; sweeping for sentences
