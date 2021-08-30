@@ -57,8 +57,8 @@ subcategorization-pattern is a daughter of linguistic, abstract
   :mixins (with-actor with-patient)
   ;; we really don't want to restrict these variables
   ;;  -- the subject and theme can be endurants, perdurants, abstract
-  :binds ((subject top)
-          (object top))
+  :binds ((subject)
+          (object))
    :realization
     (:s subject
      :o object
