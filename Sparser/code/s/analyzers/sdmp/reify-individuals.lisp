@@ -10,8 +10,6 @@
 ;;      from sdm/analyze-segment
 
 (in-package :sparser)
-(defvar CATEGORY::DET)
-(defvar CATEGORY::QUANTIFIER)
 
 #| This designed for use with a setup like Grok where we are incorporating
 otherwise unknown (unconceptualized) words from some lexical store 
@@ -103,7 +101,8 @@ to the value of the viable after-action flag for segments.
 ;;--- heuristics go here
 
 (defun evidence-that-np-denotes-an-individual? (prefix form edge)
-  (declare (special category::number))
+  "Called by reify-implicit-individuals-in-segment"
+  (declare (special category::number category::det category::quantifier))
   (push-debug `(,prefix ,form ,edge))
   (or (eq form category::det)
       (eq form category::number)
