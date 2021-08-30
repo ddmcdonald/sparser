@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "subcategorization"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  March 2021
+;;;  Version:  August 2021
 
 ;; Initiated 9/11/14 to organize information about subcategorization patterns
 ;; Working on it through 9/15/14. 11/20/14 hacked up a treatment of multiple
@@ -29,7 +29,7 @@
            :features ((gradable))))) |#
 
 (defgeneric comlex-entry (word)
-  (:documentation "returns the clauses of the word's Comlex entry.
+  (:documentation "returns ONLY the clauses of the word's Comlex entry.
     Returns nil if Comlex has not been loaded ('*comlex-words-primed*)")
   (:method ((w word))
     (comlex-entry (word-pname w)))
@@ -42,6 +42,15 @@
         (when full-entry
           ;; strip off the ':comlex <pname>' from the actual entry
           (cddr full-entry))))))
+
+(defgeneric comlex-entry/full (word)
+  (:documentation "Returns the complete entry as used by unpack-primed-word")
+  (:method ((w word))
+    (comlex-entry/full (word-pname w)))
+  (:method ((pname string))
+    (declare (special *comlex-words-primed* *primed-words*))
+    (unless *comlex-words-primed* (error "Comlex is not loaded"))
+    (gethash pname *primed-words*)))
 
 (defgeneric comlex-subcategorization (word pos)
   (:documentation "Access the Comlex entry for the word and then
