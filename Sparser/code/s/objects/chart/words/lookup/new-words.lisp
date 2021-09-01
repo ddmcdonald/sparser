@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "new words"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:  April 2021
+;;;  Version:  August 2021
 
 ;; 4.0 (9/28/92 v2.3) accomodates changes to tokenizer
 ;; 4.1 (7/16/93) updated field name
@@ -27,6 +27,9 @@
 ;;; programmatic word-to-category creation
 ;;;----------------------------------------
 
+(defvar *words-added-by-create-category* nil
+  "Accumulator that can be passed through write-word-definitions-to-file")
+
 (defun create-category-from-word (word &key pos)
   "Invoke the morphology and Comlex information to setup a category
    for this word just as though we were going through one of the
@@ -43,17 +46,19 @@
     (error "Comlex is not loaded"))
 
   (let ((*complain-about-words-missing-from-comlex* t)
-        (*source-of-unknown-words-definition* :computed))                    
+        (*source-of-unknown-words-definition* :computed)
+        (*incrementally-save-comlex-categories* t)
+        (*comlex-form-output-stream* *standard-output*))
     (declare (special *complain-about-words-missing-from-comlex*
-                      *source-of-unknown-words-definition*))
+                      *source-of-unknown-words-definition*
+                      *incrementally-save-comlex-categories*
+                      *comlex-form-output-stream*))
     (setq *word-to-be-defined?* word)
     (unless pos (setq pos 'noun))
-    
+    (pushnew word *words-added-by-create-category*)
     (let ((comlex-clause (comlex-subcategorization word pos)))
       (if comlex-clause
         (case pos
-          ;;/// ignore the pre-check in is-known-definition? 
-          ;; and invoke the setup routine directly.
           (noun (setup-common-noun word comlex-clause nil))
           (verb (setup-word-based-verb-category word comlex-clause))
           (otherwise
