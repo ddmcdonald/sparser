@@ -383,8 +383,7 @@ places. ]]
                    ((null feature))
                  (unless (eq value '*none*)
                    (setq revised-plist (cons feature (cons value revised-plist)))))
-               (setq plist revised-plist)
-               (break "plist: ~a" plist)))
+               (setq plist revised-plist)))
            plist))
     
     (when clause ;; "burnt" hack in Grok, which doesn't have an entry
