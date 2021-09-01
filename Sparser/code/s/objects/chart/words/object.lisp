@@ -62,7 +62,8 @@
 
 (defun word-mentioned-in-rules? (w)
   (let ((rs (word-rules w)))
-    (when rs
+    (when (and rs (typep rs 'rule-set))
+      ;; whitespace words use the rule-set slot to record that
       (or (rs-single-term-rewrites rs)
           (rs-right-looking-ids rs)
           (rs-left-looking-ids rs)
