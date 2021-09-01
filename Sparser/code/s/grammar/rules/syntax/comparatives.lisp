@@ -103,7 +103,7 @@ abstract > abstract-region >
          (attribute (create-scalar-attribute base-word))
          (comparative (first comparative-entry))
          (superlative (first superlative-entry))
-         (base-adjective (define-adjective pname :use-cat-name cat-name-to-use)))
+         (base-adjective (define-adjective pname :cat cat-name-to-use)))
     (unless (and (> (length comparative) 5)
                  (string-equal "more" (subseq comparative 0 4)))
       ;; presumably the superlative is "most xx"
