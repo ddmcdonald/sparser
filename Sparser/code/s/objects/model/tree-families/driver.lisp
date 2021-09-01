@@ -134,7 +134,7 @@
    the realization-data record ('rdata') produced there and determines
    what rules should be created. In particular is starts the method chain
    of make-rules-for-head (in rules/tree-families/morphology.lisp)
-      For some realization verb constructs we do not make the rules
+      For some verb realization constructs we do not make the rules
    for the head. This is done by taking the alternate route through
    handle-prep-if-necessary"
   (declare (special *head-rules-already-created*
@@ -157,9 +157,9 @@
 
 (defun handle-prep-if-necessary (category rdata)
   "There are realization constructs that -reuse- a verb's rules rather than
-   create them. They are checked for and handles here as an alternative to
+   create them. They are checked for and handled here as an alternative to
    calling make-rules-for-head. This returns t when either of the defined
-   off main path constructs is present -and- the verb already has rules,
+   off the main path constructs is present -and- the verb already has rules,
    which cuts off the call to make-rules-for-head, ensuring the the rules
    for verb by itself have the correct category."
   ;; (:verb (#<word "make"> :prep #<word "up">))
@@ -183,7 +183,7 @@
             t))))))
 
 
-            
+
 
 
 ;;;---------------------------
