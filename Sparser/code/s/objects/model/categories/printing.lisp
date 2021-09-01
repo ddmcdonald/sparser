@@ -65,9 +65,10 @@
  #| Raw output from make-category-form-for-a-noun
   (define-category ox :instantiates :self :specializes endurant :mixins
                    (comlex-noun) :realization (:common-noun "ox" :plural "oxen")) |#
-  (let ((name (second form))
+  (let ((operator (car form)) ; could be define-adjective
+        (name (second form))
         (parameters (cddr form)))
-    (format stream "~&~%(define-category ~a" name)
+    (format stream "~&~%(~a ~a" operator name)
     (do ((parameter (first parameters) (first rest))
          (value (second parameters) (second rest))
          (rest (cddr parameters) (cddr rest)))
@@ -99,14 +100,14 @@
    We do the walking here, pprint-rterm does the actual printing"
   (let ((index 0))
     (typecase value
-      (string (pprint-rterm value stream (incf index)))
+      (string (pprint-rterm value stream))
       (list (write-string "(" stream)            
             (loop for element in value
                do (progn
                     (pprint-rterm element stream)
                     (write-string " " stream)
                     (incf index)
-                    (when (>= index 4)
+                    (when (>= index 3)
                       (format stream "~&~15T")
                       (setq index 0))))
             (write-string ")" stream))
