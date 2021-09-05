@@ -32,7 +32,7 @@ the define-category expression we return it.
 
 
 (defun make-category-form-for-a-verb (word name super mixins irreg)
-  "Have to determine which subcat mixin to use given the entry"
+  "Choice of mixin is determined by a call to verb-subcat-frame"
   (let ((form
          `(define-category ,name
               :specializes ,super
@@ -44,7 +44,6 @@ the define-category expression we return it.
     form))
   
 (defun make-category-form-for-simple-adjective (word category-name super-category)
-  (break "simple adj: ~a" word)
   (let ((form
          `(define-adjective ,word
               :cat ',category-name
@@ -52,7 +51,6 @@ the define-category expression we return it.
     form))
 
 (defun make-category-form-for-graded-adjective (word category-name super-category er-est)                                               
-  (break "graded adj: ~a" word)
   (let ((form
          `(define-adjective ,word
               :cat ',category-name
@@ -69,13 +67,32 @@ the define-category expression we return it.
 
 
 
+(defun make-verb-particle-forms (base-verb)
+  "Called from make-category-form on verbs that have particles.
+   The verb will already have a category definition emitted to
+   the outfile, so all we have to do is create a specialized
+   category name and a verb+prep definition."
+  (loop for prt in (verb-particles base-verb)
+     collect (make-verb-particle-form base-verb prt)))
+
+(defun make-verb-particle-form (verb particle)  
+  (let ((cat-name (string-append  verb "-" particle))
+        (superc (cat-name (super-category-for-POS :verb))) ; safe choice
+        (mixins (list (verb-subcat-frame verb)))) ; Comlex subcat could improve this
+    (let ((form
+           `(define-category ,cat-name
+                :specializes ,superc
+                :instantiates :self
+                :mixins ,mixins
+                :realization (:verb (,verb :prep ,particle)))))
+      form)))
 
 
 
 
 ;;----------------- originals -----------------
 
-#| The call that write-comlex-verb-defs iterates over
+#| The call that write-comlex-verb-defs iterates over is
        (pprint-def-cl (def-cl-verb-form v) stream)
 |#
 
