@@ -166,6 +166,9 @@
 ;;; analysis
 ;;;----------
 
+(defvar *sparser-is-running* nil
+  "Dynamically bound in analysis-core")
+
 (defparameter *ignore-capitalization* nil
   "A parameter to be used in document styles that controls what
    value *capitalization-is-uninformative* should have in runs of

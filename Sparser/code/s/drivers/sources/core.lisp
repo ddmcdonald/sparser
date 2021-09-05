@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1997,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1997,2013,2021 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "core"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:   1.5 March 2013
+;;;  Version:   September 2021
 
 ;; 1.2 (8/10/94) Redesigned core treatment to emphasize articles as a common
 ;;      path
@@ -22,14 +22,16 @@
 ;;;---------------------------------------------
 
 (defun analysis-core ()
-  (catch :analysis-core
-    (initialize-tokenizer-state)
-    (initialize-chart-state)
-    (when *initialize-with-each-unit-of-analysis*
-      (per-article-initializations))
-    (chart-based-analysis)
-    (after-analysis-actions)
-    (analysis-core-return-value)))
+  (let ((*sparser-is-running* t))
+    (declare (special *sparser-is-running*))
+    (catch :analysis-core
+      (initialize-tokenizer-state)
+      (initialize-chart-state)
+      (when *initialize-with-each-unit-of-analysis*
+        (per-article-initializations))
+      (chart-based-analysis)
+      (after-analysis-actions)
+      (analysis-core-return-value))))
 
 
 
