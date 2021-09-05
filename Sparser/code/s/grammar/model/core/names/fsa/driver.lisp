@@ -118,13 +118,17 @@
   "The default version of the Proper Name Facility.
  There is a capitalized word at the starting-position. That's why we were
  called. We check for some cases that typically mean the capitalization is not
- signalling a name and return nil signalling to the word-level-fsa-sweep that
- we've failed. 
+ signalling a name and then return nil signalling to the word-level-fsa-sweep
+ that we've failed. 
    Then we call cap-seq-continues-from-here? to locate where the capitalized
- sequence ends (*pnf-end-of-span*). Classify-and-record-name does the heavy lifting
+ sequence ends (*pnf-end-of-span*). This scan only considers capitalization,
+ punctuation, and a small list of specfic words.
+
+   Classify-and-record-name organizes all the heavy lifting
  and either returns an edge or returns nil if it aborted from some reason.
  If we got an edge we return the position where the span ended, i.e. the position
  just after the final capitalized word in the span.
+
     When there is more than one word in the span that has been delimited,
  c&r-multi-word-span ('classify and record) orchestrates what happens.
  It runs pfwpnf ('parse from within pnf') to check for word FSAs and do

@@ -63,20 +63,22 @@
 
 
 ;;;------------------------------------------------------------
-;;; Organizing the analysis and classification of multi-word,
+;;; ORGANIZING the analysis and classification of multi-word,
 ;;;             multi-edge capitalized sequences
 ;;;------------------------------------------------------------
 
 
 (defun c&r-multi-word-span (starting-position ending-position)
+  "Called from Classify-and-record-name whenever the span involves more than
+   one word and there isn't already a single span over them.
+     Runs a version of the parser over the delimited span (respecting 
+   its end-point) by calling parse-from-within-pnf and then sees
+   whether that led to an edge over the whole span. 
+     If the parse didn't, then this calls classify-&-record-span
+   to apply heuristics and come up with a name."
   (declare (special *of-appears-within-pnf-scan*))
   (when *of-appears-within-pnf-scan*
     (setq *of-appears-within-pnf-scan* nil))
-    
-  ;; run a version of the parser over the delimited span (respecting 
-  ;;its end-point) and then see if that got anything.  Called from
-  ;; Classify-and-record-name whenever the span involves more than
-  ;; one word and there isn't a single span over them. 
     
   (let ((premature-termination?
          ;; in the course of the parse we can encounter words like Header
@@ -100,12 +102,10 @@
            ;; and we need to reflect it here.
            (setq ending-position *pnf-end-of-span*)))
 
-    
     (unless (eq starting-position ending-position)
       ;; which can happen with premature terminations, this 'unless'
       ;; has the effect of returning 'nil' for the c&r stage, which
       ;; will abort the PNF and declare that there was no name here.
-      
       (let ((edge (span-covered-by-one-edge? starting-position
                                              ending-position)))
         (if edge
