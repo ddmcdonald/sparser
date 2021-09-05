@@ -13,79 +13,44 @@
   '("abate" "abound" "abuse" "accentuate" "accept" "access" "accommodate" "account" "ache"
     "acquire" "addict" "address" "administer" "admire" "adopt" "advertise" "advise" "advocate"))
 
-(defparameter *word-tranch-2*
-  '( "bre" ;; no entry in comle
-    "break" "bridge" "brief" "bring" "brook" "brought"))
-
-(defparameter *word-tranch-3*
-  '( ;; -- "cross" is also an adjective
-    "cruise" "crush" "cultivate" "curve"
-    "dare" "daydream" "deal" "debate" "debug" "decay" "decelerate" "decline" "decompose" "decree"
-    "deepen" "default" "defend" "deflect" "deliberate" "delineate" "deliver" "deluge" "depart"
-    "depict" "deploy" "deserve" "design" "desire" "despair" "destroy" "deviate" "diagnose" "differ"
-    "differentiate" "dip" "disagree" "disapprove" "discharge" "discipline" "disclose" "disconnect"
-    "discount" "discourage" "discourse" "discover" "discredit" "disentangle" "disgust" "dislike"
-    "dismiss" "disprove" "dispute" "disseminate" "distort" "distract" "distress" "distrust"
-    "divine" "document" "dodge" "dose" "doubt" "dovetail" "downplay" "draw" "dread" "dream" "drink"
-    "dry" ))
-
-(defparameter *word-tranch-4*
-  '( 
-    ;; "equal" ;; list in value of an irregular
-    ;; ditto "fuel" "hang"
-   "happen" "harden"
-    "harm" "harries" "harry" "hazard" "headquarter" "heal" "hear" "heat" "hedge" "heighten" "held"
-    "hinder" "hit" "hoax" "hold" "hole" "holiday" "honor" "host" "house" "hug" "hum" "humor"
-    "humour" "hunch" "hunches" "hunt" "hurdle" "hurt" "illuminate" "image" "impose" "index"
-    "inject" "input" "inspect" "inspire" "instance" "institute" "insult" "inter" "intercept"
-    "interest" "interpret" "interview" "invalid" "invalidate" "inverse" "invoke" "irrigate" "jail"
-    "jaw" "job" "join" "joke" "jot" "journey" "judge" "keen" "key" "kid" "kiss" "kisses" "kit"
-    "knew" "knight" "knit" "know" "labor" "labour" "ladder" "land" "landscape" "last" "laugh"
-    "layer" "lessen" "liberate" "license" "lie" "light" "live" "load" "lock" "lodge" "log" "lord"
-    "lull" "lure" "machine" "madden" "magnifies" "magnify" "mail" "major" "manage" "mandate"
-    "manifest" "manifold" "march" "market" "mask" "master" "maunder" "maximise" "mean" "meet"
-    "merit" "message" "mill" "mind" "misconduct" "misread" "miss" "misses" "mistake" "mistrust"
-    "mitigate" "moderate" "motivate" "mouth" "mute" "navigate" "necessitate" "neighbor" "neighbour"
-    "net" "nettle" "nominate" "nose" "notice" "nuance" "occasion" "offer" "offset" "order"
-    "outline" "overcome" "overflow" "overlaid" "overlay" "overload" "override" ))
-
-(defparameter *word-tranch-5*
-  '( "package" "page"
-    "paid" "pair" "panic" "paper" "parallel" "parcel" "partake" "pass" "pause" "pave" "pension"
-    "people" "perceive" "permit" "pet" "peter" "phase" "phone" "pickle" "picture" "piece" "plague"
-    "plan" "plot" "point" "police" "polish" "poll" "ponder" "port" "portray" "pose" "posture"
-    "potter" "pout" "power" "practice" "prefer" "prejudice" "premise" "prep" "press" "pressure"
-    "pretend" "prey" "price" "print" "prize" "proce" "profile" "profit" "program" "progress"
-    "prohibit" "project" "prompt" "proposition" "prospect" "protest" "punish" "puzzle" "quarantine"
-    "queen" "quest" "quiet" "quit" "quiz" "race" "racket" "raffle" "raft" "rallies" "rally" "rap"
-    "reason" "rebel" "rebuke" "rebut" "recall" "receipt" "redefine" "refer" "refine" "reflect"
-    "reform" "refuse" "register" "regress" "regresses" "reign" "reinforce" "reject" "relate"
-    "remark" "remedies" "remedy" "remember" "remit" "render" "replace" "replies" "reply" "request"
-    "rerun" "rescue" "research" "reset" "resonate" "respect" "rest" "restart" "restore" "retail"
-    "review" "revolt" "revolve" "reward" "ridge" "right" "rim" "ripple" "rise" "risk" "rival"
-    "room" "root" "rose" "rough" "round" "row" "rub" "rule" "ruminate" "rumor" "sacrifice" "saddle"
-    "safeguard" "salute" "sandwich" "save" "savvy" "scan" "scatter" "scent" "schedule" "scheme"
-    "school" "score" "screech" "search" "season" "secure" "segment" "sell" "send" "sense" "sent"
-    "service" "settle" "sever" "sex" "shadow" "shake" "shallow" "shape" "shave" "shelter" "shelve"
-    "shin" "ship" "shock" "shoe" "shop" "shore" "shorten" "shot" "shrink" "shut" "sift" "sign"
-    "sin" "sip" "sit" "skew" "ski" "skyrocket" "sleep" "slight" "slur" "smart" "smell" "smoke"
-    "smolder" "smooth" "snack" "snap" "sneeze" "snow" "snowball" "soap" "sole" "solicit" "solve"
-    "sound" "source" "speak" "speculate" "spend" "spike" "spill" "spin" "split" "sport" "spot"
-    "spread" "sprinkle" "squire" "stake" "stall" "stand" "staple" "star" "station" "steel" "steep"
-    "stem" "stereotype" "stick" "stone" "store" "str" "strand" "strengthen" "stress" "strike"
-    "strip" "struck" "stud" "stump" "style" "stymie" "sub" "submit" "subscribe" "subside" "suffer"
-    "suffice" "sum" "sun" "sup" "supplies" "supply" "surge" "survey" "swab" "swear" "swing"
-    "tackle" "take" "tan" "taste" "teach" "telephone" "thread" "threat" "throw" "thumb" "tide"
-    "tolerate" "toll" "total" "towel" "tower" "trace" "track" "travel" "trend" "trip" "troll"
-    "troop" "trouble" "trump" "turn" "twitter" "type" "uncover" "underestimate" "undermine"
-    "underrate" "underscore" "undertake" "undervalue" "uniform" "unravel" "update" "uphold" "upset"
-    "usher" "vary" "visit" "voice" "wait" "waive" "wake" "wall" "war" "wave" "weather" "weekend"
-    "welcome" "wheel" "wild" "win" "wipe" "wish" "wishes" "wonder" "woo" "word" "worship" "wrap"
-    "wrote" "zone"))
 
 
-
+;;---- *none*
 ;;;(defvar plist '("bewares" :infinitive "beware" :present-participle *none* :past-tense *none*))
+
+#| complaint from add-new-word-to-catalog
+warning: New comlex verb "clean" with lemma #<word "clean"> 
+warning: New comlex verb "deal" with lemma #<word "deal"> 
+warning: New comlex verb "echo" with lemma #<word "echo"> 
+warning: New comlex verb "fee" with lemma #<word "fee"> 
+warning: New comlex verb "foot" with lemma #<word "foot"> 
+warning: New comlex verb "gather" with lemma #<word "gather"> 
+warning: New comlex verb "greet" with lemma #<word "greet"> 
+warning: New comlex verb "meet" with lemma #<word "meet"> 
+warning: New comlex verb "overlaid" with lemma #<word "overlay"> 
+warning: New comlex verb "save" with lemma #<word "save"> 
+
+Also -- acquire-auto
+ -- see maybe-distinguish-category  -- question is why only once
+
+(define-category undergo-auto
+  :specializes perdurant
+  :instantiates self
+  :mixins (comlex-verb)
+  :realization (:verb ("undergo" :tensed/singular "undergos" 
+               :infinitive "undergo" :past-tense 
+               "underwent" )))
+
+
+(define-adjective aged
+  :cat 'aged
+  :super-category 'modifier
+  :er-est '((more aged) most aged))
+
+The colon in front of self is dropped by the pretty printer
+
+|#
+
 
 #|
 ;-- verb with specializations
@@ -96,7 +61,7 @@
                 :s SUBJECT :o OBJECT :to to))
 
 
-;;----------  what annotation do we have to do to these categories/words
+;;----------  what annotation do we have to do for these categories/words
 sp> (ic 'invest)
 #<ref-category INVEST>
   plist             = (:mumble..
@@ -149,30 +114,31 @@ sp> (unit-plist *)
 
 
 
+;;--- fill + owned prepositions
+
+sp> (iw "fill")
+#<word "fill">
+  plist                    = (:inflection-of-verb #1=#<word "fills"> :verb-inflections..
+  symbol                   = word::|fill|
+  rule-set                 = #<rule-set for #<word "fill">>
+  pname                    = "fill"
+  morphology               = nil
+  capitalization           = :lower-case
+  capitalization-variants  = nil
+
+sp> (loc "fill")
+#P"SPARSER:BIO;VERBS.LISP"
 
 
-
-
-
-
-
-
-
-
--- comlex-entry  returns the entire entry, all parts of speech
-
-sp> (comlex-entry "fill")
-((verb
-  (:subc
-   ((pp :pval ("with" "from"))
-    (part-np-pp :pval ("on" "with") :adval ("out" "up" "in"))
-    (part-pp :adval ("in") :pval ("for")) (part-np :adval ("in" "up" "out"))
-    (part :adval ("up" "out" "in")) (np-pp :pval ("from" "to" "with")) (np)
-    (np-np) (intrans))
-   :features ((vveryving :prespart t))))
- (noun))
 
 -- comlex-subcategorization  returns the portion of the entry for one part of speech
+
+sp> (subcat-from-word word)
+((pp :pval ("with" "from"))
+ (part-np-pp :pval ("on" "with") :adval ("out" "up" "in"))
+ (part-pp :adval ("in") :pval ("for")) (part-np :adval ("in" "up" "out"))
+ (part :adval ("up" "out" "in")) (np-pp :pval ("from" "to" "with")) (np)
+ (np-np) (intrans))
 
 sp> (comlex-subcategorization "fill" 'verb)
 (verb
@@ -187,6 +153,9 @@ sp> (comlex-subcategorization "fill" 'verb)
    (np-np) ;pg.73
    (intrans)) ;pg.68
   :features ((vveryving :prespart t)))) ;pg.65
+
+sp> (prep-complements subcat) ; accumulates all the :pval entries
+("on" "for" "from" "to" "with")
 
 |#
 
