@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; Copyright (c) 2010-2020 David D. McDonald all rights reserved
+;;; Copyright (c) 2010-2021 David D. McDonald all rights reserved
 ;;;
 ;;;     File: "assignments"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  April 2020
+;;;  Version:  September 2021
 
 ;; Extracted from diverse files 12/4/12. Added referent construction
 ;; 12/11/12. Revised those 'setup' constructors 2/23/13 to specialize
@@ -262,7 +262,8 @@
                (lift-special-case-form-from-comlex-clause comlex-clause)))
             (category-name (name-to-use-for-category word))
             (super-category (super-category-for-POS :verb))
-            (mixin (when comlex-clause (verb-subcat-frame word))))
+            (mixins (when comlex-clause ;; undefined without Comlex info
+                      (list (verb-subcat-frame word)))))
         (when ambiguous
           (setq category-name
                 (construct-disambiguating-category-name
@@ -271,7 +272,7 @@
         (let ((category
                (define-category/expr category-name
                    `(:specializes ,super-category
-                     :mixins (,mixin)
+                     :mixins ,mixins
                      :realization (:verb ,word ;;///analyze special-cases
                                   ;; :etf (svo)
                                          )))))
@@ -284,7 +285,7 @@
           (mark-as-constructed-category-for-word category super-category)
           (make-category-form word 'verb comlex-clause
                               :cat category-name :super super-category
-                              :mixins (list mixin) :irreg special-cases)
+                              :mixins mixins :irreg special-cases)
           category)))))
     
 
