@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "new words"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:  August 2021
+;;;  Version:  September 2021
 
 ;; 4.0 (9/28/92 v2.3) accomodates changes to tokenizer
 ;; 4.1 (7/16/93) updated field name
@@ -208,12 +208,16 @@
       (:number
        (establish-properties-of-new-digit-sequence word))
       (:alphabetical
-       (let ((entry (comlex-entry word))) ; had been open coded
-         (if entry
-           (then
-             (tr :make-word/entry entry)
-             (unpack-primed-word word symbol entry))
-           (make-word/all-properties character-type word)))))
+       (setf (word-capitalization word) *capitalization-of-current-token*)
+       (let ((entry (comlex-entry/full word))) ; had been open coded
+         (cond
+           ((and (capitalized word) *pnf-routine*)
+            (store-word-and-handle-it-later word))
+           (entry
+            (tr :make-word/entry entry)
+            (unpack-primed-word word symbol entry))
+           (t
+            (make-word/all-properties character-type word))))))
     word))
 
 
