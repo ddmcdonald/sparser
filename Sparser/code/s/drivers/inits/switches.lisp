@@ -488,6 +488,8 @@
 
   (period-hook-on) ;; make sure we notice periods
 
+  (setq *compute-items-contexts* nil) ;; we don't to this is R3 reports
+
   (turn-off-segment-analysis-settings) ;; except for ...
   (setq *new-segment-coverage* :trivial) ;; vs. :full or :none
   ;; Specify where we start (needed as switch settings change)
