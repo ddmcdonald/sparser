@@ -14,7 +14,8 @@
   "Given the entry for the verb, i.e (verb (:subc ...)),
    Look up its transitivity and return the name of the
    appropriate subcategorization pattern (selected from
-   grammar/model/mid-level/subcat-patterns.lisp).
+   grammar/model/mid-level/subcat-patterns.lisp) to go in
+   its mixins field.
    This is feeding setup-verb."
   (let* ((subcat (subcat-from-word word))
          (transitive? (transitive-p subcat)))
@@ -24,7 +25,20 @@
     ;; selections. For now just +/- transitive (8/21)
     (if transitive?
       'comlex-verb ;; subject, object -- no restrictions
-      'base-intransitive))) ;; patient -- no restrictions
+      'basic-intransitive))) ;; patient -- no restrictions
+
+
+(defgeneric verb-particles (word)
+  (:documentation "Comlex manual pg. 93. Used to automatically make
+    define-category entries for the verb")
+  (:method ((pname string))
+    (verb-particles (resolve pname)))
+  (:method ((word word))
+    (let* ((subcat (subcat-from-word word))
+           (field (when subcat (assq 'part subcat))))
+    (when field
+      (cadr (memq :adval field))))))
+
   
 
 ;;------------ original -------------
@@ -55,7 +69,6 @@
 	'S-SUBJ-S-OBJ 'S 'THAT-S 'S-SUBJUNCT 'NP-S 'NP-WH-S
 	'NP-TO-INF-NP-OMIT))
 
-
 (defun transitive-p (subcat)
   (dolist (item subcat)
     (if (member (car item) *transitive-frames*)
@@ -65,7 +78,6 @@
 (defun not-transitive-p (subcat)
   (not (transitive-p subcat)))
 
-
 (defun has-intrans-frame-p (subcat)
   (dolist (item subcat)
     (if (or (eql (car item) 'INTRANS)
@@ -74,7 +86,6 @@
 	(return t)
 	nil)))
 
-
 (defun prep-complements (subcat)
   "The argument is the list of clauses that follows :subc. This version
    doesn't pay attention to what verb subclass the prepositions (pval) are
@@ -82,6 +93,7 @@
   (loop for item in subcat
      appending (getf (cdr item) :pval) into prep-list
      finally (return (delete-duplicates prep-list :test #'equal))))
+
 
 (defun verb-inflections-from-word (word)
   (let ((vsc (comlex-subcategorization (pname word) 'verb)))
