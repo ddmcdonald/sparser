@@ -16,6 +16,10 @@
 (defvar *current-edge-records* (make-hash-table :size 200))
 (defvar *current-edge-chains* (make-hash-table :size 200))
 
+(defun initialize-spotter-edge-records ()
+  (clrhash *current-edge-records*)
+  (clrhash *current-edge-chains*))
+
 ;;--- edge-record
 
 #| Edge records are a A lightweight typed encapsulation of the information
@@ -39,7 +43,8 @@
   (write-string ">" stream))
 
 (defun add-edge-to-note-entry (edge entry)
-  "Wrap this edge in an edge-record and push it onty
+  "Called from handle-spotted-word and by maybe-note.
+   Wraps the edge in an edge-record and pushs it onto
    the edge-strings slot of the entry."
   (let* ((string (string-for-edge edge))
          (number (edge-position-in-resource-array edge)))

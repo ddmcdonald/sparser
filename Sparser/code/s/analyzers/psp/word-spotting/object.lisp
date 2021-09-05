@@ -98,4 +98,5 @@
    the next text analysis is about to start. Clearing the instances
    removes any influence from instances in earlier documents."
   (clear-spot-entry)
-  (clear-word-spotting-group-instance))
+  (clear-word-spotting-group-instance)
+  (initialize-spotter-edge-records))

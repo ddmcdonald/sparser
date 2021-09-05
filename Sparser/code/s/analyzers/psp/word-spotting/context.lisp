@@ -22,7 +22,6 @@
  of developing the predicates.")
   (:method ((a article))
     (declare (special *compute-items-contexts*))
-    (initialize-spotter-records)
     (when *compute-items-contexts*
       (let* ((items-field (items (contents a)))
              (group-instances (collect-germane-group-instances items-field)))
@@ -40,7 +39,7 @@
 (defun collect-germane-group-instances (list-of-group-instances)
   "We want the motif-spotting group instances. Right now we only want
  word spotters since those are where the motifs have been stored."
-  (declare (special  *motif-groups*))
+  (declare (special *motif-groups*))
   (let ((groups
          (loop for group in list-of-group-instances
             as name = (name group)
@@ -51,15 +50,11 @@
 
 
 
-(defun initialize-spotter-records ()
-  (clrhash *current-edge-records*)
-  (clrhash *current-edge-chains*))
+;;;-----------------------------
+;;; predicates over edge chains
+;;;-----------------------------
 
-
-;;--- predicates, precursors
-
-
-;;--- proper name
+;;--- precursors
 
 (defparameter *categories-over-names*
   '(name named-object
@@ -68,6 +63,9 @@
 
 (defparameter *categories-over-np*
   '(np n-bar))
+
+
+;;--- proper name
 
 (defgeneric edge-context-for-name? (chain)
   (:documentation "Does this chain of edges include an edge
@@ -78,8 +76,6 @@
       (when (or (memq (edge-cat-name edge) *categories-over-names*)
                 (memq (form-cat-name edge) *categories-over-names*))
         (return :part-of-a-name)))))
-
-
 
 (defgeneric covered-by-person? (chain) ;; "El Chupacabra"
   (:documentation "Does any edge on this chain have the category
