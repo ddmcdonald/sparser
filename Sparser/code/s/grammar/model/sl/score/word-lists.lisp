@@ -3,69 +3,30 @@
 ;;;
 ;;;    File: "loader"
 ;;;  Module: "grammar/model/sl/score/
-;;; version: August 2021
+;;; version: September 2021
 
 ;; Broken out of comlex-verb-explorations 8/23/21
 
 (in-package :sparser)
 
-;;--- constructors
+;;;-------
+;;; lists
+;;;-------
 
-#+ignore  ;; For  use when assembling the list
-(setq *comlex-verbs*
-      (sort
-       (remove-duplicates
-        (loop for w in *COMLEX-VERBS*
-              when (or (second (gethash w *primed-words*))
-                       (second (gethash (stem-form w) *primed-words*)))
-                collect
-                (or (second (gethash w *primed-words*))
-                    (second (gethash (stem-form w) *primed-words*))))
-        :test #'equal)
-       #'string<))
-
-
-#+ignore  ;; For  use when assembling the list
-(setq *morph-comlex-verbs*
-      (sort
-       (remove-duplicates
-        (loop for w in *morph-comlex-verbs*
-              when (or (second (gethash w *primed-words*))
-                       (second (gethash (stem-form w) *primed-words*)))
-                collect
-                (or (second (gethash w *primed-words*))
-                    (second (gethash (stem-form w) *primed-words*))))
-        :test #'equal)
-       #'string<))
-
-      
-(defun not-in-comlex (word-list)
-  (loop for word in word-list
-     if (null (comlex-entry word))
-     collect word))
-
-;; words in *word-list* that don't have comlex entries
-;; many are not being recognized because of affixes
-#+ignore(defparameter *not-in-comlex*
-  (not-in-comlex *word-list*)) ; see list at bottom of file
-
-
-;;--- the lists
-
-(defparameter *COMLEX-VERBS*
+(defparameter *COMLEX-VERBS* ;; 817
   '("abate" "abound" "abuse" "accentuate" "accept" "access" "accommodate" "account" "ache"
     "acquire" "addict" "address" "administer" "admire" "adopt" "advertise" "advise" "advocate"
     "affirm" "afflict" "afford" "agree" "aid" "aim" "alert" "allocate" "alternate" "ameliorate"
-    "anger" "angle" "ape" "appeal" "appreciate" "approximate" "arise" "arose" "arouse" "arrange"
+    "anger" "angle" "ape" "appeal" "appreciate" "approximate" "arise" "arouse" "arrange"
     "ascertain" "assault" "assert" "attack" "attain" "aver" "avoid" "backfire" "bag" "balance"
     "ball" "ban" "battle" "bay" "beach" "beaches" "bear" "begin" "behave" "behoove" "being"
-    "belittle" "bell" "belong" "benefit" "bespeak" #|"bespoke"|# "beware" "bias" "biases" "bill" "bin"
+    "belittle" "bell" "belong" "benefit" "bespeak" "beware" "bias" "biases" "bill" "bin"
     "blame" "bleach" "blend" "blunt" "blur" "bolster" "bomb" "bottle" "bow" "box" "bracket" "brake"
-    "branch" #|"bre"|# "break" "bridge" "brief" "bring" "brook" "brought" "bubble" "build" "bullshit"
+    "branch" "break" "bridge" "brief" "bring" "brook" "bubble" "build" "bullshit"
     "burden" "burke" "bus" "butter" "button" "buy" "bypass" "cable" "calibrate" "call" "calm"
     "campaign" "cap" "career" "cartoon" "cash" "cast" "catch" "caught" "center" "centre"
     "certificate" "chain" "chair" "chase" "chat" "check" "checker" "cheer" "chew" "choose" "circle"
-    "cite" "claim" "clam" "class" "classes" "clean" "clear" "clip" "close" "clot" "cloud" "club"
+    "cite" "claim" "clam" "class" "clean" "clear" "clip" "close" "clot" "cloud" "club"
     "coach" "cohere" "coin" "coincide" "coke" "collapse" "comb" "come" "comfort" "comment" "commit"
     "compass" "compel" "comport" "compound" "comprehend" "con" "concert" "concur" "conflict"
     "confront" "conjecture" "connote" "conquer" "contact" "contend" "contour" "contradict"
@@ -81,23 +42,24 @@
     "dry" "earth" "echo" "egg" "elbow" "embrace" "employ" "empty" "encompass" "encompasses"
     "encounter" "encourage" "endorse" "endure" "enforce" "engage" "enjoy" "enlighten" "enrich"
     "entail" "equal" "err" "escalate" "esteem" "estimate" "evade" "evaluate" "exact" "excel"
-    "excuse" "execute" "exempt" "exercise" "expand" "explore" "factor" "fail" "fake" "fall"
-    "fashion" "fatigue" "fault" "fear" "fee" "fell" "fence" "fight" "file" "filter" "finance"
+    "excuse" "execute" "exempt" "exercise"
+    "expand" "explore" "factor" "fail" "fake" "fall"
+    "fashion" "fatigue" "fault" "fear" "fee" "fence" "fight" "file" "filter" "finance"
     "finger" "flag" "flame" "flatten" "flavour" "flee" "flock" "flood" "floor" "flour" "flow"
     "focus" "fold" "follow" "foot" "force" "forgo" "format" "formulate" "foster" "fox" "fracture"
     "frank" "freelance" "front" "fuck" "fuel" "fulfil" "gad" "game" "garden" "gargle" "garland"
     "gather" "gauge" "gaze" "gesture" "gift" "ginger" "glance" "glimmer" "glimpse" "go" "gong"
     "grab" "grade" "graduate" "grasp" "grave" "gravitate" "greet" "grey" "group" "guarantee"
     "guess" "guide" "gun" "gut" "halve" "ham" "hamper" "hand" "handshake" "hang" "happen" "harden"
-    "harm" "harries" "harry" "hazard" "headquarter" "heal" "hear" "heat" "hedge" "heighten" "held"
+    "harm" "harry" "hazard" "headquarter" "heal" "hear" "heat" "hedge" "heighten" "held"
     "hinder" "hit" "hoax" "hold" "hole" "holiday" "honor" "host" "house" "hug" "hum" "humor"
     "humour" "hunch" "hunches" "hunt" "hurdle" "hurt" "illuminate" "image" "impose" "index"
     "inject" "input" "inspect" "inspire" "instance" "institute" "insult" "inter" "intercept"
     "interest" "interpret" "interview" "invalid" "invalidate" "inverse" "invoke" "irrigate" "jail"
-    "jaw" "job" "join" "joke" "jot" "journey" "judge" "keen" "key" "kid" "kiss" "kisses" "kit"
-    "knew" "knight" "knit" "know" "labor" "labour" "ladder" "land" "landscape" "last" "laugh"
+    "jaw" "job" "join" "joke" "jot" "journey" "judge" "keen" "key" "kid" "kiss" "kit"
+    "knight" "knit" "know" "labor" "labour" "ladder" "land" "landscape" "last" "laugh"
     "layer" "lessen" "liberate" "license" "lie" "light" "live" "load" "lock" "lodge" "log" "lord"
-    "lull" "lure" "machine" "madden" "magnifies" "magnify" "mail" "major" "manage" "mandate"
+    "lull" "lure" "machine" "madden" "magnify" "mail" "major" "manage" "mandate"
     "manifest" "manifold" "march" "market" "mask" "master" "maunder" "maximise" "mean" "meet"
     "merit" "message" "mill" "mind" "misconduct" "misread" "miss" "misses" "mistake" "mistrust"
     "mitigate" "moderate" "motivate" "mouth" "mute" "navigate" "necessitate" "neighbor" "neighbour"
@@ -107,36 +69,37 @@
     "people" "perceive" "permit" "pet" "peter" "phase" "phone" "pickle" "picture" "piece" "plague"
     "plan" "plot" "point" "police" "polish" "poll" "ponder" "port" "portray" "pose" "posture"
     "potter" "pout" "power" "practice" "prefer" "prejudice" "premise" "prep" "press" "pressure"
-    "pretend" "prey" "price" "print" "prize" "proce" "profile" "profit" "program" "progress"
+    "pretend" "prey" "price" "print" "prize""profile" "profit" "program" "progress"
     "prohibit" "project" "prompt" "proposition" "prospect" "protest" "punish" "puzzle" "quarantine"
-    "queen" "quest" "quiet" "quit" "quiz" "race" "racket" "raffle" "raft" "rallies" "rally" "rap"
+    "queen" "quest" "quiet" "quit" "quiz" "race" "racket" "raffle" "raft" "rally" "rap"
     "reason" "rebel" "rebuke" "rebut" "recall" "receipt" "redefine" "refer" "refine" "reflect"
-    "reform" "refuse" "register" "regress" "regresses" "reign" "reinforce" "reject" "relate"
-    "remark" "remedies" "remedy" "remember" "remit" "render" "replace" "replies" "reply" "request"
+    "reform" "refuse" "register" "regress" "reign" "reinforce" "reject" "relate"
+    "remark" "remedy" "remember" "remit" "render" "replace" "replies" "reply" "request"
     "rerun" "rescue" "research" "reset" "resonate" "respect" "rest" "restart" "restore" "retail"
     "review" "revolt" "revolve" "reward" "ridge" "right" "rim" "ripple" "rise" "risk" "rival"
     "room" "root" "rose" "rough" "round" "row" "rub" "rule" "ruminate" "rumor" "sacrifice" "saddle"
     "safeguard" "salute" "sandwich" "save" "savvy" "scan" "scatter" "scent" "schedule" "scheme"
-    "school" "score" "screech" "search" "season" "secure" "segment" "sell" "send" "sense" "sent"
+    "school" "score" "screech" "search" "season" "secure" "segment" "sell" "send" "sense" 
     "service" "settle" "sever" "sex" "shadow" "shake" "shallow" "shape" "shave" "shelter" "shelve"
     "shin" "ship" "shock" "shoe" "shop" "shore" "shorten" "shot" "shrink" "shut" "sift" "sign"
     "sin" "sip" "sit" "skew" "ski" "skyrocket" "sleep" "slight" "slur" "smart" "smell" "smoke"
     "smolder" "smooth" "snack" "snap" "sneeze" "snow" "snowball" "soap" "sole" "solicit" "solve"
     "sound" "source" "speak" "speculate" "spend" "spike" "spill" "spin" "split" "sport" "spot"
     "spread" "sprinkle" "squire" "stake" "stall" "stand" "staple" "star" "station" "steel" "steep"
-    "stem" "stereotype" "stick" "stone" "store" "str" "strand" "strengthen" "stress" "strike"
-    "strip" "struck" "stud" "stump" "style" "stymie" "sub" "submit" "subscribe" "subside" "suffer"
+    "stem" "stereotype" "stick" "stone" "store" "strand" "strengthen" "stress" "strike"
+    "strip" "stud" "stump" "style" "stymie" "sub" "submit" "subscribe" "subside" "suffer"
     "suffice" "sum" "sun" "sup" "supplies" "supply" "surge" "survey" "swab" "swear" "swing"
     "tackle" "take" "tan" "taste" "teach" "telephone" "thread" "threat" "throw" "thumb" "tide"
     "tolerate" "toll" "total" "towel" "tower" "trace" "track" "travel" "trend" "trip" "troll"
     "troop" "trouble" "trump" "turn" "twitter" "type" "uncover" "underestimate" "undermine"
     "underrate" "underscore" "undertake" "undervalue" "uniform" "unravel" "update" "uphold" "upset"
     "usher" "vary" "visit" "voice" "wait" "waive" "wake" "wall" "war" "wave" "weather" "weekend"
-    "welcome" "wheel" "wild" "win" "wipe" "wish" "wishes" "wonder" "woo" "word" "worship" "wrap"
+    "welcome" "wheel" "wild" "win" "wipe" "wish" "wonder" "woo" "word" "worship" "wrap"
     "wrote" "zone"))
 
 
-(defparameter *morph-comlex-verbs*
+
+(defparameter *morph-comlex-verbs* ;; 613
   '("abide" "absent" "absorb" "accessed" "accompany" "accomplish" "accord" "accuse" "achieve"
     "acknowledge" "adapt" "addressed" "adjust" "admit" "affiliate" "aged" "aggregate" "alarm" "align"
     "allay" "allege" "alleviate" "alter" "amaze" "amount" "annotate" "annoy" "anticipate" "appal"
@@ -203,8 +166,7 @@
 
 
 
-
-(defparameter *word-list*
+(defparameter *word-list* ;; 591
   '(
   "access" "accomplish" "address" "adhere" "adopt" "agree"
   "alternate" "answer" "approximate" "arches" "argues" "arise"
@@ -309,3 +271,184 @@
   "unstimulated" "untranslated" "untreated" "vortexed" "washed"
   "weakened" "wondered" "zymed"
     ))
+
+
+
+;;;-------------------------------
+;;; vetting a word for suitablity
+;;;-------------------------------
+
+(defgeneric candidate-for-comlex-category? (word)
+  (:documentation "The word has to be unknown and it has to
+    have an entry in comlex. Does not notice words that we only know about
+    because they occurred in another word's plist")
+  (:method ((pname string))
+    (let ((w (resolve pname)))
+      (if (null w) ; we never defined a word with this pname
+        (comlex-entry pname) ; though it also does need an entry
+        (candidate-for-comlex-category? w))))
+  (:method ((w word))
+    (unless (punctuation? w)
+      (unless (word-mentioned-in-rules? w) ; we're using it, so it's known
+        (comlex-entry w)))))
+
+
+
+;;;---------------------------
+;;; Applying filters to lists
+;;;---------------------------
+#| We run the candidate test over all of the words in each list ('populate')
+ and save the results in a new parameter. These are then merged to form
+ the master list that we pass through write-word-definitions-to-file to get
+ regular define-category expressions for all of them. |#
+
+
+(defparameter *words-used-in-polywords* nil) ;; 1,135
+
+(defun populate-words-used-in-polywords ()
+  "Looping the candidate test over the master word list returns about 1.5k words.
+   Sampling says they are :used-in-pw"
+  (let ((raw-list
+         (alphabetize-list-of-words
+          (remove-duplicates
+           (loop for word in *words-defined*
+              when (candidate-for-comlex-category? word)
+              collect word)))))
+    (let ((clean
+           (remove-duplicates
+            (loop for w in raw-list
+               collect (stem-form w)))))
+      (setq *words-used-in-polywords* (mapcar #'word-pname clean))
+      (length clean))))
+
+
+
+(defparameter *clean-comlex-verbs* nil  ;; 632
+  "These were examined by hand to remove plurals, past versions")
+
+(defun populate-clean-comlex-verbs ()
+  (let ((candidate-list
+         (sort
+          (remove-duplicates
+           (loop for pname in *comlex-verbs*
+              when (candidate-for-comlex-category? pname)
+              collect pname)
+           :test #'equal)
+          #'string<)))
+    (setq *clean-comlex-verbs* candidate-list)
+    (length candidate-list)))
+
+
+
+(defparameter *clean-morph-comlex-verbs* nil) ;; 506
+
+(defun populate-clean-morph-word-list ()
+  (let ((raw-list
+         (sort
+          (remove-duplicates
+           (loop for pname in *morph-comlex-verbs*
+              when (candidate-for-comlex-category? pname)
+              collect pname)
+           :test #'equal)
+          #'string<)))
+    (let ((clean
+           (remove-duplicates
+            (loop for w in raw-list
+               collect (stem-form w)))))
+      (setq *clean-morph-comlex-verbs* (mapcar #'word-pname clean))
+      (length clean))))
+
+
+
+(defparameter *clean-word-list* nil) ;; 262
+
+(defun populate-clean-word-list ()
+  "Mixture of stems and morphological variants"
+  (let ((raw-list
+         (sort
+          (remove-duplicates
+           (loop for pname in *word-list*
+              when (candidate-for-comlex-category? pname)
+              collect pname)
+           :test #'equal)
+          #'string<)))
+    (let ((clean
+           (remove-duplicates
+            (loop for w in raw-list
+               collect (stem-form w)))))
+      (setq *clean-word-list* clean)
+      (length clean))))
+
+
+
+
+;;;------------
+;;; master list
+;;;------------
+
+(defun prep-all-word-lists ()
+  "Run all the filters. They each return a count."
+  (let ((word-count
+         (+ (populate-words-used-in-polywords)
+            (populate-clean-comlex-verbs)
+            (populate-clean-morph-word-list)
+            (populate-clean-word-list))))
+    word-count))
+
+
+(defparameter *master-comlex-word-list* nil)
+
+(defun merge-word-lists ()
+  (declare (special *words-used-in-polywords* *clean-comlex-verbs*
+                    *clean-morph-comlex-verbs* *clean-word-list*))
+  (let* ((merged-1
+          (append *words-used-in-polywords* *clean-comlex-verbs*))
+         (merged-2
+          (append *clean-morph-comlex-verbs* merged-1))
+         (merged-3
+          (append *clean-word-list* merged-2)))
+    (let ((de-duped
+           (remove-duplicates merged-3 :test #'equal)))
+      (let ((sorted (sort (copy-list de-duped) #'string<)))
+        (setq *master-comlex-word-list* sorted)
+        (length sorted)))))
+
+
+
+
+
+
+
+
+
+
+
+
+;;--- original constructors for the lists
+
+#+ignore  ;; For  use when assembling the list
+(setq *comlex-verbs*
+      (sort
+       (remove-duplicates
+        (loop for w in *COMLEX-VERBS*
+              when (or (second (gethash w *primed-words*))
+                       (second (gethash (stem-form w) *primed-words*)))
+              collect
+                (or (second (gethash w *primed-words*))
+                    (second (gethash (stem-form w) *primed-words*))))
+        :test #'equal)
+       #'string<))
+
+
+#+ignore  ;; For  use when assembling the list
+(setq *morph-comlex-verbs*
+      (sort
+       (remove-duplicates
+        (loop for w in *morph-comlex-verbs*
+              when (or (second (gethash w *primed-words*))
+                       (second (gethash (stem-form w) *primed-words*)))
+                collect
+                (or (second (gethash w *primed-words*))
+                    (second (gethash (stem-form w) *primed-words*))))
+        :test #'equal)
+       #'string<))
