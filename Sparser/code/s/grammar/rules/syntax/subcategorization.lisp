@@ -423,19 +423,22 @@
   (push-debug `(,verb ,prep ,target-category))
   (unless (word-p prep)
     (error "Prep isn't a word: ~a~%~a" prep (type-of prep)))
-  
   (let* ((base-cfr (find-single-unary-cfr verb))
          (verb-category (cfr-category base-cfr))
-         (prep-label (cfr-category (find-single-unary-cfr prep)))
+         (prep-cfr (find-single-unary-cfr prep))
+         (prep-label (when prep-cfr (cfr-category prep-cfr)))
          (sc (get-subcategorization verb-category)))
     (unless sc (error "no subcat frome for ~a" verb-category))
-    (pushnew prep (bound-prepositions sc))
-    (let ((rule (define-cfr target-category `(,verb-category ,prep-label)
-                   :form category::vg
-                    :referent target-category)))
-      (add-rule rule target-category)
-      (tr :verb+prep verb prep)
-      (values rule sc))))
+    (if prep-cfr
+      (then
+        (pushnew prep (bound-prepositions sc))
+        (let ((rule (define-cfr target-category `(,verb-category ,prep-label)
+                      :form category::vg
+                      :referent target-category)))
+          (add-rule rule target-category)
+          (tr :verb+prep verb prep)
+          (values rule sc)))
+      (format t "~&~%The preposition ~a is undefined~%" prep))))
 
 ;; Strange case -- "treated with or without ..." in ASPP2
 

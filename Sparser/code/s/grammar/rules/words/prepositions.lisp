@@ -153,6 +153,7 @@ these are really prepositions, and should function as such
 (define-preposition "for sake of")
 (define-preposition "for the sake of")
 (define-preposition "for want of")
+(define-preposition "forth" )
 (define-preposition "from" )
 (define-preposition "from want of")
 (define-preposition "including")
@@ -234,6 +235,7 @@ these are really prepositions, and should function as such
 (define-preposition "throughout")
 ;;(define-preposition "till") -- sub.conj. but also takes a simple complement
 (define-preposition "to")
+(define-preposition "together")
 (define-preposition "together with")
 (define-preposition "unlike")
 ;; (define-preposition "until")  -- sub.conj.

@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1999,2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1999,2019-2021  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "spatial prepositions"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  April 2019
+;;;  version:  September 2021
 
 ;; n.b. remember that we also have standalone-directions ("left") and adjectival
 ;; directions ("lefward"). All of these 'spatial prepositions' create locations
@@ -32,9 +32,11 @@
   (define-preposition "after" :form 'spatio-temporal-preposition))
 
 (define-preposition "against" :form 'spatial-preposition) ;;what about non-spatial sense
-;; Seems like an adverb (define-preposition "ahead" :form 'spatial-preposition)
+(define-preposition "ahead" :form 'spatial-preposition)
 (define-preposition "ahead of" :form 'spatial-preposition)
 (define-preposition "along" :form 'spatial-preposition)
+(define-preposition "apart" :form 'spatial-preposition)
+(define-preposition "aside" :form 'spatial-preposition)
 
 (define-preposition "at" :form 'spatial-preposition) ;;what about "at 5PM"
 (define-preposition "at or above")
