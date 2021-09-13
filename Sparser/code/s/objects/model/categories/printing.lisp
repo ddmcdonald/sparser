@@ -68,14 +68,20 @@
   (let ((operator (car form)) ; could be define-adjective
         (name (second form))
         (parameters (cddr form)))
-    (format stream "~&~%(~a ~a" operator name)
+    (format stream "~&~%(~a" operator)
+    (if (stringp name) ; define-adjective
+      (format stream " ~s" name)
+      (format stream " ~a" name))
+    
     (do ((parameter (first parameters) (first rest))
          (value (second parameters) (second rest))
          (rest (cddr parameters) (cddr rest)))
         ((null parameter))
       (if (eq parameter :realization)
         (pprint-realization-form value stream)
-        (format stream "~&~2T:~a ~a" parameter value)))
+        (else
+          (format stream "~&~2T:~a " parameter)
+          (pprint-rterm value stream))))
     (write-string ")" stream)
     form))
 
@@ -118,6 +124,7 @@
   (typecase term
     (string (format stream "~s" term))
     (keyword (format stream ":~a" term))
+    (symbol (format stream "~a" term))
     (cons ;; present-participle of "equal" -- (equalling equaling)
      (let ((count (length term)))
        (write-string "(" stream)
