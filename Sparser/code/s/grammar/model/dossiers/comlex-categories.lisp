@@ -1,13 +1,13 @@
 ;;; Copyright (c) 2021 SIFT LLC. All Rights Reserved
 
 ;;; Generated file of category definitions for from word-lists
-;;; Written 9/10/21 13:11:12
+;;; Written 9/13/21 16:0:47
 
 (in-package :sparser)
 
 
 
-(define-adjective Fahrenheit
+(define-adjective "Fahrenheit"
   :cat (quote fahrenheit )
   :super-category (quote modifier ))
 
@@ -45,7 +45,7 @@
 
 
 
-(define-adjective absolute
+(define-adjective "absolute"
   :cat (quote absolute )
   :super-category (quote modifier ))
 
@@ -306,7 +306,7 @@
 
 
 
-(define-adjective adolescent
+(define-adjective "adolescent"
   :cat (quote adolescent-modifier )
   :super-category (quote modifier )
   :er-est (quote (("more adolescent" ) "most adolescent" ) ))
@@ -395,7 +395,7 @@
 
 
 
-(define-adjective aged
+(define-adjective "aged"
   :cat (quote aged )
   :super-category (quote modifier )
   :er-est (quote (("more aged" ) "most aged" ) ))
@@ -472,7 +472,7 @@
 
 
 
-(define-adjective alcoholic
+(define-adjective "alcoholic"
   :cat (quote alcoholic-modifier )
   :super-category (quote modifier )
   :er-est (quote (("more alcoholic" ) "most alcoholic" ) ))
@@ -493,7 +493,7 @@
 
 
 
-(define-adjective alert
+(define-adjective "alert"
   :cat (quote alert-modifier )
   :super-category (quote modifier )
   :er-est (quote (("more alert" ) "most alert" ) ))
@@ -512,7 +512,7 @@
 
 
 
-(define-adjective alien
+(define-adjective "alien"
   :cat (quote alien-modifier )
   :super-category (quote modifier )
   :er-est (quote (("more alien" ) "most alien" ) ))
@@ -595,7 +595,7 @@
 
 
 
-(define-adjective alternate
+(define-adjective "alternate"
   :cat (quote alternate-modifier )
   :super-category (quote modifier ))
 
@@ -631,13 +631,13 @@
 
 
 
-(define-adjective ancestral
+(define-adjective "ancestral"
   :cat (quote ancestral )
   :super-category (quote modifier ))
 
 
 
-(define-adjective ancient
+(define-adjective "ancient"
   :cat (quote ancient )
   :super-category (quote modifier )
   :er-est (quote (("more ancient" ) "most ancient" ) ))
@@ -803,7 +803,7 @@
 
 
 
-(define-adjective approximate
+(define-adjective "approximate"
   :cat (quote approximate-modifier )
   :super-category (quote modifier ))
 
@@ -823,7 +823,7 @@
 
 
 
-(define-adjective arch
+(define-adjective "arch"
   :cat (quote arch-modifier )
   :super-category (quote modifier ))
 
@@ -899,7 +899,7 @@
 
 
 
-(define-adjective artificial
+(define-adjective "artificial"
   :cat (quote artificial )
   :super-category (quote modifier )
   :er-est (quote (("more artificial" ) "most artificial" ) ))
@@ -984,7 +984,7 @@
 
 
 
-(define-adjective asymmetrical
+(define-adjective "asymmetrical"
   :cat (quote asymmetrical )
   :super-category (quote modifier )
   :er-est (quote (("more asymmetrical" ) "most asymmetrical" ) ))
@@ -1090,7 +1090,7 @@
 
 
 
-(define-adjective august
+(define-adjective "august"
   :cat (quote august )
   :super-category (quote modifier )
   :er-est (quote (("more august" ) "most august" ) ))
@@ -1119,7 +1119,7 @@
 
 
 
-(define-adjective auxiliary
+(define-adjective "auxiliary"
   :cat (quote auxiliary-modifier )
   :super-category (quote modifier ))
 
@@ -1414,7 +1414,7 @@
 
 
 
-(define-adjective beat
+(define-adjective "beat"
   :cat (quote beat-modifier )
   :super-category (quote modifier ))
 
@@ -1715,7 +1715,7 @@
 
 
 
-(define-adjective blind
+(define-adjective "blind"
   :cat (quote blind-modifier )
   :super-category (quote modifier ))
 
@@ -1741,7 +1741,7 @@
 
 
 
-(define-adjective blunt
+(define-adjective "blunt"
   :cat (quote blunt-modifier )
   :super-category (quote modifier )
   :er-est (quote (("blunter" ) "bluntest" ) ))
@@ -2079,7 +2079,7 @@
 
 
 
-(define-adjective brief
+(define-adjective "brief"
   :cat (quote brief-modifier )
   :super-category (quote modifier )
   :er-est (quote (("briefer" ) "briefest" ) ))
@@ -2098,7 +2098,7 @@
 
 
 
-(define-adjective bright
+(define-adjective "bright"
   :cat (quote bright-modifier )
   :super-category (quote modifier )
   :er-est (quote (("brighter" ) "brightest" ) ))
@@ -2217,7 +2217,7 @@
 
 
 
-(define-adjective bum
+(define-adjective "bum"
   :cat (quote bum-modifier )
   :super-category (quote modifier ))
 
@@ -2602,7 +2602,7 @@
 
 
 
-(define-adjective cardinal
+(define-adjective "cardinal"
   :cat (quote cardinal-modifier )
   :super-category (quote modifier ))
 
@@ -2813,7 +2813,7 @@
 
 
 
-(define-adjective characteristic
+(define-adjective "characteristic"
   :cat (quote characteristic-modifier )
   :super-category (quote modifier )
   :er-est (quote (("more characteristic" ) "most characteristic" ) ))
@@ -2951,7 +2951,7 @@
 
 
 
-(define-adjective chic
+(define-adjective "chic"
   :cat (quote chic-modifier )
   :super-category (quote modifier )
   :er-est (quote (("more chic" ) "most chic" ) ))
@@ -3178,7 +3178,7 @@
 
 
 
-(define-adjective classical
+(define-adjective "classical"
   :cat (quote classical )
   :super-category (quote modifier ))
 
@@ -3192,7 +3192,7 @@
 
 
 
-(define-adjective clean
+(define-adjective "clean"
   :cat (quote clean-modifier )
   :super-category (quote modifier )
   :er-est (quote (("cleaner" ) "cleanest" ) ))
@@ -3252,7 +3252,7 @@
 
 
 
-(define-adjective clever
+(define-adjective "clever"
   :cat (quote clever )
   :super-category (quote modifier )
   :er-est (quote (("cleverer" ) "cleverest" ) ))
@@ -3488,7 +3488,7 @@
 
 
 
-(define-adjective collect
+(define-adjective "collect"
   :cat (quote collect-modifier )
   :super-category (quote modifier ))
 
@@ -3661,7 +3661,7 @@
 
 
 
-(define-adjective compact
+(define-adjective "compact"
   :cat (quote compact-modifier )
   :super-category (quote modifier )
   :er-est (quote (("more compact" ) "most compact" ) ))
@@ -3785,7 +3785,7 @@
 
 
 
-(define-adjective compulsive
+(define-adjective "compulsive"
   :cat (quote compulsive )
   :super-category (quote modifier ))
 
@@ -4016,7 +4016,7 @@
 
 
 
-(define-adjective constant
+(define-adjective "constant"
   :cat (quote constant-modifier )
   :super-category (quote modifier ))
 
@@ -4146,7 +4146,7 @@
 
 
 
-(define-adjective converse
+(define-adjective "converse"
   :cat (quote converse-modifier )
   :super-category (quote modifier ))
 
@@ -4194,7 +4194,7 @@
 
 
 
-(define-adjective coordinate
+(define-adjective "coordinate"
   :cat (quote coordinate-modifier )
   :super-category (quote modifier ))
 
@@ -4285,7 +4285,7 @@
 
 
 
-(define-adjective correct
+(define-adjective "correct"
   :cat (quote correct-modifier )
   :super-category (quote modifier )
   :er-est (quote (("more correct" ) "most correct" ) ))
@@ -4408,7 +4408,7 @@
 
 
 
-(define-adjective coy
+(define-adjective "coy"
   :cat (quote coy )
   :super-category (quote modifier )
   :er-est (quote (("coyer" ) "coyest" ) ))
@@ -4596,7 +4596,7 @@
 
 
 
-(define-adjective crystalline
+(define-adjective "crystalline"
   :cat (quote crystalline )
   :super-category (quote modifier ))
 
@@ -4779,7 +4779,7 @@
 
 
 
-(define-adjective deaf
+(define-adjective "deaf"
   :cat (quote deaf )
   :super-category (quote modifier )
   :er-est (quote (("deafer" ) "deafest" ) ))
@@ -4810,7 +4810,7 @@
 
 
 
-(define-adjective dear
+(define-adjective "dear"
   :cat (quote dear-modifier )
   :super-category (quote modifier )
   :er-est (quote (("dearer" "more dear" ) "dearest" "most dear" ) ))
@@ -4995,7 +4995,7 @@
 
 
 
-(define-adjective definitive
+(define-adjective "definitive"
   :cat (quote definitive )
   :super-category (quote modifier )
   :er-est (quote (("more definitive" ) "most definitive" ) ))
@@ -5010,7 +5010,7 @@
 
 
 
-(define-adjective deft
+(define-adjective "deft"
   :cat (quote deft )
   :super-category (quote modifier )
   :er-est (quote (("more deft" ) "most deft" ) ))
@@ -5041,7 +5041,7 @@
 
 
 
-(define-adjective deliberate
+(define-adjective "deliberate"
   :cat (quote deliberate-modifier )
   :super-category (quote modifier )
   :er-est (quote (("more deliberate" ) "most deliberate" ) ))
@@ -5114,7 +5114,7 @@
 
 
 
-(define-adjective democratic
+(define-adjective "democratic"
   :cat (quote democratic )
   :super-category (quote modifier )
   :er-est (quote (("more democratic" ) "most democratic" ) ))
@@ -5129,7 +5129,7 @@
 
 
 
-(define-adjective dense
+(define-adjective "dense"
   :cat (quote dense )
   :super-category (quote modifier )
   :er-est (quote (("denser" ) "densest" ) ))
@@ -5232,7 +5232,7 @@
 
 
 
-(define-adjective designate
+(define-adjective "designate"
   :cat (quote designate-modifier )
   :super-category (quote modifier ))
 
@@ -5376,7 +5376,7 @@
 
 
 
-(define-adjective diabetic
+(define-adjective "diabetic"
   :cat (quote diabetic-modifier )
   :super-category (quote modifier ))
 
@@ -5445,7 +5445,7 @@
 
 
 
-(define-adjective dilute
+(define-adjective "dilute"
   :cat (quote dilute-modifier )
   :super-category (quote modifier ))
 
@@ -5956,7 +5956,7 @@
 
 
 
-(define-adjective divine
+(define-adjective "divine"
   :cat (quote divine-modifier )
   :super-category (quote modifier )
   :er-est (quote (("more divine" ) "most divine" ) ))
@@ -6033,7 +6033,7 @@
 
 
 
-(define-adjective dopey
+(define-adjective "dopey"
   :cat (quote dopey )
   :super-category (quote modifier )
   :er-est (quote (("dopier" ) "dopiest" ) ))
@@ -6268,7 +6268,7 @@
 
 
 
-(define-adjective dry
+(define-adjective "dry"
   :cat (quote dry-modifier )
   :super-category (quote modifier )
   :er-est (quote (("drier" ) "driest" ) ))
@@ -6361,7 +6361,7 @@
 
 
 
-(define-adjective duodenal
+(define-adjective "duodenal"
   :cat (quote duodenal )
   :super-category (quote modifier ))
 
@@ -6381,7 +6381,7 @@
 
 
 
-(define-adjective duplicate
+(define-adjective "duplicate"
   :cat (quote duplicate-modifier )
   :super-category (quote modifier ))
 
@@ -6489,7 +6489,7 @@
 
 
 
-(define-adjective elect
+(define-adjective "elect"
   :cat (quote elect-modifier )
   :super-category (quote modifier ))
 
@@ -6805,7 +6805,7 @@
 
 
 
-(define-adjective enteric
+(define-adjective "enteric"
   :cat (quote enteric )
   :super-category (quote modifier ))
 
@@ -6843,7 +6843,7 @@
 
 
 
-(define-adjective epic
+(define-adjective "epic"
   :cat (quote epic-modifier )
   :super-category (quote modifier ))
 
@@ -6855,14 +6855,14 @@
 
 
 
-(define-adjective episodic
+(define-adjective "episodic"
   :cat (quote episodic )
   :super-category (quote modifier )
   :er-est (quote (("more episodic" ) "most episodic" ) ))
 
 
 
-(define-adjective equal
+(define-adjective "equal"
   :cat (quote equal-modifier )
   :super-category (quote modifier ))
 
@@ -6891,7 +6891,7 @@
 
 
 
-(define-adjective equatorial
+(define-adjective "equatorial"
   :cat (quote equatorial )
   :super-category (quote modifier ))
 
@@ -6922,7 +6922,7 @@
 
 
 
-(define-adjective erect
+(define-adjective "erect"
   :cat (quote erect-modifier )
   :super-category (quote modifier )
   :er-est (quote (("more erect" ) "most erect" ) ))
@@ -7003,7 +7003,7 @@
 
 
 
-(define-adjective evident
+(define-adjective "evident"
   :cat (quote evident )
   :super-category (quote modifier )
   :er-est (quote (("more evident" ) "most evident" ) ))
@@ -7018,7 +7018,7 @@
 
 
 
-(define-adjective evolutionary
+(define-adjective "evolutionary"
   :cat (quote evolutionary )
   :super-category (quote modifier )
   :er-est (quote (("more evolutionary" ) "most evolutionary" ) ))
@@ -7041,7 +7041,7 @@
 
 
 
-(define-adjective exact
+(define-adjective "exact"
   :cat (quote exact-modifier )
   :super-category (quote modifier )
   :er-est (quote (("more exact" ) "most exact" ) ))
@@ -7097,7 +7097,7 @@
 
 
 
-(define-adjective excess
+(define-adjective "excess"
   :cat (quote excess-modifier )
   :super-category (quote modifier ))
 
@@ -7185,7 +7185,7 @@
 
 
 
-(define-adjective exempt
+(define-adjective "exempt"
   :cat (quote exempt-modifier )
   :super-category (quote modifier ))
 
@@ -7404,7 +7404,7 @@
 
 
 
-(define-adjective facial
+(define-adjective "facial"
   :cat (quote facial-modifier )
   :super-category (quote modifier ))
 
@@ -7545,7 +7545,7 @@
 
 
 
-(define-adjective fall
+(define-adjective "fall"
   :cat (quote fall-modifier )
   :super-category (quote modifier )
   :er-est (quote (("more fell" ) "most fell" ) ))
@@ -7840,14 +7840,14 @@
 
 
 
-(define-adjective flexible
+(define-adjective "flexible"
   :cat (quote flexible )
   :super-category (quote modifier )
   :er-est (quote (("more flexible" ) "most flexible" ) ))
 
 
 
-(define-adjective flip
+(define-adjective "flip"
   :cat (quote flip-modifier )
   :super-category (quote modifier )
   :er-est (quote (("more flip" ) "most flip" ) ))
@@ -7928,7 +7928,7 @@
 
 
 
-(define-adjective floral
+(define-adjective "floral"
   :cat (quote floral )
   :super-category (quote modifier ))
 
@@ -8190,7 +8190,7 @@
 
 
 
-(define-adjective frank
+(define-adjective "frank"
   :cat (quote frank-modifier )
   :super-category (quote modifier ))
 
@@ -8430,7 +8430,7 @@
 
 
 
-(define-adjective game
+(define-adjective "game"
   :cat (quote game-modifier )
   :super-category (quote modifier )
   :er-est (quote (("gamer" "more game" ) "gamest" "most game" ) ))
@@ -8550,7 +8550,7 @@
 
 
 
-(define-adjective gawky
+(define-adjective "gawky"
   :cat (quote gawky )
   :super-category (quote modifier )
   :er-est (quote (("gawkier" ) "gawkiest" ) ))
@@ -8743,7 +8743,7 @@
 
 
 
-(define-adjective globular
+(define-adjective "globular"
   :cat (quote globular )
   :super-category (quote modifier )
   :er-est (quote (("more globular" ) "most globular" ) ))
@@ -8863,7 +8863,7 @@
 
 
 
-(define-adjective granular
+(define-adjective "granular"
   :cat (quote granular )
   :super-category (quote modifier ))
 
@@ -8885,7 +8885,7 @@
 
 
 
-(define-adjective grey
+(define-adjective "grey"
   :cat (quote grey-modifier )
   :super-category (quote modifier )
   :er-est (quote (("greyer" ) "greyest" ) ))
@@ -8912,7 +8912,7 @@
 
 
 
-(define-adjective grim
+(define-adjective "grim"
   :cat (quote grim )
   :super-category (quote modifier )
   :er-est (quote (("more grim" ) "most grim" ) ))
@@ -9115,7 +9115,7 @@
 
 
 
-(define-adjective hairless
+(define-adjective "hairless"
   :cat (quote hairless )
   :super-category (quote modifier )
   :er-est (quote (("more hairless" ) "most hairless" ) ))
@@ -9130,7 +9130,7 @@
 
 
 
-(define-adjective halt
+(define-adjective "halt"
   :cat (quote halt-modifier )
   :super-category (quote modifier ))
 
@@ -9208,7 +9208,7 @@
 
 
 
-(define-adjective hardy
+(define-adjective "hardy"
   :cat (quote hardy )
   :super-category (quote modifier )
   :er-est (quote (("more hardy" ) "most hardy" ) ))
@@ -9396,7 +9396,7 @@
 
 
 
-(define-adjective hebrew
+(define-adjective "hebrew"
   :cat (quote hebrew )
   :super-category (quote modifier ))
 
@@ -9654,7 +9654,7 @@
 
 
 
-(define-adjective holy
+(define-adjective "holy"
   :cat (quote holy-modifier )
   :super-category (quote modifier )
   :er-est (quote (("holier" "more holy" ) "holiest" "most holy" ) ))
@@ -9693,7 +9693,7 @@
 
 
 
-(define-adjective honorable
+(define-adjective "honorable"
   :cat (quote honorable )
   :super-category (quote modifier )
   :er-est (quote (("more honorable" ) "most honorable" ) ))
@@ -9894,7 +9894,7 @@
 
 
 
-(define-adjective hydro
+(define-adjective "hydro"
   :cat (quote hydro )
   :super-category (quote modifier ))
 
@@ -9916,7 +9916,7 @@
 
 
 
-(define-adjective ideal
+(define-adjective "ideal"
   :cat (quote ideal-modifier )
   :super-category (quote modifier ))
 
@@ -9928,7 +9928,7 @@
 
 
 
-(define-adjective idiosyncratic
+(define-adjective "idiosyncratic"
   :cat (quote idiosyncratic )
   :super-category (quote modifier )
   :er-est (quote (("more idiosyncratic" ) "most idiosyncratic" ) ))
@@ -10215,7 +10215,7 @@
 
 
 
-(define-adjective insoluble
+(define-adjective "insoluble"
   :cat (quote insoluble )
   :super-category (quote modifier ))
 
@@ -10334,7 +10334,7 @@
 
 
 
-(define-adjective interactive
+(define-adjective "interactive"
   :cat (quote interactive )
   :super-category (quote modifier )
   :er-est (quote (("more interactive" ) "most interactive" ) ))
@@ -10393,7 +10393,7 @@
 
 
 
-(define-adjective international
+(define-adjective "international"
   :cat (quote international-modifier )
   :super-category (quote modifier ))
 
@@ -10497,7 +10497,7 @@
 
 
 
-(define-adjective invalid
+(define-adjective "invalid"
   :cat (quote invalid-modifier )
   :super-category (quote modifier ))
 
@@ -10531,7 +10531,7 @@
 
 
 
-(define-adjective inverse
+(define-adjective "inverse"
   :cat (quote inverse-modifier )
   :super-category (quote modifier ))
 
@@ -10611,7 +10611,7 @@
 
 
 
-(define-adjective irregular
+(define-adjective "irregular"
   :cat (quote irregular-modifier )
   :super-category (quote modifier )
   :er-est (quote (("more irregular" ) "most irregular" ) ))
@@ -10624,7 +10624,7 @@
 
 
 
-(define-adjective irrepressible
+(define-adjective "irrepressible"
   :cat (quote irrepressible )
   :super-category (quote modifier ))
 
@@ -10728,7 +10728,7 @@
 
 
 
-(define-adjective jerky
+(define-adjective "jerky"
   :cat (quote jerky )
   :super-category (quote modifier )
   :er-est (quote (("jerkier" "more jerky" ) "jerkiest" "most jerky" ) ))
@@ -10820,7 +10820,7 @@
 
 
 
-(define-adjective joint
+(define-adjective "joint"
   :cat (quote joint-modifier )
   :super-category (quote modifier ))
 
@@ -10904,7 +10904,7 @@
 
 
 
-(define-adjective jumpy
+(define-adjective "jumpy"
   :cat (quote jumpy )
   :super-category (quote modifier )
   :er-est (quote (("jumpier" "more jumpy" ) "jumpiest" "most jumpy" ) ))
@@ -10935,7 +10935,7 @@
 
 
 
-(define-adjective keen
+(define-adjective "keen"
   :cat (quote keen-modifier )
   :super-category (quote modifier )
   :er-est (quote (("keener" "more keen" ) "keenest" "most keen" ) ))
@@ -11087,7 +11087,7 @@
 
 
 
-(define-adjective lacy
+(define-adjective "lacy"
   :cat (quote lacy )
   :super-category (quote modifier )
   :er-est (quote (("lacier" "more lacy" ) "laciest" "most lacy" ) ))
@@ -11230,7 +11230,7 @@
 
 
 
-(define-adjective leafy
+(define-adjective "leafy"
   :cat (quote leafy )
   :super-category (quote modifier )
   :er-est (quote (("leafier" "more leafy" ) "leafiest" "most leafy" ) ))
@@ -11258,7 +11258,7 @@
 
 
 
-(define-adjective lean
+(define-adjective "lean"
   :cat (quote lean-modifier )
   :super-category (quote modifier )
   :er-est (quote (("leaner" "more lean" ) "leanest" "most lean" ) ))
@@ -11410,7 +11410,7 @@
 
 
 
-(define-adjective limp
+(define-adjective "limp"
   :cat (quote limp-modifier )
   :super-category (quote modifier )
   :er-est (quote (("limper" "more limp" ) "limpest" "most limp" ) ))
@@ -11716,7 +11716,7 @@
 
 
 
-(define-adjective lyric
+(define-adjective "lyric"
   :cat (quote lyric-modifier )
   :super-category (quote modifier ))
 
@@ -11774,7 +11774,7 @@
 
 
 
-(define-adjective main
+(define-adjective "main"
   :cat (quote main-modifier )
   :super-category (quote modifier ))
 
@@ -11854,7 +11854,7 @@
 
 
 
-(define-adjective manifest
+(define-adjective "manifest"
   :cat (quote manifest-modifier )
   :super-category (quote modifier )
   :er-est (quote (("more manifest" ) "most manifest" ) ))
@@ -11873,7 +11873,7 @@
 
 
 
-(define-adjective manifold
+(define-adjective "manifold"
   :cat (quote manifold-modifier )
   :super-category (quote modifier ))
 
@@ -12048,7 +12048,7 @@
 
 
 
-(define-adjective material
+(define-adjective "material"
   :cat (quote material-modifier )
   :super-category (quote modifier )
   :er-est (quote (("more material" ) "most material" ) ))
@@ -12123,7 +12123,7 @@
 
 
 
-(define-adjective meet
+(define-adjective "meet"
   :cat (quote meet-modifier )
   :super-category (quote modifier ))
 
@@ -12167,7 +12167,7 @@
 
 
 
-(define-adjective mere
+(define-adjective "mere"
   :cat (quote mere-modifier )
   :super-category (quote modifier ))
 
@@ -12239,7 +12239,7 @@
 
 
 
-(define-adjective migratory
+(define-adjective "migratory"
   :cat (quote migratory )
   :super-category (quote modifier )
   :er-est (quote (("more migratory" ) "most migratory" ) ))
@@ -12260,14 +12260,14 @@
 
 
 
-(define-adjective mimetic
+(define-adjective "mimetic"
   :cat (quote mimetic )
   :super-category (quote modifier )
   :er-est (quote (("more mimetic" ) "most mimetic" ) ))
 
 
 
-(define-adjective mineral
+(define-adjective "mineral"
   :cat (quote mineral-modifier )
   :super-category (quote modifier ))
 
@@ -12287,7 +12287,7 @@
 
 
 
-(define-adjective mini
+(define-adjective "mini"
   :cat (quote mini )
   :super-category (quote modifier ))
 
@@ -12445,7 +12445,7 @@
 
 
 
-(define-adjective mock
+(define-adjective "mock"
   :cat (quote mock-modifier )
   :super-category (quote modifier ))
 
@@ -12463,7 +12463,7 @@
 
 
 
-(define-adjective moderate
+(define-adjective "moderate"
   :cat (quote moderate-modifier )
   :super-category (quote modifier )
   :er-est (quote (("more moderate" ) "most moderate" ) ))
@@ -12482,7 +12482,7 @@
 
 
 
-(define-adjective modular
+(define-adjective "modular"
   :cat (quote modular )
   :super-category (quote modifier ))
 
@@ -12724,7 +12724,7 @@
 
 
 
-(define-adjective nee
+(define-adjective "nee"
   :cat (quote nee )
   :super-category (quote modifier ))
 
@@ -12800,7 +12800,7 @@
 
 
 
-(define-adjective newborn
+(define-adjective "newborn"
   :cat (quote newborn-modifier )
   :super-category (quote modifier ))
 
@@ -12812,14 +12812,14 @@
 
 
 
-(define-adjective nice
+(define-adjective "nice"
   :cat (quote nice )
   :super-category (quote modifier )
   :er-est (quote (("nicer" ) "nicest" ) ))
 
 
 
-(define-adjective nocturnal
+(define-adjective "nocturnal"
   :cat (quote nocturnal )
   :super-category (quote modifier ))
 
@@ -12969,7 +12969,7 @@
 
 
 
-(define-adjective obstetric
+(define-adjective "obstetric"
   :cat (quote obstetric )
   :super-category (quote modifier ))
 
@@ -13063,13 +13063,13 @@
 
 
 
-(define-adjective omnipotent
+(define-adjective "omnipotent"
   :cat (quote omnipotent )
   :super-category (quote modifier ))
 
 
 
-(define-adjective online
+(define-adjective "online"
   :cat (quote online )
   :super-category (quote modifier ))
 
@@ -13099,7 +13099,7 @@
 
 
 
-(define-adjective opposite
+(define-adjective "opposite"
   :cat (quote opposite-modifier )
   :super-category (quote modifier ))
 
@@ -13195,7 +13195,7 @@
 
 
 
-(define-adjective oval
+(define-adjective "oval"
   :cat (quote oval-modifier )
   :super-category (quote modifier )
   :er-est (quote (("more oval" ) "most oval" ) ))
@@ -13366,7 +13366,7 @@
 
 
 
-(define-adjective pacific
+(define-adjective "pacific"
   :cat (quote pacific )
   :super-category (quote modifier )
   :er-est (quote (("more pacific" ) "most pacific" ) ))
@@ -13586,7 +13586,7 @@
 
 
 
-(define-adjective paralytic
+(define-adjective "paralytic"
   :cat (quote paralytic-modifier )
   :super-category (quote modifier ))
 
@@ -13848,7 +13848,7 @@
 
 
 
-(define-adjective perfect
+(define-adjective "perfect"
   :cat (quote perfect-modifier )
   :super-category (quote modifier )
   :er-est (quote (("more perfect" ) "most perfect" ) ))
@@ -13920,7 +13920,7 @@
 
 
 
-(define-adjective permeable
+(define-adjective "permeable"
   :cat (quote permeable )
   :super-category (quote modifier )
   :er-est (quote (("more permeable" ) "most permeable" ) ))
@@ -13968,7 +13968,7 @@
 
 
 
-(define-adjective pert
+(define-adjective "pert"
   :cat (quote pert )
   :super-category (quote modifier )
   :er-est (quote (("more pert" ) "most pert" ) ))
@@ -13991,7 +13991,7 @@
 
 
 
-(define-adjective pesky
+(define-adjective "pesky"
   :cat (quote pesky )
   :super-category (quote modifier )
   :er-est (quote (("peskier" ) "peskiest" ) ))
@@ -14259,7 +14259,7 @@
 
 
 
-(define-adjective polar
+(define-adjective "polar"
   :cat (quote polar )
   :super-category (quote modifier ))
 
@@ -14441,7 +14441,7 @@
 
 
 
-(define-adjective posh
+(define-adjective "posh"
   :cat (quote posh )
   :super-category (quote modifier )
   :er-est (quote (("posher" ) "poshest" ) ))
@@ -14622,7 +14622,7 @@
 
 
 
-(define-adjective predominant
+(define-adjective "predominant"
   :cat (quote predominant )
   :super-category (quote modifier ))
 
@@ -14777,7 +14777,7 @@
 
 
 
-(define-adjective prim
+(define-adjective "prim"
   :cat (quote prim-modifier )
   :super-category (quote modifier )
   :er-est (quote (("primmer" ) "primmest" ) ))
@@ -14793,7 +14793,7 @@
 
 
 
-(define-adjective prima
+(define-adjective "prima"
   :cat (quote prima )
   :super-category (quote modifier ))
 
@@ -14970,7 +14970,7 @@
 
 
 
-(define-adjective prompt
+(define-adjective "prompt"
   :cat (quote prompt-modifier )
   :super-category (quote modifier )
   :er-est (quote (("more prompt" ) "most prompt" ) ))
@@ -15146,7 +15146,7 @@
 
 
 
-(define-adjective pure
+(define-adjective "pure"
   :cat (quote pure )
   :super-category (quote modifier )
   :er-est (quote (("purer" ) "purest" ) ))
@@ -15197,7 +15197,7 @@
 
 
 
-(define-adjective quadruplicate
+(define-adjective "quadruplicate"
   :cat (quote quadruplicate-modifier )
   :super-category (quote modifier ))
 
@@ -15237,7 +15237,7 @@
 
 
 
-(define-adjective qualitative
+(define-adjective "qualitative"
   :cat (quote qualitative )
   :super-category (quote modifier )
   :er-est (quote (("more qualitative" ) "most qualitative" ) ))
@@ -15294,7 +15294,7 @@
 
 
 
-(define-adjective quiet
+(define-adjective "quiet"
   :cat (quote quiet-modifier )
   :super-category (quote modifier )
   :er-est (quote (("quieter" "more quiet" ) "quietest" "most quiet" ) ))
@@ -15320,7 +15320,7 @@
 
 
 
-(define-adjective quit
+(define-adjective "quit"
   :cat (quote quit-modifier )
   :super-category (quote modifier ))
 
@@ -15494,13 +15494,13 @@
 
 
 
-(define-adjective rapt
+(define-adjective "rapt"
   :cat (quote rapt )
   :super-category (quote modifier ))
 
 
 
-(define-adjective rash
+(define-adjective "rash"
   :cat (quote rash-modifier )
   :super-category (quote modifier )
   :er-est (quote (("rasher" "more rash" ) "rashest" "most rash" ) ))
@@ -15929,7 +15929,7 @@
 
 
 
-(define-adjective regional
+(define-adjective "regional"
   :cat (quote regional )
   :super-category (quote modifier ))
 
@@ -16049,7 +16049,7 @@
 
 
 
-(define-adjective relevant
+(define-adjective "relevant"
   :cat (quote relevant )
   :super-category (quote modifier )
   :er-est (quote (("more relevant" ) "most relevant" ) ))
@@ -16214,7 +16214,7 @@
 
 
 
-(define-adjective repetitive
+(define-adjective "repetitive"
   :cat (quote repetitive )
   :super-category (quote modifier )
   :er-est (quote (("more repetitive" ) "most repetitive" ) ))
@@ -16243,7 +16243,7 @@
 
 
 
-(define-adjective repressive
+(define-adjective "repressive"
   :cat (quote repressive )
   :super-category (quote modifier )
   :er-est (quote (("more repressive" ) "most repressive" ) ))
@@ -16398,7 +16398,7 @@
 
 
 
-(define-adjective resident
+(define-adjective "resident"
   :cat (quote resident-modifier )
   :super-category (quote modifier ))
 
@@ -16788,7 +16788,7 @@
 
 
 
-(define-adjective ripe
+(define-adjective "ripe"
   :cat (quote ripe )
   :super-category (quote modifier )
   :er-est (quote (("riper" "more ripe" ) "ripest" "most ripe" ) ))
@@ -16910,7 +16910,7 @@
 
 
 
-(define-adjective rotational
+(define-adjective "rotational"
   :cat (quote rotational )
   :super-category (quote modifier ))
 
@@ -16955,7 +16955,7 @@
 
 
 
-(define-adjective ruby
+(define-adjective "ruby"
   :cat (quote ruby-modifier )
   :super-category (quote modifier ))
 
@@ -16967,7 +16967,7 @@
 
 
 
-(define-adjective rudimentary
+(define-adjective "rudimentary"
   :cat (quote rudimentary )
   :super-category (quote modifier )
   :er-est (quote (("more rudimentary" ) "most rudimentary" ) ))
@@ -17126,7 +17126,7 @@
 
 
 
-(define-adjective salient
+(define-adjective "salient"
   :cat (quote salient-modifier )
   :super-category (quote modifier )
   :er-est (quote (("more salient" ) "most salient" ) ))
@@ -17139,7 +17139,7 @@
 
 
 
-(define-adjective salty
+(define-adjective "salty"
   :cat (quote salty )
   :super-category (quote modifier )
   :er-est (quote (("saltier" ) "saltiest" ) ))
@@ -17434,7 +17434,7 @@
 
 
 
-(define-adjective secure
+(define-adjective "secure"
   :cat (quote secure-modifier )
   :super-category (quote modifier )
   :er-est (quote (("more secure" ) "most secure" ) ))
@@ -17497,7 +17497,7 @@
 
 
 
-(define-adjective separate
+(define-adjective "separate"
   :cat (quote separate-modifier )
   :super-category (quote modifier ))
 
@@ -17609,7 +17609,7 @@
 
 
 
-(define-adjective shallow
+(define-adjective "shallow"
   :cat (quote shallow-modifier )
   :super-category (quote modifier )
   :er-est (quote (("shallower" "more shallow" ) "shallowest" "most shallow" ) ))
@@ -18058,7 +18058,7 @@
 
 
 
-(define-adjective skew
+(define-adjective "skew"
   :cat (quote skew-modifier )
   :super-category (quote modifier ))
 
@@ -18070,7 +18070,7 @@
 
 
 
-(define-adjective skint
+(define-adjective "skint"
   :cat (quote skint )
   :super-category (quote modifier ))
 
@@ -18130,7 +18130,7 @@
 
 
 
-(define-adjective slick
+(define-adjective "slick"
   :cat (quote slick-modifier )
   :super-category (quote modifier )
   :er-est (quote (("slicker" ) "slickest" ) ))
@@ -18198,7 +18198,7 @@
 
 
 
-(define-adjective slight
+(define-adjective "slight"
   :cat (quote slight-modifier )
   :super-category (quote modifier )
   :er-est (quote (("slighter" ) "slightest" ) ))
@@ -18256,7 +18256,7 @@
 
 
 
-(define-adjective smart
+(define-adjective "smart"
   :cat (quote smart-modifier )
   :super-category (quote modifier )
   :er-est (quote (("smarter" ) "smartest" ) ))
@@ -18499,7 +18499,7 @@
 
 
 
-(define-adjective sole
+(define-adjective "sole"
   :cat (quote sole-modifier )
   :super-category (quote modifier ))
 
@@ -18563,7 +18563,7 @@
 
 
 
-(define-adjective sound
+(define-adjective "sound"
   :cat (quote sound-modifier )
   :super-category (quote modifier )
   :er-est (quote (("sounder" "more sound" ) "soundest" "most sound" ) ))
@@ -18633,7 +18633,7 @@
 
 
 
-(define-adjective spare
+(define-adjective "spare"
   :cat (quote spare-modifier )
   :super-category (quote modifier )
   :er-est (quote (("sparer" ) "sparest" ) ))
@@ -18901,7 +18901,7 @@
 
 
 
-(define-adjective square
+(define-adjective "square"
   :cat (quote square-modifier )
   :super-category (quote modifier )
   :er-est (quote (("squarer" ) "squarest" ) ))
@@ -19152,7 +19152,7 @@
 
 
 
-(define-adjective stark
+(define-adjective "stark"
   :cat (quote stark-modifier )
   :super-category (quote modifier )
   :er-est (quote (("more stark" ) "most stark" ) ))
@@ -19171,7 +19171,7 @@
 
 
 
-(define-adjective static
+(define-adjective "static"
   :cat (quote static )
   :super-category (quote modifier ))
 
@@ -19215,7 +19215,7 @@
 
 
 
-(define-adjective steep
+(define-adjective "steep"
   :cat (quote steep-modifier )
   :super-category (quote modifier )
   :er-est (quote (("steeper" ) "steepest" ) ))
@@ -19419,7 +19419,7 @@
 
 
 
-(define-adjective straight
+(define-adjective "straight"
   :cat (quote straight-modifier )
   :super-category (quote modifier )
   :er-est (quote (("straighter" ) "straightest" ) ))
@@ -19774,7 +19774,7 @@
 
 
 
-(define-adjective suppressive
+(define-adjective "suppressive"
   :cat (quote suppressive )
   :super-category (quote modifier )
   :er-est (quote (("more suppressive" ) "most suppressive" ) ))
@@ -19840,7 +19840,7 @@
 
 
 
-(define-adjective suspect
+(define-adjective "suspect"
   :cat (quote suspect-modifier )
   :super-category (quote modifier )
   :er-est (quote (("more suspect" ) "most suspect" ) ))
@@ -19961,13 +19961,13 @@
 
 
 
-(define-adjective symmetric
+(define-adjective "symmetric"
   :cat (quote symmetric )
   :super-category (quote modifier ))
 
 
 
-(define-adjective sympathetic
+(define-adjective "sympathetic"
   :cat (quote sympathetic )
   :super-category (quote modifier )
   :er-est (quote (("more sympathetic" ) "most sympathetic" ) ))
@@ -20020,13 +20020,13 @@
 
 
 
-(define-adjective tactile
+(define-adjective "tactile"
   :cat (quote tactile )
   :super-category (quote modifier ))
 
 
 
-(define-adjective tailless
+(define-adjective "tailless"
   :cat (quote tailless )
   :super-category (quote modifier ))
 
@@ -20135,7 +20135,7 @@
 
 
 
-(define-adjective taut
+(define-adjective "taut"
   :cat (quote taut )
   :super-category (quote modifier )
   :er-est (quote (("tauter" "more taut" ) "tautest" "most taut" ) ))
@@ -20242,7 +20242,7 @@
 
 
 
-(define-adjective temporal
+(define-adjective "temporal"
   :cat (quote temporal )
   :super-category (quote modifier ))
 
@@ -20754,7 +20754,7 @@
 
 
 
-(define-adjective traumatic
+(define-adjective "traumatic"
   :cat (quote traumatic )
   :super-category (quote modifier )
   :er-est (quote (("more traumatic" ) "most traumatic" ) ))
@@ -20916,7 +20916,7 @@
 
 
 
-(define-adjective tubular
+(define-adjective "tubular"
   :cat (quote tubular )
   :super-category (quote modifier )
   :er-est (quote (("more tubular" ) "most tubular" ) ))
@@ -21132,7 +21132,7 @@
 
 
 
-(define-adjective uniform
+(define-adjective "uniform"
   :cat (quote uniform-modifier )
   :super-category (quote modifier )
   :er-est (quote (("more uniform" ) "most uniform" ) ))
@@ -21161,7 +21161,7 @@
 
 
 
-(define-adjective universal
+(define-adjective "universal"
   :cat (quote universal )
   :super-category (quote modifier ))
 
@@ -21273,7 +21273,7 @@
 
 
 
-(define-adjective vain
+(define-adjective "vain"
   :cat (quote vain )
   :super-category (quote modifier )
   :er-est (quote (("vainer" "more vain" ) "vainest" "most vain" ) ))
@@ -21684,7 +21684,7 @@
 
 
 
-(define-adjective weak
+(define-adjective "weak"
   :cat (quote weak )
   :super-category (quote modifier )
   :er-est (quote (("weaker" ) "weakest" ) ))
@@ -21825,7 +21825,7 @@
 
 
 
-(define-adjective welcome
+(define-adjective "welcome"
   :cat (quote welcome-modifier )
   :super-category (quote modifier )
   :er-est (quote (("more welcome" ) "most welcome" ) ))
@@ -21852,7 +21852,7 @@
 
 
 
-(define-adjective wet
+(define-adjective "wet"
   :cat (quote wet-modifier )
   :super-category (quote modifier )
   :er-est (quote (("wetter" ) "wettest" ) ))
@@ -21978,7 +21978,7 @@
 
 
 
-(define-adjective wise
+(define-adjective "wise"
   :cat (quote wise-modifier )
   :super-category (quote modifier )
   :er-est (quote (("wiser" ) "wisest" ) ))
@@ -22139,13 +22139,13 @@
 
 
 
-(define-adjective work
+(define-adjective "work"
   :cat (quote work-modifier )
   :super-category (quote modifier ))
 
 
 
-(define-adjective wry
+(define-adjective "wry"
   :cat (quote wry )
   :super-category (quote modifier )
   :er-est (quote (("wryer" ) "wryest" ) ))
