@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "morphology"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  February 2021
+;;;  version:  September 2021
 
 ;; initiated 8/31/92 v2.3, fleshing out verb rules 10/12
 ;; 0.1 (11/2) fixed how lists of rules formed with synonyms
@@ -446,6 +446,29 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
 ;;; stripping suffixes
 ;;;--------------------
 
+;; These are too hard to write rules for so that they don't strip,
+;; or that are quite irregular or too short to get a multi-case
+;; suffix from
+(defparameter *do-not-stem*
+  '(
+    "alias"
+    "atlas"
+    "beings"
+    "booking"
+    "christmas"
+    "corps"
+    "mars"
+    "mumps"
+    "perhaps"
+    "seasoning"
+    "standings"
+    "string"
+    "tens"
+    "thanks"
+    "underling"
+    ))
+
+
 (defun word-stem (word)
   (get-tag :stem word))
 
@@ -460,11 +483,12 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
            ;; we got a very long (incorrect) word which caused an break
            ;; this is a patch to avoid that break
            s)
+          ((member s *do-not-stem* :test #'string-equal)
+           s)
           ((< (length s) 3) ;; "fed" -- maybe < 4 ?
            s)
           (t (let ((word (resolve/make s)))
                (stem-form word)))))
-
   (:method ((word word))
     ;; Redundant with stem-form-of-verb but adds more cases and
     ;; does a Comlex check. Stores the stem once it finds it.
@@ -490,10 +514,9 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
             ;; without morphology information we can't stem
             word)))))
 
-
 (defun stem-form-of-verb (word)
-  ;; Called from introduce-morph-brackets-from-unknown-word, which (8/8/10) is
-  ;; very conservative about what it tries to stem
+  ;; Called from older code: mine-as-a-verb in dmp;mine-terms,
+  ;; and the dialog in interface/grammar/defining-verbs.
   (let ((morphology (word-morphology word)))
     (if morphology ;;/// mistakenly stems "this",
       ;; and "species" => "specy", "during" => "dur"
@@ -596,23 +619,35 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
   (eql #\s (last-letter s)))
 
 
-;;--- Verbs ("s", "ed", "ing")
+
 
 (defgeneric form-stem/strip-s (word)
   ;; the word ends in 's'
   (:method ((w word))
     (let ((stem (form-stem/strip-s (word-pname w))))
+
       (resolve/make stem)))
   (:method ((pname string))
     (let* ((length (length pname))
            (stem-pname (subseq pname 0 (1- length)))
-           (char-before (elt pname (- length 2))))
+           (char-before (elt pname (- length 2))))          
       (cond
-        ((and (eql char-before #\e)
-              (eql #\i (elt pname (- length 3))))
-         ;; check for 'i'
-           (concatenate 'string (subseq pname 0 (- length 3)) "y"))
-        (t
+        #+ignore((< (length stem-pname) 3) ;/// collect these
+         pname)
+        ((ends-in? pname "ies")
+         (concatenate 'string (subseq pname 0 (- length 3)) "y"))
+        ((or (ends-in? pname "es") ; "roaches"
+             (ends-in? pname "us") ; "cactus" "status" "alumnus"
+             (ends-in? pname "is")) ; "oasis" "crisis"
+         (subseq pname 0 (- length 2)))
+        ((or (ends-in? pname "ass") ; "amass" "pass"
+             (ends-in? pname "ess") ; "access" "dress" "address" "impress"
+             (ends-in? pname "iss") ; "dismiss" "miss"
+             (ends-in? pname "ness") ; "witness"
+             (ends-in? pname "oss") ; "toss"
+             (ends-in? pname "uss")) ; "fuss"
+         pname)
+        (t ;; (break "Fell through pname: ~s  stem: ~s" pname stem-pname)
          stem-pname)))))
 
 ;(form-stem/strip-s (define-word "flies"))
@@ -636,7 +671,11 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
           (cond
             ((doubled-consonants? char-minus-1 char-minus-2)
              ;; "..cced" -> "..c"
-             (subseq pname 0 (- length 3)))
+             (cond ((gethash (subseq pname 0 (- length 3)) *primed-words*)
+                    (subseq pname 0 (- length 3)))
+                   ((gethash (subseq pname 0 (- length 2)) *primed-words*)
+                    (subseq pname 0 (- length 2)))
+                   (t pname))) ;/// or break?
 
             ((and (consonant? char-minus-1)
                   (not (eql char-minus-1 #\x))
@@ -663,13 +702,16 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
              ;;    e.g. "riddled with grief"
              (subseq pname 0 (- length 1)))
 
-            (t
+            ((ends-in? pname "eed") ; "bleed" "speed"
+             pname)
+
+            (t ;;(break "~s fell through" pname)
              (subseq pname 0 (- length 2)))))))))
 #|
  (test-stemmer "coiled") -> "coil"
  (form-stem/strip-ed "coiled") -> "coil"
 
-//// (form-stem/strip-ed "called") --> "cal"
+//// (form-stem/strip-ed "called") --> "call"
 
  (form-stem/strip-ed "expected") ;; default
  (form-stem/strip-ed "named")    ;; "..vced" -> "..vce"
@@ -691,7 +733,7 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
   (:method ((pname string))
     (let ((length (length pname)))
       (if (< length 6)
-        (then ;; what's an example where we'd stem it?
+        (then ; "bring" "being"
           pname)
         (let ((stem-pname (subseq pname 0 (- length 3))) ;; remove "ing"
               (char-before (elt pname (- length 4))))
