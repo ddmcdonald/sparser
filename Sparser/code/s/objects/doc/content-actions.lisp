@@ -426,7 +426,7 @@ and make that file easier to understand. |#
               record-count
               configurations)
       (when uncategoried-records
-        (format stream "~&Uncategoried instances:")
+        (format stream "~&Uncategorized instances:")
         (loop for record in uncategoried-records
              do (report-edge-record record stream))))))
 
