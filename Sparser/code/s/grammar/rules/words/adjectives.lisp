@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "adjectives"
 ;;;   Module:  "grammar;rules:words:"
-;;;  version:  August 2021
+;;;  version:  September 2021
 
 ;; initiated in 1/9/95. Redone in terms of fn words 4/12/95,
 ;; Rewritten from scratch 6/4/14. Added the other options 6/9/14
@@ -63,7 +63,8 @@
                               (cat-name attribute)
                               string
                               nil ;  direction-flag
-                              comparative ; er
-                              superlative ; est
+                              ;; Assumes the 'more' form is second
+                              (if (consp comparative) (car comparative) comparative) ; er
+                              (if (consp superlative) (car superlative) superlative) ; est
                               ))))
     category))
