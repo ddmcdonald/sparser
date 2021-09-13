@@ -416,7 +416,8 @@ and word-has-associated-category who encounter unknown words.|#
  "race" "save" "segment" "sell" "shot" "sin" "sip" "ski" "smooth" "spike" "spin" "star" "str"
                    "stud" "sun" "sup" "thread" "tower" "trip" "usher" "wild" "win")
                  :test #'equal)
-       (if instance-string
+       ;;??? what is the function of this list -- and the warnings ??
+       #+ignore(if instance-string
            (warn "New comlex verb ~s with lemma ~s " instance-string word)
            (warn "New comlex verb ~s " word)))
      (pushnew word *from-comlex*))
