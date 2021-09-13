@@ -333,9 +333,10 @@ omitted and then run (perhaps) after the image has been launched."
   ;; Defines lemmas for categories that don't naturally or easily
   ;; support them.
 
-  #+ignore(gate-grammar *score-verbs*
-     (gload "bio;score-verbs.lisp")
-     (gload "bio;score-nouns.lisp"))
+  (gate-grammar *score-verbs*
+     (gload "dossiers;comlex-categories")
+     #+ignore(gload "bio;score-verbs.lisp")
+     #+ignore(gload "bio;score-nouns.lisp"))
 
   (setup-vocabulary-suppression)
 
