@@ -9,6 +9,9 @@
 
 (in-package :sparser)
 
+;; Set the value of *master-comlex-word-list* by running prep-all-word-lists
+;; flowed by merge-word-lists
+
 ;;;-------
 ;;; lists
 ;;;-------
@@ -98,7 +101,6 @@
     "wrote" "zone"))
 
 
-
 (defparameter *morph-comlex-verbs* ;; 613
   '("abide" "absent" "absorb" "accessed" "accompany" "accomplish" "accord" "accuse" "achieve"
     "acknowledge" "adapt" "addressed" "adjust" "admit" "affiliate" "aged" "aggregate" "alarm" "align"
@@ -171,7 +173,7 @@
   "access" "accomplish" "address" "adhere" "adopt" "agree"
   "alternate" "answer" "approximate" "arches" "argues" "arise"
   "array" "ascertain" "assemble" "assess" "attempts"
-  "autoradiography" "average" "avoid" "awaits" "ax" "balloon" "bands"
+  "autoradiography" "average" "avoid" "awaits" "balloon" "bands"
   "becomes" "belongs" "best" "biopsy" "blast" "blot" "blunt"
   "borders" "bottom" "breast" "bred" "bridge" "brings" "bypass"
   "capture" "cases" "center" "chain" "challenge" "channel" "charge"
@@ -204,6 +206,7 @@
   "talk" "thin" "times" "total" "trace" "transplant" "traps" "trends"
   "trigger" "types" "undergo" "underscores" "utilizes" "visualize"
   "water" "weight" "wells"
+    
   "accelerating" "aging" "aligning" "alkylating" "antagonizing" "arresting"
   "bearing" "changing" "circumventing" "coding" "collaborating"
   "competing" "compiling" "complementing" "comprising" "connecting"
@@ -218,6 +221,7 @@
   "striking" "suffering" "supporting" "surprising" "surrounding"
   "switching" "tempting" "trading" "transforming" "varying"
   "warranting" "working"
+
   "abolished" "accepted" "accompanied" "achieved" "acknowledged"
   "addressed" "allowed" "altered" "annealed" "annotated" "appeared"
   "applied" "approved" "ascribed" "asked" "assayed" "assessed"
@@ -273,6 +277,399 @@
     ))
 
 
+;; cherry picked from Acumen rule 9/5/21 for articles 100-200
+(defparameter *strings-with-no-comlex-entry*
+  '("statehood" "oahu" "predawn" "wanna" "written" "abuzz" "snakelike"
+    "pantherlike" "necropsy" "liger" "sunk" "gonna" "lasagne" "upload"
+    "cloven" "kangeroo" "beluga" "cloven" "artwork" "photoshop" "characterisation"
+    "von" "filmmaker" "shapeshifter" "slain" "multicolor" "nope" "unincorporate"
+    "organise" "frack" "polarisation" "cellphone" "timor" "cryptozoologist"
+    "beastie" "swum" "woken" "swamplands" "ridiculousness" "hangout" "flew"
+    "dingos" "townsfolk" "townspeople" "netizens" "apologise" "mammologist"
+    "landscaper" "snowboarder" "mohawk" "pointy" "capuchin" "nutritionist"
+    "gringos" "outreach" "wacky" "slurp" "smackdown" "autoplay" "etc" "gunk"
+    "jammies" "heist" "wireline" "culturally" "ought" "sportfish" "techno"
+    "bassist" "funkify" "blown" "goofiness" "pantsuit" "bigfoot" "kooky"
+    "deli" "guacamole" "grandmotherly" "bereft" "selfies" "faux" "meme"
+    "newish" ))
+
+;; printed by save-no-morphology-list-to-parameter for  ac-100-to-200
+(defvar *no-morphology-on-acumen-word* ;; so it can't be stemmed
+ '("farmer" "slaughter" "claw" "mark" "neck" "creature" "blame" "legendary" 
+ "overnight" "sharp" "fang" "livestock" "legged" "attack" "video" "enclosure" 
+ "uninjured" "vicious" "deal" "mutilation" "mysterious" "rest" "strange" "mix" 
+ "kangaroo" "capture" "suburb" "worker" "spotted" "break" "wood" "lure" 
+ "snap" "photo" "wild" "skunk" "badger" "wolf" "mythical" "bloodsuck" 
+ "picture" "word" "suck" "cabra" "coyote" "infect" "discover" "fatal" 
+ "sighting" "puncture" "wind" "chest" "drain" "legend" "born" "beast" 
+ "far" "supposedly" "spawn" "allegedly" "voice" "movie" "funny" "inspire" 
+ "actor" "mobile" "phone" "upcoming" "steal" "character" "animation" "job" 
+ "film" "main" "heck" "guy" "myth" "tale" "nto" "love" 
+ "trust" "worthy" "pal" "lend" "hero" "alive" "fun" "realize" 
+ "muy" "simpatico" "lucha" "libre" "respect" "plane" "likeable" "heroic" 
+ "judge" "passion" "dream" "honorable" "loyal" "wait" "save" "tip" 
+ "popular" "sequel" "toy" "admit" "fantasy" "think" "stereotype" "opportunity" 
+ "don" "sound" "beauty" "wonderful" "hope" "shape" "bro" "talent" 
+ "esque" "senor" "help" "cree" "interview" "blog" "innovative" "insightful" 
+ "critique" "perspective" "world" "lineup" "light" "youthful" "masterful" "delightful" 
+ "electronic" "rubbery" "disco" "punk" "landmark" "excellent" "recap" "festival" 
+ "hip" "hop" "beat" "infuse" "saxophone" "landed" "battle" "secure" 
+ "spot" "singer" "jumpsuit" "tent" "podcast" "recording" "host" "improvise" 
+ "vegan" "restaurant" "steakhouse" "reference" "door" "drunk" "sob" "audience" 
+ "shout" "incoherent" "flattery" "baller" "sit" "knee" "leg" "dangle" 
+ "pit" "circle" "pack" "cigarette" "jump" "elastic" "dance" "wear" 
+ "balaclava" "shirt" "hook" "synth" "beige" "suit" "bowtie" "glitter" 
+ "jacket" "plastic" "skirt" "power" "pop" "visceral" "cat" "incendiary" 
+ "track" "backup" "dancer" "record" "theme" "song" "reboot" "bike" 
+ "program" "celebrate" "birthday" "offering" "discount" "annual" "membership" "unveil" 
+ "edition" "famous" "food" "hot" "deep" "dish" "pizza" "sandwich" 
+ "cake" "thrown" "launch" "popularity" "surpassing" "ride" "log" "own" 
+ "deploy" "signature" "sponsor" "resident" "visitor" "commit" "option" "proud" 
+ "try" "easy" "excite" "station" "expansion" "thrill" "offer" "special" 
+ "lookout" "traveling" "signup" "happy" "healthy" "transportation" "image" "accessible" 
+ "friendly" "commuter" "tourist" "explore" "wheel" "encourage" "searching" "partner" 
+ "designer" "disperse" "design" "adorn" "staple" "commemorate" "occasion" "classic" 
+ "plantain" "post" "social" "prize" "expand" "cover" "square" "income" 
+ "rider" "initiative" "ridership" "trip" "taken" "spearhead" "partnership" "win" 
+ "milestone" "convenient" "affordable" "sponsorship" "map" "visit" "idea" "grub" 
+ "bikeshare" "wish" "mini" "celebration" "kudos" "choose" "mighty" "sucker" 
+ "cut" "beef" "overall" "sign" "valid" "window" "fist" "lebrat" 
+ "delicious" "pic" "twitter" "humanoid" "wash" "hand" "floating" "shallow" 
+ "water" "creepy" "vampire" "drink" "decompose" "terrify" "local" "lifeless" 
+ "footage" "viral" "emerge" "online" "superstitious" "inhabit" "zoom" "unidentified" 
+ "order" "expert" "department" "monkey" "reality" "decomposition" "ape" "contact" 
+ "insist" "reportedly" "proven" "rumour" "real" "wander" "desert" "internet" 
+ "baffle" "odd" "walking" "brief" "disappear" "bush" "movement" "hind" 
+ "hunch" "arm" "mimic" "begin" "clip" "view" "viewer" "sceptical" 
+ "fake" "comment" "camera" "alien" "bald" "user" "write" "div" 
+ "miracle" "skull" "spark" "jaw" "aerial" "giant" "hairy" "prompting" 
+ "conspiracy" "theorist" "abduction" "soldier" "join" "race" "underwater" "roam" 
+ "depth" "warning" "swallow" "hole" "perusal" "late" "cocktail" "menu" 
+ "send" "shiver" "spooky" "roster" "season" "bartender" "architect" "swear" 
+ "intent" "coincidence" "morbid" "mind" "settled" "wave" "scene" "imagine" 
+ "spin" "gin" "elixir" "monster" "folklore" "splash" "fruit" "garnish" 
+ "seasonally" "available" "strawberry" "fierce" "bite" "generous" "freshly" "pepper" 
+ "syrup" "sub" "customary" "party" "festive" "concoction" "batch" "crowd" 
+ "distil" "customer" "blend" "alarming" "hue" "sparkling" "wine" "absinthe" 
+ "ounce" "lemon" "juice" "twist" "atomizer" "spray" "coating" "interior" 
+ "bourbon" "ice" "stir" "chill" "vodka" "puree" "combine" "cup" 
+ "sugar" "heat" "dissolve" "blender" "pour" "mixture" "refrigerator" "cheesecloth" 
+ "shaker" "habanero" "seasonal" "shrub" "liqueur" "peel" "sweeten" "vinegar" 
+ "weigh" "equal" "reserve" "rub" "rind" "dry" "room" "temperature" 
+ "clean" "champagne" "desire" "acidity" "shake" "flute" "alternative" "tourism" 
+ "accommodation" "ambitious" "international" "advertise" "campaign" "segment" "commonwealth" "unique" 
+ "coffee" "farm" "enjoy" "experience" "secluded" "agri" "hotel" "locate" 
+ "mountain" "nursery" "ornamental" "medicinal" "culinary" "garden" "marvelous" "landscape" 
+ "manage" "hotelier" "workshop" "sow" "cultivate" "pace" "educational" "invite" 
+ "relax" "aromatherapy" "massage" "session" "yoga" "meditation" "designate" "facility" 
+ "recreation" "expedition" "tree" "island" "hustle" "bustle" "entertain" "educate" 
+ "agricultural" "rustic" "house" "exquisite" "greenhouse" "tout" "showcase" "earn" 
+ "airport" "outsider" "prefer" "elsewhere" "tranquility" "stalk" "dessert" "stun" 
+ "upright" "wasteland" "foot" "walk" "stoop" "pair" "debate" "sceptic" 
+ "struggle" "point" "villager" "pitchfork" "scorching" "bizarre" "camouflage" "surroundings" 
+ "hear" "chirp" "calmly" "veracity" "park" "car" "stick" "reappear" 
+ "rack" "torn" "fabled" "chupacabara" "claim" "cynical" "massive" "hide" 
+ "animate" "hiker" "elusive" "uncover" "terrorize" "community" "baddest" "sink" 
+ "rock" "indie" "potential" "deliver" "website" "mailed" "weird" "folk" 
+ "field" "roadkill" "begun" "declare" "mount" "trophy" "wall" "else" 
+ "huh" "solve" "mystery" "retirement" "distribute" "distributor" "author" "warranty" 
+ "right" "material" "advice" "approve" "promise" "guarantee" "completeness" "therein" 
+ "responsibility" "construe" "commentary" "reflect" "infer" "connote" "expressly" "sole" 
+ "discretion" "surface" "print" "eyewitness" "spike" "thin" "alienlike" "oblong" 
+ "depiction" "mid" "phenomenon" "editor" "raccoon" "hoax" "residual" "impressionable" 
+ "youth" "trace" "pin" "alt" "oe" "notice" "share" "resemblance" 
+ "thriller" "connection" "hit" "theater" "see" "enter" "public" "conscious" 
+ "speak" "theyre" "whole" "enchilada" "piece" "dont" "eat" "crow" 
+ "chapter" "suspense" "horror" "comedy" "debut" "revive" "predator" "fight" 
+ "dangerous" "charge" "combat" "violence" "disturb" "citizen" "incident" "gang" 
+ "smuggle" "tunnel" "hunt" "commotion" "motorcycle" "remind" "enigmatic" "constant" 
+ "assured" "ugly" "surrounding" "sneak" "peek" "watch" "rumor" "mange" 
+ "enforcement" "barn" "colleague" "drill" "purport" "corpse" "internal" "eaten" 
+ "vulture" "friend" "issue" "deadly" "spend" "search" "allege" "blazing" 
+ "pursue" "rain" "cave" "police" "military" "personnel" "astound" "account" 
+ "confrontation" "supernatural" "format" "worldwide" "copy" "carnivorous" "diet" "remote" 
+ "hunter" "republic" "sighted" "prey" "colour" "longish" "resemble" "likeness" 
+ "fox" "poison" "radiation" "maybe" "relate" "weapon" "supposed" "secret" 
+ "defence" "veterinary" "marten" "vet" "skinny" "hair" "otter" "ear" 
+ "nose" "stretch" "muzzle" "vary" "lurid" "unconfirmed" "chicken" "domestic" 
+ "grey" "frightened" "accord" "cryptid" "game" "weekend" "infamous" "ferocious" 
+ "quiet" "horrific" "wail" "grandson" "hurry" "bag" "wife" "countryside" 
+ "mangy" "live" "domesticate" "wildlife" "subscribe" "affiliate" "mite" "suspect" 
+ "emaciate" "sickly" "bear" "row" "rancher" "sort" "skin" "alert" 
+ "lie" "hay" "winery" "farmhand" "inspection" "safety" "stumble" "outskirts" 
+ "bale" "cellar" "realise" "reptile" "leathery" "scaly" "quill" "livelihood" 
+ "couple" "suffering" "scabies" "leave" "busy" "gruesome" "pile" "danger" 
+ "snare" "football" "net" "moose" "court" "confront" "menace" "hail" 
+ "free" "terror" "home" "wipe" "cage" "massacre" "leap" "fence" 
+ "paw" "sleep" "peace" "doubt" "malnourish" "haunt" "throw" "disgusting" 
+ "elf" "creep" "halt" "plan" "roadway" "project" "infringe" "church" 
+ "chapel" "construction" "weasel" "ancient" "lore" "contemporary" "serpent" "credibility" 
+ "squid" "platypus" "dragon" "correct" "stuff" "fetch" "occupy" "formal" 
+ "century" "biography" "missionary" "funeral" "loch" "reinvigorate" "modern" "surge" 
+ "photographic" "documentation" "dub" "discredit" "portrait" "debunk" "stop" "curious" 
+ "seek" "submarine" "scour" "empty" "enthusiast" "skeptic" "argue" "wake" 
+ "boat" "boom" "economy" "cruise" "museum" "dedicate" "amusement" "buy" 
+ "imaginable" "souvenir" "artist" "rendering" "catch" "evolutionary" "parasitic" "fur" 
+ "demonic" "mainland" "victim" "panic" "demon" "strike" "comfort" "bed" 
+ "channel" "nightmare" "stature" "comic" "appearance" "team" "serious" "bill" 
+ "chronicle" "encounter" "reconsider" "sake" "magical" "bulldoze" "hawthorn" "favorite" 
+ "meeting" "fairy" "curse" "brake" "crash" "wreak" "mischief" "angry" 
+ "warn" "fort" "trouble" "unleash" "believer" "cousin" "photograph" "backyard" 
+ "pose" "kristiannordestgaard" "explorer" "worldly" "elephantine" "dwelling" "sauropaud" "dinosaur" 
+ "illustration" "sauropod" "researcher" "chart" "unexplored" "terrain" "mbembe" "gut" 
+ "science" "hungry" "rush" "curvy" "tropical" "banana" "potassiumand" "vitamin" 
+ "ravenous" "wonder" "pluck" "stand" "grocery" "effort" "transport" "root" 
+ "palm" "perennial" "cooking" "apple" "lady" "finger" "aromatic" "thick" 
+ "unpalatable" "pick" "ripen" "shipment" "taste" "shopping" "plump" "colored" 
+ "ripeness" "ideal" "consumption" "starch" "sweet" "hasten" "paper" "ripe" 
+ "maturation" "tomato" "avocado" "mellow" "wealth" "entree" "bread" "muffin" 
+ "pancake" "kick" "cream" "pie" "split" "luscious" "ending" "crave" 
+ "spectacle" "whip" "flamboyant" "saute" "slice" "cinnamon" "unsalted" "butter" 
+ "aflame" "dark" "rum" "fire" "spoon" "caramelize" "amber" "sauce" 
+ "chocolate" "coconut" "ginger" "macadamia" "nuts" "walnut" "bake" "broil" 
+ "fry" "grill" "poach" "versatility" "squash" "flavor" "firm" "savory" 
+ "instance" "potato" "boil" "mash" "pure" "starchy" "sugary" "cook" 
+ "remember" "crack" "shrivel" "feel" "overly" "soft" "shade" "soup" 
+ "stew" "omelet" "bacon" "chile" "curry" "garlic" "lime" "pork" 
+ "salsa" "clove" "memorable" "specialty" "eclair" "size" "consist" "steak" 
+ "lettuce" "mayonnaise" "layer" "flatten" "crisp" "delectable" "traditional" "ham" 
+ "vegetable" "cheese" "replace" "toffee" "milk" "egg" "yolk" "beaten" 
+ "grease" "loaf" "teaspoon" "salt" "soda" "blanch" "almond" "grind" 
+ "processor" "finish" "flour" "vanilla" "optional" "saucepan" "whisk" "stove" 
+ "ingredient" "thicken" "fine" "mesh" "strainer" "bowl" "cool" "oven" 
+ "separate" "batter" "toothpick" "wire" "scoop" "chop" "lengthwise" "canola" 
+ "aside" "golden" "glaze" "skillet" "olive" "onion" "mince" "cayenne" 
+ "strip" "heatproof" "towel" "board" "dash" "soften" "tail" "sausage" 
+ "sundae" "munch" "rotten" "tofu" "rattlesnake" "daring" "smorgasbord" "oddity" 
+ "raindrop" "brave" "locust" "decade" "nutritional" "protein" "crispy" "salty" 
+ "flavour" "peanut" "workout" "fad" "purveyor" "exotic" "branch" "eatery" 
+ "pride" "macabre" "decor" "furnish" "coffin" "booth" "style" "kielbasa" 
+ "mislead" "creamy" "lumpy" "noodle" "sundaeguk" "intestine" "hangover" "trend" 
+ "mizu" "shingen" "mochi" "crystalline" "solidify" "gelatine" "kinako" "roast" 
+ "soy" "orb" "marshmallow" "usual" "bonfire" "tapioca" "chewy" "cassava" 
+ "aesthetic" "pale" "chilli" "colourful" "fishing" "greet" "seat" "surround" 
+ "moat" "teem" "quest" "rod" "bait" "ensure" "kasago" "scorpion" 
+ "diner" "applaud" "chef" "devote" "loin" "shoulder" "recommend" "coentrada" 
+ "trotter" "coriander" "salada" "orelha" "salad" "porco" "molho" "agridoce" 
+ "sour" "caterer" "cuisine" "popcorn" "shrimp" "box" "overflow" "bathtub" 
+ "decorate" "tiny" "rubber" "duck" "homage" "cotton" "candy" "powdered" 
+ "pompadour" "wig" "authentic" "nestling" "juicy" "market" "stinky" "undesirable" 
+ "delicacy" "soak" "rot" "brine" "meat" "spicy" "centre" "pungent" 
+ "smell" "conclude" "doglike" "lurk" "vehicle" "store" "freezer" "received" 
+ "bombard" "genetics" "laboratory" "forensic" "biologist" "conclusion" "chromosome" "haplotyp" 
+ "ancestry" "biology" "oversee" "research" "paternity" "talk" "internationally" "ranch" 
+ "overseas" "dispute" "makeup" "perfect" "beach" "bun" "typical" "tan" 
+ "nice" "gloriously" "cheap" "coach" "bus" "bunch" "modernista" "siesta" 
+ "squeeze" "tile" "sloppy" "convent" "chaste" "camping" "sirloin" "surf" 
+ "rental" "nighter" "sleepy" "camp" "reserveamerica" "swell" "jetty" "paddle" 
+ "longpointcafe" "wax" "rend" "taco" "pummel" "storm" "draw" "ferry" 
+ "wickinn" "slash" "hardy" "soul" "landfall" "grab" "gear" "desk" 
+ "wet" "sobo" "takeout" "truck" "killer" "fancy" "dig" "grove" 
+ "whale" "colony" "thepeninsulahouse" "reasonable" "package" "poolside" "espresso" "guesthouse" 
+ "airy" "suite" "request" "plantation" "mangrove" "plop" "arc" "sand" 
+ "motorboat" "gape" "humpback" "shack" "restore" "loungey" "pickyour" "bean" 
+ "omelette" "lush" "hillside" "haciendaeljibarito" "agro" "lodge" "kitchen" "freestand" 
+ "wooden" "villa" "tour" "hacienda" "bestow" "drinker" "holiday" "gift" 
+ "trampoline" "idyllic" "archipelago" "balcony" "html" "hire" "guide" "hash" 
+ "bird" "bar" "nightlife" "taxi" "bocasaqualounge" "hostel" "sip" "seco" 
+ "lion" "fee" "pocket" "bungalow" "cabopulmo" "resort" "dive" "scuba" 
+ "manta" "ray" "snorkel" "wahoo" "marlin" "fisherman" "panga" "booby" 
+ "swoop" "reggae" "royalty" "breadfruit" "actual" "marleyresort" "vacation" "inn" 
+ "elaborately" "carve" "textile" "coral" "stone" "bath" "callaloo" "terrace" 
+ "sunbathe" "float" "waterfall" "swimming" "music" "waft" "hidden" "outdoor" 
+ "speaker" "impromptu" "jam" "mineral" "celebrity" "stomach" "cold" "snow" 
+ "runoff" "sagewaterspa" "indulge" "valley" "pollution" "ordinance" "spy" "eyed" 
+ "cholla" "private" "sloop" "sailing" "survive" "stock" "aurorabeachfront" "countless" 
+ "swordfish" "sangria" "fresh" "lobster" "flashlight" "flood" "crust" "descend" 
+ "energy" "unromantic" "blackout" "lesson" "flat" "bargain" "thecrane" "steady" 
+ "breeze" "blow" "troop" "sunbaked" "dude" "teach" "surfing" "barbadossurf" 
+ "strenuous" "distillery" "mountgay" "bluff" "glossy" "advertisement" "paradise" "punch" 
+ "notorious" "teen" "landing" "rifle" "honestly" "reporter" "kid" "crazy" 
+ "sick" "mainstream" "contend" "urban" "husband" "growl" "corn" "euthanize" 
+ "peacefully" "refer" "inquiry" "warden" "gossip" "complaint" "receive" "care" 
+ "disbelief" "baby" "wrinkly" "bulbous" "neighbor" "coon" "noise" "possum" 
+ "harm" "curiosity" "infestation" "mysteriously" "stray" "infest" "scabiei" "painful" 
+ "threaten" "ghoulish" "consequent" "itchy" "rash" "burrow" "finale" "chock" 
+ "review" "alternate" "storyline" "spree" "malevolent" "force" "truth" "suspicion" 
+ "approach" "dossier" "handle" "circumstance" "beer" "cosy" "chat" "fair" 
+ "freak" "cell" "accept" "unbelievable" "fairytale" "stride" "feck" "spell" 
+ "bombshell" "await" "hooray" "nausea" "cramp" "clever" "writer" "irrelevant" 
+ "witchy" "inevitable" "showdown" "coma" "bitch" "interest" "situation" "unfold" 
+ "cliff" "hanger" "abduct" "hate" "acronym" "know" "happily" "honeymoon" 
+ "getaway" "enrage" "matter" "yeah" "cop" "guard" "betray" "abandon" 
+ "rogue" "cope" "decay" "joke" "chum" "geekiest" "guest" "praise" 
+ "geek" "mum" "cumbia" "sport" "percussion" "trumpet" "guitar" "accordion" 
+ "bass" "musician" "fallen" "skeleton" "flower" "lively" "horn" "lyric" 
+ "zebra" "onlooker" "grayish" "posterity" "rural" "denizen" "nasty" "den" 
+ "imagination" "litter" "mutt" "licking" "discovery" "craze" "accompany" "caricature" 
+ "hideous" "deer" "carcass" "whisper" "chupacrabra" "reptilian" "forked" "tongue" 
+ "nonsense" "outdoorsman" "beg" "differ" "mar" "unsightly" "unconvinced" "refuse" 
+ "unfortunate" "diseased" "woodland" "whisker" "intense" "circulate" "havoc" "sweep" 
+ "cattle" "vow" "burn" "freakish" "monstrosity" "cynic" "calve" "savagely" 
+ "parallel" "evade" "pursuer" "amalgam" "hyena" "sensation" "unlock" "rife" 
+ "devil" "caption" "agree" "glowing" "aggressive" "lunge" "yonder" "calibur" 
+ "nail" "defiant" "dispose" "jawbone" "toenail" "grant" "patent" "titled" 
+ "comprise" "microfilter" "dishwasher" "invention" "tub" "wherein" "receptacle" "collected" 
+ "hollow" "cylindrical" "circulation" "pump" "connect" "opening" "sprayer" "nozzle" 
+ "file" "device" "impeller" "downtown" "fix" "neighborhood" "unhealthy" "riddle" 
+ "confidence" "coat" "cower" "platoon" "hawk" "owl" "nest" "history" 
+ "step" "nightly" "kit" "shoot" "anesthetize" "assign" "county" "solution" 
+ "skill" "considerable" "repeat" "pay" "tax" "lawn" "admire" "uptick" 
+ "unfamiliar" "fledgling" "trade" "accomplished" "election" "weather" "conversation" "spoken" 
+ "broken" "barrier" "esprit" "togetherness" "inexplicable" "takeaway" "columnist" "sheeple" 
+ "feral" "silence" "land" "consult" "relive" "anticipate" "button" "tie" 
+ "shimmery" "necklace" "sunglasses" "stream" "blonde" "album" "technical" "difficulty" 
+ "guitarist" "shrill" "feedback" "melancholy" "unbother" "pelvic" "thrust" "wrap" 
+ "self" "brass" "busk" "gain" "captivate" "footwork" "baritone" "sun" 
+ "bouncing" "harsh" "shadowy" "gorge" "mom" "wisdom" "forget" "oversized" 
+ "rainbow" "striped" "cord" "scarf" "ukulele" "bang" "drum" "pad" 
+ "gusto" "instrument" "tune" "sway" "smooth" "laugh" "sophomore" "shave" 
+ "plume" "smoke" "rise" "drone" "beautiful" "heartache" "solo" "recovery" 
+ "face" "radiant" "denim" "beanie" "twinkling" "sky" "journalism" "conference" 
+ "embarrassingly" "lachrymose" "mourning" "sketch" "kitschy" "television" "cockeyed" "territory" 
+ "upscale" "hike" "intone" "tough" "narrator" "flash" "shaky" "presume" 
+ "hearted" "attempt" "fearsome" "oft" "misunderstand" "newish" "insult" "shroud" 
+ "tonight" "headed" "meme" "steam" "chummy" "star" "politician" "bedecked" 
+ "fleece" "bereft" "beam" "fan" "benign" "cheerily" "vat" "guacamole" 
+ "grin" "quaint" "bookstore" "deli" "follower" "kooky" "creative" "faux" 
+ "doctor" "bigfoot" "presidential" "contest" "pantsuit" "speech" "microphone" "honor" 
+ "questionable" "fixture" "blast" "scourge" "confidant" "rethink" "finalize" "presidency" 
+ "check" "helpful" "furry" "boot" "money" "political" "downright" "elate" 
+ "airwaves" "sanctimony" "document" "sock" "glorious" "rear" "peddling" "volunteer" 
+ "charity" "attainment" "servant" "fade" "thrive" "exposure" "publicity" "fury" 
+ "drift" "elect" "contributor" "profoundly" "lad" "blown" "quintet" "front" 
+ "keyboard" "player" "huge" "flair" "tasty" "funkify" "boogie" "pleasantly" 
+ "recall" "vocal" "fiery" "duel" "blister" "harp" "harmonica" "plant" 
+ "find" "drummer" "gig" "medicine" "occasional" "future" "stubbornly" "rap" 
+ "cancel" "techno" "cancellation" "concert" "schedule" "studio" "depart" "club" 
+ "afford" "condominium" "floor" "tournament" "lawsuit" "champion" "rule" "violation" 
+ "captain" "crew" "angler" "avoid" "penalty" "gather" "hat" "stage" 
+ "fish" "cash" "angling" "scrimp" "problem" "sad" "sportfish" "honest" 
+ "reprisal" "roadblock" "upgrade" "plaintiff" "bullet" "vest" "justice" "slip" 
+ "angle" "injustice" "ought" "rectify" "letter" "caution" "unsuccessful" "legal" 
+ "entity" "ban" "penalize" "exact" "pounder" "rope" "overshadow" "protest" 
+ "hoist" "pectoral" "fin" "bend" "center" "unfair" "reweigh" "twice" 
+ "oral" "tradition" "adapt" "cultural" "adjust" "ancestor" "helpless" "sari" 
+ "aquatic" "spirit" "household" "folktale" "portray" "denote" "message" "governing" 
+ "practice" "norm" "verifiable" "govern" "yaka" "everyday" "scientific" "irregularly" 
+ "nowhere" "diurnal" "distrust" "innocent" "distract" "era" "believable" "intervention" 
+ "simplify" "narrative" "stupid" "complicated" "calamity" "accountability" "unimaginable" "deceive" 
+ "resolve" "demand" "transparency" "communication" "politics" "desirable" "open" "constructive" 
+ "criticism" "pawn" "seeker" "wise" "bottle" "permission" "geographic" "submit" 
+ "disaster" "evolve" "snapshot" "filings" "coordination" "wireless" "caller" "intermittently" 
+ "restoration" "signatory" "aggregate" "maximum" "coordinate" "prioritiz" "temporary" "asset" 
+ "carrier" "maximize" "subscriber" "consumer" "cable" "wireline" "toll" "broadcast" 
+ "input" "scan" "outreach" "offline" "radio" "relevant" "toe" "bloated" 
+ "bid" "unusual" "abort" "unravel" "revisit" "flesh" "stink" "strangely" 
+ "maggot" "sinister" "excuse" "suitcase" "attac" "jewelry" "art" "organizer" 
+ "unwell" "eccentric" "heist" "tank" "shift" "bloodshot" "staring" "intake" 
+ "buzz" "routine" "trustworthy" "eerily" "doze" "nap" "awake" "skip" 
+ "migrant" "snuggle" "couch" "blanket" "slumber" "scary" "spook" "ready" 
+ "triangle" "flirt" "gouge" "gunk" "mold" "immigrant" "etc" "radar" 
+ "stranger" "unwanted" "inflame" "fantastic" "alley" "employer" "enduring" "blatant" 
+ "racism" "incredibly" "contagion" "labor" "crop" "credit" "crap" "mutter" 
+ "hell" "dreamland" "air" "detention" "heading" "identity" "faceless" "disposable" 
+ "autoplay" "emulate" "roulette" "thief" "clingfilm" "humiliate" "driver" "tear" 
+ "baseball" "smackdown" "lair" "slurp" "misogynist" "horny" "yuppie" "hang" 
+ "honey" "smartly" "budget" "insipidly" "silly" "wacky" "amusing" "premier" 
+ "moviemaker" "wit" "manifest" "meet" "bacchanal" "locale" "outing" "frightening" 
+ "boring" "presto" "bloody" "flick" "shapeshift" "feast" "preferably" "hijack" 
+ "sentiment" "government" "jungle" "waste" "slyly" "moment" "snicker" "chuckle" 
+ "spoil" "yearning" "connoisseur" "zombie" "awful" "plot" "cinematography" "superb" 
+ "trilogy" "lame" "mullah" "primordial" "ambivalent" "bloodlet" "witty" "rationale" 
+ "otherworldly" "scheme" "complicity" "palaver" "cast" "photogenic" "deft" "disastrously" 
+ "spice" "entertainment" "wittily" "minimum" "output" "installation" "compensation" "unjustified" 
+ "settlement" "reject" "assertion" "indigenous" "federation" "unaffected" "willing" "dialogue" 
+ "hostile" "intervene" "negotiation" "crude" "barrel" "bpd" "belong" "haunch" 
+ "crab" "spokeswoman" "implant" "cheek" "reside" "taster" "turf" "gulp" 
+ "mail" "sitewith" "sensational" "hard" "examiner" "curator" "howler" "capuchin" 
+ "mistaken" "greyish" "neighbour" "kilogram" "kilometre" "veter" "mummify" "oval" 
+ "shock" "horrible" "spacecraft" "machine" "pointy" "trapper" "pet" "splotch" 
+ "condo" "crytpid" "bayou" "pest" "inbreeding" "neighbourhood" "fortnight" "bare" 
+ "screech" "evil" "scratch" "goatsucker" "bleach" "blond" "mohawk" "snowboarder" 
+ "hellbeast" "ridiculously" "tick" "bandy" "plain" "townsfolk" "distance" "residence" 
+ "suburban" "lumber" "quick" "elongate" "snout" "notoriety" "forth" "naught" 
+ "weak" "nearest" "trash" "townspeople" "advised" "adamant" "neatly" "mute" 
+ "expose" "blissfully" "drama" "conveniently" "wield" "chupacraba" "purportedly" "photocall" 
+ "altercation" "ransack" "debonair" "dealer" "recover" "stolen" "painting" "gold" 
+ "cinema" "brightcove" "hilarious" "handsomely" "curio" "outfit" "promotional" "attend" 
+ "relay" "wrestle" "thank" "task" "apologise" "attacker" "assailant" "brush" 
+ "wryly" "smile" "career" "globe" "earth" "unsolved" "epic" "adventure" 
+ "mission" "humor" "brand" "shark" "technology" "tackle" "climate" "planet" 
+ "snowmobile" "fortune" "bushwhack" "rainforest" "perplex" "puzzle" "pound" "producer" 
+ "fiction" "diversity" "amazement" "vivid" "genre" "exploration" "glimpse" "organization" 
+ "global" "passionate" "leadership" "innovator" "portfolio" "digital" "factual" "strategic" 
+ "alliance" "golf" "premium" "landscaper" "texture" "elephant" "wilderness" "fridge" 
+ "skeptical" "specimen" "flying" "airplane" "powered" "competition" "homemade" "aircraft" 
+ "lucky" "ramp" "compete" "resourceful" "engineering" "creativity" "victory" "criterion" 
+ "showmanship" "plunge" "training" "skydiv" "glide" "paraglid" "flew" "fly" 
+ "teammate" "bull" "bronco" "buster" "intimidate" "roach" "mean" "cockroach" 
+ "reckon" "rustle" "bug" "patience" "buck" "grasp" "mythological" "awesome" 
+ "scatter" "majestically" "plummet" "concrete" "penguin" "doesnt" "hangout" "craziness" 
+ "odor" "garbage" "berry" "boar" "swamp" "pioneer" "discourage" "accuse" 
+ "witchcraft" "crime" "execute" "ghost" "tragedy" "cemetery" "preside" "sheriff" 
+ "prison" "super" "noteworthy" "treasure" "sore" "docile" "maternal" "paternal" 
+ "impossible" "rational" "tingle" "icy" "monstrous" "cam" "dart" "cruel" 
+ "prank" "curling" "photographer" "clear" "hump" "seal" "glacier" "poke" 
+ "woken" "sudden" "thirdphaseofthemoon" "astonishing" "lock" "prehistoric" "extinction" "accidentally" 
+ "loom" "swum" "afflict" "intestinal" "furor" "rampant" "consternation" "coy" 
+ "hysteria" "beastie" "hype" "propensity" "exploit" "instinct" "prompt" "liken" 
+ "meteoric" "climb" "stardom" "appeance" "frantic" "alter" "guilt" "longing" 
+ "reunite" "la" "safe" "ticket" "civilization" "overwhelm" "emotion" "essence" 
+ "orbe" "fecit" "timor" "oefor" "carpet" "stern" "impel" "curtain" 
+ "gaze" "mistakenly" "whet" "chubacabra" "coop" "steel" "overbite" "pouch" 
+ "nodule" "grandmother" "footprint" "cellphone" "regard" "convey" "fulfil" "commitment" 
+ "investment" "diplomat" "back" "vote" "concede" "arrival" "coincide" "bilateral" 
+ "intention" "rebuttal" "tweet" "diplomatic" "redesign" "gob" "vision" "optimistic" 
+ "arena" "fuel" "theft" "federal" "gasoline" "tanker" "peso" "clandestine" 
+ "refinery" "pipe" "analyst" "implement" "column" "commend" "nation" "pipeline" 
+ "intelligence" "censure" "simplistic" "patrol" "security" "indiscriminate" "orderly" "immigration" 
+ "personal" "fingerprint" "prisoner" "wrongfully" "environmentalist" "frack" "extraction" "teacher" 
+ "education" "reform" "violently" "telephone" "counterpart" "sovereignty" "testify" "inaction" 
+ "weaponry" "organise" "defend" "violent" "summon" "judicial" "calm" "unsure" 
+ "worsen" "retake" "firearm" "traffic" "freeze" "flow" "agreement" "acquiesce" 
+ "stem" "manufacture" "utter" "failure" "grudge" "enemy" "defeat" "ambition" 
+ "hurt" "hamper" "careful" "misguided" "contrary" "ironic" "cartoon" "ctober" 
+ "irony" "engulf" "disarray" "unquestionable" "meddle" "animalpolitico" "allocate" "deployment" 
+ "negligible" "seamstress" "unincorporate" "donate" "cloth" "employee" "slow" "kindness" 
+ "sew" "scrunch" "overhear" "dad" "equipment" "hospital" "nurse" "handiwork" 
+ "page" "fabric" "pastor" "estate" "pickup" "delivery" "clientele" "figured" 
+ "nope" "stitch" "rotary" "cutter" "thread" "complete" "perch" "inspiration" 
+ "goofy" "motivation" "unsolicited" "uncomfortable" "donation" "retire" "temperamental" "teenager" 
+ "shut" "homeless" "shelter" "entertainer" "performer" "theorize" "depict" "historic" 
+ "entrench" "mythology" "merit" "scaley" "explode" "villain" "slain" "lechuza" 
+ "witch" "attract" "lonely" "pray" "shapeshifter" "tribe" "magician" "magic" 
+ "werewolf" "poster" "tight" "lipped" "due" "reservation" "fours" "frighteningly" 
+ "intelligent" "classroom" "dwell" "documentary" "filmmaker" "von" "definitive" "lecture" 
+ "affiliation" "homeland" "recipe" "spill" "deny" "damn" "capacity" "thorough" 
+ "enthusiastic" "realistic" "chase" "bane" "prowl" "thirsty" "savage" "nightmarish" 
+ "revel" "mankind" "candid" "maul" "rage" "frenzy" "sleuth" "ghastly" 
+ "bloodthirsty" "meanwhile" "bridge" "curve" "uncanny" "adaptation" "jokingly" "detective" 
+ "photoshop" "artwork" "round" "culprit" "snowfall" "legitimacy" "reek" "webbed" 
+ "throat" "rip" "reel" "enormous" "date" "muscular" "gorilla" "bulldozer" 
+ "grainy" "berserk" "spiny" "glance" "slay" "raid" "snake" "swim" 
+ "sailor" "serpentine" "belt" "forehead" "historical" "reward" "peer" "beluga" 
+ "panther" "lynx" "people" "copper" "sacred" "apart" "precious" "metal" 
+ "hare" "drag" "porcupine" "hoof" "kangeroo" "cloven" "cry" "pitch" 
+ "curdle" "scream" "womb" "stormy" "chimney" "vigilante" "storey" "upload" 
+ "text" "transcript" "copter" "bump" "uh" "chimichanga" "dear" "chubby" 
+ "papa" "smash" "shh" "lasagne" "foam" "bash" "stripe" "slit" 
+ "brazen" "superstition" "listen" "gonna" "exaggeration" "honour" "suspicious" "beloved" 
+ "shine" "butt" "collect" "loose" "strangle" "strewn" "carnage" "preposterous" 
+ "sunk" "turkey" "sneer" "penis" "bin" "septic" "pub" "price" 
+ "tuft" "stare" "nocturnal" "discomfort" "fawn" "liger" "driveway" "extend" 
+ "backwards" "extinct" "necropsy" "snarl" "spokesperson" "quip" "sadness" "yearold" 
+ "quote" "galaxy" "halfbeast" "kangaroolike" "sulfurlike" "stench" "pantherlike" "snakelike" 
+ "destination" "someday" "abuzz" "satisfaction" "dye" "undisturbed" "foliage" "conclusive" 
+ "poem" "vendor" "written" "grade" "tracker" "rodeo" "bronc" "slack" 
+ "steer" "loud" "cheer" "bareback" "runner" "solidly" "cowboy" "qualify" 
+ "unofficial" "wanna" "card" "redeem" "toast" "plenty" "frog" "invasive" 
+ "commercial" "book" "oahu" "enormously" "robbery" "complain" "beforehand" "secretly" 
+ "predawn" "indict" "courtesy" "jurisdiction" "indictment" "governor" "spokesman" "seize" 
+ "conflict" "remark" "misinterpret" "benefit" "statehood" "neglect" "clout" "harassment" 
+ "poet" "manuscript" "tape" "forcibly" "apartment" "lawyer" "decline" "allegation" 
+ "warrant" "advocate" "pro" "trial" "preliminary" "magistrate" "protester" "chant" 
+ ))
 
 ;;;-------------------------------
 ;;; vetting a word for suitablity
@@ -303,11 +700,12 @@
  regular define-category expressions for all of them. |#
 
 
-(defparameter *words-used-in-polywords* nil) ;; 1,135
+(defparameter *words-used-in-polywords* nil) ;; 1,130
 
 (defun populate-words-used-in-polywords ()
   "Looping the candidate test over the master word list returns about 1.5k words.
-   Sampling says they are :used-in-pw"
+   Sampling says they are :used-in-pw. Starts with words and ends with
+   strings"
   (let ((raw-list
          (alphabetize-list-of-words
           (remove-duplicates
@@ -323,10 +721,10 @@
 
 
 
-(defparameter *clean-comlex-verbs* nil  ;; 632
-  "These were examined by hand to remove plurals, past versions")
+(defparameter *clean-comlex-verbs* nil)  ;; 630
 
 (defun populate-clean-comlex-verbs ()
+  "These were examined by hand to remove plurals, past versions"
   (let ((candidate-list
          (sort
           (remove-duplicates
@@ -342,7 +740,7 @@
 
 (defparameter *clean-morph-comlex-verbs* nil) ;; 506
 
-(defun populate-clean-morph-word-list ()
+(defun populate-clean-morph-verb-list ()
   (let ((raw-list
          (sort
           (remove-duplicates
@@ -373,10 +771,9 @@
            :test #'equal)
           #'string<)))
     (let ((clean
-           (remove-duplicates
-            (loop for w in raw-list
-               collect (stem-form w)))))
-      (setq *clean-word-list* clean)
+           (loop for p in raw-list
+              collect (stem-form p))))
+      (setq *clean-word-list* (mapcar #'word-pname clean))
       (length clean))))
 
 
@@ -386,17 +783,17 @@
 ;;; master list
 ;;;------------
 
-(defun prep-all-word-lists ()
+(defun prep-all-word-lists () ; 3,097
   "Run all the filters. They each return a count."
   (let ((word-count
          (+ (populate-words-used-in-polywords)
             (populate-clean-comlex-verbs)
-            (populate-clean-morph-word-list)
+            (populate-clean-morph-verb-list)
             (populate-clean-word-list))))
     word-count))
 
 
-(defparameter *master-comlex-word-list* nil)
+(defparameter *master-comlex-word-list* nil) ; 2,183
 
 (defun merge-word-lists ()
   (declare (special *words-used-in-polywords* *clean-comlex-verbs*
