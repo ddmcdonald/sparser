@@ -76,7 +76,7 @@ the define-category expression we return it.
      collect (make-verb-particle-form base-verb prt)))
 
 (defun make-verb-particle-form (verb particle)  
-  (let ((cat-name (string-append  verb "-" particle))
+  (let ((cat-name (intern (string-append  verb "-" particle) (find-package :sp)))
         (superc (cat-name (super-category-for-POS :verb))) ; safe choice
         (mixins (list (verb-subcat-frame verb)))) ; Comlex subcat could improve this
     (let ((form
