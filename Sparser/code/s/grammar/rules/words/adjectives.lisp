@@ -53,12 +53,16 @@
       ;; to make it all work. This amounts to a recoding of the key parts
       ;; of it since from this direction the packaging is different.
       ;; /// if we were being 'correct' we'd abstract out this shared
-      ;; suffix. 
-      (let ((comparative (car er-est))
-            (superlative (cdr er-est))
-            (attribute (create-scalar-attribute (resolve string))))
-        (unless (and (> (length comparative) 5)
-                     (string-equal "more" (subseq comparative 0 4)))
+      ;; suffix.
+      (flet ((filter-out-more (er-est)
+               (etypecase er-est
+                 (string (unless (string-equal "more " (subseq er-est 0 5)) er-est))
+                 (list (loop for s in er-est ; introduces a list we have to check for
+                          unless (string-equal "more " (subseq s 0 5))
+                          collect s)))))   
+        (let ((comparative (filter-out-more (car er-est)))
+              (superlative (filter-out-more (cdr er-est)))
+              (attribute (create-scalar-attribute (resolve string))))
           (setup-comparatives (resolve string) ; base-adjective
                               (cat-name attribute)
                               string
@@ -68,3 +72,4 @@
                               (if (consp superlative) (car superlative) superlative) ; est
                               ))))
     category))
+
