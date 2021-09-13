@@ -45,14 +45,14 @@ the define-category expression we return it.
   
 (defun make-category-form-for-simple-adjective (word category-name super-category)
   (let ((form
-         `(define-adjective ,word
+         `(define-adjective ,(pname word)
               :cat ',category-name
               :super-category ',super-category)))
     form))
 
 (defun make-category-form-for-graded-adjective (word category-name super-category er-est)                                               
   (let ((form
-         `(define-adjective ,word
+         `(define-adjective ,(pname word)
               :cat ',category-name
               :super-category ',super-category
               :er-est ',er-est)))
