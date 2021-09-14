@@ -37,7 +37,7 @@
   :instantiates person
   :specializes person-type
   :rule-label person
-  :bindings (uid "NCITC14284"
+  :bindings (uid "NCIT:C14284"
              gender 'female)
   :realization (:common-noun ("woman" :plural "women")))
 

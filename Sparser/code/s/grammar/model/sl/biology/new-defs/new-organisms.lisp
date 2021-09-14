@@ -1,47 +1,57 @@
 (in-package :sparser)
 
+;; many things were moved out of bio to mid-level/organisms in 9/2021
+
 ;;(def-indiv-with-id organism "strain" "NCIT:C14419" :name "organism strains") use def from taxonomy
 (def-indiv-with-id organism "prokaryote" "NCIT:C14263" :name "prokaryote") 
 (def-indiv-with-id organism "eukaryote" "NCIT:C25796" :name "eukaryota")
 (def-indiv-with-id organism "protista" "NCIT:C77914" :name "protista") 
 (def-indiv-with-id organism "archaea" "NCIT:C61092" :name "archaea") 
-(def-indiv-with-id organism "amoeba" "NCIT:C119581" :name "amoeba" :plural ("amoebas" "amoebae")) 
+;;(def-indiv-with-id organism "amoeba" "NCIT:C119581" :name "amoeba" :plural ("amoebas" "amoebae")) 
 (def-indiv-with-id organism "protozoan" "NCIT:C77916" :name "protozoa") 
-(def-indiv-with-id organism "Plant" "BTO:0001481" :name "plant") 
+#| added to mid-level organisms as categories
+(def-indiv-with-id organism "Plant" "BTO:0001481" :name "plant") ;; NCIT:C14258
 (def-indiv-with-id organism "fungus" "BTO:0001494" :name "fungus" :plural ("fungi"))
 (def-indiv-with-id organism "vertebrate" "NCIT:C14282" :name "vertebrate")
 (def-indiv-with-id organism "Vertebrata" "NCIT:C14282" :name "vertebrata") 
 (def-indiv-with-id organism "Mammalia" "NCIT:C14234" :name "mammalia") 
 (def-synonym mammal (:noun "mammalians")) 
-(def-indiv-with-id organism "Carnivora" "NCIT:C79104" :name "carnivora") 
-(def-indiv-with-id organism "arthropod" "NCIT:C77917" :name "arthropoda") 
-(def-indiv-with-id organism "Amphibia" "NCIT:C14180" :name "amphibia") 
-(def-indiv-with-id organism "mustelid" "NCIT:C77096" :name "mustelidae") 
+|#
+(def-indiv-with-id mammal "Carnivora" "NCIT:C79104" :name "carnivora") 
+(def-indiv-with-id animal "arthropod" "NCIT:C77917" :name "arthropoda") 
+(def-indiv-with-id vertebrate "Amphibia" "NCIT:C14180" :name "amphibia") 
+(def-indiv-with-id mammal "mustelid" "NCIT:C77096" :name "mustelidae") ;; should be under carnivvora
 
-(def-indiv-with-id organism "larva" "BTO:0000707" :name "larva" :plural ("larvas" "larvae") :adj "larval") 
-(def-indiv-with-id organism "juvenile" "BTO:0002168" :name "juvenile") 
-(def-indiv-with-id organism "pup" "BTO:0004377" :name "pup")
-(def-indiv-with-id organism "neonate" "BTO:0001762" :name "neonate") 
+#| life-stages moved to mid-level organisms as categories
+(def-indiv-with-id insect "larva" "BTO:0000707" :name "larva" :plural ("larvas" "larvae") :adj "larval") 
+(def-indiv-with-id animal "juvenile" "BTO:0002168" :name "juvenile") 
+(def-indiv-with-id mammal "pup" "BTO:0004377" :name "pup")
+(def-indiv-with-id mammal "neonate" "BTO:0001762" :name "neonate") 
+|#
 
+#| other organism groupings moved to mid-level
 (def-indiv-with-id organism "parasite" "NCIT:C28176" :name "parasite") 
 (def-indiv-with-id organism "chimera" "NCIT:C14194" :name "chimera") 
-(def-indiv-with-id organism "mosaicism" "NCIT:C88144" :name "mosaic") 
-(def-indiv-with-id organism "recombinants" "NCIT:C14353" :name "recombinants") 
 (def-indiv-with-id organism "GMO" "NCIT:C97158" :name "genetically modified organism") 
 (def-indiv-with-id organism "MDRO" "NCIT:C111564" :name "multi-drug resistant organism") 
+|#
+;; I think these are too bio-specific
+(def-indiv-with-id organism "mosaicism" "NCIT:C88144" :name "mosaic") 
+(def-indiv-with-id organism "recombinants" "NCIT:C14353" :name "recombinants")
 
+#| other organism groupings moved to mid-level
 (def-indiv-with-id organism "microbe" "NCIT:C14329" :name "microorganism")
 (def-indiv-with-id organism "microbiome" "NCIT:C68564" :name "microbiome") 
 (def-indiv-with-id organism "microflora" "NCIT:C93019" :name "intestinal flora") 
-(def-indiv-with-id organism "microsporidia" "NCIT:C123335" :name "microsporidia") 
-(def-indiv-with-id organism "microspora" "NCIT:C123335" :name "microsporidia") 
-(def-indiv-with-id organism "Microsporum" "NCIT:C127294" :name "microsporum") 
 (def-indiv-with-id organism "mycobiome" "NCIT:C128180" :name "mycobiome") 
+|#
 
-(def-indiv-with-id organism "rodent" "NCIT:C14270" :name "rodent") 
-(def-indiv-with-id organism "Rodentia" "NCIT:C14270" :name "rodentia") 
+;; rodents etc
+#| added to mid-level organisms as category
+(def-indiv-with-id organism "rodent" "NCIT:C14270" :name "rodent") |#
+(def-indiv-with-id mammal "Rodentia" "NCIT:C14270" :name "rodentia") 
 
-(def-indiv-with-id organism "Muridae" "NCIT:C14246" :name "muridae") 
+(def-indiv-with-id rodent "Muridae" "NCIT:C14246" :name "muridae") ;; mice, rats, gerbils
 (def-indiv-with-id mouse "nude mice" "TI:10090") 
 (def-indiv-with-id mouse "transgenic mice" "TI:10090")
 (def-indiv-with-id mouse "C57BL" "NCIT:C37375" :name "C57BL mouse") 
@@ -68,33 +78,38 @@
 (def-indiv-with-id mouse "C57Br" "NCIT:C37389" :name "C57BR mouse") 
 (noun "iDTR" :super mouse) 
 
-(def-indiv-with-id organism "Sprague-Dawley" "NCIT:C76189" :name "Sprague-Dawley rat" :synonyms ("SD rat strain" "TI:10116"))
-(def-indiv-with-id organism "Wistar rat" "TI:10116")
-(def-indiv-with-id organism "WIST" "NCIT:C76190" :name "WIST, rat strain") 
-(def-indiv-with-id organism "WKY" "NCIT:C76192" :name "WKY rat strain") 
-(def-indiv-with-id organism "Lewis" "NCIT:C106538" :name "lewis rat strain") 
-(def-indiv-with-id organism "LEW" "NCIT:C106538" :name "lewis, rat strain") 
-(def-indiv-with-id organism "shR" "NCIT:C14412" :name "SHR rat strain") 
-(def-indiv-with-id organism "Aci" "NCIT:C14392" :name "ACI rat strain") 
-(def-indiv-with-id organism "zucker" "NCIT:C76194" :name "Z, rat strain") 
-(def-indiv-with-id organism "rnu" "NCIT:C122237" :name "RNU, rat strain") 
+(def-indiv-with-id rat "Sprague-Dawley" "NCIT:C76189" :name "Sprague-Dawley rat" :synonyms ("SD rat strain" "TI:10116"))
+(def-indiv-with-id rat "Wistar rat" "TI:10116")
+(def-indiv-with-id rat "WIST" "NCIT:C76190" :name "WIST, rat strain") 
+(def-indiv-with-id rat "WKY" "NCIT:C76192" :name "WKY rat strain") 
+(def-indiv-with-id rat "Lewis" "NCIT:C106538" :name "lewis rat strain") 
+(def-indiv-with-id rat "LEW" "NCIT:C106538" :name "lewis, rat strain") 
+(def-indiv-with-id rat "shR" "NCIT:C14412" :name "SHR rat strain") 
+(def-indiv-with-id rat "Aci" "NCIT:C14392" :name "ACI rat strain") 
+(def-indiv-with-id rat "zucker" "NCIT:C76194" :name "Z, rat strain") 
+(def-indiv-with-id rat "rnu" "NCIT:C122237" :name "RNU, rat strain") 
 
+#| moved to mid-level:organisms
 (def-indiv-with-id organism "guinea pig" "TI:10141")  
 (def-indiv-with-id organism "hamster" "NCIT:C14212" :name "hamster") 
 (def-indiv-with-id organism "gerbil" "NCIT:C77807" :name "gerbil") 
 (def-indiv-with-id organism "woodchuck" "NCIT:C124252" :name "eastern woodchuck") 
-(def-indiv-with-id organism "Chinchillidae" "NCIT:C91814" :name "chinchillidae") 
+|#
+(def-indiv-with-id mammal "Chinchillidae" "NCIT:C91814" :name "chinchillidae") 
 
-(def-indiv-with-id organism "Lagomorpha" "NCIT:C79106" :name "lagomorpha") 
+(def-indiv-with-id mammal "Lagomorpha" "NCIT:C79106" :name "lagomorpha") 
+(def-indiv-with-id mammal "bovid" "NCIT:C14323" :name "bovidae")
+#| moved to mid-level:organisms
 (def-indiv-with-id organism "Rabbit" "NCIT:C14264" :name "rabbit") 
-(def-indiv-with-id organism "bovid" "NCIT:C14323" :name "bovidae") 
 (def-indiv-with-id organism "bovine" "NCIT:C14192" :name "cow") 
 (def-indiv-with-id organism "ovine" "NCIT:C14273" :name "sheep")
 (def-indiv-with-id organism "equine" "NCIT:C14222" :name "horse") 
 (def-indiv-with-id organism "porcine" "NCIT:C14280" :name "pig" :synonyms ("swine"))
-(def-indiv-with-id organism "Landracecross" "NCIT:C77105" :name "landrace pig") 
+|#
+(def-indiv-with-id mammal "Landracecross" "NCIT:C77105" :name "landrace pig") 
 
-(def-indiv-with-id organism "canid" "NCIT:C14331" :name "canidae") 
+(def-indiv-with-id mammal "canid" "NCIT:C14331" :name "canidae")
+#| moved to mid-level:organisms
 (def-indiv-with-id organism "canine" "NCIT:C14201" :name "dog")
 (def-indiv-with-id organism "Yorkie" "NCIT:C53946" :name "yorkshire terrier") 
 (def-indiv-with-id organism "Doberman" "NCIT:C53767" :name "doberman pinscher") 
@@ -102,53 +117,65 @@
 (def-indiv-with-id organism "malamute" "NCIT:C53760" :name "alaskan malamute") 
 (def-indiv-with-id organism "Rottweiler" "NCIT:C53775" :name "rottweiler") 
 (def-indiv-with-id organism "Weimaraner" "NCIT:C53891" :name "weimaraner") 
-(def-indiv-with-id organism "Pon" "NCIT:C54054" :name "polish lowland sheepdog") 
+(def-indiv-with-id organism "coonhound" "NCIT:C53921" :name "black and tan coonhound") 
+(def-indiv-with-id organism "papillon" "NCIT:C53939" :name "papillon") 
 
-(def-indiv-with-id organism "Felidae" "NCIT:C14321" :name "felidae") 
-(def-indiv-with-id organism "Felid" "NCIT:C14321" :name "felidae") 
+|#
+(def-indiv-with-id mammal "Pon" "NCIT:C54054" :name "polish lowland sheepdog") 
 
-(def-indiv-with-id organism "armadillo" "NCIT:C14185" :name "armadillo") 
+(def-indiv-with-id mammal "Felidae" "NCIT:C14321" :name "felidae") 
+(def-indiv-with-id mammal "Felid" "NCIT:C14321" :name "felidae")
+#| moved to mid-level:organisms
+(def-indiv-with-id organism "feline" "NCIT:C14191" :name "cat")
+|#
+
 
 ;; possibly should be location/demonym or other confound
-;(def-indiv-with-id organism "Indonesia" "NCIT:C79977" :name "zebrafish line indonesia") 
-;(def-indiv-with-id organism "Singapore" "NCIT:C79980" :name "zebrafish line singapore") 
-(def-indiv-with-id organism "Yucatan" "NCIT:C77108" :name "yucatan pig") 
-(def-indiv-with-id organism "Suffolk" "NCIT:C106572" :name "suffolk sheep") 
-(def-indiv-with-id organism "Mongolians" "NCIT:C77100" :name "mongolian gerbil") 
-(def-indiv-with-id organism "Hampshire" "NCIT:C77103" :name "hampshire pig")
-(def-indiv-with-id organism "Gottingen" "NCIT:C77102" :name "gottingen pig" :synonyms ("Göttingen")) 
-(def-indiv-with-id organism "california" "NCIT:C76364" :name "california rabbit") 
-(def-indiv-with-id organism "Newfoundland" "NCIT:C53765" :name "newfoundland") 
-(def-indiv-with-id organism "Pyrenees" "NCIT:C53766" :name "great pyrenees") 
-(def-indiv-with-id organism "Brittany" "NCIT:C53879" :name "brittany spaniel") 
-(def-indiv-with-id organism "Chihuahua" "NCIT:C53929" :name "chihuahua") 
-(def-indiv-with-id organism "Cologne" "NCIT:C79955" :name "cologne zebrafish") 
-(def-indiv-with-id organism "Ind" "NCIT:C79976" :name "zebrafish line india") 
-(def-indiv-with-id organism "Lab" "NCIT:C53873" :name "labrador retriever") 
+;(def-indiv-with-id fish "Indonesia" "NCIT:C79977" :name "zebrafish line indonesia") 
+;(def-indiv-with-id fish "Singapore" "NCIT:C79980" :name "zebrafish line singapore") 
+(def-indiv-with-id mammal "Yucatan" "NCIT:C77108" :name "yucatan pig") 
+(def-indiv-with-id mammal "Suffolk" "NCIT:C106572" :name "suffolk sheep") 
+(def-indiv-with-id mammal "Mongolians" "NCIT:C77100" :name "mongolian gerbil") 
+(def-indiv-with-id mammal "Hampshire" "NCIT:C77103" :name "hampshire pig")
+(def-indiv-with-id mammal "Gottingen" "NCIT:C77102" :name "gottingen pig" :synonyms ("Göttingen")) 
+(def-indiv-with-id mammal "california" "NCIT:C76364" :name "california rabbit") 
+;; dog breeds 
+(def-indiv-with-id dog "Newfoundland" "NCIT:C53765" :name "newfoundland") 
+(def-indiv-with-id dog "Pyrenees" "NCIT:C53766" :name "great pyrenees") 
+(def-indiv-with-id dog "Brittany" "NCIT:C53879" :name "brittany spaniel") 
+(def-indiv-with-id dog "Chihuahua" "NCIT:C53929" :name "chihuahua") 
+(def-indiv-with-id dog "Lab" "NCIT:C53873" :name "labrador retriever")
 
+(def-indiv-with-id fish "Cologne" "NCIT:C79955" :name "cologne zebrafish") 
+(def-indiv-with-id fish "Ind" "NCIT:C79976" :name "zebrafish line india") 
+
+#| added to mid-level organisms as category and these monkeys as individuals
 (def-indiv-with-id organism "primate" "NCIT:C14262" :name "primate") 
-(def-indiv-with-id organism "Cercopithecidae" "NCIT:C161029" :name "old world monkey") 
 (def-indiv-with-id organism "chimpanzee" "NCIT:C14297" :name "chimpanzee") 
-(def-indiv-with-id organism "macaque" "NCIT:C14231" :name "macaque") 
-(def-indiv-with-id organism "Cynomolgus" "NCIT:C14232" :name "cynomolgus monkey") 
+(def-indiv-with-id organism "Cercopithecidae" "NCIT:C161029" :name "old world monkey") 
 (def-indiv-with-id organism "Macaca" "NCIT:C14231" :name "macaque" :synonyms ("macacus")) 
 (def-indiv-with-id organism "Papio" "NCIT:C14252" :name "baboon") 
+|# ;; the monkeys below seemed less relevant
+(def-indiv-with-id primate "Cynomolgus" "NCIT:C14232" :name "cynomolgus monkey")
+(def-indiv-with-id primate "saimiri" "NCIT:C160934" :name "saimiri") ;; new world monkey
 
 
-(def-indiv-with-id organism "avians" "NCIT:C14189" :name "bird" :adj "avian" :synonyms ("aves")) 
-(def-indiv-with-id organism "Quail" "NCIT:C91813" :name "quail") 
-(def-indiv-with-id organism "Ross" "NCIT:C77099" :name "ross chicken") 
+;; category in midlevel
+;;(def-indiv-with-id organism "avians" "NCIT:C14189" :name "bird" :adj "avian" :synonyms ("aves")) 
+(def-indiv-with-id bird "Quail" "NCIT:C91813" :name "quail") 
+(def-indiv-with-id bird "Ross" "NCIT:C77099" :name "ross chicken") 
 
-(def-indiv-with-id organism "SJA" "NCIT:C79981" :name "SJA zebrafish") 
-(def-indiv-with-id organism "wik" "NCIT:C79954" :name "WIK zebrafish") 
-(def-indiv-with-id organism "Tubingen" "NCIT:C79982" :name "tubingen zebrafish") 
+(def-indiv-with-id fish "SJA" "NCIT:C79981" :name "SJA zebrafish") 
+(def-indiv-with-id fish "wik" "NCIT:C79954" :name "WIK zebrafish") 
+(def-indiv-with-id fish "Tubingen" "NCIT:C79982" :name "tubingen zebrafish") 
 
-(def-indiv-with-id organism "Insecta" "NCIT:C14227" :name "insect") 
+#| moved to midlevel
+(def-indiv-with-id organism "Insecta" "NCIT:C14227" :name "insect") ;; category in mid-level
 (def-indiv-with-id organism "firefly" "NCIT:C61008" :name "lampyridae") 
 (def-indiv-with-id organism "roundworm" "NCIT:C14248" :name "nematode" :synonyms ("nematoda"))  
+|#
 
 ;; mixed - may include bacteria that should be moved
-(def-indiv-with-id organism "saimiri" "NCIT:C160934" :name "saimiri") 
 (def-indiv-with-id organism "Aspergillus" "NCIT:C77180" :name "aspergillus") 
 (def-indiv-with-id organism "basidiomycetes" "NCIT:C77169" :name "basidiomycota") 
 (def-indiv-with-id organism "Pneumocystis" "NCIT:C124358" :name "pneumocystis") 
@@ -262,9 +289,9 @@
 (def-indiv-with-id organism "Angiostrongylus" "NCIT:C122042" :name "angiostrongylus") 
 (def-indiv-with-id organism "Capillaria" "NCIT:C122044" :name "capillaria") 
 (def-indiv-with-id organism "Hypericum" "NCIT:C72523" :name "hypericum erectum") 
-(def-indiv-with-id organism "Mesocricetus" "NCIT:C14212" :name "hamster") 
+(def-indiv-with-id organism "Mesocricetus" "NCIT:C14212" :name "hamster") ;;genus
 (def-indiv-with-id organism "Nadia" "NCIT:C79957" :name "nadia zebrafish") 
-(def-indiv-with-id organism "Panax" "NCIT:C91401" :name "ginseng") 
+(def-indiv-with-id organism "Panax" "NCIT:C91401" :name "ginseng") ;; genus
 (def-indiv-with-id organism "Sarcocystis" "NCIT:C124286" :name "sarcocystis") 
 (def-indiv-with-id organism "Mucor" "NCIT:C120708" :name "mucor") 
 (def-indiv-with-id organism "Balantidium" "NCIT:C122015" :name "balantidium") 
@@ -293,18 +320,21 @@
 (def-indiv-with-id organism "Wickerhamomyces" "NCIT:C114125" :name "wickerhamomyces") 
 (def-indiv-with-id organism "Isospora" "NCIT:C122325" :name "isospora") 
 (def-indiv-with-id organism "Toxocara" "NCIT:C125927" :name "toxocara") 
-(def-indiv-with-id organism "coonhound" "NCIT:C53921" :name "black and tan coonhound") 
-(def-indiv-with-id organism "papillon" "NCIT:C53939" :name "papillon") 
 (def-indiv-with-id organism "Dactylaria" "NCIT:C86061" :name "dactylaria") 
 (def-indiv-with-id organism "Geotrichum" "NCIT:C122315" :name "geotrichum") 
 (def-indiv-with-id organism "Phialophora" "NCIT:C123543" :name "phialophora") 
 (def-indiv-with-id organism "Pleistophora" "NCIT:C124357" :name "pleistophora") 
 (def-indiv-with-id organism "Syncephalastrum" "NCIT:C125959" :name "syncephalastrum") 
 (def-indiv-with-id organism "Zygomycetes" "NCIT:C77194" :name "zygomycota")
-;; plants
-(def-indiv-with-id organism "liverwort" "NCIT:C72334" :name "hepatica triloba") 
+
+(def-indiv-with-id organism "microspora" "NCIT:C123335" :name "microsporidia") ;; any spore forming ffungus
+(def-indiv-with-id organism "Microsporum" "NCIT:C127294" :name "microsporum") ;; fungus genus including ringworm
+
+
+;; plants moved to midlevel
+#|(def-indiv-with-id organism "liverwort" "NCIT:C72334" :name "hepatica triloba") 
 (def-indiv-with-id organism "Scutellaria" "NCIT:C74304" :name "scutellaria") 
-(def-indiv-with-id organism "aloe" "NCIT:C65225" :name "aloe") 
+(def-indiv-with-id organism "aloe" "NCIT:C65225" :name "aloe vera") 
 (def-indiv-with-id organism "allium" "NCIT:C73974" :name "allium") 
 (def-indiv-with-id organism "ginseng" "NCIT:C91401" :name "ginseng plant") 
 (def-indiv-with-id organism "echinacea" "NCIT:C54160" :name "echinacea") 
@@ -325,3 +355,4 @@
 (def-indiv-with-id organism "Pueraria" "NCIT:C73971" :name "pueraria montana var. lobata") 
 (def-indiv-with-id organism "Ginkgo" "NCIT:C93305" :name "ginkgo biloba")
 (def-indiv-with-id organism "JASMINE" "NCIT:C73955" :name "jasminum officinale") 
+|#
