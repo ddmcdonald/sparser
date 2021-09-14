@@ -169,6 +169,21 @@ broadly speaking doing for you all the things you might do by hand.
 
 (defparameter *inhibited-plurals* nil "Collects these for later review")
 
+(defun name-is-cat-p (name)
+  "Given a string, it checks if either the given string or the string
+  with hyphens in place of spaces is a category, and then returns
+  symbol that matches a category if it exists"
+  (let ((sym-name (intern (string-upcase name) 
+                                     (find-package :sparser)))
+        (hyph-sym-name (intern (string-upcase (substitute #\- #\space name))
+                                          (find-package :sparser))))
+    (cond ((category-named sym-name)
+           sym-name)
+          ((category-named hyph-sym-name)
+           hyph-sym-name)
+          (t
+           nil))))
+
 (defun add-rules-cond-plural (word category ind &key plural no-plural (pos :common-noun))
   "Given a word, category, and individual, add-rules to the individual
 for that word, and if no-plural or if the plural-version of the word

@@ -342,20 +342,7 @@ uid binding, if there is one"
                                         ;(lsp-break "stash-def-indiv-with-id post-if")
     (car (symbol-value loc))))
 
-(defun name-is-cat-p (name)
-  "Given a string, it checks if either the given string or the string
-  with hyphens in place of spaces is a category, and then returns
-  symbol that matches a category if it exists"
-  (let ((sym-name (intern (string-upcase name) 
-                                     (find-package :sparser)))
-        (hyph-sym-name (intern (string-upcase (substitute #\- #\space name))
-                                          (find-package :sparser))))
-    (cond ((category-named sym-name)
-           sym-name)
-          ((category-named hyph-sym-name)
-           hyph-sym-name)
-          (t
-           nil))))
+
 
 (defun word-is-plural-name? (word pname)
   (let ((plural-versions 
