@@ -170,13 +170,14 @@
 
 (defun name-string-to-words (name-string)
   "Check the name-string for validity. 
+
    Returns a list of words"
   (let ((string-elements
          (typecase name-string
           (string
            ;;/// Any other characters to look for?
            (if (position #\space name-string)
-             (break-up-at name-string :delimeter-chars '(#\space))
+             (break-up-at name-string :delimeter-chars '(#\comma #\space))
              (list name-string)))
           (cons
            (if (every #'stringp name-string)
@@ -189,13 +190,16 @@
            (push-debug `(,name-string))
            (error "Unexpected type of person name specifier: ~a~%~a"
                   (type-of name-string) name-string)))))
-
     (setq string-elements
           (remove-if #'(lambda (s) (and (= 1 (length s))
                                         (eql (elt s 0) #\space)))
                      string-elements))
+    (setq string-elements ;; "Apple Computer, Inc."
+          (remove-if #'(lambda (s) (position #\comma s))
+                     string-elements))
+    
     (loop for string in string-elements
-                 collect (resolve-string-to-word/make string))))
+       collect (resolve-string-to-word/make string))))
                            
 
 (defun name-words-for-words (list-of-words)
