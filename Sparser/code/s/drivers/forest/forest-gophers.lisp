@@ -499,6 +499,17 @@
       ((eq (edge-rule edge) 'add-adjunctive-pp)
        (find-verb (edge-left-daughter edge)))
 
+      ((eq (edge-rule edge) 'np-vg+ed)
+       (let ((right-daughter (edge-right-daughter edge)))
+         (if (eq right-daughter :long-span)
+           (if (edge-constituents edge)
+             (find-verb (second (edge-constituents edge)))
+             ;; "Two of the monsters examined in von Puttkamer's latest film "
+             ;;  + "include the Puerto Rican chupacabra "
+             ;; As called from attach-oblique-s-as-subject-to-vp
+             nil)                        
+           (find-verb right-daughter))))
+
       ((and (verb-category? (edge-form edge))
             (null (edge-left-daughter edge))) ;; e.g. have → "have"
        edge)
