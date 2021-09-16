@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1994,2012,2016-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1994,2012,2016-2021 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "polywords"
 ;;;   Module:  "objects;chart:words:"
-;;;  Version:  April 2020
+;;;  Version:  September 2021
 
 ;; 1.1 (1/18/91 v1.8)  Added a proper Display-polyword that didn't use
 ;;      bracketing double quotes -- Princ-polyword does that.
@@ -276,7 +276,11 @@ rather than as an object. Takes polywords as well as words for
 the convenience of model routines."
   (if word
     (if (get-tag :use-symbol-name-when-printing word)
-      (princ (word-symbol word) stream)
+      (princ
+       (if (polyword-p word)
+         (pw-symbol word)
+         (word-symbol word))
+       stream)
       (format stream "\"~a\"" (pname word)))
     (write-string "<word>" stream)))
 

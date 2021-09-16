@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2011-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "printers"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  April 2020
+;;;  version:  September 2021
 
 ;; initiated 7/16/92 v2.3, 9/3 added Princ-individual
 ;; (5/26/93) added Print-individual-with-name
@@ -318,6 +318,7 @@
   (intern (string-append ':string/ category-name)
           *sparser-source-package*))
 
+
 (defun string-for (i)
   "Call the function that goes with this unit to return
    a nice print string to incorporate into some other print routine."
@@ -343,6 +344,9 @@
                  (super-categories-of i))
        (string/ordinal i)
        (string/category i)))
+
+    (polyword
+     (pname i))
 
     (word
      (word-pname i))
@@ -421,7 +425,7 @@
       i)))
             
 
-
+;; abbreviated 'di'
 (defun pretty-princ-individual (i &optional
                                     (stream *standard-output*)
                                     pending-indentation
