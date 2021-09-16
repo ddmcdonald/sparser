@@ -10,6 +10,8 @@
 (in-package :sparser)
 
 
+(gload "mid-level;subcat-patterns")
+
 (gload "mid-level;attributes") ;; used in object
 
 (gload "mid-level;ontology") ;; includes object as used in blocks world
@@ -20,8 +22,6 @@
 (gload "mid-level;discourse")
 
 (gload "mid-level;relations")
-
-(gload "mid-level;subcat-patterns")
 
 ;; moved to dossiers/verbs.lisp
 #+ignore(gload "mid-level;verbs")
