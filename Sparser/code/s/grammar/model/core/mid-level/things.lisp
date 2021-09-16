@@ -11,51 +11,8 @@
 (in-package :sparser)
 
 ;;;----------------------
-;;; mental constructions
+;;; emotion
 ;;;----------------------
-
-(define-category mental-construction
-  :specializes non-physical
-  :documentation "Something like a thought, or an opinion or a
- perception, i.e a non-physical 'object'.")
-
-(define-category mental-construction-concerning
-  :specializes mental-construction
-  :binds ((concerning top)  ;; perhaps (:or endurant perdurant abstract)
-          (source top))
-  :realization
-  (:about concerning
-   :regarding concerning
-   :of concerning
-   :from source
-   :with-regard-to concerning)
-  :documentation "A mental-construction which is focused on some set
- of objects or events. Not clearly a sub-category of information or
- information-container, but some information containers may be of this
- type. A database may be about ships, but the information it contains
- is not a set of ships.")
-
-(define-category create-mental-construction-concerning
-  :specializes perdurant
-  :mixins (knowledge-verb)
-  :restrict ((experiencer top))
-  :binds ((mental-construction mental-construction-concerning)
-          ;; may only be the direct object of the verb?
-          (concerning top)) ;; perhaps (:or endurant perdurant abstract)
-  :realization (:about concerning
-                :of concerning
-                :regarding concerning
-                :with-regard-to concerning))
-
-(define-mixin-category takes-wh-nominals
-  :specializes linguistic  
-  :documentation "Provides an indicator that a predicate
- should be understood as taking wh-nominal arguments.
- Useful for cases that don't fall into a family of
- nominal-taking predicates")
-
-
-(define-category emotion :specializes mental-construction)
 
 (define-category appeal
   :specializes create-mental-construction-concerning
@@ -650,7 +607,7 @@ that's ubiquitous in biology examples (show-sents), e.g.
   :binds ((alternate-name)) ;; v/r of 'name' will  probably fail too much
   :realization (:adj "known as")
   :documentation "Super category of all the variations on this pattern,
-e.g. 'aka', 'formally know as (Prince)'. Not clear where to stage the
+e.g. 'aka', 'formerly know as (Prince)'. Not clear where to stage the
 semantic effects of these phrases, which invariably turn up as apposatives
 to provide alternative names for the NP head. Also awkward since unlike propositions
 we don't have phrases 'headed' by the adjective that heads a np-complement

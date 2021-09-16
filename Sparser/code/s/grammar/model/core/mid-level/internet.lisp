@@ -160,3 +160,15 @@ e66   BIO-ENTITY    9 "com/rrwick/Porechop" 14
                   :form category::proper-name ;/// is this right?
                   :referent i))))
         (values category::hashtag rule i)))))
+
+
+;;;-------------------------------
+;;; stuff associated with the net
+;;;-------------------------------
+
+(define-category email
+  :specializes information-container
+  :realization (:noun ("e-mail" "email"))
+  :documentation "Can also be used a verb where we understand
+ that to mean 'sending email' ")
+;;/// find Stratus conception of email
