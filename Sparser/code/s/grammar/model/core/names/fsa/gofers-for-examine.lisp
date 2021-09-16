@@ -594,7 +594,7 @@ a minimal category and rule set for every word.
                              Expected a name-word:~%~a" item)))))
 
               (word
-               (let ((nw (name-word-for-word item)))
+               (let ((nw (name-word-for-word item))) ;accesses word's plist
                  (cond
                    (nw nw)
                    ((and (= 1 (length (pname item))) ;;/// reify
