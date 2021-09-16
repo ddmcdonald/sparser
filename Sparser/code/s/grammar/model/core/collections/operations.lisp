@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2013-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2013-2021 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2008 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "operations"
 ;;;   Module:  "model;core:collections:"
-;;;  version:  March 2020
+;;;  version:  September 2021
 
 ;; initiated 6/7/93 v2.3, added sequences 6/9 - finished them 6/17
 ;; fixed a bug 10/29
@@ -51,24 +51,19 @@
 ;;; create routines
 ;;;-----------------
 
-(defvar *trace-collections* nil
+(defparameter *trace-collections* nil
   "Set to T to trace the operations")
 
 (defun create-sequence (items)
   (let ((sequence (make-unindexed-individual category::sequence))
         (count (length items)))
-    (setq sequence
-          (bind-dli-variable 'items items 
-                       (bind-dli-variable 'number count sequence)))
-       ;; There used to be more options for what the type was. Look at the
-       ;; operations in "operations", esp. Spread-sequence-across-ordinals
-    (spread-sequence-across-ordinals sequence items count)
+    (setq sequence (bind-variable 'items items 
+                                  (bind-variable 'number count sequence)))
+    (spread-sequence-across-ordinals sequence items count) ; sets type
     (index-sequence sequence)
     sequence))
 
 (defun create-collection (items category-specifier)
-  ;; The individual is unindexed because it's only used as the
-  ;; value of bindings and the provides their indentity
   (when *trace-collections*
     (format t "~&Creating collection of ~a~
                ~&   with ~a~%" category-specifier items))
@@ -77,10 +72,10 @@
   (let ((collection (make-unindexed-individual category::collection))
         (category (category-named category-specifier t)))
     (setq collection
-          (bind-dli-variable 'items items 
-                             (bind-dli-variable 'number (length items)
-                                                collection)))
-    (setq collection (bind-dli-variable 'type category collection))
+          (bind-variable 'items items 
+                         (bind-variable 'number (length items)
+                                        collection)))
+    (setq collection (bind-variable 'type category collection))
     (index-collection collection)
     collection))
 
@@ -120,7 +115,6 @@
 ;;; find
 ;;;------
 
-;;/// Needs make-over as with sequence
 (defun find-collection (items category)
   (let ((instances (cat-instances category::collection))
         (count (length items)))
@@ -165,7 +159,7 @@
     (note-permanence-of-categorys-individuals category::sequence))
   (let ((table (cat-instances category::sequence))
         (first-item (car (value-of 'items sequence))))
-    (unless table
+    (unless table ; first instance
       (setq table (setf (cat-instances category::sequence)
                         (make-hash-table :test #'eq))))
     (let ((existing-value (gethash first-item table)))
@@ -175,8 +169,9 @@
         (setf (gethash first-item table)
               (list sequence))))))
 
-;;/// Needs make-over as with sequence
 (defun index-collection (collection)
+  "Two-level index. First by length ('count'), then by type.
+   The items are taken as ordered even though that's not in the contract."
   (when (permanent-individual? collection)
     (note-permanence-of-categorys-individuals category::collection))
   (let ((instances (cat-instances category::collection)))
@@ -211,6 +206,8 @@
 ;;--- ancilary indexing
 
 (defun spread-sequence-across-ordinals (s items &optional count)
+  "Make a position-in-a-sequence individual for every item in
+   the sequence 's'."
   (unless count
     (setq count (length items)))
   (let ((same-type? t)
@@ -221,7 +218,6 @@
       ;(break "check for Pierre Vinken issues")
       (let ((pos (define-individual 'position-in-a-sequence
                    :number ordinal :item item :sequence s)))
-        ;(break "ordinal-psi -- bound-in's too??")
         (push pos pos-objects)
         (when (typep item 'individual)
           (if running-type
@@ -235,7 +231,6 @@
                     (if (typep item 'word)
                       item
                       (first (indiv-type item)))))))))
-  
     (values (when same-type? 
               running-type)
             pos-objects)))
