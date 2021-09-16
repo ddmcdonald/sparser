@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1996,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2013,2021  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "printing"
 ;;;   Module:  "model;core:companies:"
-;;;  version:  February 2013
+;;;  version:  September 2021
 
 ;; broken out 11/23/94 v2.3.  Pulled in routines for co-names 4/12/95
 ;; 4/19 tweeked them, added string/company.  5/22 made adjustments for changes
@@ -47,8 +47,8 @@
              (then
                (write-string "#<company " stream)
                (write-string (string/company obj) stream)
-               (format stream "  ~A,~A>"
-                       (indiv-id obj) (indiv-uid obj)))
+               (format stream " ~A>"
+                       (indiv-uid obj)))
                
              (format stream "#<company  ~A>"
                      (indiv-uid obj)))))
@@ -58,7 +58,7 @@
              (then
                (write-string "#<" stream)
                (write-string (string/company obj) stream)
-               (format stream "  ~A>" (indiv-id obj)))
+               (format stream " ~A>" (indiv-uid obj)))
                
              (format stream "#<company  ~A>"
                      (indiv-uid obj))))))
