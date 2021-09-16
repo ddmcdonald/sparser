@@ -22,6 +22,7 @@
     ;; agreed, should perhaps have "organization" category?
     (define-company '("United" "Nations") :aliases '("U.N.") :takes-the t)
     (define-company '("World" "Health" "Organization") :aliases '("W.H.O.")) ;; NCIT:C75419
+
     ;;medical group operating throughout the world: Doctors Without Borders
     ;;also French name is used in English news articles as well
     ;;since it is actually a French based organization
