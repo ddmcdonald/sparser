@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1995,2013-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1995,2013-2016,2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "printing"
 ;;;   Module:  "model;core:names:"
-;;;  version:  April 2016
+;;;  version:  September 2021
 
 ;; initiated 2/1/94 v2.3, breaking the special fns out of specific files
 ;; (4/5) stubbed a generic printer.  10/3 added string-printers
@@ -33,7 +33,7 @@
        (string-for/name/individual w/pw))
       (otherwise
        (push-debug `(,n ,w/pw))
-       (format t "String-for/name -- new type: ~A~%" (itype-of w/pw))
+       (format t "String-for/name -- new type: ~A~%" (type-of w/pw))
        "" ))))
 
 
@@ -47,7 +47,6 @@
      (string/uncategorized-name name))
     (category::sequence ;; upstream should catch this quicker
      (string/sequence name))
-             
     ((category::person-name/first-last
       category::person-name)
      (let ((string (string/person-name name)))
@@ -55,8 +54,7 @@
     (category::name-of-location
      (let ((seq (value-of 'sequence name category::name-of-location)))
        (string/sequence seq)))
- 
-    (otherwise
+     (otherwise
      (push-debug `(,name))
      (format t "~&New type of name individual: ~a~%" (itype-of name))
      "")))
@@ -72,12 +70,12 @@
   :short ((write-string "#<" stream)
           (princ-word (value-of 'name obj) stream)
           (write-string ">" stream))
-  :string ((word-pname (value-of 'name obj))))
+  :string ((pname (value-of 'name obj))))
 
 (defun string/name-word (nw)
   (let ((word (value-of 'name nw)))
     (if word
-      (word-pname word)
+      (pname word)
       "")))
 
 ;;--- single capitalized letters
@@ -107,12 +105,12 @@
            (write-string ">" stream))
     
     :short ((write-string "#<\"" stream)
-            (write-string (word-pname (value-of 'word obj)) stream)
+            (write-string (pname (value-of 'word obj)) stream)
             (write-string "." stream)
             (write-string "\">" stream))))
 
 (defun string/initial (i)
-  (word-pname (value-of 'word i)))
+  (pname (value-of 'word i)))
 
 
 ;;--- uncategorized names
