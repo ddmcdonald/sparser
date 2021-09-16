@@ -213,6 +213,7 @@
     (let ((sequence (define-sequence (list name-word))))
 
       (setq name (bind-dli-variable 'name/s sequence name))
+
       (index/uncategorized-name name sequence)
 
       (let ((edge (edge-over-proper-name
@@ -399,6 +400,8 @@
     (otherwise
      ;; assume its a different kind of unknown word. // maybe look for
      ;; evidence that we're at the beginning of a sentence.
+     (when *debug-pnf*
+       (break "~a fell through other-single-cap-words" edge))
      nil )))
 
 
@@ -414,8 +417,6 @@
   ;; hitherto unknown proper name, so we may as well let it all go through.
   (declare (ignore non-literal literal))
   nil )
-
-
 
 
 (defun one-of-the-edges-is-a-name-word (edges)
