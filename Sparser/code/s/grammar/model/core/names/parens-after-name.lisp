@@ -10,30 +10,48 @@
 
 (in-package :sparser)
 
-;;;-------------------------------------------
-;;; e.g. "Electronic Book Technologies (EBT)"
-;;;-------------------------------------------
+;;;---------------------------------------------------------------------
+;;; rules linking named entities and the trailing single word in parens
+;;;---------------------------------------------------------------------
+  
+#| This pattern is likely motivated by the need to introduce the abbreviated
+form (or whatever it is), which would be an adjunction from the perspective
+of the generator, so it should be a form rule for the parser. |#
 
+(def-cfr company (company single-capitalized-word-in-parentheses)
+  :form np
+  :referent (:function acronym-is-alternative-for-name left-edge right-edge))
+
+(def-cfr company (company company-in-parentheses)
+  :form np
+  :referent (:daughter left-edge))
+
+(def-form-rule (proper-name single-capitalized-word-in-parentheses)
+  :form proper-name
+  :head :left-edge
+  :referent (:function acronym-is-alternative-for-name left-edge right-edge))
+
+
+;;;-----------------------------
+;;; Check and setup the linkage
+;;;-----------------------------
 
 (defun acronym-is-alternative-for-name (referent-of-left-edge
                                         referent-of-right-edge)
   
   "This is an ancient function repurposed as a semantic-function, 
-"
-
-  ;; The function on 'company ->  company single-capitalized-word-in-parentheses'.
-  ;; The item on the left is something that has a name, and the item to the right
-  ;; is an acronym for it, where the acronymic-word has been passed in to us
-  ;; as the referent-of-right-edge.  We establish that word as referring to a
-  ;; name that is one of the names of the item on the left.
-
+   It is the function on 'company ->  company single-capitalized-word-in-parentheses'.
+   The item on the left is something that has a name, and the item to the right
+   is an acronym for it, where the acronymic-word has been passed in to us
+   as the referent-of-right-edge.  We establish that word as referring to a
+   name that is one of the names of the item on the left."
   
   (declare (special *big-mechanism* *left-edge-into-reference* *subcat-test*))
 
   (if *subcat-test*
-    t ;;  Depends on there being only a small set of rules with refined semantic labels
+    t ;;  Depends only on there being only a small set of rules with specific semantic labels
     (else
-      (push-debug `(,referent-of-left-edge ,referent-of-right-edge)) (break "acr handler")
+      (push-debug `(,referent-of-left-edge ,referent-of-right-edge))
       (typecase referent-of-left-edge
         (individual
          (cond ((itypep referent-of-left-edge 'company)
@@ -42,7 +60,7 @@
                ((itypep referent-of-left-edge 'named-object)
                 (setup-acronym-as-name-for-company referent-of-right-edge 
                                                    referent-of-left-edge))
-               ((and *big-mechanism* ;; establish that the biology is loaded
+               ((and *big-mechanism* ;; establishes that biology is loaded
                      (itypep referent-of-left-edge 'bio-entity))
                 (setup-acronym-for-bio-entity referent-of-right-edge 
                                               referent-of-left-edge))
@@ -85,7 +103,7 @@
           (setq nw acronym))
          (otherwise
           ;; It's probably something like a protein name, so we should
-          ;; create the name word that PNF would have done for unknown words
+          ;; create the name word that PNF would have made for unknown words
           (let* ((paren-edge (right-edge-for-referent))
                  (acr-edge (second (edge-constituents paren-edge)))
                  (start-pos (pos-edge-starts-at acr-edge))
@@ -96,32 +114,8 @@
        (error "Unexpected type for acronym: ~a~%~a"
               (type-of acronym) acronym)))
 
-    ;;(link-named-object-to-name-word company nw)
+    (link-named-object-to-name-word company nw)
 
     nw))
     
-
-;;;---------------------------------------------------------------------
-;;; rules linking named entities and the trailing single word in parens
-;;;---------------------------------------------------------------------
-  
-#|
-/// This pattern is likely motivated by the need to introduce the abbreviated
-form (or whatever it is), which would be an adjunction from the perspective
-of the generator, so it should be a form rule for the parser. 
-|#
-
-(def-cfr company (company single-capitalized-word-in-parentheses)
-  :form np
-  :referent (:function acronym-is-alternative-for-name left-edge right-edge))
-
-(def-cfr company (company company-in-parentheses)
-  :form np
-  :referent (:daughter left-edge))
-
-(def-form-rule (proper-name single-capitalized-word-in-parentheses)
-  :form proper-name
-  :head :left-edge
-  :referent (:function acronym-is-alternative-for-name left-edge right-edge))
-
 
