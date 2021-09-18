@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "name words"
 ;;;   Module:  "model;core:names:"
-;;;  version:  March 2021
+;;;  version:  September 2021
 
 ;; [object] initiated 5/28/93 v2.3
 ;; 0.1 (12/30) allowed the case of the name-word maker being passes an already
@@ -42,7 +42,7 @@
   :specializes  name
   :binds ((name :primitive word)
           (name-of collection)) ;; the named-objects it names
-  :index (:permanent
+  :index (:permanent :apply
           :special-case
           ;; needed because these are extensively cross-linked to the
           ;; words involved, and those links have to be taken off by hand
@@ -51,28 +51,152 @@
           :reclaim reclaim/name-word))
 
 
+;;;---------------------
+;;; indexing name words
+;;;---------------------
+
+(defun find/name-word (name-word-category binding-instructions)
+  (let ((word (value-of-instr 'name binding-instructions))
+        (table (cat-instances name-word-category)))
+    (when table
+      (gethash word table))))
+
+(note-permanence-of-categorys-individuals
+ ;; otherwise the hash-table could be reaped
+ (category-named 'name-word))
+
+;; For debugging
+;(setf (cat-instances (category-named 'name-word)) nil)
+
+(defun index/name-word (nw name-word-category bindings)
+  (let ((word (value-of/binding 'name bindings name-word-category))
+        (table (cat-instances name-word-category)))
+    (unless word
+      (break "no word binding supplied with definition"))
+    (unless (or (word-p word)
+                (polyword-p word))
+      (break "The object bound to 'name' should be a 'word'~
+              ~%but is isn't:  ~A" word))
+
+    (unless table
+      (setq table (setf (cat-instances name-word-category)
+                        (make-hash-table))))
+    (setf (gethash word table) nw)))
+
+
+(defun reclaim/name-word (nw table name-word-category)
+  (declare (ignore name-word-category)
+           (special *break-on-pattern-outside-coverage?*))
+  (unless (permanent-individual? nw)
+    (let ((word (value-of 'name nw))
+          (cfr (get-tag :rule nw)))
+      (block delete-nw-cfr
+        (unless cfr
+          (when *break-on-pattern-outside-coverage?*
+            (break "Data check: no cfr listed with the name word~
+              ~%  ~A~%" nw))
+          (return-from delete-nw-cfr))
+        (unless (cfr-p cfr)
+          (when *break-on-pattern-outside-coverage?*
+            (break "Object listed as the cfr for ~A~%isn't: ~A" nw cfr))
+          (return-from delete-nw-cfr))
+        (delete/cfr cfr))
+
+      (remove-tag :name-word word)
+      (remhash word table)
+      nw)))
+
+
+;;;--------------------
+;;; linking -- name-of
+;;;--------------------
+
 ;;--- Linking name words to named-objects (companies, people, etc.)
 ;;  Used with names/parens-after-names to handle the new alias
 
 (defun link-named-object-to-name-word (object nw)  
-  (let ((collection (value-of 'name-of nw category::name-word)))
-    (push-debug `(,object ,nw ,collection))
-    (break "~&~%Linking name-word ~a~%  to object ~a~%  the collection ~
-            is ~a" nw object collection)
+  (let ((collection (collection-linked-to-nw nw)))
+    (format t "~&~%Linking name-word ~a~%  to object ~a~%  the collection ~
+           is ~a~%" nw object collection)
     (if collection
       (then
-       (add-item-to-collection object collection))
-      (let ((c (define-collection `(,object) category::named-object)))
-        ;;//// obsolete when running with description lattice
-        (bind-variable 'name-of c nw category::name-word))))) 
+       (extend-nw-references nw object collection))
+      (let ((c (define-collection `(,object) (itype-of object))))
+        (set-nw-references nw c)))))
 
-(define-category name-component
-  :instantiates nil
-  :specializes name
-  :documentation "Used for parts of names ('el', 'Ms.', 'junior')
-    that don't stand by themselves and don't refer. They can frequently
-    be separated from the rest of the name with it remaining recognizable")
+#| The name-of variable, that was designed to link a name-word to
+ a collection of all the names it is part of, is problematic when
+ we are using the description-lattice to manage individuals.
+   This is because the lattice mechanics arrange that every new binding
+ creates a new, more specific, individual. This is at odds with the
+ original design where individuals were rigid. 
 
+ I'm emulating the effect of the name-of variable by using a function
+ of the same name that's based on a table. The table has to be managed,
+ which right now (9/15/21) is still being worked out.
+|#
+
+(defparameter *nw-to-names* (make-hash-table)) ;/// size?
+
+(defun collection-linked-to-nw (nw)
+  "Return the collection of names that the name-word 'nw' is part of."
+  (gethash nw *nw-to-names*))
+
+(defun set-nw-references (nw collection)
+  (setf (gethash nw *nw-to-names*) collection))
+
+(defun extend-nw-references (nw object collection)
+  "Add another item to the collection"
+  ;;/// the collection will be new? -- will chain?
+  (let ((extended-collection
+         (add-item-to-collection object collection)))
+    (break "original: ~a~%new: ~a" collection extended-collection)
+    (setf (gethash nw *nw-to-names*) extended-collection)))
+
+
+(defun name-of (nw)
+  "Return the probably single object that this nw has been linked to.
+   If more than one link has been made return the whole list"
+  ;; Used in index--company-name-to-company and link-alias-to-company
+  (let ((value (gethash nw *nw-to-names*)))
+    (when value
+      (cond
+        ((itypep value 'collection)
+         (let ((items (value-of 'items value)))
+           (if (null (cdr items)) ; just one
+             (car items)
+             items))) ; caller could get a list
+        ((itypep value 'name)
+         value)
+        ((itypep value 'named-object) ; e.g. company
+         value)
+        (t (break "name-of  value= ~a~%    of new type ~a" value (itype-of value)))))))
+
+(defun set-name-of (nw item &optional type)
+  "Record that the name-word 'nw' is part of the name 'name'."
+  (let ((prior-value (gethash nw *nw-to-names*)))
+    (if prior-value
+      (if (eq prior-value item)
+        item
+        (else (push-debug `(,item ,prior-value ,nw))
+              (break "setting nw ~a to ~a~%but there's a prior value"
+                     nw item prior-value))) ;; make a collection?
+      (else ; first time
+        (setf (gethash nw *nw-to-names*) item)))))
+  #+ignore
+  (let ((collection (gethash nw *nw-to-names*)))
+    (unless collection
+      (unless type (setq type (itype-of item)))
+      (let ((collection (define-collection (list item) type)))
+        (break "collection = ~a" collection)
+        (setf (gethash nw *nw-to-names*) collection)))
+    (when collection
+      (let ((items (value-of 'items collection)))
+        (unless (memq item items) ; already there
+          (let ((extended-collection
+                 (add-item-to-collection item collection)))
+            (break "extended-collection: ~a" extended-collection)
+            (setf (gethash nw *nw-to-names*) extended-collection))))))
 
 ;;;--------------
 ;;; sort routine
@@ -152,9 +276,9 @@
 
 
 
-;;;---------
-;;; drivers
-;;;---------
+;;;-------------------
+;;; making name-words
+;;;-------------------
 
 (defun make-name-word-for-unknown-word-in-name (lc-word
                                                 &optional position)
@@ -298,63 +422,6 @@
 
 
 
-
-
-
-;;;---------------------
-;;; indexing name words
-;;;---------------------
-
-(defun find/name-word (name-word-category binding-instructions)
-  (let ((word (value-of-instr 'name binding-instructions))
-        (table (cat-instances name-word-category)))
-    (when table
-      (gethash word table))))
-
-(note-permanence-of-categorys-individuals
- ;; otherwise the hash-table could be reaped
- (category-named 'name-word))
-
-;; For debugging
-;(setf (cat-instances (category-named 'name-word)) nil)
-
-(defun index/name-word (nw name-word-category bindings)
-  (let ((word (value-of/binding 'name bindings name-word-category))
-        (table (cat-instances name-word-category)))
-    (unless word
-      (break "no word binding supplied with definition"))
-    (unless (or (word-p word)
-                (polyword-p word))
-      (break "The object bound to 'name' should be a 'word'~
-              ~%but is isn't:  ~A" word))
-
-    (unless table
-      (setq table (setf (cat-instances name-word-category)
-                        (make-hash-table))))
-    (setf (gethash word table) nw)))
-
-
-(defun reclaim/name-word (nw table name-word-category)
-  (declare (ignore name-word-category)
-           (special *break-on-pattern-outside-coverage?*))
-  (unless (permanent-individual? nw)
-    (let ((word (value-of 'name nw))
-          (cfr (get-tag :rule nw)))
-      (block delete-nw-cfr
-        (unless cfr
-          (when *break-on-pattern-outside-coverage?*
-            (break "Data check: no cfr listed with the name word~
-              ~%  ~A~%" nw))
-          (return-from delete-nw-cfr))
-        (unless (cfr-p cfr)
-          (when *break-on-pattern-outside-coverage?*
-            (break "Object listed as the cfr for ~A~%isn't: ~A" nw cfr))
-          (return-from delete-nw-cfr))
-        (delete/cfr cfr))
-
-      (remove-tag :name-word word)
-      (remhash word table)
-      nw)))
 
 
 ;;;---------------------------------------------

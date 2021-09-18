@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:names:"
-;;;  version:  July 2021
+;;;  version:  September 2021
 
 ;; initiated 5/28/93 v2.3. Broke name word routines out to their own file 4/20/95. 
 ;; 0.1 (5/2) added an explicit name-creator to hack "and".   5/12 remodularized
@@ -37,8 +37,16 @@
   :instantiates :self
   :specializes endurant
   :binds ((name . name))
-  :index (:permanent :key name)) ;; instances field is now a table
+  :index (:permanent :apply :key name)) ;; instances field is now a table
 
+(define-category name-component
+  :instantiates nil
+  :specializes name
+  :documentation "Used for parts of names ('el', 'Ms.', 'junior')
+    that don't stand by themselves and don't refer. They can frequently
+    be separated from the rest of the name with it remaining recognizable")
+
+;;--- find/make
 
 (defun find/named-object-with-name (name)
   (let* ((table (cat-instances (category-named 'named-object)))
@@ -190,13 +198,6 @@
   :specializes name
   :binds ((name/s sequence))
   :index (:permanent :special-case))
-           #| This category is not supposed to be instantiated 
-              by hand in a dossier, only from the Proper Name
-              facility.   Hence it's never going to be called or
-              checked for via Find-individual or the equivalent
-              and these routines do not have the structure that
-              those routines need.  |#
-
 
 
 ;;--- the call from 'Examine'
@@ -293,14 +294,19 @@
 ;;;---------------------------------------------
 
 (defun make/uncategorized-name (list-of-name-words)
+  "Make an unindexed uncategorized name, and bind its name/s
+   variable to a sequence make from the list of name words.
+   The link the individual name-word individuals directly
+   to the name. We don't index the name per se since it can
+   be recovered from the sequence or accessed from one of
+   its name words"
   (let ((sequence (define-sequence list-of-name-words))
         (obj (make-unindexed-individual category::uncategorized-name)))
-    ;; The name doesn't have to be indexed because we recover it from
-    ;; the sequence it's comprised of.  If/when we find out what sort of name
-    ;; it really is we would index that.
-    (setq obj (bind-dli-variable :name/s sequence obj))
+    (setq obj (bind-variable :name/s sequence obj))
     (tr :make-uncategorized-name obj sequence)
-    obj ))
+    (loop for nw in list-of-name-words
+       do (set-name-of nw obj))
+    obj))
 
     
 (defun index/uncategorized-name (name-obj name-word-sequence)
