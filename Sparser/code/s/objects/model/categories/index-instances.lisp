@@ -50,6 +50,8 @@
          (note-permanence-of-categorys-individuals category)))
   (when (member :get index-field) ;; see index-by-name
     (register-category-for-indexing category))
+  (when (member :apply index-field)
+    (register-category-for-original-indexing category))
   (decode-rest-of-index-field category index-field))
 
 

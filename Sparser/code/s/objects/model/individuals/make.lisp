@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2011-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2021 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "make"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  March 2020
+;;;  version:  September 2021
 
 ;; initiated 7/16/92 v2.3
 ;; 0.1 (11/23) Tweeked an internal call w/in Define-individual to fit lower change
@@ -298,6 +298,12 @@
 ;;--- Constructor 
 
 (defun make-simple-individual (category binding-instructions)
+  "Allocates an individual and applies the binding instructions to set its
+   bindings. The individual is indexed for purposes of find or make
+   operations. It is integrated into the description lattice as a side-effect
+   of the call to apply-bindings (assuming the *description-lattice* flag
+   is up) and may also be indexed in other ways depending on the information
+   in the category's 'index' field."
   (declare (special *description-lattice* *index-under-permanent-instances*))
   (let* ((*index-under-permanent-instances*
           (or *index-under-permanent-instances*
@@ -318,11 +324,16 @@
         (index-by-name individual category)
         (index/individual individual category bindings))
 
+      (unless (null *description-lattice*) ; don't index twice
+        (when (apply-indexes category)
+          (index/individual individual category bindings)))
+
       individual )))
+
 
 (defun make-scafold-individual (category &rest binding-plist)
   "Specifically intended for grammar scafolds like prepositional phrases
-   where there is not find and they are never permanent"
+   where there is no find and they are never permanent"
   (when (symbolp category) (setq category (category-named category :break)))
   (let ((binding-instructions
          (decode-category-specific-binding-instr-exps

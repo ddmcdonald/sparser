@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1999,2011-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "index"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  February 2018
+;;;  version:  September 2021
 
 ;; initiated 7/16/92 v2.3
 ;; 0.1 (9/18/93) added index/individual/seq-keys
@@ -158,6 +158,34 @@ of the needed categories. |#
       (unless (> (hash-table-size table) 0)
         (error "No entries recorded for instances of ~a" c))
       (gethash w table))))
+
+
+
+;;;-----------------------------------------------------------------
+;;; Exceptions for when we -also- want the old conventional indexes
+;;;-----------------------------------------------------------------
+#| For some sets of categories, particularly those involving names,
+ we want to let their built-in indexing instructions to run as well as
+ the indexing provided by integrating individuals' bindings into the
+ description lattice. This provides accurate cross-linking, such as
+ between names and the thing they name, all relative to the current
+ discourse context.
+    Like *registered-for-by-name-indexing* described in the prior section,
+ these categories are placed on a table. Make-simple-individual consults
+the table and invokes index-individual. |#
+
+;;/// switch to defvar when all worked out
+(defparameter *registered-for-original-indexing* nil
+  "Accumulator for the cases where this applies. Store category names.")
+
+(defun register-category-for-original-indexing (category)
+  "Called from decode-index-field-aux when the category's index
+   field includes the keyword :apply"
+  (push (cat-name category) *registered-for-original-indexing*))
+
+(defun apply-indexes (category)
+  "Tested for in make-simple-individual"
+  (memq (cat-name category) *registered-for-original-indexing*))
 
 
 ;;;-----------------
