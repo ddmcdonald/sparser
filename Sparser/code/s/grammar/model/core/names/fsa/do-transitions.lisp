@@ -76,7 +76,7 @@
    whether that led to an edge over the whole span. 
      If the parse didn't, then this calls classify-&-record-span
    to apply heuristics and come up with a name."
-  (declare (special *of-appears-within-pnf-scan*))
+  (declare (special *of-appears-within-pnf-scan* *pnf-end-of-span*))
   (when *of-appears-within-pnf-scan*
     (setq *of-appears-within-pnf-scan* nil))
     
@@ -126,26 +126,25 @@
 
 
 (defun classify-&-record-span (starting-position ending-position)
-
-  ;; Called from classify-and-record-name or by c&r-multi-word-span
-  ;; just above.
-  ;; The span has had its word actions run by the embedded parsing
-  ;; and consists of more than one item.  
-  ;;   In the ancient regime, we would now run a transition
-  ;; net over that sequence of words and edges. If the net accepted
-  ;; the sequence it would return a final state, and we'd use that
-  ;; to establish a referent and construct the edge over the whole
-  ;; capitalized sequence. 
-  ;;   Now, however, the transition net has been abandoned in favor
-  ;; of an omnibus routine -- examine-capitalized-sequence -- which uses
-  ;; a body of internal evidence to figure out what sort of name to
-  ;; find or create. This is simpler to toss heuristic evidence into
-  ;; but loses the opportunity to have richly structured names. 
-  ;;
-  ;; If we have succeeded in finding named entity of some sort,
-  ;; we indicate that by returning an edge. If examine-capitalized-
-  ;; sequence just found a name, then this is done by the tail call
-  ;; to do-referent-and-edge. 
+  "Called from classify-and-record-name or by c&r-multi-word-span
+   just above.
+   The span has had its word actions run by the embedded parsing
+   and consists of more than one item.  
+     In the ancient regime, we would now run a transition
+   net over that sequence of words and edges. If the net accepted
+   the sequence it would return a final state, and we'd use that
+   to establish a referent and construct the edge over the whole
+   capitalized sequence. 
+     Now, however, the transition net has been abandoned in favor
+   of an omnibus routine -- examine-capitalized-sequence -- which uses
+   a body of internal evidence to figure out what sort of name to
+   find or create. This is simpler to toss heuristic evidence into
+   but loses the opportunity to have richly structured names. 
+  
+   If we have succeeded in finding named entity of some sort,
+   we indicate that by returning an edge. If examine-capitalized-
+   sequence just found a name, then this is done by the tail call
+   to do-referent-and-edge."
 
   (let ((result
          (catch :abort-examination-not-a-name
@@ -154,6 +153,7 @@
                ;; normally returns a name 
                (examine-capitalized-sequence starting-position
                                              ending-position))))))
+    (tr :result-of-examine result)
     (if result
       (typecase result
         (individual
@@ -272,6 +272,9 @@
 
 
 (defun do-referent-and-edge (name starting-position ending-position)
+  "Examine-capitalized-sequence returned a name (vs. a named entity).
+   We call establish-referent-of-pn to do the conversion, then we
+   package it all up in an edge by calling do-pnf-edge"
   (let* ((category-of-name (category-of name))
          (referent (establish-referent-of-pn category-of-name name)))
 
@@ -290,19 +293,23 @@
     (let ((label (category-for-edge-given-name-type category-of-name referent)))
       (do-pnf-edge label referent starting-position ending-position))))
 
+
+
 (defun do-pnf-edge (category referent starting-position ending-position
                     &optional rule)
+  "Just takes the informatio supplied by callers (do-referent-and-edge
+   and classify-&-record-span) and calls a lightly tailored edge maker."
   (unless category
     (setq category (category-for-edge-given-referent referent)))
   (let ((edge (edge-over-proper-name
                starting-position
                ending-position
                category
-               category::proper-name
+               category::proper-name ; form
                referent
                (or rule
-                   :pnf)  ;; the "rule"
-               (successive-treetops  ;; the daughters
+                   :pnf)  ;; rule
+               (successive-treetops  ;; daughters
                 :from starting-position
                 :to ending-position))))
     edge ))

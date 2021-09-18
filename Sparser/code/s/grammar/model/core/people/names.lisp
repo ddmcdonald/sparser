@@ -78,7 +78,8 @@
               a last-name variable.~%Something upstream used ~
               something other than make-person-name-from-items."
              person))
-    (bind-variable 'name-of person last-name))) ;; needs to be checked in DLI case
+    #+ignore(bind-variable 'name-of person last-name)
+    (set-name-of last-name person)))
 
 ;;--- make
 
@@ -109,8 +110,9 @@
                     :first-name first-name
                     :version version))
                  (t
-                  (push-debug `(,items))
-                  (break "Fell through cases in person-name - new one?")))))
+                  (when *debug-pnf*
+                    (push-debug `(,items))
+                    (break "Fell through cases in person-name - new one?"))))))
       name )))
 
 
@@ -160,8 +162,7 @@
       ;; provides hooks for being creative about name mergers
       (when (member sequence instances :test #'eq)
         ;; now we look up what name this sequence is associated with
-        (let ((name
-               (name-based-on-sequence/uncategorized sequence)))
+        (let ((name (name-based-on-sequence/uncategorized sequence)))
           (when name
             (person-who-has-name name)))))))
 ;;/// refactor these two

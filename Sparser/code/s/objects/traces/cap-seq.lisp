@@ -354,6 +354,12 @@
                (pos-token-index pos))))
 
 
+(deftrace :result-of-examine (result)
+    ;; called from Classify-&-record-span
+  (when *trace-pnf*
+    (trace-msg "PNF/classify: Examine returned ~a" result)))
+
+
 ;;;---------
 ;;; Examine
 ;;;---------
@@ -401,6 +407,11 @@
 
 
 
+(deftrace :retrieved-from-name-word (i nw)
+  ;; called from subsequent-reference-off-name-word
+  (when *trace-pnf*
+    (trace-msg "PNF: Retrieved ~a from name-word ~a" i nw)))
+
 (deftrace :found-named-obj-with-name (name object)
   ;; called from find/named-object-with-name
   (when *trace-pnf*
@@ -416,7 +427,7 @@
   ;; called from make/named-object-with-name
   (when *trace-pnf*
     (trace-msg "PNF: made the named object ~a~
-              ~%    from namd ~a" i name)))
+              ~%    from name ~a" i name)))
 
 (deftrace :make-uncategorized-name (name sequence)
   ;; called from make/uncategorized-name

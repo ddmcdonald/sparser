@@ -72,13 +72,12 @@
 
 (defun classify-and-record-name (starting-position
                                  ending-position)
-
-  ;; called from PNF's driver, PNF, after the sequence has been delimited.
-  ;; The delimiting can introduce edges around some punctuation, so
-  ;; we have to look for that case. Otherwise any edges over known
-  ;; words will be introduced here.
-  ;;    Returns an edge to indicate that it has a successful analysis
-  ;; or Nil if it doesn't think the delimited span holds a name.
+  "Called from PNF's driver, PNF, after the sequence has been delimited.
+   The delimiting can introduce edges around some punctuation, so
+   we have to look for that case. Otherwise any edges over known
+   words will be introduced here.
+      Returns an edge to indicate that it has a successful analysis
+   or Nil if it doesn't think the delimited span holds a name."
   (tr :pnf/classifying-span starting-position ending-position)
 
   (if (eq ending-position (chart-position-after starting-position))
@@ -96,12 +95,10 @@
 (defun classify&record-the-rest-of-the-sequence (adjacent-name-edge
                                                  start-pos end-pos
                                                  &aux edge )
-
-  ;; Called from Classify-&-record-span when Examine-capitalized-sequence
-  ;; has seen a pattern that caused it to end the name before all of the
-  ;; items in the pwpnf'd sequence where consumed.  From here we resume
-  ;; the classification process on the remainder of the items.
-
+  "Called from Classify-&-record-span when Examine-capitalized-sequence
+   has seen a pattern that caused it to end the name before all of the
+   items in the pwpnf'd sequence where consumed.  From here we resume
+   the classification process on the remainder of the items."
   (when (eq (pos-capitalization start-pos)
             :lower-case)  ;; e.g. "of"
     ;; n.b. this also gets "and", so unless steps are taken (////) 

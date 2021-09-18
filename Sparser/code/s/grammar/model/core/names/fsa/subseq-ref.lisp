@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2013-2018  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2013-2021  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "subseq ref"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  March 2018
+;;;  version:  September 2021
 
 ;; broken out from [names:fsa:record] 6/8/93 v2.3
 ;; (1/7/94) patched around earlier indexing bug in Item-in-a-known-name
@@ -32,12 +32,13 @@
 ;;;--------------
 
 (defun dereference-proper-noun (edge)
-  "Called by sortout-single-edge-over-capitalized-word
+  "Called by sortout-single-edge-over-capitalized-word and its
+   relatives (..multple-edge-over, .. two-edges). 
    The form label on this edge is proper-noun. This means it's
    probably a single word reference to an individual we already
    know. If we confirm that, we construct a new edge with the
    appropriate labels. If we can't improve on the analysis we
-   return nil.  "
+   return nil."
   (let ((referent (edge-referent edge)))
     (when (individual-p referent)
       (multiple-value-bind (category its-referent rule)
@@ -105,18 +106,20 @@
    look for special cases (like the last name of a person).
    Take up company et al. cases when examples come up. Mine the
    commented-out heuristics."
-  (let ((direct-reference (value-of 'name-of nw))
+  (let ((direct-reference #+ignore(value-of 'name-of nw)
+                          (name-of nw))
         (person-name (car (who-binds 'last-name nw))) ;;/// using first loses some
         #+ignore(pos-in-sequence-bindings
          (bound-in nw :super-category 'ordinal :all t))
         #+ignore(first-word-of (bound-in-value-of 'first-word nw 'company-name))
         )
     (cond
-     (direct-reference
-      (let ((i direct-reference)) ;; for clarity
-        (unless (individual-p i)
-          (error "Expected the object linked to ~a to be an individual" nw))
-        (values (itype-of i) i :linked-to-name-word)))
+      (direct-reference
+       (tr :retrieved-from-name-word direct-reference nw)
+       (let ((i direct-reference)) ;; for clarity
+         (unless (individual-p i)
+           (error "Expected the object linked to ~a to be an individual" nw))
+         (values (itype-of i) i :linked-to-name-word)))
 
      (person-name
       (let ((i (bound-in person-name  :body-type 'person)))

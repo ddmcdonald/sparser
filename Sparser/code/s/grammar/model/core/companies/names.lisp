@@ -92,12 +92,11 @@
       ;; really only intended for single words, but we
       ;; can adapt
       collect
-      (if
-       (and (individual-p nw) ;; not words like "and"
-                (itypep nw 'name-word))
-      ;; Company terms, countries, ...
-       (bind-dli-variable 'name-of company nw)
-       nw))))
+      (if (and (individual-p nw) ;; not words like "and"
+               (itypep nw 'name-word))
+        ;; Company terms, countries, ...
+        (set-name-of nw company)
+        nw))))
   
 
 
@@ -106,14 +105,13 @@
   (let ((known-aliases (value-of 'aliases company)))
     (if known-aliases
       (tail-cons name known-aliases)
-      (setq company (bind-dli-variable 'aliases (list name) company))))
+      (setq company (bind-variable 'aliases (list name) company))))
   (let* ((sequence (value-of 'sequence name))
          (items (value-of 'items sequence)))
-    (if (null (cdr items)) ;; just one
-      (bind-dli-variable 'name-of company (car items))
-      ;; 'associated-with' each of the items the name
-      )
-    company)) ;; NOT SURE ABOUT THIS RETURN -- NEEDS TO BE CHECKIED IN bind-dli-variable case
+    (when (null (cdr items)) ;; just one
+      ;; link the alias to the company
+      (set-name-of (car items) company))
+    company))
 
 
 (defun make-company-name-from-items (items
