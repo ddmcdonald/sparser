@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2010-2013,2020  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2010-2013,2020-2021  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model/core/companies/"
-;;;  version:  August 2020
+;;;  version:  September 2021
 
 ;; initiated 5/22/93 v2.3; changed index, added print routine 6/7. Broke that out
 ;; as its own file 11/23/94.  5/3/95 added Define-company. 5/22 tweeked
@@ -37,7 +37,7 @@
           (aliases :primitive list) ;; of company-name's
           (description)
           (location))
-  :index (:permanent
+  :index (:permanent :apply
           :special-case :find find/company
                         :index index/company
                         :reclaim reclaim/company))
@@ -139,10 +139,8 @@
     ;; The name was built by make-uncategorized-name-from-items which
     ;; has dropped the 'and'. We have to put it back.
     (setq name (convert-collection-of-names-to-single-name name)))
-
   (unless (itype name 'company-name)
     (setq name (render-name-as-company-name name)))
-
   (let ((new-company (define-individual 'company
                        :name name)))
     (index-company-name-to-company name new-company)
@@ -152,7 +150,6 @@
 (defun find/company-with-name (name)
   ;; call by establish-referent-of-pn
   (let ((type-of-name (cat-symbol (category-of  name))))
-
     (declare (ignore type-of-name))
     ;; /// later check that the type has a first-word variable
     (let ((first-word (value-of 'first-word name)))
@@ -226,21 +223,18 @@
     sequence ))
 
 
-
 (defun index/company (company company-category bindings)
   (let* ((name (value-of/binding 'name bindings company-category))
          (sequence (sequence-from-company-name name))
          (first-item (first (value-of 'items sequence)))
          (alist (cat-instances company-category))
          (entry (assoc first-item alist)))
-
     (if entry
       (rplacd entry
               (cons company (cdr entry)))
       (setf (cat-instances company-category)
             `( (,first-item ,company)
                ,@alist )))))
-
 
 
 (defun reclaim/company (c alist company-category)

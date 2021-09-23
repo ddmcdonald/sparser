@@ -40,7 +40,7 @@
       ;; the company is entered into the discourse model,
       ;; not the company's name
   :specializes name
-  :index (:permanent
+  :index (:permanent :apply
           :special-case :find find/company-name
                         :index index/company-name
                         :reclaim reclaim/company-name)
@@ -171,10 +171,7 @@
 
 
 (defun map-name-words-to-name (items name)
-  ;; This is hard to imagine doing as psi, and indeed there's nothing
-  ;; unsaturated about the objects involved.
-  (when *do-not-use-psi*
-    (spread-sequence-across-ordinals name items)))
+  (spread-sequence-across-ordinals name items))
 
 
 
