@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "cap seq"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  May 2021   
+;;;  Version:  September 2021   
 
 ;; initiated 5/26/93 v2.3. added two more moments 12/17. And more 1/7/94.
 ;; Added traces for "of" in the scan 5/3. Added start/end fns 6/13.
@@ -14,12 +14,17 @@
 (in-package :sparser)
 
 (defparameter *trace-pnf* nil)
-
-(defun trace-pnf ()  ;; for meta-point
+(defun trace-pnf ()
   (setq *trace-pnf* t))
-
 (defun untrace-pnf ()
   (setq *trace-pnf* nil))
+
+(defvar *pnf-creation* nil
+  "For when we introduce new names, people, etc")
+(defun trace-pnf-creation ()
+  (setq *pnf-creation* t))
+(defun untrace-pnf-creation ()
+  (setq *pnf-creation* nil))
 
 
 ;;;---------------
@@ -431,20 +436,20 @@
 
 (deftrace :make-uncategorized-name (name sequence)
   ;; called from make/uncategorized-name
-  (when *trace-pnf*
-    (trace-msg "PNF: make the uncategories named ~a~
+  (when (or *trace-pnf* *pnf-creation*)
+    (trace-msg "PNF: make the uncategorized-named ~a~
               ~%    from the sequence ~a" name sequence)))
 
 (deftrace :found-uncategoried-name (name sequence)
   ;; called from find/uncategorized-name
-  (when *trace-pnf*
-    (trace-msg "PNF: found the uncategories named ~a~
+  (when (or *trace-pnf* *pnf-creation*)
+    (trace-msg "PNF: found the uncategorized-name ~a~
               ~%    given the sequence ~a" name sequence)))
 
 (deftrace :no-uncategorized-name-for (sequence)
   ;; called from find/uncategorized-name
   (when *trace-pnf*
-    (trace-msg "PNF: no uncategorized name for the sequence~
+    (trace-msg "PNF: no uncategorized-name for the sequence~
              ~%     ~a" sequence)))
 
 (deftrace :no-sequence-for-nws (list-of-name-words)
@@ -456,7 +461,7 @@
 
 (deftrace :interpreting-name-as-person (name)
   ;; called from interpret-name-as-person
-  (when *trace-pnf*
+  (when (or *trace-pnf* *pnf-creation*)
     (trace-msg "Interpreting this name as a person:~
               ~%    ~a" name)))
 
@@ -470,7 +475,7 @@
 
 (deftrace :found-existing-referent-for-pn (existing-referent)
   ;; called from establish-referent-of-pn
-  (when *trace-pnf*
+  (when (or *trace-pnf* *pnf-creation*)
     (trace-msg "PNF:  found ~a" existing-referent)))
 
 (deftrace :no-existing-referent-for-pn ()
@@ -481,7 +486,7 @@
 
 (deftrace :made-person-with-name (person name)
   ;; called from make/person-with-name
-  (when *trace-pnf*
+  (when (or *trace-pnf* *pnf-creation*)
     (trace-msg "PNF: made the person ~a~
               ~%    from the name ~a" person name)))
 
@@ -503,7 +508,7 @@
   
 
 
-
+;;------- goes with original network version of PNF
 ;;;--------------------------------------
 ;;; exhaustive trace of the PNF routines
 ;;;--------------------------------------

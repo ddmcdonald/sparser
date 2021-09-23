@@ -132,6 +132,9 @@
   (let ((body (binding-body binding))
         (value (binding-value binding)))
 
+    (when no-index-on-body?
+      (break "Who is calling index/binding with optional parameter?"))
+    
     (unless no-index-on-body?
       ;; link the binding to its body
       (if (individual-p body)
@@ -217,12 +220,16 @@
 
 
 (defun push-binding-onto-bound-in-field (binding individual)
+  "There's a hard to pin down problem with find/binding, or with the ecosystem
+   that creates bindings that leads to duplications in the bound-in field"
   (declare (special *individuals-bound-onto*))
   (let ((existing-bindings (indiv-bound-in individual)))
-    (setf (indiv-bound-in individual)
-          (cons binding existing-bindings))
-    (push individual *individuals-bound-onto*) ;; see zero-bound-in-fields
-    binding ))
+    (unless (memq binding existing-bindings)
+      (setf (indiv-bound-in individual)
+            (cons binding existing-bindings))
+      (unless (permanent-bound-in? binding)
+        (push individual *individuals-bound-onto*)) ;; see zero-bound-in-fields
+      binding )))
 
 (defun remove-binding-from-bound-in-field (b i)
   (setf (indiv-bound-in i)
@@ -288,6 +295,7 @@
   (declare (special *track-incidence-count-on-bindings*))
   (when (typep variable 'anonymous-variable)
     (setq variable (dereference-variable variable individual)))
+  ;;(push-debug `(,variable ,value ,individual)) (break "find")
   (let* ((bindings (gethash value (var-instances variable)))
          (binding (when bindings
                     (find-if (lambda (binding) (memq binding bindings))

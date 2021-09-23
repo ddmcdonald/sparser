@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993,1994,1995 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "loader 2"
 ;;;   Module:  "model;core;names;"
-;;;  version:  2.1 May 1995
+;;;  version:  September 2021
 
 ;; 2.0 (6/2/93) brought back into action, again because of references
 ;;      to categories introduced late in the process of loading the
@@ -17,6 +17,7 @@
 ;;(lload "names-fsa;name creators")
 ;;(lload "names-fsa;classifications")
 
+(lload "names;permanent-variables")
 
 (lload "names-fsa;subseq ref")
 (lload "names;citations")

@@ -228,6 +228,23 @@ Used by reclaim operation")
   (setq *individuals-bound-onto* nil))
 
 
+(defvar *permanent-bound-in-variables* nil)
+
+(defun register-permanent-bound-in-variable (var-name cat-name)
+  (let ((variable (find-variable-for-category var-name cat-name)))
+    (push variable *permanent-bound-in-variables*)))
+
+(defgeneric permanent-bound-in? (variable)
+  (:documentation "Called by push-binding-onto-bound-in-field which
+    normally adds the individual to *individuals-bound-onto* so they are
+    stripped in the next run. If the variable of the binding is on this
+    list we block that. Same thing as initialize-bound-in-reclaimation does.")
+  (:method ((b binding))
+    (permanent-bound-in? (binding-variable b)))
+  (:method ((v lambda-variable))
+    (memq v *permanent-bound-in-variables*)))
+
+
 ;;;--------------------------
 ;;; per-category entry point
 ;;;--------------------------
