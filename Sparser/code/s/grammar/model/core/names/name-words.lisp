@@ -77,7 +77,6 @@
                 (polyword-p word))
       (break "The object bound to 'name' should be a 'word'~
               ~%but is isn't:  ~A" word))
-
     (unless table
       (setq table (setf (cat-instances name-word-category)
                         (make-hash-table))))
@@ -396,7 +395,6 @@
    a name-word object for what might otherwise be a normal word
    (e.g. the 'ball' in 'George K. Ball')"
   (if (one-word-long? edge)
-    
     (let* ((daughter (edge-left-daughter edge)) ; "Market News Publishing Inc."
            (word (typecase daughter
                    (word daughter)

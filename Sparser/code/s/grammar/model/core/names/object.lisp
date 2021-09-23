@@ -25,6 +25,8 @@
 
 (in-package :sparser)
 
+;; (trace-pnf)
+
 ;;;-----------------------------------------------
 ;;; common super-class for things that have names
 ;;;-----------------------------------------------
@@ -200,14 +202,10 @@
   :index (:permanent :special-case))
 
 
-;;--- the call from 'Examine'
-
-(defun make-uncategorized-name-from-items (items
-                                           &key and )
-  ;; Called from Categorize-and-form-name when there isn't enough
-  ;; internal evidence to make any judgement about the category.
-  ;; It returns the name object that it creates.
-
+(defun make-uncategorized-name-from-items (items &key and )
+  "Called from Categorize-and-form-name when there isn't enough
+   internal evidence to make any judgement about the category.
+   It returns the name object that it creates."
   (if and
     (make-collection-of-uncategorized-names items and)
     (or (find/uncategorized-name items)
@@ -346,6 +344,8 @@
     (unindex/binding binding)))
 
 (defun name-based-on-sequence/uncategorized (seq)
+  "Called from functions that have the sequence and want any associated names:
+   names-based-on-sequence, find/uncategorized-name find/person-name"
   (let ((links-to-name-objects
          (all-bindings-such-that
           (indiv-bound-in seq)
