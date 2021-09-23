@@ -566,12 +566,14 @@ using data collected by identify-relations |#
                                  *sentence-mismatch-mentions-ht*))
                           (if *break-on-sentence-mention-mismatches*
                             (lsp-break "bad mention sentence match for ~s ~s~%"
+
                                        mention s)
                             ;; this is problematic because
                             ;; there will be bad mentions
                             ;; in the table -- hopefully
                             ;; will find and fix all these
                             ;; cases
+
                             mention)))))))))
 
 (defun mention-in-sentence? (mention s)
@@ -599,10 +601,10 @@ using data collected by identify-relations |#
 
 ;;--- Uses sentence-text-structure class
 
-(defmethod set-sentence-subject ((e edge) (s sentence))
-  (let ((referent (edge-referent e)))
-    ;;/// should we insist that it be an individual ?
-    (setf (sentence-subject (contents s)) referent)))
+(defgeneric set-sentence-subject (edge sentence)
+  (:documentation "Record the minimal edge over the subject")
+  (:method ((e edge) (s sentence))
+    (setf (sentence-subject (contents s)) e)))
 
 (defmethod get-sentence-subject ((s sentence))
   (sentence-subject (contents s)))
