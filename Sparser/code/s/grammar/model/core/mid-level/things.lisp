@@ -230,19 +230,6 @@
    :in visual-presentation))
 
 
-(define-category publication
-  :specializes create-mental-construction-concerning
-  :realization (:noun "publication" :verb "publish"))
-
-(define-category book
- :specializes mental-construction-concerning
-  :mixins (publication)
-  :realization (:noun ("book" "handbook")))
-
-(define-category journal
-  :specializes publication
-  :realization (:noun "journal" :verb "journal"))
-
 
 (define-category focus-noun
   :specializes mental-construction-concerning
@@ -456,8 +443,29 @@ TRIPS: "enough" qua 'adequate' is a quantity-related-property-val
  That needs an treatment somewhere, and it could be here.")
 
 
+(define-category publication
+  :specializes information-container
+  :mixins (create-mental-construction-concerning)
+  :realization (:noun "publication" :verb "publish"))
+
+(define-category book
+  :specializes mental-construction-concerning
+  :mixins (publication)
+  :realization (:noun ("book" "handbook")))
+;;/// has verb reading as in 'to book tickets to the concert'
+
+(define-category novel/book
+  :specializes book
+  :realization (:noun "novel"))
+;;/// adjective reading is in dossiers/modifiers
+
+(define-category journal
+  :specializes publication
+  :realization (:noun "journal" :verb "journal"))
+
+
 (define-category answer/info ;; needs a better name
-  :binds ((questiion top))
+  :binds ((question))
   :specializes information
   :instantiates self
   :realization (:noun "answer"
