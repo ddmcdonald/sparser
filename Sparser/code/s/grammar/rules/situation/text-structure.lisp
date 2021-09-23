@@ -11,10 +11,13 @@
 (in-package :sparser)
 
 (defun identify-salient-text-structure (sentence)
-  ;; The layout sweep may have identified the subject,
-  ;; if not have to decide how hard we want to work to
-  ;; infer it.
-  (when  *parse-chunked-treetop-forest*
+  "Called from post-analysis-operations.
+   The layout sweep may have identified the subject,
+   if not have to decide how hard we want to work to
+   infer it."
+  ;; Contradicted subject judgement of layout -- putting this on
+  ;; ice until there ae more things to identify
+  (when nil ;; *parse-chunked-treetop-forest*
     ;; The base-layout is only constructed if parsing
     ;; proceeds beyond chunking
     (let* ((layout (base-layout (contents sentence)))
