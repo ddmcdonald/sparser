@@ -493,7 +493,7 @@
 
 (defparameter *interpret-in-context* nil
   "If applicable (not called in every parsing protocol), adds a
-   post sentence analysis sweep over the treetops to identify intended
+   sweep after sentence analysis over the treetops to identify intended
    meeanings from literal referents.")
 
 (defparameter *use-discourse-mentions* nil
@@ -502,6 +502,11 @@
 (defparameter *constrain-pronouns-using-mentions* nil
   "Compute pronoun referents on basis of mentions. See pronoun case of
    interpret-in-context.")
+
+(defparameter *try-incrementally-resolving-pronouns* nil
+  "Read in sweep/form-dispatch and determines whether we call
+   attempt-to-dereference-pronoun or just push the pronoun
+   onto the layout.")
 
 (defparameter *ignore-personal-pronouns* t
   "Ignore situational deictics like 'I' or 'we' or 'you'.

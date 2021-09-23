@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "ref"
 ;;;   Module:  "model;core:pronouns:"
-;;;  version:  May 2021
+;;;  version:  September 2021
 
 ;; 3.0 (7/11/94) completely redone from scratch
 ;; 4.0 (5/8/95) in progress ..5/22
@@ -46,29 +46,12 @@
 enough information to establish their context.
 
 The process is run out of sweep-sentence-treetops and controlled
-by these parameters. The existence of a pronoun or pronouns in
-a sentence is noted in the sweep/form-dispatch portion of the
-sweep operation where decides what to do with any sort of np.
-Quote: 
-               ;; We've got several options. If we're going to wait until the
-               ;; whole sentence is done and condition-anaphor-edge runs to
-               ;; record whatevern information the grammar can give us for v/r,
-               ;; the we just push the pronoun.
-               ;;   If we going to do it now, then we can either wait until
-               ;; all of the features of this sentence have been determined,
-               ;; in which case we 'enqueue' the pronoun and a trap will find it.
-               ;; That might provide a better picture of the sentence layout.
-               ;; Alternatively, we see if we can do it right now.
-
-
+by the status of *try-incrementally-resolve-pronouns*
+The existence of a pronoun or pronouns in a sentence is noted in
+the sweep/form-dispatch portion of the sweep operation where
+we decide what to do with any sort of np.
 |#
 
-(defparameter *try-incrementally-resolve-pronouns* nil
-  "Read in sweep/form-dispatch and determines whether we call
-   attempt-to-dereference-pronoun or just push the pronoun
-   onto the layout.
-     Another option (commented out 5/19/21) is to save the
-   pronoun by calling enqueue-pronoun")
 
 (defvar *pending-pronoun* nil
   "Holds the edge passed to enqueue-pronoun for later processing")
@@ -81,25 +64,30 @@ Quote:
   (setq *pending-pronoun* edge-over-pn))
 
 
-(defparameter *record-rather-than-try-pronoun* nil
-  "Good when in quiet mode since the format statement will blow
-   through that.")
-
 (defparameter *work-on-pronouns* nil
-  "Gate to ignore everything for the moment")
+  "Gate to look deeper into unhandled cases")
 
-(defun attempt-to-dereference-pronoun (edge-over-pn layout)
-  "Called at the end of sweep-sentence-treetops, which is after chunking
-   and before any forest-level operations.
-   Get the discriminiating properties of the pronoun
-   If 3d person, note the candidates based on same-sentence topology."
-  (if *record-rather-than-try-pronoun*
-    (format t "Pronoun ~a in ~%~s~%" edge-over-pn (current-string))
-    (else
-      (push-debug `(,edge-over-pn ,layout))
-      (when *work-on-pronouns*
-        (break "Pn at ~a" edge-over-pn)))))
 
+(defun handle-incremental-pronoun (edge properties layout)
+  "Called when the pronoun is encountered in sweep-sentence-treetops, 
+   which is after chunking and before any forest-level operations.
+   Get the discriminiating properties of the pronoun.
+   If 3d person, note the candidates based on same-sentence topology.
+   Borrows liberally from handle-any-anaphora which is designed to run
+   during post-analysis-operations"
+  (tr :anaphora-looking-at-edge edge)
+  (let ((sentence (bkptr layout))
+        (current-subject (subject layout)))
+    (cond
+      ((memq :subject properties)
+       (let ((previous-subject (subject-of-previous-sentence sentence)))
+         (unless previous-subject
+           (break "no subject of previous sentence"))
+         (transfer-edge-data-to-edge previous-subject edge)))
+      (t (when *work-on-pronouns*
+           (break "Need next case. Pronoun = ~a" edge))
+         nil))))
+         
 
 
 ;;;--------------------------------
@@ -109,8 +97,11 @@ Quote:
 ;  (f "/Users/ddm/ws/R3/ws/Mitre December texts/passage 1.txt")
 
 (defun handle-any-anaphora (sentence)
-  ;; called from post-analysis-operations with the sentence currently being
-  ;; analyzed. 
+  "Called from post-analysis-operations with the sentence currently being
+   analyzed. Depends on *do-anaphora* flag being up and the flag
+   *constrain-pronouns-using-mentions* being down. Goes through all of
+   the pronouns encountered in the current sentence."
+  (break "invoking handle-any-anaphora")
   (let ((edge/s (there-are-pronouns))
         (defNPs (pending-definite-references sentence)))
     (when defNPs

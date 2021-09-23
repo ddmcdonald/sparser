@@ -51,6 +51,7 @@
   (declare (special subject-seen?))
   (tr :setting-subject-to tt)
   (setf (subject (layout)) tt)
+  (set-sentence-subject tt (bkptr (layout)))
   (setq subject-seen? t))
 
 

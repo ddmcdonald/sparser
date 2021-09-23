@@ -368,7 +368,7 @@
   "Called from sentence-processing-core once all of the parsing
    operations on the sentence have finished. Handles anaphora,
    discourse structure, data-collection for cards, and such."
-  (declare (special *index-cards*))
+  (declare (special *index-cards* *try-incrementally-resolving-pronouns*))
   (when *scan-for-unsaturated-individuals*
     (sweep-for-unsaturated-individuals sentence))
   (loop for e in (all-tts (starts-at-pos sentence) (ends-at-pos sentence))
@@ -378,8 +378,8 @@
      do (make-maximal-projection (edge-referent e) e))
   (identify-salient-text-structure sentence)
   (when *do-anaphora*
-    (unless *constrain-pronouns-using-mentions*
-      ;; defer 'till interpret-treetops-in-context runs
+    (unless (or *constrain-pronouns-using-mentions* ; defer 'till interpret-treetops-in-context runs
+                *try-incrementally-resolving-pronouns*) ; already done
       (handle-any-anaphora sentence)))
   (when (and *readout-relations* *index-cards*)
     (push `(,(sentence-string sentence) 

@@ -121,7 +121,7 @@
 
        ) ; bottom of the loop over treetops
 
-    (when *pending-pronoun*
+    #+ignore(when *pending-pronoun*
       (attempt-to-dereference-pronoun *pending-pronoun* layout))
 
     layout))
@@ -130,13 +130,21 @@
 
 (defun sweep/form-dispatch (tt prior-tt count
                             layout &aux form)
-  "Encapsulates the actual form-based dispatch. Calls subroutines in
-   forest-gophers to set the fields in the layout and help maintain
-   state."
+  "Encapsulates the actual form-based dispatch for a treetop   
+   Calls subroutines in forest-gophers to set the fields in the layout 
+   and update the state variables."
   (declare (special word::|of| category::that word::comma
                     sentence-initial?  subject-seen?  main-verb-seen?
-                    *try-incrementally-resolve-pronouns*
+                    *try-incrementally-resolving-pronouns*
                     waiting-for-non-verb  count-past-verb))
+
+  (when (eq (form-cat-name tt) 'possessive)
+    ;; That's a property, not a concrete term. Find the actual
+    ;; term and update the tt and form
+    (cond ((eq 'apostrophe-s (edge-cat-name (edge-right-daughter tt)))
+           (setq tt (edge-left-daughter tt)))
+          (t (push-debug `(,tt))
+             (break "another case of toplevel possessive:~%  ~a" tt))))
   
   (when (edge-p tt) (setq form (edge-form tt)))
   (tr :sweep-dispatching-on tt)
@@ -230,22 +238,30 @@
              (push-that tt))
 
            (when (null prior-tt)
-             ;; first constituent in the sentence
+             ;; first np constituent in the sentence
              (push :subject properties)
              (set-subject tt))
 
            (when main-verb-seen?
              (push :post-verb properties)
              (push-loose-np tt))
-           
+
+           ;; Label the first np encountered before the verb as
+           ;; the subject, but not an np in it an apposative on
+           ;; that np.
            (when (and (edge-p prior-tt)
                       (not main-verb-seen?)
+                      (not subject-seen?)
                       (or (eq (edge-category prior-tt) word::comma)
                           (and (category-p (edge-category prior-tt))
                                (memq (edge-cat-name prior-tt) '(pp adverb)))))
              (push :subject properties)
              (set-subject tt))
            
+           (when (individual-p referent)
+             (when (plural? referent)
+               (push :plural properties)))
+
            (when (pronoun-category? form)
              (tr :noticed-pronoun tt)
              (push :pronoun properties)
@@ -260,15 +276,10 @@
                ;; in which case we 'enqueue' the pronoun and a trap will find it.
                ;; That might provide a better picture of the sentence layout.
                ;; Alternatively, we see if we can do it right now.
-               (if *try-incrementally-resolve-pronouns*
-                 (then
-                   (attempt-to-dereference-pronoun tt layout)
-                   #+ignore(enqueue-pronoun tt))
+               (if *try-incrementally-resolving-pronouns*
+                 (handle-incremental-pronoun tt properties layout)
+                 #+ignore(enqueue-pronoun tt)
                  (push-pronoun tt))))
-
-           (when (individual-p referent)
-             (when (plural? referent)
-               (push :plural properties)))
 
            ;; package this up
            (let ((package (list pending-np
@@ -287,8 +298,6 @@
   (when (known-subcategorization? tt)
     (push-subcat tt)))
 
-
-;;--- NP handler
 
 
 
