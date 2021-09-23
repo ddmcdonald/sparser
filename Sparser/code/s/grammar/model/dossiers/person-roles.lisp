@@ -9,6 +9,7 @@
 
 (defparameter *person-role-names*
   '(
+    "author"
 
     "entrepreneur"
     "founder"
