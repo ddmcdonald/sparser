@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "kinds"
 ;;;    Module:   "model;core:people:"
-;;;   version:   February 2021
+;;;   version:   September 2021
 
 ;; initiated 12/27/07. Relabeled 'person' for parsing 3/6/13.
 ;; 3/25/13 converted it all to inherit from person-type.
@@ -158,5 +158,17 @@
   :bindings (gender 'male)
   :realization (:common-noun "uncle"))
 
+(define-category  grandfather
+  :instantiates person
+  :specializes family-member
+  :rule-label person
+  :bindings (gender 'male)
+  :realization (:common-noun "grandfather"))
 
+(define-category  grandmother
+  :instantiates person
+  :specializes family-member
+  :rule-label person
+  :bindings (gender 'female)
+  :realization (:common-noun "grandmother"))
 
