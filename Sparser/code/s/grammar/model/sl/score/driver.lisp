@@ -63,7 +63,7 @@ that we append to.
    an open file unless we're debugging."
   (declare (special *comlex-form-output-stream*
                     *incrementally-save-comlex-categories*
-                    *sparser-is-running*))
+                    *sparser-is-running*  *sparser-loaded*))
   (when *incrementally-save-comlex-categories*
     ;; The definitions are all in terms of symbols and strings, so we have
     ;; to convert what comes out of the setup functions.
@@ -83,9 +83,11 @@ that we append to.
                   (adverb (make-category-form-for-an-adverb word name super))
                   )))
 
-      (if *sparser-is-running*
-        (cache-comlex-expression word form)
-        (pprint-category-form form *comlex-form-output-stream*))
+      ;; where ddo we do with the form
+      (if (or *sparser-is-running*
+              (null *sparser-loaded*))
+         (cache-comlex-expression word form)
+         (pprint-category-form form *comlex-form-output-stream*))
 
       (when (and (eq pos 'verb)
                  (verb-particles word))
