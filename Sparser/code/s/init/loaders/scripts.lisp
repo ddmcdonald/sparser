@@ -2,7 +2,7 @@
 ;;;
 ;;;      File: "scripts"
 ;;;    Module: "init;loaders;"
-;;;   Version: June 2021
+;;;   Version: September 2021
 
 (in-package :sparser)
 
@@ -128,6 +128,7 @@ in conjunction with an early version of Hark. Notable for using the
    (*description-lattice* t)
    (*ignore-literal-edges* nil)
    (*index-under-permanent-instances* t)
+   (*index-bindings-to-variables* t)
    (*filter-vocabulary* :acumen))
   (:grammar-configuration "acumen-grammar")
   (:switches neo-fire-setting))
