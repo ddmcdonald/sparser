@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:people:"
-;;;  version:  February 2021
+;;;  version:  September 2021
 
 ;; initiated 6/8/93 v2.3
 ;; 0.1 (1/7/94) redesigned not to pre-index
@@ -36,7 +36,7 @@
           (position . (:or title position-at-co))
           (nationality . country)
           (origin top)) ;; simplistic
-  :index (:permanent :key name)
+  :index (:permanent :apply :key name)
   :realization
      ((:from origin
        :of nationality)
@@ -170,7 +170,6 @@
 
 (defun name-string-to-words (name-string)
   "Check the name-string for validity. 
-
    Returns a list of words"
   (let ((string-elements
          (typecase name-string

@@ -32,11 +32,10 @@
 (define-category  person-name  ;; specialize the name ??
   :instantiates self
   :specializes name
-  :index (:permanent
+  :index (:permanent :apply
           :special-case :find find/person-name
                         :index index/person-name
                         :reclaim reclaim/person-name)
-
   :binds ((sequence . sequence)
           (last-name . name-word)))
 
@@ -49,7 +48,7 @@
   :specializes person-name
   ;; "W. Ed Tyler"
   ;; Flag the initial specifically ?
-  :index (:permanent :key first-name last-name)
+  :index (:permanent :apply :key first-name last-name)
   :binds ((first-name . (:or name-word initial))
           (standard-prefix . person-prefix)
           (version . person-version)))
