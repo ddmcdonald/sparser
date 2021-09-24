@@ -37,9 +37,11 @@
       (or
        (itypep ref category::pronoun)
        (itypep ref category::demonstrative) ;; these, that
+       (itypep ref category::interlocutor) ;; you, my
        )))
   (:method ((e edge))
-    (is-pronoun? (edge-referent e)))
+    (or (itype (edge-category e) 'pronoun)
+        (is-pronoun? (edge-referent e))))
   (:method ((e t))
     nil))
 
