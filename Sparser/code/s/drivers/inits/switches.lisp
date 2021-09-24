@@ -256,11 +256,12 @@
         *ignore-personal-pronouns* t)
   (setq *use-discourse-mentions* t
         *interpret-in-context* t
-        *store-restriction-on-pronoun-edge* t))
+        *store-restriction-on-pronoun-edge* t
+        *try-incrementally-resolving-pronouns* nil))
 
 (defun use-inline-handler-for-pronouns ()
   (setq *store-restriction-on-pronoun-edge* nil ; see condition-anaphor-edge
-        *try-incrementally-resolve-pronouns* t))
+        *try-incrementally-resolving-pronouns* t))
 
 ;;--- post-chunking extras
 

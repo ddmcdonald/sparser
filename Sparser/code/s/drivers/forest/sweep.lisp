@@ -140,11 +140,14 @@
 
   (when (eq (form-cat-name tt) 'possessive)
     ;; That's a property, not a concrete term. Find the actual
-    ;; term and update the tt and form
+    ;; term and update the tt and form. The point is to identify
+    ;; the correct subject even if it's buried
     (cond ((eq 'apostrophe-s (edge-cat-name (edge-right-daughter tt)))
            (setq tt (edge-left-daughter tt)))
-          (t (push-debug `(,tt))
-             (break "another case of toplevel possessive:~%  ~a" tt))))
+          ((is-pronoun? tt)) ; "my"
+          (t (when *debug-pronouns*
+               (push-debug `(,tt))
+               (break "another case of toplevel possessive:~%  ~a" tt)))))
   
   (when (edge-p tt) (setq form (edge-form tt)))
   (tr :sweep-dispatching-on tt)

@@ -106,9 +106,8 @@
    look for special cases (like the last name of a person).
    Take up company et al. cases when examples come up. Mine the
    commented-out heuristics."
-  (let ((direct-reference #+ignore(value-of 'name-of nw)
-                          (name-of nw))
-        (person-name (car (who-binds 'last-name nw))) ;;/// using first loses some
+  (let ((direct-reference (name-of nw))
+        (person-name (car (who-binds 'last-name nw)))
         #+ignore(pos-in-sequence-bindings
          (bound-in nw :super-category 'ordinal :all t))
         #+ignore(first-word-of (bound-in-value-of 'first-word nw 'company-name))
@@ -117,6 +116,10 @@
       (direct-reference
        (tr :retrieved-from-name-word direct-reference nw)
        (let ((i direct-reference)) ;; for clarity
+         (when (consp i)
+           ;; more than one name linked to this name word. ///searching the other
+           ;; names in the article would be best. For now take the first
+           (setq i (car i)))
          (unless (individual-p i)
            (error "Expected the object linked to ~a to be an individual" nw))
          (values (itype-of i) i :linked-to-name-word)))
@@ -355,10 +358,10 @@
         (let ((entities (entities-with-names names)))
           (or entities
               (setq entities (shorter-from-longer-name names))
-              (else
-               (push-debug `(,names ,sequence ,items))
-               (break "No named entity associated with the name ~
-                     ~%~a" names)))
+              (when *debug-pnf*
+                (push-debug `(,names ,sequence ,items))
+                (break "No named entity associated with the name ~
+                      ~%~a" names)))
           (if (null (cdr entities))
             (throw :already-decoded-name (car entities))
             (ambiguous-name-stub names entities))))

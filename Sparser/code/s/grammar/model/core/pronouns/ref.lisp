@@ -38,6 +38,10 @@
 ;; (trace-paragraphs) ;; period hook
 
 
+(defparameter *work-on-pronouns* nil
+  "Gate to look deeper into unhandled cases")
+
+
 ;;;------------------------
 ;;; doing pronouns in-line
 ;;;------------------------
@@ -52,7 +56,7 @@ the sweep/form-dispatch portion of the sweep operation where
 we decide what to do with any sort of np.
 |#
 
-
+;;--- wait till whole sentence is swept
 (defvar *pending-pronoun* nil
   "Holds the edge passed to enqueue-pronoun for later processing")
 
@@ -62,10 +66,6 @@ we decide what to do with any sort of np.
    At the end of the sweep we check for *pending-pronoun* and
    call attempt-to-dereference-pronoun"
   (setq *pending-pronoun* edge-over-pn))
-
-
-(defparameter *work-on-pronouns* nil
-  "Gate to look deeper into unhandled cases")
 
 
 (defun handle-incremental-pronoun (edge properties layout)
@@ -81,9 +81,8 @@ we decide what to do with any sort of np.
     (cond
       ((memq :subject properties)
        (let ((previous-subject (subject-of-previous-sentence sentence)))
-         (unless previous-subject
-           (break "no subject of previous sentence"))
-         (transfer-edge-data-to-edge previous-subject edge)))
+         (when previous-subject
+           (transfer-edge-data-to-edge previous-subject edge))))
       (t (when *work-on-pronouns*
            (break "Need next case. Pronoun = ~a" edge))
          nil))))

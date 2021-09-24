@@ -182,41 +182,40 @@
   (when (null (cdr list-of-names)) 
     ;; or call a variant on (ambiguous-name-stub names entities)
     (let ((name (car list-of-names)))
-      (unless (itypep name 'company-name)
-        (error "Shorter names from longer only implemented for company-names,
-              ~%not this one: ~a" name))
-      ;; These indexes are the name sequences. Pooh
-      (let* ((sequence (value-of 'sequence name))
-             (first-word (value-of 'first-word name))
-             (instances (cat-instances category::company-name))
-             (sequences-with-same-start
-              (loop for s in instances
-                as items = (value-of 'items s)
-                when (eq (car items) first-word)
-                collect s)))
+      (when (itypep name 'company-name)
+        ;;/// we don't know how to factor other sorts of names, though using
+        ;; the first nw in the sequence might be reasonable
+        (let* ((sequence (value-of 'sequence name))
+               (first-word (value-of 'first-word name))
+               (instances (cat-instances category::company-name))
+               (sequences-with-same-start
+                (loop for s in instances
+                   as items = (value-of 'items s)
+                   when (eq (car items) first-word)
+                   collect s)))
 
-        (let ((candiates (loop for s in sequences-with-same-start
-                           when (> (value-of 'number s)
-                                   (value-of 'number sequence))
-                           collect s)))
-          (when candiates
-            (let ((candiate-names
-                   (loop for s in candiates
-                     collect (bound-in s :body-type 'company-name))))
+          (let ((candiates (loop for s in sequences-with-same-start
+                              when (> (value-of 'number s)
+                                      (value-of 'number sequence))
+                              collect s)))
+            (when candiates
+              (let ((candiate-names
+                     (loop for s in candiates
+                        collect (bound-in s :body-type 'company-name))))
 
-              (let ((companies
-                     (loop for cn in candiate-names
-                       as co = (bound-in cn :body-type 'company)
-                       when co  collect co)))
+                (let ((companies
+                       (loop for cn in candiate-names
+                          as co = (bound-in cn :body-type 'company)
+                          when co  collect co)))
 
-                (let ((company (car companies)))
-                  ;; They all have the same name, or close enough,
-                  ;; so the choice doesn't matter. 
-                  ;; One examined case had two companies in this
-                  ;; list, but they were both the same one
-                  (setq company (bind-dli-variable 'name name company))
-                  
-                  (list company))))))))))
+                  (let ((company (car companies)))
+                    ;; They all have the same name, or close enough,
+                    ;; so the choice doesn't matter. 
+                    ;; One examined case had two companies in this
+                    ;; list, but they were both the same one
+                    (setq company (bind-dli-variable 'name name company))
+                    
+                    (list company)))))))))))
             
       
 
