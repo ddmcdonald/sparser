@@ -31,8 +31,8 @@
                  (itypep ref 'wh-nominal))))))
 
     ;; 2do: suppose there's a leading pp on this clause
-    (if (and (> (pos-token-index (pos-edge-starts-at edge)) ;;// idiom somewhere?
-                1) ;; not sentence intial, which will be a question in our corpus
+    
+    (if (and (not (sentence-initial? edge))
              (starts-with-wh-pronoun? edge)
              (not (memq (form-cat-name edge)
                         '(when-relative-clause))))
