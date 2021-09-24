@@ -114,7 +114,7 @@ of the generator, so it should be a form rule for the parser. |#
        (error "Unexpected type for acronym: ~a~%~a"
               (type-of acronym) acronym)))
 
-    (link-named-object-to-name-word company nw)
+    (set-name-of nw company (category-named 'company))
 
     nw))
     

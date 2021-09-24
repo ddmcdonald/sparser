@@ -110,20 +110,7 @@
 ;;; linking -- name-of
 ;;;--------------------
 
-;;--- Linking name words to named-objects (companies, people, etc.)
-;;  Used with names/parens-after-names to handle the new alias
-
-(defun link-named-object-to-name-word (object nw)  
-  (let ((collection (collection-linked-to-nw nw)))
-    (format t "~&~%Linking name-word ~a~%  to object ~a~%  the collection ~
-           is ~a~%" nw object collection)
-    (if collection
-      (then
-       (extend-nw-references nw object collection))
-      (let ((c (define-collection `(,object) (itype-of object))))
-        (set-nw-references nw c)))))
-
-#| The name-of variable, that was designed to link a name-word to
+#| The name-of variable, which was designed to link a name-word to
  a collection of all the names it is part of, is problematic when
  we are using the description-lattice to manage individuals.
    This is because the lattice mechanics arrange that every new binding
@@ -137,26 +124,9 @@
 
 (defparameter *nw-to-names* (make-hash-table)) ;/// size?
 
-(defun collection-linked-to-nw (nw)
-  "Return the collection of names that the name-word 'nw' is part of."
-  (gethash nw *nw-to-names*))
-
-(defun set-nw-references (nw collection)
-  (setf (gethash nw *nw-to-names*) collection))
-
-(defun extend-nw-references (nw object collection)
-  "Add another item to the collection"
-  ;;/// the collection will be new? -- will chain?
-  (let ((extended-collection
-         (add-item-to-collection object collection)))
-    (break "original: ~a~%new: ~a" collection extended-collection)
-    (setf (gethash nw *nw-to-names*) extended-collection)))
-
-
 (defun name-of (nw)
   "Return the probably single object that this nw has been linked to.
    If more than one link has been made return the whole list"
-  ;; Used in index--company-name-to-company and link-alias-to-company
   (let ((value (gethash nw *nw-to-names*)))
     (when value
       (cond
@@ -169,33 +139,27 @@
          value)
         ((itypep value 'named-object) ; e.g. company
          value)
+        ((itypep value 'person)
+         value)
+        ((itypep value 'company)
+         value)
         (t (break "name-of  value= ~a~%    of new type ~a" value (itype-of value)))))))
 
 (defun set-name-of (nw item &optional type)
-  "Record that the name-word 'nw' is part of the name 'name'."
+  "Record that the name-word 'nw' is part of the name 'name'.
+   Applies generally to link short form names such as company acronyms
+   to their full form"
   (let ((prior-value (gethash nw *nw-to-names*)))
     (if prior-value
       (if (eq prior-value item)
         item
-        (else (push-debug `(,item ,prior-value ,nw))
-              (break "setting nw ~a to ~a~%but there's a prior value"
-                     nw item prior-value))) ;; make a collection?
+        (else ;; make a collection -  nw 'books' in #1
+          (let* ((items (list item prior-value))
+                 (c (define-collection items (itype-of item))))
+            (setf (gethash nw *nw-to-names*) c))))
       (else ; first time
         (setf (gethash nw *nw-to-names*) item)))))
-  #+ignore
-  (let ((collection (gethash nw *nw-to-names*)))
-    (unless collection
-      (unless type (setq type (itype-of item)))
-      (let ((collection (define-collection (list item) type)))
-        (break "collection = ~a" collection)
-        (setf (gethash nw *nw-to-names*) collection)))
-    (when collection
-      (let ((items (value-of 'items collection)))
-        (unless (memq item items) ; already there
-          (let ((extended-collection
-                 (add-item-to-collection item collection)))
-            (break "extended-collection: ~a" extended-collection)
-            (setf (gethash nw *nw-to-names*) extended-collection))))))
+
 
 ;;;--------------
 ;;; sort routine
