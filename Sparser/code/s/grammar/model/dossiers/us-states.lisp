@@ -106,7 +106,7 @@
                  :aliases '("NJ" "N.J."))
 
 (define-us-state "New Mexico"
-                 :aliases '("N.Mex." "NM"))
+                 :aliases '("N.Mex." "NM" "N.M."))
 
 (define-us-state "New York"
                  :aliases '("NY"))

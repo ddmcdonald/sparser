@@ -13,6 +13,7 @@
 (define-company-generalization-word "holdings")
 (define-company-generalization-word "industries")
 (define-company-generalization-word "online")
+(define-company-generalization-word "Petroleum")
 (define-company-generalization-word "Press")
 (define-company-generalization-word "Retail")
 (define-company-generalization-word "Services")
