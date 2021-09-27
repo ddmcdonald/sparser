@@ -254,7 +254,7 @@
 
 (include-grammar-module  *internet*)
 
-(include-grammar-module  *ambush*) 2/21/19 too many fragments
+(include-grammar-module  *ambush*) ; 2/21/19 too many fragments
 (include-grammar-module  *call-signs*)
 (include-grammar-module  *checkpoint-ops*)
 (include-grammar-module  *disease*) ; disease too tightly entwined w/ bio types
