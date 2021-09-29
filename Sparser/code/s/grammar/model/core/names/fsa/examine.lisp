@@ -94,6 +94,10 @@
   "Breaks just before we go into the loops that set the 
    internal state locals.")
 
+(defparameter *break-after-examining* nil
+  "Breaks just after that loop so we can look at the locals
+   before taking any action")
+
 
 ;;;-------------------------------------
 ;;; general property for the easy cases
@@ -410,17 +414,19 @@
               (spot-motif-trigger tt))
                
              (otherwise
-              (or (valid-name-category? tt-category) ; checks a value on category's plist
-                  (else
-                    (when *break-on-new-categories-in-cap-seq*
-                      (break "New category in capitalized sequence: ~A" label))                      
-                    ;; Want to be able to provide these words with another
-                    ;; reading as a name-word. Record the treetop edge rather
-                    ;; than just the category so we can get the needed information.
-                    ;; The conversion is done by referents-of-list-of-edges when
-                    ;; it is going through the list of items in the call here
-                    ;; to categorize-and-form-name and the bottom of this function.
-                    (push (cons count tt) other))))
+              (unless (or (form-category? (edge-form tt)) ; approximators
+                          (itypep (edge-referent tt) 'pronoun))
+                (or (valid-name-category? tt-category) ; checks a value on category's plist
+                    (else
+                      (when *break-on-new-categories-in-cap-seq*
+                        (break "New category in capitalized sequence: ~A" label))                      
+                      ;; Want to be able to provide these words with another
+                      ;; reading as a name-word. Record the treetop edge rather
+                      ;; than just the category so we can get the needed information.
+                      ;; The conversion is done by referents-of-list-of-edges when
+                      ;; it is going through the list of items in the call here
+                      ;; to categorize-and-form-name and the bottom of this function.
+                      (push (cons count tt) other)))))
              
              )) ;;  end of check-cases flet function,
 
@@ -553,9 +559,13 @@
          (when music-note
           (throw :abort-examination-not-a-name
             `(:not-a-name ,ending-position)))
+         
+         
+         (when *break-after-examining*
+           (break "Finished examining the capitalized span ~s"
+                  (extract-characters-between-positions starting-position ending-position)))
 
-
-        (let ((name
+         (let ((name
                (categorize-and-form-name (referents-of-list-of-edges items)
                                          name-state country title
                                          &-sign initials? person-version person-prefix
