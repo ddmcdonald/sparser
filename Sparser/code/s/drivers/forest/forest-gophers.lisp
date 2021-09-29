@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "forest-gophers"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  March 2021
+;;;  Version:  September 2021
 
 ;; Initiated 8/30/14. To hold predicates and other little computations
 ;; done by the forest-level sweeping and island-driving. Also a good
@@ -513,6 +513,10 @@
 
       ((and (verb-category? (edge-form edge))
             (null (edge-left-daughter edge))) ;; e.g. have → "have"
+       edge)
+
+      ((and (verb-category? (edge-form edge))
+            (eq :single-term (edge-right-daughter edge)))
        edge)
 
       ((eq :long-span (edge-right-daughter edge))
