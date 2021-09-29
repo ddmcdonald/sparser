@@ -326,7 +326,7 @@
               category))))
       (else ;; no entry. Probably coming from morphology
         (let ((category (define-adjective (word-pname word)
-                            :use-cat-name category-name
+                            :cat category-name
                             :super-category super-category)))
           (mark-as-constructed-category-for-word category super-category)
           category)))))
