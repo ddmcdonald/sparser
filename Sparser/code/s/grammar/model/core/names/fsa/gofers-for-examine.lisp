@@ -3,7 +3,7 @@
 ;;;
 ;;;      File: "gofers-for-examine"
 ;;;    Module: model/core/names/fsa/
-;;;   Version: July 2021
+;;;   Version: September 2021
 
 ;; Initiated 3/28/13 by pulling out the odd tests and checks 
 ;; from examine. 
@@ -327,22 +327,26 @@
   
 
 
-(defmethod title-element? ((e edge))
-  (let ((referent (edge-referent e)))
-    (when referent
-      (when (individual-p referent)
-        (title-element? referent)))))
-
-(defmethod title-element? ((i individual))
-  (declare (special category::title category::title-modifier))
-  (let ((c (itype-of i)))
-    (memq c `(,category::title-modifier
-              ,category::title
-              ;;,category::country
-              ;;  "American Foreign Relations Council"
-              ;;/// Need to be more deliberate about this
-              ;;   ,category::military-rank
-              ))))
+(defgeneric title-element? (item)
+  (:documentation "Is this item semantically a possible component
+    of a title?")
+  (:method ((e edge))
+    (let ((referent (edge-referent e)))
+      (when referent
+        (when (individual-p referent)
+          (title-element? referent)))))
+  (:method ((i individual))
+    (declare (special category::title category::title-modifier))
+    (let ((c (itype-of i)))
+      (memq c `(,category::title-modifier
+                ,category::title
+                ;;,category::country
+                ;;  "American Foreign Relations Council"
+                ;;/// Need to be more deliberate about this
+                ;;   ,category::military-rank
+                ))))
+  (:method ((w word)) nil)
+  (:method ((pw polyword)) nil))
 
 (defun title-elements-in-items (item-edges)
   ;; Called from examine-capitalized-sequence
@@ -384,7 +388,7 @@
       (unless tt
         (push-debug `(,position))
         (error "Did not compute a treetop for position ~a~
-              ~%Extend/fix the algorith." 
+              ~%Extend/fix the algorithm." 
                (pos-array-index position)))
       tt)))
 
@@ -544,7 +548,11 @@ a minimal category and rule set for every word.
   "Called by Examine-capitalized-sequence to make the item list
    for Categorize-and-form-name. Returns a list of terms from
    the model to put into the name object. Wants name-words rather
-   than raw individuals. Makes them  on the flyw when it's clear how to."
+   than raw individuals. Makes them  on the fly when it's clear how to.
+     This is also a place to catch things that pass the checks in
+   examine but should not be part of a name. If the typecase returns
+   the value :drop, a final check will not add that item to the
+   return list"
   (let ( value  referents )
     (dolist (item reversed-list-of-edges)
       ;; Collect one item per pass through this loop and
@@ -558,9 +566,16 @@ a minimal category and rule set for every word.
                  (cond
                    ((null referent)
                     (get-name-referent-of-odd-edge item :pnf))
+                   ((itypep referent 'pronoun)
+                    :drop)
+                   ((eq (edge-cat-name item) 'motif-trigger)
+                    :drop)
                    ((memq (form-cat-name item)
                           '(preposition ; 'except for'
                             reflexive/pronoun ; 'each other'
+                            det ; "more than"
+                            adverb ; "as well"
+                            subordinate-conjunction ; "not only"
                             ))
                     :drop)
                    (t
