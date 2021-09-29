@@ -190,10 +190,11 @@
     ;; /// "the Immigration and Naturalization Service" will get
     ;; here rendered as a collection of companies if there's no
     ;; appreciation of "service"
-
     (let ((name (value-of 'name company)))
-      (setq company (mark-company-name-as-taking-the name))
-      company )))
+      ;; we also get here from "the company"
+      (when name
+        (setq company (mark-company-name-as-taking-the name))
+        company ))))
 
 
 
