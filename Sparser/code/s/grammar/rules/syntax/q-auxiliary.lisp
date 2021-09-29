@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER) -*-
-;;; copyright (c) 2018-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2018-2021 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "q-auxiliary"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  December 2019
+;;;  Version:  September 2021
 
 ;; Broken out of questions.lisp for ease of development
 
@@ -36,10 +36,16 @@
              (starts-with-wh-pronoun? edge)
              (not (memq (form-cat-name edge)
                         '(when-relative-clause))))
-      (then
+
+      (let ((bottom-edge (lowest-edge (pos-starts-here (pos-edge-starts-at edge)))))
+        (unless (is-wh-pronoun? bottom-edge)
+          ;; This pre-checks the test in trace-out-path-to-wh-element.
+          ;; In Acumen motif #27 the subject-relative "who" is replaced with
+          ;; the upstairs np, leaving no indication there had been a WH there
+          (return-from track-clause-wh-information nil))
         (when (left-daughter-is-wh-nominal edge)
           (return-from track-clause-wh-information nil))
-
+ 
         (tr :wh-nominal-processing edge)
         ;; find the path between the head and the wh-element
         (multiple-value-bind (head path element)
