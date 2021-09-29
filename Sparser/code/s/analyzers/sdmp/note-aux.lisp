@@ -3,7 +3,7 @@
 
 ;;;      File: "note-aux"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: August 2021
+;;;   Version: September 2021
 
 ;; Initiated 5/19/21 to hold helper routines and details so the base
 ;; code in note.lisp stays cleaner.
@@ -289,18 +289,22 @@ discourse history.
   "Check whether we're seen this edge earlier, and if not then
    lookup the entry for the notable category on this edge,
    take a copy of the edge's span to add to the entry and pass it
-   to the final step to get its count incremented."
+   to the final step to get its count incremented.
+     If the edge is not noteworthy that will be reflected here
+   by not getting an entry."
   (declare (special *edges-noted*))
   (if (memq edge *edges-noted*)
     (tr :blocking-redundant-note edge)
     (else
       (push edge *edges-noted*)
       (let* ((value (get-entry-for-notable edge))
-             (entry (etypecase value
-                      (note-entry value)
-                      (cons (cadr value)))))
-        (add-edge-to-note-entry edge entry)
-        (tr :noting-category entry edge)
-        (note entry)))))
+             (entry (when value
+                      (etypecase value
+                        (note-entry value)
+                        (cons (cadr value))))))
+        (when entry
+          (add-edge-to-note-entry edge entry)
+          (tr :noting-category entry edge)
+          (note entry))))))
   
 

@@ -3,7 +3,7 @@
 
 ;;;      File: "note"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: June 2021
+;;;   Version: September 2021
 
 ;; Initiated 1/29/20. To make an easy to use, structured, ability to
 ;; 'note and record interesting objects' 
@@ -44,7 +44,7 @@
     An item, usually an individiual of a particular category,
     is noteworthy if there is a statement to that effect in
     the grammar.
-S    Used as a gate controling whether this is an item to record.")
+    Used as a gate controling whether this is an item to record.")
 
   (:method ((e edge))
     (cond ;; this is effectively an OR but we want values not the boolean

@@ -3,7 +3,7 @@
 ;;;
 ;;;      File: "note-classes"
 ;;;    Module: analyzers/sdmp/note-classes
-;;;   Version: August 2021
+;;;   Version: September 2021
 
 ;; Initiated 6/14/21 to separate out the classes and code from their use.
 
@@ -91,7 +91,8 @@
     as an analysis continues.")
   (:method ((e edge))
     (let ((n (noteworthy? e)))
-      (get-entry-for-notable n)))
+      (when n
+        (get-entry-for-notable n))))
   (:method ((n notable))
     (let* ((name (cat-name (note-trigger n)))
            (s (sentence))
