@@ -228,6 +228,7 @@ scan-name-position -> add-terminal-to-chart
 
 (defparameter *html-char-encodings*
   '(("mdash" #\-) ;; "--" would be better
+    ("ndash" #\-) ;; ditto
     ("laquo" #\')
     ("rsquo" #\')
     ("rdquo" #\')
