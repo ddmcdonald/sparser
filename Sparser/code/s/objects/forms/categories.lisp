@@ -31,6 +31,27 @@
     (defmacro def-category (symbol)
       `(def-category/expr ',symbol :source :def-category))))
 
+#| grep results 10/5/21
+grammar/rules/sectionizing/header.lisp:(def-category header :lattice-position :non-terminal)
+grammar/rules/traversal/angle-brackets.lisp:(def-category  angle-brackets :lattice-position :non-terminal)
+grammar/rules/traversal/other-brackets.lisp:(def-category  curly-brackets :lattice-position :non-terminal)
+grammar/rules/traversal/other-brackets.lisp:(def-category  square-brackets :lattice-position :non-terminal)
+grammar/rules/traversal/parenthesis.lisp:(def-category  parentheses :lattice-position :non-terminal)
+grammar/rules/traversal/quotations.lisp:(def-category  quotation :lattice-position :non-terminal)
+grammar/rules/traversal/single-capitalized-word.lisp:(def-category  single-capitalized-word-in-parentheses 
+grammar/model/core/companies/defco.lisp:(def-category  DefCo :lattice-position :non-terminal)
+grammar/model/core/companies/indicators.lisp:(def-category  category-of-company/proper-name)
+grammar/model/core/companies/thisco.lisp:(def-category this-company :lattice-position :non-terminal)
+grammar/model/core/companies/thisco.lisp:(def-category  ThisCo :lattice-position :non-terminal)
+grammar/model/core/companies/thisco.lisp:(def-category ThisCo-bar :lattice-position :non-terminal)
+grammar/model/core/people/people-rules.lisp:(def-category and/person :lattice-position :non-terminal)
+grammar/model/core/people/people-rules.lisp:(def-category and/name   :lattice-position :non-terminal)
+grammar/model/core/titles/def-form.lisp:(def-category  title/caps        :lattice-position :non-terminal)
+grammar/model/core/titles/def-form.lisp:(def-category  title/caps/plural :lattice-position :non-terminal)
+grammar/model/sl/jv/patches.lisp:(def-category not-yet :lattice-position :non-terminal)
+grammar/model/core/companies/subsid/subsidiary-nouns.lisp:(def-category subsidiary-head :lattice-position :non-terminal)
+|#
+
 
 
 ;;;---------------------------------------------------
