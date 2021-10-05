@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "multi-scan"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  June 2021
+;;;  version:  September 2021
 
 ;; Broken out of no-brackets-protocol 11/17/14 as part of turning the
 ;; original single-pass sweep into a succession of passes. Drafts of
@@ -252,6 +252,10 @@
 ;;;--------------------------
 ;;; sweep for FSA's on words
 ;;;--------------------------
+
+;; (trace-terminals-sweep)
+;; (trace-pnf)
+;; (trace-fsas)
 
 (defun word-level-fsa-sweep (start-pos end-pos)
   "At this point some spans may be covered with edges introduced
@@ -1229,11 +1233,13 @@
 (defun sweep-to-span-parentheses (sentence)
   "Given the sweeps that have preceded this, there will be
    no edges over the parentheses. (////barring an errant
-   mention in a cfr, as happens for 'the' or even '.')
+   mention in a cfr, as has happened for 'the' or even '.')
    So we walk through the sentence looking for 'exposed'
    words applying the word-traversal-hook to each on in turn.
    Actions occur when the close of a set of paired punctuation
-   is encountered."
+   is encountered.  Note that this applies to -every- case of
+   a word with a traversal action: other bracket types, and
+   double or single quotes."
   (declare (special *the-punctuation-period* *trace-sweep*
                     *sentence-terminating-punctuation*))
   (tr :sweep-to-span-parentheses)
@@ -1257,16 +1263,7 @@
           (return))
       
       (word-traversal-hook treetop position-before position-after)
-      ;; Traversal actions are managed by a hash table from the word
-      ;; qua label (i.e. could be applied to edges as well) to a function
-      ;; that takes these same arguments. This is used for bracket pairs
-      ;; such as parentheses, double quotes, etc. Check with a call to
-      ;; (list-hash-table *traversal-routine-table*)
-      ;;    The action is always on the matching close. The open
-      ;; notes its oposition so the close knows what span to operate
-      ;; over. We check for traversal hits before the no-space check
-      ;; because the ns is greedy and moves the position, which can
-      ;; cause the open to be missed.       
+  
 
       (when (position/<= end-pos position-after)
         (return))
