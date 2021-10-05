@@ -118,17 +118,20 @@ drivers/chart/psp/multi-scan.lisp:     (setq right-edge (when (edge-p left-edge)
 |#
 
 
-;;//// these two are redundant 
-(defmethod left-treetop-at/edge ((e edge))
-  (left-treetop-at/edge (pos-edge-starts-at e)))
-
-(defmethod left-treetop-at/edge ((position position))
-  (let* ((ev (pos-ends-here position))
-         (top-node (ev-top-node ev)))
-    (cond ((eq top-node :multiple-initial-edges)
-           (highest-edge ev))
-          (top-node top-node)
-          (t (pos-terminal (chart-position-before position))))))
+(defgeneric left-treetop-at/edge (position)
+  (:documentation "Look leftward from this position. If the position
+   is the start of multiple-initial-edges return the last of those edges.
+   Otherwise return the top edges is there is one, othewise return the
+   terminal on this position")
+  (:method ((e edge))
+    (left-treetop-at/edge (pos-edge-starts-at e)))
+  (:method ((position position))
+    (let* ((ev (pos-ends-here position))
+           (top-node (ev-top-node ev)))
+      (cond ((eq top-node :multiple-initial-edges)
+             (highest-edge ev))
+            (top-node top-node)
+            (t (pos-terminal (chart-position-before position)))))))
 
 
 
