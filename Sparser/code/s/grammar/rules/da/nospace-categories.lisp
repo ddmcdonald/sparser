@@ -118,6 +118,11 @@
     as in a book, would probably use a two-em dash in these cases.")
   (:method ((e1 edge) (e2 edge))
     (likely-spurious-hyphen (edge-referent e1) (edge-referent e2)))
+  (:method ((left word) (right individual))
+    ;; e.g. "e-commerce" -- "e" is a literal in some rule
+    (cond
+      ((eq left (word-named "e")) nil)
+      (t t)))
   (:method ((left individual) (right individual))
     (or (itypep left 'indefinite-pronoun) ; "something"
         (and (itypep left 'adverbial) ; "comes at me again-there was .."
@@ -147,21 +152,31 @@
         (right (edge-referent right-edge))
         (start-pos (pos-edge-starts-at left-edge))
         (end-pos (pos-edge-ends-at right-edge)))
-
+    ;;(push-debug `(,left ,right)) (break "make-hyphenated-structure")
+    
     (cond
       ((and (itypep left 'fractional-term) ; "quarter-million"s
             (itypep right 'multiplier))
        (make-edge-over-fraction-of-illion left right start-pos end-pos))
       
       ((and (itypep left 'number) ; ""March 13-Chicago ..." AC #11
+            (edge-ending-at start-pos) ; w/o this check, edge-referent is fed nil
             (itypep (edge-referent (edge-ending-at start-pos)) 'month))
        (let* ((edge-before (edge-ending-at start-pos))
               (rule (multiply-edges edge-before left-edge)))
          (unless rule (break "no rule for month+number"))
          (make-completed-binary-edge edge-before left-edge rule)))
 
+      ((and (itypep left 'number) ; "ONE-WAY FARES FOR ADULTS START"
+            (itypep right 'named-object))
+       (throw :punt-on-nospace-without-resolution nil))
+
       ((likely-spurious-hyphen left right)
        (throw :punt-on-nospace-without-resolution nil))
+
+      ((eq (word-named "e") (edge-category left-edge)) ; "e-commerce", etc.
+       ;;//// define a type
+       (throw :punt-on-nospace-without-resolution nil)) ; for the moment
 
       (*acumen*
        (when *check-potentially-spurious-hyphens*

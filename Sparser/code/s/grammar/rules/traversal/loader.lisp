@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1997  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1997,2021  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "grammar;rules:traversal:"
-;;;  Version:  0.2 August 2009
+;;;  Version:  October 2021
 
 ;; 0.1 (6/15/94) bumped [angle brackets] to 1
 ;;     (9/13/95) added [other brackets]
@@ -15,6 +14,7 @@
 
 (gload "traversal;parenthesis")
 (gload "traversal;quotations")
+(gload "traversal;single-quotes")
 (gload "traversal;angle brackets")
 (gload "traversal;other brackets")
 

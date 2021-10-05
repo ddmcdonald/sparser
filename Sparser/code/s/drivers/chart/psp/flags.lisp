@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1995,2020  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1995,2020-2021  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "flags"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  May 2020
+;;;  Version:  September 2021
 
 ;; initiated 4/21/91, tweeked 4/26, added to 5/1, 7/11
 ;; 12/15/92 v2.3  Added in some flags from all-edges
@@ -140,12 +140,6 @@
    same value as *rightmost-quiessent-position*.")
 
 
-
-
-
-
-;;--------------- not vetted for the new drivers -------------
-
 ;;;-------------------
 ;;; State information
 ;;;-------------------
@@ -166,7 +160,7 @@
 ;;;----------------------------------
 
 (defvar *pending-conjunction* nil
-  "Set by the traversal routine pending-conjunction-state-change
+  "Set by the completion action mark-instance-of-and
    and read by Sort-out-possible-conjunction")
 
 (defvar *position-of-pending-open-paren* nil
@@ -175,6 +169,9 @@
 
 (defvar *pending-double-quote* (cons nil nil)
   "Set and read by the traversal routine Check-quotation.")
+
+(defvar *pending-single-quote* nil
+  "Set and read by apostrophe-fsa")
 
 (defvar *pending-open-angle-bracket* nil
   "Set by the traversal routine Open-angle-bracket-traversed and
@@ -187,6 +184,7 @@
   "Run by sentence-level-initializations which itself is run by
    scan-terminals-loop before it starts scanning."
   (setq *pending-conjunction* nil
+        *pending-single-quote* nil
         *position-of-pending-open-paren* nil
         *pending-open-angle-bracket* nil
         *pending-open-curly-bracket* nil
