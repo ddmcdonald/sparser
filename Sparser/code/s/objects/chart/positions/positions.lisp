@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990-1995,2011-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1995,2011-2021  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "positions"
 ;;;   Module:  "objects;chart:positions:"
-;;;  Version:  February 2016
+;;;  Version:  February 2021
 
 ;; 1.1 (2/11 v1.8.1)  Added Position-precedes
 ;;     (5/12/93 v2.3) commented out an unfinished fn.
@@ -187,17 +187,6 @@ grammar/model/core/names/fsa/driver.lisp:  (set-status :pnf-checked
 grammar/model/core/names/fsa/driver.lisp:  (set-status :pnf-checked starting-position)
 grammar/model/core/names/fsa/driver.lisp:  (set-status :pnf-checked starting-position)
 |#
-
-
-
-
-
-
-
-
-
-
-
 
 
 ;;;------------
