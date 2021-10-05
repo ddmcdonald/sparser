@@ -3,43 +3,29 @@
 ;;; 
 ;;;     File:  "single quote"
 ;;;   Module:  "grammar;rules:FSAs:"
-;;;  Version:  January 2021
+;;;  Version:  October 2021
 
 ;; initiated 4/23/91 v1.8.4, tweeked 4/24,25, Comment added 1/3/92
 ;; 1.0 (11/24/92 v2.3) Flushed the old use of fake names as referents
 ;; 1.1 (7/25/94) added 're' and 'll'   8/16 added 've'  9/6 'm'.
 ;;     typo 10/24. (4/22/12) Compiler fix. (8/10/15) another one.
 
-(in-package :sparser)
+#| An apostrophe can indicate a contraction ('He can't go'), or it can function
+   like a quotation mark (double quote) and delimit a portion of the text,
+   either acting as 'scare quote' to provide emphasis, or over longer spans
+   as an alternative to delimiting the span with double quotes, or to provide
+   interiar spans within double quoted spans.
 
-;;;------------
-;;; categories
-;;;------------
+   We handle the contractions here. The use as a span of text delimiter
+   is done in rules/traversal/single-quote.lisp    |#
 
-(define-category apostrophe-s)    ;; 'is'
-(define-category apostrophe-m)    ;; 'am'
-(define-category apostrophe-t)    ;; 'not'
-(define-category apostrophe-re)   ;; 'are'
-(define-category apostrophe-ve)   ;; 'have'
-(define-category apostrophe-ll)   ;; 'will'
-(define-category apostrophe-d)    ;; 'would'
-
-#| the bracket assignments are in [rules;words:contractions] |#
-
-(defparameter *categories-based-on-apostrophe*
-  `(,category::apostrophe-s
-    ,category::apostrophe-m
-    ,category::apostrophe-t
-    ,category::apostrophe-re
-    ,category::apostrophe-ve
-    ,category::apostrophe-ll
-    ,category::apostrophe-d))
-    
 ;;;-----------------------------
 ;;; linking the word to the fsa
 ;;;-----------------------------
 
 (if (boundp 'word::single-quote)
+  ;; Find or make a word object for the single quote character
+  ;; and assign an FSA to it.
   (let ((rs (label-rule-set word::single-quote)))
     (if rs
       (setf (rs-fsa rs)
@@ -53,14 +39,38 @@
     (setf (rs-fsa rs) '( apostrophe-fsa ))))
 
 
-;;;------
-;;; fsa
-;;;------
+;;;----------------------------------------------------
+;;; categories for apostrophe-contraction combinations
+;;;----------------------------------------------------
 
-;; (trace-fsas)
+(define-category apostrophe-s)    ;; 'is'
+(define-category apostrophe-m)    ;; 'am'
+(define-category apostrophe-t)    ;; 'not'
+(define-category apostrophe-re)   ;; 'are'
+(define-category apostrophe-ve)   ;; 'have'
+(define-category apostrophe-ll)   ;; 'will'
+(define-category apostrophe-d)    ;; 'would'
+
+#| The bracket assignments for most of these are in [rules;words:contractions],
+along with definitions as function words for "s", "t", "re", etc. |#
+
+(defparameter *categories-based-on-apostrophe*
+  `(,category::apostrophe-s
+    ,category::apostrophe-m
+    ,category::apostrophe-t
+    ,category::apostrophe-re
+    ,category::apostrophe-ve
+    ,category::apostrophe-ll
+    ,category::apostrophe-d))
+    
+
+;;;-----
+;;; fsa
+;;;-----
+;;//// It can also signal missing letters in a word "sec'y" for "secretary"
 
 (defun apostrophe-fsa (single-quote starting-position)
-  ;; There's a single-quote (appostrophe) at the starting position.
+  ;; There's a single-quote (apostrophe) at the starting position.
   ;; We check here whether there's an "s", "t", "re", or "ll" just after it,
   ;; without any interveening space.
   (declare (ignore single-quote)
@@ -118,12 +128,13 @@
           (tr :apos-created-edge-over word edge)
           position-after )
         
-        ;; check for "xxxs' -- possessive off of a plural
+        
         (if (pos-preceding-whitespace starting-position)
           ;; there's a space to the left of the apostrophe
           (then (tr :apos-space-to-left)
                 nil)
 
+          ;; check for "xxxs' -- possessive off of a plural
           (let ((prior-word
                  (pos-terminal (chart-position-before starting-position))))
             (if (word-morphology prior-word)
