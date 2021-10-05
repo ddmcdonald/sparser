@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "FSA"
 ;;;   Module:  "objects;traces:"
-;;;  January:  May 2021
+;;;  January:  September 2021
 
 ;; initiated November 1990
 ;; 0.1  (2/15/91 v1.8.1)  Changed *trace-pw-buffer* to *trace-next-terminal*
@@ -220,6 +220,12 @@
 ;;; apostrophe handling
 ;;;---------------------
 
+(deftrace :apos-encountered (p)
+  ;; called from apostrophe-fsa
+  (when *trace-fsas*
+    (trace-msg "[FSA] apostrophe encountered at p~a"
+               (pos-token-index p))))
+
 (deftrace :apos-start (p)
   ;; called from apostrophe-fsa
   (when *trace-fsas*
@@ -245,6 +251,7 @@
               ~%    is spanned as ~A" (word-pname word) edge)))
 
 (deftrace :apos-space-to-left ()
-     ;; called from apostrophe-fsa
+  ;; called from apostrophe-fsa
   (when *trace-fsas*
     (trace-msg "[FSA: apostrophe] space to the left. Not completing")))
+

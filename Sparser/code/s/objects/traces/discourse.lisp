@@ -291,6 +291,3 @@
 (defparameter *trace-individuals* nil
   "Flag read in subsequent and initial reference routines.")
 
-(defparameter *trace-parentheses* nil
-  "Flag read in the parentheses traversal routines")
-

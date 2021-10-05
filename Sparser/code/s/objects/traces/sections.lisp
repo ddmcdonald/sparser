@@ -95,7 +95,7 @@
 ;; Called from do-paired-punctuation-interior
 
 (deftrace :paired-punct-interior (type after-open before-close)
-  (when *trace-sections*
+  (when (or *trace-sections* *trace-single-quotes*)
     (trace-msg "Looking at the interior of ~A ~
                 between p~A and p~A"
                type (pos-token-index after-open)
@@ -115,7 +115,7 @@
                layout)))
 
 (deftrace :layout-between-punct (layout)
-  (when *trace-sections*
+  (when (or *trace-sections* *trace-single-quotes*)
     (trace-msg "The final layout is ~a" layout)))
 
 (deftrace :vanila-paired-edge (pos-before-open pos-after-close)
