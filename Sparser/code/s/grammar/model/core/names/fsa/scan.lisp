@@ -492,8 +492,8 @@
           (previous-word (pos-terminal (chart-position-before position)))
           (caps-state (pos-capitalization next-position)))
 
-      (cond ((or (eq next-word word::\s) ;(pos-terminal next-position)
-                 (eq next-word word::|ll|) ; (pos-terminal next-position)
+      (cond ((or (eq next-word word::\s)
+                 (eq next-word word::|ll|)
                  (eq next-word word::\,) ;; "the 'Sunday Independent',"
                  (eq next-word word::open-paren) ;; "the 'Manchester Guardian'(as it then was)"
                  (eq next-word word::close-paren) ;; "a book ('Synopsis Stirpium Hibernicarum')"
@@ -502,10 +502,10 @@
                  (eq next-word word::close-square-bracket)
                  (eq next-word *the-punctuation-hyphen*)
                  (eq next-word *newline*))
-             ;; leave the "'s" to be gotten later as a concatenation
+             ;; Return and leave the "'s" to be gotten later as a concatenation
              position)
 
-            ((and (word-at-this-position-is-capitalized? next-position) ; "O'Gill"
+            ((and (word-at-this-position-is-capitalized? next-position) ; "O'Gill", "Baha'i"
                   (null (pos-preceding-whitespace next-position)))
              (cap-seq-continues-from-here? next-position))
 
