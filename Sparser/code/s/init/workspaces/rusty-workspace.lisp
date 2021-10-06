@@ -423,7 +423,8 @@
     analyze-pp analyze-reach-verbs analyze-segment
     analyze-segment-as-dateline analyze-segment-layout
     analyze-segment-with-continuous-edges analyze-text-from-directory
-    sparser:analyze-text-from-file analyze-text-from-file/at-filepos
+    ;;sparser:analyze-text-from-file
+    analyze-text-from-file/at-filepos
     sparser:analyze-text-from-open-file sparser:analyze-text-from-string
     annotate-composite annotate-daughter annotate-form-rule
     annotate-individual annotate-number
