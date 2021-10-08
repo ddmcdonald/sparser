@@ -27,9 +27,7 @@
 ;;       are defined, to reduce warnings in SBCL.
 ;; 4.0 (5/19/15) Make over to a state machine.
  
-
 (in-package :sparser)
-(defvar *force-case-shift*)
 
 
 (defstruct (polyword
@@ -81,7 +79,7 @@
 (or (boundp '*polyword-package*)
     (defconstant *polyword-package*
       (or (find-package :word)
-          (break "The :words package should have been defined ~
+          (break "The :word package should have been defined ~
                   by this point in the load"))))
 
 
