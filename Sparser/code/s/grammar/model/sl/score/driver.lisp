@@ -83,7 +83,7 @@ that we append to.
                   (adverb (make-category-form-for-an-adverb word name super))
                   )))
 
-      ;; where ddo we do with the form
+      ;; what do we do with the form
       (if (or *sparser-is-running*
               (null *sparser-loaded*))
          (cache-comlex-expression word form)
@@ -93,8 +93,18 @@ that we append to.
                  (verb-particles word))
         (let ((forms (make-verb-particle-forms word)))
           (loop for form in forms
-               do (if *sparser-is-running*
-                    (cache-comlex-expression word form)
-                    (pprint-category-form form *comlex-form-output-stream*)))))
+             do (if (or *sparser-is-running*
+                        (null *sparser-loaded*))
+                  (cache-comlex-expression word form)
+                  (pprint-category-form form *comlex-form-output-stream*)))))
+#| 10/7/21 The verbs dossier motivated the creation of four verbs in order
+ to support verb-preposition combinations:
+sp> *words-added-by-create-category*
+   (#<word "work"> #<word "decision"> #<word "look"> #<word "carry">)
+ But because that process goes through setup-verb we get to this form
+ which looks for other prepositions and creates those combinations
+ as well, which then print to the repl. 
+|#
 
       form)))
+
