@@ -41,11 +41,6 @@
   :binds ((label two-part-label))
   :realization (:noun "figure"))
 
-(define-category article-figure :specializes document-part
-  :mixins (visual-representation)
-  :binds ((label two-part-label))
-  :realization (:noun "figure"))
-
 (def-synonym article-figure (:noun "Fig."))
 (def-synonym article-figure (:noun "Fig"))
 
