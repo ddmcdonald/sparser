@@ -69,7 +69,6 @@
   (:method ((w word))
     (null (label-rule-set w))))
 
-  
 (defun word-mentioned-in-rules? (w)
   (let ((rs (word-rules w)))
     (when (and rs (typep rs 'rule-set))
@@ -80,14 +79,14 @@
           (rs-fsa rs)
           (rs-completion-actions rs)))))
 
-(defun word-with-single-edge-rules? (w)
+(defun word-with-single-edge-rules? (w) ; acumen 10/8/21 64,035
   (let ((rs (word-rules w)))
-    (when rs
+    (when (and rs (typep rs 'rule-set))
       (rs-single-term-rewrites rs))))
 
 (defun defines-phrase-boundaries? (w)
   (let ((rs (word-rules w)))
-    (when rs
+    (when (and rs (typep rs 'rule-set))
       (rs-phrase-boundary rs))))
 
 (defgeneric infer-part-of-speech (word)
