@@ -200,6 +200,8 @@
   (:method ((pw polyword))
     (or (get-tag :source pw)
         (file-location pw)))
+  (:method ((r cfr))
+    (file-location r))
   (:method ((c category))
     (cond
       ((itypep c 'comlex-derived) :comlex)
