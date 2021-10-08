@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-2005,2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2014,2021  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "grammar-module"
 ;;;    Module:  "init;loaders;"
-;;;   version:  1.6 June 2014
+;;;   version:  October 2021
 
 ;; initiated 2/9/92 v2.2, finished 2/10
 ;; 1.1 (2/20 v2.2) Added a notion of "source" to Note-grammar-module
@@ -293,6 +293,9 @@ of defining something else (e.g. a category) in the list of cfrs.")
         (word (push obj (gmod-words gm)))
         (polyword (push obj (gmod-polywords gm))))
       gm)))
+
+(defun get-grammar-module (obj)
+  (get-tag :grammar-module obj))
 
 
 ;;;----------------------------------
