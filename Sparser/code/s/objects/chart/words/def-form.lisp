@@ -33,11 +33,12 @@
 ;;;----------------------
 
 (defun define-word/expr (string &optional override-duplicate-check?)
-  "Handles all of the mechanics of creating the word object
- for a particular string. Emulates what happens when a word is pulled out of
- the character string through the word lookup buffer by the tokenizing machinery.
- Creates the object, computes its properties (capitalization and basic
- morphology), creates its canonical form (if it is capitalized), and catalogs it."
+  "Handles all of the mechanics of creating the word object for a particular 
+  string. Emulates what happens when a word is pulled out of the source
+  character buffer by the tokenizing machinery.
+  Creates the object, computes its properties (capitalization and basic
+  morphology), creates its canonical form (if it is capitalized),
+  and catalogs it."
 
   (when *force-case-shift*
     (setq string (force-case-of-word-string string)))
