@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1990,1991  Content Technologies Inc.
-;;; copyright (c) 1992-2000,2018  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2000,2018,2021  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "knit in"
 ;;;    Module:   "objects;rules:cfr:"   ;; "context free rules"
-;;;   Version:   April 2018
+;;;   Version:   October 2021
 
 ;; 1.1 (4/19/91 v1.8.2)  Revised Knit-in-binary to appreciate the case
 ;;      of the two terms of the rule being the same thing
@@ -42,8 +42,11 @@
 
          (let ((field (rs-single-term-rewrites rs)))
            (if field
-             (setf (rs-single-term-rewrites rs)
-                   (cons cfr field))
+             (then
+               (record-multi-cfr (car field))
+               (record-multi-cfr cfr)
+               (setf (rs-single-term-rewrites rs)
+                     (cons cfr field)))
              (setf (rs-single-term-rewrites rs)
                    (list cfr)))
            cfr ))))))

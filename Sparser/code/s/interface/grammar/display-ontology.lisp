@@ -1,13 +1,76 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "display-ontology"
 ;;;    Module:   interface/grammar/
-;;;   Version:   February 2018
+;;;   Version:   October 2021
 
 ;; Adapted 10/22/16 from MAB's code for Trips.
 
 (in-package :sparser)
+
+;;;-------------------------------------
+;;; words with multiple interpretations
+;;;-------------------------------------
+
+#| (write-multi-cat-data :descriptor "fire"
+ :file-location "Sparser/code/s/grammar/tests/"  
+ :file-name "multi-category-words.lisp")  |#
+
+(defun write-multi-cat-data (&key descriptor reference-system
+                               file-location file-name)
+  "Parameters modeled on save-subcat-tree-to-file.
+   This function manages the stream. It calls the function
+   just below to access the data and populate the stream/file"
+  (unless reference-system
+    (setq reference-system :sparser))
+  (unless file-location  
+    (setq file-location "Sparser/code/s/grammar/tests/"))
+  (unless file-name
+    (setq file-name "multi-category-words.lisp"))
+  (let* ((file-string (string-append file-location file-name))
+         (pathname (asdf:system-relative-pathname reference-system file-string)))
+    (with-open-file (stream pathname
+                            :direction :output
+                            :if-exists :supersede)
+      (format stream ";; multi-categories for word in ~a
+                    ~%;; ~a~%"
+              descriptor (date-&-time-as-formatted-string))
+      (export-multi-category-records stream))))
+
+(defun export-multi-category-records (stream)
+  "Given the set of 'truly multi-category words', which is
+ a sorted list of words, look up their records (a least two
+ since each different category will have a record) and write
+ to a stream an expression that summarizes them in a form intended
+ for people to read"
+  (loop for word in (collect-multi-categories)
+     do (progn
+          (format stream "~&~%")
+          (form-for-multi-category word stream))))
+
+(defun form-for-multi-category (word stream)
+  "Returns an expression that describes the records created
+ for this word by record-multi-cfr in terms that are useful
+ for people deciding what to do this them."
+  (let ((records (get-multi-cfr-data word)))
+    (format stream "~&(~s" (word-pname word))
+    (loop for record in records
+       as category = (wmr-category record)
+       as logical-pathname = (wmr-location record)
+       do (format stream "~%  ~a  ;~a"
+                  (cat-name category)
+                  (namestring logical-pathname)))
+    (format stream "~&)")))
+
+
+
+
+
+
+;;;--------------------------
+;;; Org files for categories
+;;;--------------------------
 
 (defun write-cat-org (category stream indent)
   "Iterate through the subcategories of category and write
