@@ -27,24 +27,26 @@
 (register-permanent-bound-in-variable 'item 'position-in-a-sequence)
 (register-permanent-bound-in-variable 'sequence 'position-in-a-sequence)
 
-(register-permanent-bound-in-variable 'name 'name-word)
-(register-permanent-bound-in-variable 'name-of 'name-word)
+(when *people*
+  (register-permanent-bound-in-variable 'name 'name-word)
+  (register-permanent-bound-in-variable 'name-of 'name-word)
 
-(register-permanent-bound-in-variable 'name 'person)
-(register-permanent-bound-in-variable 'sequence 'person-name)
-(register-permanent-bound-in-variable 'last-name 'person-name)
-(register-permanent-bound-in-variable 'first-name 'person-name)
-(register-permanent-bound-in-variable 'version 'person-name)
+  (register-permanent-bound-in-variable 'name 'person)
+  (register-permanent-bound-in-variable 'sequence 'person-name)
+  (register-permanent-bound-in-variable 'last-name 'person-name)
+  (register-permanent-bound-in-variable 'first-name 'person-name)
+  (register-permanent-bound-in-variable 'version 'person-name))
 
-(register-permanent-bound-in-variable 'name 'company)
-(register-permanent-bound-in-variable 'aliases 'company)
+(when *companies*
+  (register-permanent-bound-in-variable 'name 'company)
+  (register-permanent-bound-in-variable 'aliases 'company)
 
-(register-permanent-bound-in-variable 'sequence 'company-name)
-(register-permanent-bound-in-variable 'first-word 'company-name)
-(register-permanent-bound-in-variable 'the 'company-name)
-(register-permanent-bound-in-variable 'prefix 'company-name)
-(register-permanent-bound-in-variable 'rest 'company-name)
-(register-permanent-bound-in-variable 'inc-term 'company-name)
+  (register-permanent-bound-in-variable 'sequence 'company-name)
+  (register-permanent-bound-in-variable 'first-word 'company-name)
+  (register-permanent-bound-in-variable 'the 'company-name)
+  (register-permanent-bound-in-variable 'prefix 'company-name)
+  (register-permanent-bound-in-variable 'rest 'company-name)
+  (register-permanent-bound-in-variable 'inc-term 'company-name))
 
 #|
 (register-permanent-bound-in-variable  )
