@@ -32,6 +32,7 @@
     (setq form 'adjective))
   (unless (member :adj realization)
     (setq realization `(:adj ,string ,@realization)))
+
   (let ((category
          (define-function-term string form
            :super-category (or super-category 
@@ -46,6 +47,7 @@
            :discriminator discriminator
            :tree-families '(prenominal-adjective)
            :subcat-info 'adjective)))
+
     (when er-est
       ;; This is convoluted, but seemed to be the best of bad alternative
       ;; when setup-adjective was augmented to look for Comlex-specified
