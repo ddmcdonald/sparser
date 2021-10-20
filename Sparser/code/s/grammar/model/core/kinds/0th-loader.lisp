@@ -7,8 +7,10 @@
 
 ;; Initiated 3/28/14 to allow the upper-model file to be decomposed
 ;; into more managable pieces.
-;; 4/14/14 moved in files from ISR.
-;; Added time 2/1/16.
+
+;; This file is loaded very early in the process of loading the grammar.
+;; It defines the categories needed by the next loader (1st-loader)
+;; but have to waid for the tree-families to be loaded.
 
 (in-package :sparser)
 
