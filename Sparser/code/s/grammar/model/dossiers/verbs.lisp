@@ -595,10 +595,10 @@ dm #79 "a more precise answer" --> see answer/info in mid-level/things.lisp
   :binds ((agent physical-agent) (theme musical) (extent trajectory))
   :realization (:verb "transpose"
                 :tree-family vp+adjunct
-    :mapping ((vg . :self)
-              (vp . move)
-              (adjunct . trajectory)
-              (slot . extent))))
+                :mapping ((vg . :self)
+                          (vp . move)
+                          (adjunct . trajectory)
+                          (slot . extent))))
 
 
 (define-category raise-note
@@ -607,11 +607,11 @@ dm #79 "a more precise answer" --> see answer/info in mid-level/things.lisp
            move-something-verb)
   :binds ((agent physical-agent) (theme musical) (goal musical))
   :realization (:verb "raise"
-                      :tree-family vp+adjunct
-    :mapping ((vg . :self)
-              (vp . move)
-              (adjunct . to-dative)
-              (slot . goal))))
+                :tree-family vp+adjunct
+                :mapping ((vg . :self)
+                          (vp . move)
+                          (adjunct . to-dative)
+                          (slot . goal))))
 
 
 (define-category lower-note
@@ -619,11 +619,11 @@ dm #79 "a more precise answer" --> see answer/info in mid-level/things.lisp
   :mixins (with-agent with-theme with-goal move-something-verb)
   :binds ((agent physical-agent) (theme musical) (goal musical))
   :realization (:verb "lower"
-                      :tree-family vp+adjunct
-    :mapping ((vg . :self)
-              (vp . move)
-              (adjunct . to-dative)
-              (slot . goal))))
+                :tree-family vp+adjunct
+                :mapping ((vg . :self)
+                          (vp . move)
+                          (adjunct . to-dative)
+                          (slot . goal))))
 
 
 ;; "work on measures 1 and 2"
