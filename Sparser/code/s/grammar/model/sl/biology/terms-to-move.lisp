@@ -20,9 +20,6 @@ be biology specific, since they aren't. |#
 
 (define-adverb "readily")
 
-;; want to force the super-category of "linguistic" to NOT be MODIFIER
-(adj "linguistic" :super abstract)
-
 (noun "route" :super bio-mechanism)
 
 
