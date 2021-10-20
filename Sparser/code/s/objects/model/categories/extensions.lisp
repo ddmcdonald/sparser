@@ -143,7 +143,7 @@ we can also get the grammar module.
   (:method ((word word))
     (gethash word *words-to-cfr-data*)))
 
-(defvar *words-with-multiple-readings* nil) ; 398 in fire
+(defvar *words-with-multiple-readings* nil) ; 398 in fire, 318 after attributes fixed
 
 (defun record-multi-cfr (cfr)
   "Called from knit-in-single-term-rewrite-rule when there is
