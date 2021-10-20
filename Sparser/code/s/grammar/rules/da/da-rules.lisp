@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "da-rules"
 ;;;   Module:  "grammar;rules:DA:"
-;;;  Version:  June 2021
+;;;  Version:  October 2021
 
 ;; initiated 9/18/15 for da patterns and interpreters that had been
 ;; stashed in biology. Small tweaks and additions of the same kind
@@ -848,6 +848,23 @@
      :referent
      (bind-dli-variable 'appositive-description (edge-referent np-edge) (edge-referent base-np))
      )))
+
+
+(define-debris-analysis-rule np-comma-vp
+    :pattern ( np "," vp )
+    :action (:function comma-between-np-vp first second third))
+
+(defun comma-between-np-vp (np-edge comma-edge vp-edge)
+  "In earlier incremental version this was done by a CA action on
+   the comma. This is doing what check-for-appositive-debris does though
+   it has the edges in its hand"
+  (let ((rule (multiply-edges np-edge vp-edge)))
+    (when rule
+      (let ((edge (make-completed-binary-edge np-edge vp-edge rule)))
+        (setf (edge-constituents edge) (list np-edge comma-edge vp-edge))
+        edge))))
+      
+
 
 (define-debris-analysis-rule np-comma-subj-relative
     :pattern (np "," subject-relative-clause)
