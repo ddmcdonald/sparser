@@ -469,9 +469,9 @@
 
 (define-category direct-control ;; to avoid conflict with the adjective "direct"
   :specializes bio-control
-  :realization
-  (:verb   "direct" :noun "direction"
-           :etf (svo-passive)))
+  :realization (:verb  "direct" 
+                :etf (svo-passive)))
+#| :noun "direction" moved to the category direction |#
 
 (define-category cull
   :specializes bio-method
