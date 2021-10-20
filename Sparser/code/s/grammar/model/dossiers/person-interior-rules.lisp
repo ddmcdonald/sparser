@@ -21,7 +21,7 @@ point in the development of the reference system, we'll do nothing rather
 than set up a kluge.  |#
 
 (def-cfr person (person-prefix person)
-  ;; :form ????
+  :form np
   :referent (:daughter right-edge))
 
 
