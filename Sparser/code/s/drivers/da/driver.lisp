@@ -43,6 +43,9 @@
 ;;;------
 
 (defun look-for-da-patterns (start-pos)
+  "Does walks over the treetops to find an  applicable DA pattern.
+   Invokes do-treetop-triggers to make its own pass once it gets
+   to the end of the DA pass."
   (setq *da-dispatch-position* start-pos)
   (let ((end-pos *rightmost-quiescent-position*)
         (position start-pos))
@@ -98,7 +101,9 @@
   "Called from pass-two and  as part of operating on the forest.
    Returns after any DA rule has applied -- this permits this to be
    interleaved with calls to the whack-a-rule-cycle to capitalizd
-   on the edge(s) laid down by the DA rule."
+   on the edge(s) laid down by the DA rule.
+   Walks over the treetops from the starting position onwards
+   until execute-one-da-rule finds an applicable pattern and runs it."
   (tr :entering-da-cycle)
   (let ((once-only? t) ; had been an optional argument
         rule-executed?)
@@ -113,8 +118,9 @@
     rule-executed?))
 
 (defun execute-one-da-rule (treetops)
-  "Walks through the treetops from left to right. 
-   Returns when a DA rule has succeeded."
+  "Walks through the treetops in order (left to right).
+   Returns when a DA rule has succeeded. Calls look-for-da-pattern
+   to do the checking on individual treetops"
   (loop with result for tt in treetops
     thereis
     (progn
@@ -129,6 +135,8 @@
   (let ((da-node (trie-for-1st-item tt)))
     (when da-node
       (standalone-da-execution da-node tt))))
+
+
 
 
 ;;--- special invocation
