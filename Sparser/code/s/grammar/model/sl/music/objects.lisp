@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2018 SIFT, LLC.
+;;; copyright (c) 2018-2021 SIFT, LLC.
 ;;;
 ;;;     File:  "objects"
 ;;;   Module:  "grammar/model/sl/music/"
-;;;  version:  September 2019
+;;;  version:  October 2021
 
 ;; Initiated 8/30/18
 
@@ -44,9 +44,6 @@ etc.
 
 ;;--- goes in upper-model
 
-(define-category symbolic
-  :specializes non-physical)
-
 (define-category musical
   :specializes symbolic)
 
@@ -55,8 +52,11 @@ etc.
 ;; like "up three steps"; "down one half step"
 
 (define-category trajectory
+  :specializes direction
   :instantiates nil
-  :binds ((direction (:or up down) ) (extent (:or music-step music-half-step octave)) )
+  :lemma (:common-noun "trajectory")
+  :binds ((direction (:or up down))
+          (extent (:or music-step music-half-step octave)))
   :realization (:tree-family pair-instantiates-category
                 :mapping ((result-type . :self)
                           (np . :self)

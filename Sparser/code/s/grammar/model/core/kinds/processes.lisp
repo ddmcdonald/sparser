@@ -73,7 +73,7 @@
            temporally-localized
            takes-adverb
            has-location)
-  :binds ((participant) ;; is one this useful now given mixed-in roles?
+  :binds ((participant) ;; is this one still useful given mixed-in roles?
           (time)
           (purpose)  ;; in order to ...
           (reason)  ;; answers "why", "because E"
@@ -103,6 +103,7 @@
 
 (define-category state
   :specializes perdurant
+  :lemma (:common-noun "state")
   :documentation 
   "A state is a period during which some some condition remains constant.
  An event analysis (Dowty, Bach, Pustejovsky) would say that it is
@@ -134,6 +135,7 @@
 
 (define-category process
   :specializes perdurant
+  :lemma (:common-noun "process")
   :documentation
   "A process involves a change over time. It will decompose into a
  sequence of smaller events that that can be given the same
@@ -155,6 +157,7 @@
 
 (define-category transition
   :specializes process
+  :lemma (:common-noun "transition")
   :documentation
   "A transition is an action that culminates in a change of state,
  often an opposition: open, give, build. 'Lia is walking' is a
@@ -164,6 +167,7 @@
 
 (define-category accomplishment
   :specializes transition
+  :lemma (:common-noun "accomplishment")
   :documentation
   "A transition that occurs over a period of time: building a house
  baking a cake. It involves a process that ends with a change in
@@ -171,6 +175,7 @@
 
 (define-category achievement
   :specializes transition
+  :lemma (:common-noun "achievement")
   :documentation
   "A transition that occurs instantly. At one point we're in one
  state and the next moment we're in another ('summiting Everest')")

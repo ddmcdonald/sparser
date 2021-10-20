@@ -51,7 +51,7 @@ from 'from ... to ..' and such
 
           ;; moved here from define-movement-verb
           ;; Note that some of these restrictions don't exist
-          ;; at the timw this is executed so they will star out
+          ;; at the timw this is executed so they will start out
           ;; as simple categories and get expanded once
           ;; their actual definitions are reached
           (via-path . path)

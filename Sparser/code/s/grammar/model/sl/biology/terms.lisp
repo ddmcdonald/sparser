@@ -249,7 +249,7 @@
            :in result-or-purpose))
 
 ;; SEQUENTIAL is a key CORE mixin, and does not take an AUX
-
+#+ignore ;; use the lemma on the category
 (define-category sequential-adj :specializes bio-predication
   :realization (:adj "sequential"))
 

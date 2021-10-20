@@ -38,6 +38,7 @@ best considered as a title rather than a kind of person. |#
   :instantiates self
   :binds ((name :primitive word))
   :index (:permanent :key name)
+  :lemma (:common-noun "title")
   :realization (:common-noun name)
   :documentation "Simple words ('actuary', 'advisor' ...)
     in the title-heads dossier. Also the polywords in

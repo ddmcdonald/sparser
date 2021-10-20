@@ -66,7 +66,6 @@
 (define-category  sequence
   :instantiates self
   :specializes collection
-  ;; also a tensed clause
   :lemma (:common-noun "sequence")
   :index (:permanent :key items)
   :binds ((item)  ;; i.e. each individual item
@@ -96,6 +95,7 @@
 (define-category subsequence
   :instantiates self
   :specializes sequence
+  :lemma (:common-noun "subsequence")
   :binds ((reference-sequence sequence)
           (index ordinal))
   :index (:permanent :sequential-keys index reference-sequence)
@@ -171,8 +171,8 @@
 ;;;--------
 
 (define-mixin-category sequential
-  ;;  :lemma (:adjective "sequential") ;; defined in bio;terms.lisp
   :specializes sequence
+  :lemma (:adjective "sequential")
   :binds ((sequence sequence)
           (position ordinal)
           (previous sequential)

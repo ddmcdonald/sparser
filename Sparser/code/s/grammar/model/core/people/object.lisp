@@ -37,6 +37,7 @@
           (nationality . country)
           (origin top)) ;; simplistic
   :index (:permanent :apply :key name)
+  :lemma (:common-noun "person")
   :realization
      ((:from origin
        :of nationality)

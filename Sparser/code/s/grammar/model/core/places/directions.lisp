@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1995-1999,2016-2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-1999,2016-2021 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "directions"
 ;;;   Module:  "model;core:places:"
-;;;  version:  November 2019
+;;;  version:  October 2021
 
 ;; initiated in 1/9/95. Added string printer 1/9/96.
 ;; 0.1 (11/25/99) Changed the realizations to use the new schema protocol
@@ -28,6 +28,7 @@
 (define-category  direction
   :instantiates  self
   :specializes   location
+  :lemma (:common-noun "direction")
   :binds ((name :primitive word))
   :documentation "This is the cover category for the different sorts
  of terms that indicate direction: compass points, orientation terms

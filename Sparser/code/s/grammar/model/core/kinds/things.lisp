@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "things"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  March 2020
+;;;  version:  October 2021
 
 ;; Broken out from upper-model and added long definitions 3/31/14.
 ;; 7/20/14 Added lemmas and realizations as needed to hold the
@@ -37,6 +37,7 @@
 (define-category region
   :instantiates nil
   :specializes endurant
+  :lemma (:common-noun "region")
   :documentation 
    "Fundamentally, this is the same concept as the 'abstract-region'
  in upper-model.lisp. It demarcates, sets a boundary around a portion
@@ -47,6 +48,7 @@
 
 (define-category physical
   :specializes endurant
+  ;; :lemma (:adjective "physical")
   :binds ((location))
   :documentation
   "Common parent to the physical subclasses.This is the level at
@@ -98,6 +100,7 @@
 
 (define-category feature
   :specializes physical
+  :lemma (:common-noun "feature")
   :documentation
   "These are things like stains, holes, boundaries, or surfaces that are
  dependent on some other PhysicalObject as the 'host'. Other examples would
@@ -106,6 +109,7 @@
 
 (define-category aggregate 
   :specializes physical
+  :lemma (:common-noun "feature")
   :documentation
   "Aggregates have no unity. They aren't wholes. They don't have good
   connection relations among their parts or a sensible notion of their
@@ -122,6 +126,10 @@
   :documentation
   "Non-physical objects have no location. They often depend in some way
  on physical objects")
+
+(define-category symbolic
+  :specializes non-physical
+  :documentation "Introduced for musical things like notes")
 
 (define-category mental-object 
   :specializes non-physical

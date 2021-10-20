@@ -20,6 +20,7 @@ files once an area looks big enough to warrant it.  |#
 
 (define-category orientation
   :specializes attribute
+  :lemma (:common-noun "orientation")
   :documentation "Names the space of orientations
  things can have: upright, lying down, facing the camera,
  etc. Tied to an entity by mixing has-an-orientation
@@ -39,6 +40,7 @@ files once an area looks big enough to warrant it.  |#
 
 (define-category dimension
   :specializes attribute
+  :lemma (:common-noun "dimension")
   :documentation "Trivial treatment to name 2D vs 3D.
  The other major reading of 'dimension' is as a measurement
  of something's extent. When we deal with these we should
@@ -62,6 +64,7 @@ files once an area looks big enough to warrant it.  |#
 
 (define-category object 
   :specializes physical-object
+  :lemma (:common-noun "object")
   :mixins (has-location ;; adds variable for its location
            has-an-orientation
            has-color ;; red
@@ -132,11 +135,10 @@ files once an area looks big enough to warrant it.  |#
       
 (define-category artifact
   :specializes object
+  :lemma (:common-noun "artifact")
   :mixins (partonomic)
-  :binds ((made-by . maker-of-artifacts))
+  :binds ((made-by . maker-of-artifacts)))
   ;; also time-created or is it a specialization from the lifetime of Endurant?
-  :lemma (:common-noun "artifact"))
-
 
 (define-category structure
   :specializes artifact

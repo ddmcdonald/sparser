@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2021 David D. McDonald  -- all rights reserved
 ;;; This file is part of the SIFT-Brandeis C3 project
 ;;;
 ;;;     File:  "space"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  January 2019
+;;;  version:  October 2021
 
 ;; Broken out of container-and-suv 11/11/13. Moved to kinds 4/14/14 and
 ;; included container. 2/1/16 merging with the location in places.
@@ -15,7 +15,7 @@
 (define-category location
   :instantiates self
   :specializes region
-  ;; :restrict ((name  name-of-location))
+  :lemma (:common-noun "location")
   :index (:key name)
   :documentation "The most general notion of a location, as a place
  where something can be.
@@ -55,6 +55,7 @@
 
 (define-category container
   :specializes bounded-region
+  :lemma (:common-noun "container")
   :binds ((contents))
   :documentation
  "A container is a region that has (at least the potential) to contain

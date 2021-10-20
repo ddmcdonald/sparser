@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "model;core:mid-level:"
-;;;  version:  January 2021
+;;;  version:  October 2021
 
 ;; Initiated 12/3/15
 
@@ -34,3 +34,5 @@
 (gload "mid-level;cars")
 (gload "mid-level;internet")
 (gload "mid-level;document-parts")
+
+(gload "mid-level;grammatical-objects")

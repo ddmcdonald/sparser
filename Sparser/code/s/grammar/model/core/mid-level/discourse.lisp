@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "discourse"
 ;;;   Module:  "model;core:mid-level:"
-;;;  version:  August 2017
+;;;  version:  October 2021
 
 ;; Initiated 9/6/16, initially as a common resting place for the
 ;; "interjections", with contributions from checkpoint/vocabulary.lisp
@@ -41,7 +41,7 @@
 (define-category  acknowledgement  ;; TRIPS SA_ACT, presumably
   :instantiates self
   :specializes speech-act
-  :binds ((name :primitive word))
+  :lemma (:common-noun "acknowledgement")
   :realization (:interjection name)
   :documentation "This set ('yes', 'no', 'ok' ..) can be divided
  more finely to according to aproving or disaproving on what someone
@@ -61,7 +61,7 @@
 (define-category  greeting ;; SA_GREET
   :instantiates self
   :specializes speech-act
-  ;;:binds ((name :primitive word))
+  :lemma (:common-noun "greeting")
   :realization (:interjection name))
 
 (define-individual 'greeting :name "hello")
@@ -74,6 +74,7 @@
 (define-category  apology
   :instantiates self
   :specializes speech-act
+  :lemma (:common-noun "apology")
   :realization (:interjection name)
   :documentation "Interjections are usually realized in
  sentence-initial position. There are variations on apology

@@ -33,6 +33,7 @@
 (define-category  company
   :instantiates self
   :specializes named-object
+  :lemma (:common-noun "company")
   :binds ((name . company-name)
           (aliases :primitive list) ;; of company-name's
           (description)

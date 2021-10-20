@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "predicate"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  August 2019
+;;;  version:  October 2021
 
 ;; Broken out of upper-model 8/23/16
 
@@ -54,6 +54,7 @@
 
 (define-category predicate
   :specializes relation
+  :lemma (:common-noun "predicate")  
   :documentation "A predicate attributes or predicates
  some property to something. Depending of what sort of
  predicate it is, this property may be implicit in the
@@ -68,6 +69,7 @@
 
 (define-category predication
   :specializes state
+  :lemma (:common-noun "predication")
   :binds ((predicate predicate))
   :documentation "Represents the application of a predicate
  to one or more terms, what terms and under what relationships

@@ -26,16 +26,14 @@
 
 (define-category time-of :specializes time
   :mixins (attribute)
-  :realization
-  (:noun "time"))
+  :realization (:noun "time"))
 
 (define-category date-of :specializes time
   :mixins (attribute)
-  :realization
-  (:noun "date"))
+  :realization (:noun "date"))
 
 ;; we need more of these
-(define-category timepoint :specializes time
-  :realization
-  (:noun "timepoint"))
+(define-category timepoint
+  :specializes time
+  :realization (:noun "timepoint"))
 

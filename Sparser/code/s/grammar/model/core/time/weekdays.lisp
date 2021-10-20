@@ -30,6 +30,7 @@
   :specializes time
   :instantiates time
   :mixins (cyclic)
+  :lemma (:common-noun "weekday")
   :binds ((name :primitive word)
           (abbreviation :primitive word)
           (position-in-week . ordinal))

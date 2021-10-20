@@ -31,6 +31,7 @@ Revision 6/8/20. To accommadate 'bulk' words (according to WordNet)
   :instantiates self
   :binds ((name :primitive word))
   :index (:permanent :key name)
+  :lemma (:common-noun "quantity")
   :realization (:word name)
   :documentation "A 'quantity' is number-like entity that acts like
  a quantifier in that it partitions a set and is frequently the

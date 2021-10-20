@@ -39,7 +39,7 @@
 
 ;;--- general words
 
-;; "location" is in location-of
+
 (def-synonym location (:common-noun "place"))
 
 ;; This isn't right. 'space' is a generic/mass kind of stuff
@@ -53,8 +53,7 @@
 
 (define-category location-of
   :specializes attribute
-  :mixins (nominal-attribute)
-  :realization (:noun "location"))
+  :mixins (nominal-attribute))
 
 ;;;------------------------------------------------
 ;;; Deictics  -- needs a story about dereferencing

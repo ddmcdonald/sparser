@@ -21,6 +21,7 @@
 (define-category  number
   :instantiates  self
   :specializes   abstract
+  :lemma (:common-noun "number")
   :binds ((value :primitive number))
   :index (:key value)
   :documentation "An representation of any sort of
@@ -43,6 +44,7 @@
 (define-category multiplier
   :instantiates self
   :specializes number
+  :lemma (:common-noun "multiplier")
   :index (:key name)
   :documentation "A multiplier is a number-like term
  that contributes to the calculation of the value of
@@ -95,7 +97,7 @@
 ;;; rules
 ;;;-------
 
-(define-realization number   ;; "10 million"
+(define-additional-realization number   ;; "10 million"
   (:tree-family number-of-quantity
    ;; This etf is special purpose to this particular type
    ;; and pattern (/// maybe not a good idea). It calls

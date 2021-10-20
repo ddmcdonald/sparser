@@ -1,9 +1,9 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; Package: sparser; -*-
-;;; Copyright (c) 2010-2020 David D. McDonald 
+;;; Copyright (c) 2010-2021 David D. McDonald 
 ;;;
 ;;;     File:  "upper-model"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  December 2020
+;;;  version:  October 2021
 
 #| Defines the set of 'expressive categories' (see Meteer 1992) that we're
    experimenting with as the top tier of our domain model.  This sort of thing
@@ -105,6 +105,7 @@
 (define-category quality
   :instantiates nil
   :specializes  top
+  ;; :lemma (:common-noun "quality")
   :documentation 
 "Qualities are attributes of / inhere in other entities, such as
  color location, size, severity, saturation, anger Their 'range', so
@@ -122,6 +123,7 @@
 (define-category abstract
   :instantiates nil
   :specializes top
+  ;;:lemma (:common-noun "abstract")
   :documentation
  "Independent stuff that is not anchored in space or time or by
  association with something that is: units of measure, regions of the
@@ -170,6 +172,7 @@
 (define-category relation
   :instantiates nil
   :specializes abstract
+  ;; :lemma (:common-noun "relation")
   :binds ((adverb))
   :documentation
   "A relation designates a relationship between some number (arity) of
@@ -192,6 +195,7 @@
 (define-category linguistic
   :instantiates nil
   :specializes abstract
+  ;; :lemma (:adjective "linguistic")
   :binds ((word  :primitive word))
   :documentation
   "A converting class for categories that we create and instantiate
@@ -221,16 +225,6 @@
  to be grounded.")
 
 
-
-(define-category variant-on  ;; had been with-prototype-description
-  :specializes requires-context
-  :binds ((prototype top))
-  :documentation "Intended for things like type (of), or variant (of)
- where the word can be used with an explicit complement identifying
- the type of the phrase, but also by itself ('another variant is')
- where the type has to be determined from context.")
-
-
 (define-category subcategorization-pattern
   :instantiates nil
   :specializes linguistic
@@ -256,6 +250,16 @@
   :specializes linguistic
   :documentation "Marker to record that a category was produced to hold a
   word that is only known through COMLEX")
+
+
+(define-category variant-on  ;; had been with-prototype-description
+  :specializes requires-context
+  :binds ((prototype top))
+  :documentation "Intended for things like type (of), or variant (of)
+ where the word can be used with an explicit complement identifying
+ the type of the phrase, but also by itself ('another variant is')
+ where the type has to be determined from context.")
+
 
 
 ;;;---------------------------------------
@@ -302,6 +306,7 @@
 (define-category scalar
   :instantiates nil
   :specializes quality
+  ;;:lemma (:adjective "scalar")
   :documentation "'scalar' per se is a meta-property. 
  It is a quality of some other category and says about it 
  that it can take on different values along some dimention")

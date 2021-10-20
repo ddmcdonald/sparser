@@ -37,6 +37,7 @@ that is a specialization of 'interval'
 
 (define-category  time-interval
   :specializes interval
+  :lemma (:common-noun "interval")
   :mixins (time)
   :restrict ((begin time)
              (end time)))

@@ -45,6 +45,7 @@
 (define-category  ordinal
   :instantiates self
   :specializes number
+  :lemma (:common-noun "ordinal")
   :binds ((number number)
           (word  :primitive word)
           (roman-numeral :primitive word))

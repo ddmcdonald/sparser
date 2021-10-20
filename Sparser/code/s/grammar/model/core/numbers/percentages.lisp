@@ -27,6 +27,7 @@
 (define-category percent
   :instantiates :self
   :specializes  measurement
+  :lemma (:common-noun "percent")
   :binds  ((number . number))
   :index (:temporary :list)
   :realization (:tree-family item+idiomatic-head
