@@ -1,6 +1,6 @@
-;; multi-categories for word in fire
+;; multi-categories for word in nil
                     
-;; 10/11/21 18:41:39
+;; 10/15/21 18:31:9
 
 ("American"
   country  ;SPARSER:DOSSIERS;COUNTRIES.LISP
@@ -93,16 +93,6 @@
   anxiety  ;SPARSER:MID-LEVEL;THINGS.LISP
 )
 
-("around"
-  approximator  ;SPARSER:DOSSIERS;MODIFIERS.LISP
-  around  ;SPARSER:WORDS;PREPOSITIONS.LISP
-)
-
-("avian"
-  modifier  ;SPARSER:DOSSIERS;MODIFIERS.LISP
-  bird  ;SPARSER:MID-LEVEL;ORGANISMS.LISP
-)
-
 ("avianner"
   modifier  ;SPARSER:DOSSIERS;MODIFIERS.LISP
   comparative-modifier  ;SPARSER:MID-LEVEL;ORGANISMS.LISP
@@ -111,11 +101,6 @@
 ("aviannest"
   modifier  ;SPARSER:DOSSIERS;MODIFIERS.LISP
   superlative-modifier  ;SPARSER:MID-LEVEL;ORGANISMS.LISP
-)
-
-("bad"
-  goodness-value  ;SPARSER:DOSSIERS;QUALITIES.LISP
-  goodness  ;SPARSER:DOSSIERS;QUALITIES.LISP
 )
 
 ("bar"
@@ -141,26 +126,6 @@
 ("believing"
   believe  ;SPARSER:DOSSIERS;VERBS.LISP
   belief  ;SPARSER:MID-LEVEL;THINGS.LISP
-)
-
-("big"
-  size-value  ;SPARSER:DOSSIERS;QUALITIES.LISP
-  size  ;SPARSER:DOSSIERS;QUALITIES.LISP
-)
-
-("black"
-  color-value  ;SPARSER:DOSSIERS;QUALITIES.LISP
-  color  ;SPARSER:DOSSIERS;QUALITIES.LISP
-)
-
-("blue"
-  color-value  ;SPARSER:DOSSIERS;QUALITIES.LISP
-  color  ;SPARSER:DOSSIERS;QUALITIES.LISP
-)
-
-("brown"
-  color-value  ;SPARSER:DOSSIERS;QUALITIES.LISP
-  color  ;SPARSER:DOSSIERS;QUALITIES.LISP
 )
 
 ("certainly"
@@ -218,16 +183,6 @@
   location  ;SPARSER:PLACES;PATHS.LISP
 )
 
-("fast"
-  rate-of-change-value  ;SPARSER:DOSSIERS;QUALITIES.LISP
-  rate-of-change  ;SPARSER:DOSSIERS;QUALITIES.LISP
-)
-
-("first"
-  sequencer  ;SPARSER:DOSSIERS;MODIFIERS.LISP
-  ordinal  ;SPARSER:DOSSIERS;ORDINALS.LISP
-)
-
 ("focus"
   focus-verb  ;SPARSER:MID-LEVEL;THINGS.LISP
   focus-noun  ;SPARSER:MID-LEVEL;THINGS.LISP
@@ -246,12 +201,6 @@
 ("followed"
   follow  ;SPARSER:DOSSIERS;VERBS.LISP
   event-follows  ;SPARSER:MID-LEVEL;EVENTS.LISP
-)
-
-("following"
-  sequencer  ;SPARSER:DOSSIERS;MODIFIERS.LISP
-  follow  ;SPARSER:DOSSIERS;VERBS.LISP
-  following  ;SPARSER:WORDS;PREPOSITIONS.LISP
 )
 
 ("follows"
@@ -284,29 +233,6 @@
   fraction-of  ;SPARSER:MID-LEVEL;GROUPS.LISP
 )
 
-("given"
-  modifier  ;SPARSER:DOSSIERS;MODIFIERS.LISP
-  give  ;SPARSER:DOSSIERS;VERBS.LISP
-)
-
-("good"
-  modifier  ;SPARSER:DOSSIERS;MODIFIERS.LISP
-  acknowledgement  ;SPARSER:MID-LEVEL;DISCOURSE.LISP
-  goodness-value  ;SPARSER:DOSSIERS;QUALITIES.LISP
-  goodness  ;SPARSER:DOSSIERS;QUALITIES.LISP
-  acknowledgement  ;SPARSER:MID-LEVEL;DISCOURSE.LISP
-)
-
-("great"
-  goodness-value  ;SPARSER:DOSSIERS;QUALITIES.LISP
-  goodness  ;SPARSER:DOSSIERS;QUALITIES.LISP
-)
-
-("green"
-  color-value  ;SPARSER:DOSSIERS;QUALITIES.LISP
-  color  ;SPARSER:DOSSIERS;QUALITIES.LISP
-)
-
 ("group"
   kind-of-company  ;SPARSER:DOSSIERS;KINDS-OF-COMPANIES.LISP
   title-modifier  ;SPARSER:DOSSIERS;TITLE-MODIFIERS.LISP
@@ -316,11 +242,6 @@
 ("groups"
   kind-of-company  ;SPARSER:DOSSIERS;KINDS-OF-COMPANIES.LISP
   group  ;SPARSER:MID-LEVEL;GROUPS.LISP
-)
-
-("high"
-  amount-value  ;SPARSER:DOSSIERS;QUALITIES.LISP
-  amount  ;SPARSER:DOSSIERS;QUALITIES.LISP
 )
 
 ("individual"
@@ -337,31 +258,6 @@
   kind-of-company  ;SPARSER:DOSSIERS;KINDS-OF-COMPANIES.LISP
   journal  ;SPARSER:MID-LEVEL;THINGS.LISP
   journal  ;SPARSER:MID-LEVEL;THINGS.LISP
-)
-
-("known"
-  modifier  ;SPARSER:DOSSIERS;MODIFIERS.LISP
-  know  ;SPARSER:DOSSIERS;VERBS.LISP
-)
-
-("large"
-  size-value  ;SPARSER:DOSSIERS;QUALITIES.LISP
-  size  ;SPARSER:DOSSIERS;QUALITIES.LISP
-)
-
-("little"
-  size-value  ;SPARSER:DOSSIERS;QUALITIES.LISP
-  size  ;SPARSER:DOSSIERS;QUALITIES.LISP
-)
-
-("long"
-  length-value  ;SPARSER:DOSSIERS;QUALITIES.LISP
-  length  ;SPARSER:DOSSIERS;QUALITIES.LISP
-)
-
-("low"
-  amount-value  ;SPARSER:DOSSIERS;QUALITIES.LISP
-  amount  ;SPARSER:DOSSIERS;QUALITIES.LISP
 )
 
 ("lower"
@@ -451,19 +347,9 @@
   name-something  ;SPARSER:MID-LEVEL;THINGS.LISP
 )
 
-("narrow"
-  width-value  ;SPARSER:DOSSIERS;QUALITIES.LISP
-  width  ;SPARSER:DOSSIERS;QUALITIES.LISP
-)
-
 ("no"
   no  ;SPARSER:WORDS;QUANTIFIERS.LISP
   acknowledgement  ;SPARSER:MID-LEVEL;DISCOURSE.LISP
-)
-
-("novel"
-  modifier  ;SPARSER:DOSSIERS;MODIFIERS.LISP
-  novel/book  ;SPARSER:MID-LEVEL;THINGS.LISP
 )
 
 ("one"
@@ -476,19 +362,9 @@
   title-modifier  ;SPARSER:DOSSIERS;TITLE-MODIFIERS.LISP
 )
 
-("orange"
-  color-value  ;SPARSER:DOSSIERS;QUALITIES.LISP
-  color  ;SPARSER:DOSSIERS;QUALITIES.LISP
-)
-
 ("partners"
   generic-co-word  ;SPARSER:DOSSIERS;GENERIC-CO-WORDS.LISP
   title  ;SPARSER:DOSSIERS;TITLES.LISP
-)
-
-("pink"
-  color-value  ;SPARSER:DOSSIERS;QUALITIES.LISP
-  color  ;SPARSER:DOSSIERS;QUALITIES.LISP
 )
 
 ("play"
@@ -521,11 +397,6 @@
   publication  ;SPARSER:MID-LEVEL;THINGS.LISP
 )
 
-("purple"
-  color-value  ;SPARSER:DOSSIERS;QUALITIES.LISP
-  color  ;SPARSER:DOSSIERS;QUALITIES.LISP
-)
-
 ("quarter"
   fiscal-quarter  ;SPARSER:TIME;FISCAL.LISP
   quarter  ;SPARSER:NUMBERS;FRACTIONS.LISP
@@ -544,11 +415,6 @@
 ("rates"
   rate-as-evaluate  ;SPARSER:DOSSIERS;VERBS.LISP
   rate  ;SPARSER:AMOUNTS;MEASUREMENTS.LISP
-)
-
-("red"
-  color-value  ;SPARSER:DOSSIERS;QUALITIES.LISP
-  color  ;SPARSER:DOSSIERS;QUALITIES.LISP
 )
 
 ("scientist"
@@ -581,21 +447,6 @@
   share-part  ;SPARSER:MID-LEVEL;GROUPS.LISP
 )
 
-("short"
-  height-value  ;SPARSER:DOSSIERS;QUALITIES.LISP
-  height  ;SPARSER:DOSSIERS;QUALITIES.LISP
-)
-
-("slow"
-  rate-of-change-value  ;SPARSER:DOSSIERS;QUALITIES.LISP
-  rate-of-change  ;SPARSER:DOSSIERS;QUALITIES.LISP
-)
-
-("small"
-  size-value  ;SPARSER:DOSSIERS;QUALITIES.LISP
-  size  ;SPARSER:DOSSIERS;QUALITIES.LISP
-)
-
 ("step"
   step  ;SPARSER:BLOCKS;VOCABULARY.LISP
   music-step  ;SPARSER:MUSIC;OBJECTS.LISP
@@ -614,11 +465,6 @@
 ("tables"
   table  ;SPARSER:BLOCKS;VOCABULARY.LISP
   article-table  ;SPARSER:MID-LEVEL;DOCUMENT-PARTS.LISP
-)
-
-("tall"
-  height-value  ;SPARSER:DOSSIERS;QUALITIES.LISP
-  height  ;SPARSER:DOSSIERS;QUALITIES.LISP
 )
 
 ("target"
@@ -659,24 +505,4 @@
 ("up"
   up  ;SPARSER:DOSSIERS;SPATIAL-PREPOSITIONS.LISP
   direction  ;SPARSER:DOSSIERS;DIRECTIONS.LISP
-)
-
-("violet"
-  color-value  ;SPARSER:DOSSIERS;QUALITIES.LISP
-  color  ;SPARSER:DOSSIERS;QUALITIES.LISP
-)
-
-("white"
-  color-value  ;SPARSER:DOSSIERS;QUALITIES.LISP
-  color  ;SPARSER:DOSSIERS;QUALITIES.LISP
-)
-
-("wide"
-  width-value  ;SPARSER:DOSSIERS;QUALITIES.LISP
-  width  ;SPARSER:DOSSIERS;QUALITIES.LISP
-)
-
-("yellow"
-  color-value  ;SPARSER:DOSSIERS;QUALITIES.LISP
-  color  ;SPARSER:DOSSIERS;QUALITIES.LISP
 )
