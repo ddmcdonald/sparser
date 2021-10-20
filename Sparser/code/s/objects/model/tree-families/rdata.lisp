@@ -518,6 +518,13 @@ Should mirror the cases on the *single-words* ETF."
          (setf (rdata-head-words rdata) `(,key ,lemma)))))))
 
 
+(defmacro assign-lemma (category-name word-expr)
+  "Convenient for the few times when we have make a lemma indepently
+   from the category definition"
+  `(let ((category (category-named ',category-name :break-if-none)))
+     (setup-category-lemma category ',word-expr)))
+
+
 
 ;;;--------------------------------------
 ;;; Decode symbols -> objects by keyword
