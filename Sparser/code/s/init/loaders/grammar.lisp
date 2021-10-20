@@ -104,15 +104,15 @@ omitted and then run (perhaps) after the image has been launched."
     (gload "kinds;1st-loader") ;; defines the bulk of the upper model
     (gload "kinds;loader")) ;; leftover categories on their way  out
 
+  (gate-grammar *comparatives*
+    ;; Moved this early to handle comparative adjective in collections
+    ;; Has to follow tree-families and attribution in kinds
+    (gload "syntax-comp;comparatives"))
+
   (gate-grammar *general-words*
     ;; the function words make reference to bracket types and upper model categories
     (gload "words;loader")
     (gload "words;whitespace assignments"))
-
-  (gate-grammar *comparatives*
-    ;; Moved this early to handle comparative adjective in collections
-    ;; Has to follow tree-families
-    (gload "syntax-comp;comparatives"))
 
   (gate-grammar *collections*
     ;; sequence-of-numbers requires sequence. Collections had been after
