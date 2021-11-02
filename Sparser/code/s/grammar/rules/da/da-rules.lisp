@@ -1520,10 +1520,9 @@
   (declare (ignore comma))
   (create-event-relation s event-relation (edge-referent sconj)))
 
-(define-debris-analysis-rule s-with-np-conj-pp
-    :pattern (s pp)
-    :action (:function np-conj-pp first second))
 
+
+;;--- locus of adjunctive-attachments
 
 (define-debris-analysis-rule adjunctive-pp-on-transitive-clause-without-object
   :pattern (transitive-clause-without-object pp)
@@ -1531,6 +1530,10 @@
 
 (define-debris-analysis-rule adjunctive-pp-on-vp
   :pattern (vp pp)
+  :action (:function add-adjunctive-pp first second))
+
+(define-debris-analysis-rule adjunctive-pp-on-vg
+  :pattern (vg+ed pp) ;; "disturbed by the noise"
   :action (:function add-adjunctive-pp first second))
 
 #+ignore ;; needs to be folded into the rule above
@@ -1544,7 +1547,9 @@
   :action (:function add-adjunctive-pp first second))
 
 
-;;--- locus of adjunctive-attachments
+(define-debris-analysis-rule s-with-np-conj-pp
+    :pattern (s pp)
+    :action (:function np-conj-pp first second))
 
 (define-debris-analysis-rule np-conj-pp
     ;; for the case where the rightmost NP in a conjunction can
