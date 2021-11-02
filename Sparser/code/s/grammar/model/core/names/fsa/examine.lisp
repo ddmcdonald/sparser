@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "examine"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  June 2021
+;;;  version:  November 2021
 
 ;; initiated 4/1/94 v2.3
 ;; 0.1 (4/23) fixed change of where :literal-in-a-rule is in Sort-out-multiple-
@@ -415,7 +415,8 @@
                
              (otherwise
               (unless (or (form-category? (edge-form tt)) ; approximators
-                          (itypep (edge-referent tt) 'pronoun))
+                          (itypep (edge-referent tt) 'pronoun)
+                          (literal-edge? tt)) ; virtually only function words
                 (or (valid-name-category? tt-category) ; checks a value on category's plist
                     (else
                       (when *break-on-new-categories-in-cap-seq*
@@ -631,7 +632,9 @@
                   (ordinal ;; this is weak evidence --> limited partnerships
                    category::person-name )
                   (person-version category::person-name)
-                  (person-prefix category::person-name)
+                  ((and person-prefix ; the prefix 'Right'
+                        (eql 1 (car person-prefix)))
+                   category::person-name)
                   ;;////(hurricane category::hurricane) ;; sl dependent
                   (t category::name)))
           name )
