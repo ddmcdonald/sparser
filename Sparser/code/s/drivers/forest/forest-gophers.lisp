@@ -528,6 +528,10 @@
                 ;; "the drug up-regulates..."
                 (polyword-p (edge-category (edge-left-daughter edge)))))
        edge)
+
+      ((and (vp-category? (edge-form edge)) ;; vp: "are wooing"
+            (vp-category? (edge-form (edge-left-daughter edge)))) ;; "be"
+       (find-verb (edge-left-daughter edge)))
       
       ((and (vp-category? (edge-form (edge-left-daughter edge)))
             (vp-category? (edge-form (edge-right-daughter edge))))
