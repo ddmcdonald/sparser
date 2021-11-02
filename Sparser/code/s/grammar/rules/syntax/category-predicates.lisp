@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER) -*-
-;;; copyright (c) 2016-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2021 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "category-predicates"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  December 2019
+;;;  Version:  November 2021
 
 ;; Predicates on syntactic form categories,
 ;; mostly for the use of the chunker.
@@ -141,7 +141,7 @@
     CATEGORY::N-BAR
     CATEGORY::COMMON-NOUN
     CATEGORY::PROPER-NOUN
-     CATEGORY::PROPER-NAME))
+    CATEGORY::PROPER-NAME))
 
 (defparameter *n-bar-category-names*
   '(COMMON-NOUN/PLURAL
@@ -161,6 +161,8 @@
     PROPER-NAME))
 
 (defparameter *all-np-categories* `(category::NP ,@*n-bar-categories*))
+
+
 
 (defparameter *vp-categories*
   `(
@@ -208,6 +210,44 @@
     ,category::vg+ing
     ,category::vg+passive))
 
+
+(defgeneric group-level-category? (label)
+  (:documentation "Is this category a 'group' category in one of the
+   major lines of categories, e.g. one of the verb group or the noun-group
+   categories. In the motivating case we are about to elevate the form
+   on some edge to the 'phrase' level")
+  (:method ((name symbol)) ; e.g. returned from edge-form-name
+    (group-level-category? (category-named name :error)))
+  (:method ((cat category))
+    (cond
+      ((memq cat *verb-group-level-categories*) :vg)
+      ((memq cat *n-bar-categories*) :ng)
+      ((eq cat category::adjg) :adj)
+      (t nil))))
+
+(defgeneric phrase-level-equivalent-of-group-form (label)
+  (:documentation "Assumes that the category that's passed in has been
+    vetted for being at the group level. This returns the equivalent
+    category at the phrase level.")
+  (:method ((name symbol))
+    (phrase-level-equivalent-of-group-form (category-named name)))
+  (:method ((form-category category))
+    (ecase (cat-symbol form-category)
+     (category::vg   category::vp)
+     (category::vg+ing  category::vp+ing)
+     (category::vg+ed   category::vp+past)
+     (category::vg+passive  category::vp+passive)
+     
+     (category::common-noun/plural  category::np)
+     (category::noun/verb-ambiguous category::np)
+     (category::common-noun category::np)
+     (category::common-noun/plural category::np)
+     (category::proper-noun category::np)
+     (category::proper-name category::np)
+     (category::n-bar category::np)
+     (category::np-head category::np)
+
+     (category::adjg category::adjp))))
 
 
 ;;; control parameters for collecting data

@@ -376,6 +376,9 @@
 (defparameter *break-adjunctive-pp* nil)
 
 (defun add-adjunctive-pp (head-edge pp-edge)
+  "Add the pp and an adjunct to the head. Called directly from a set of DA rules
+   and indirectly from np-conj-pp. Binds the arbitrary variable 'adjunctive-modifier'
+   to form the referent."
   (declare (special *do-adjunctive-attachments*
                     *reduced-known-adjunct-attachments*))
   (when *do-adjunctive-attachments*
@@ -386,12 +389,13 @@
            (edge-taking-adjunct (find-target-satisfying right-fringe #'takes-adjunct-target?))
            (ambigs 
              (remove-duplicates
-              (loop for fringe in right-fringe when (and (edge-p fringe)
-                                                         (individual-p (edge-referent fringe))
-                                                         (assoc (cat-name (itype-of (edge-referent fringe)))
-                                                                *reduced-known-adjunct-attachments*))
-                    collect (list (cat-name (itype-of (edge-referent fringe)))
-                                  (intern (pname prep-word))))
+              (loop for fringe in right-fringe
+                 when (and (edge-p fringe)
+                           (individual-p (edge-referent fringe))
+                           (assoc (cat-name (itype-of (edge-referent fringe)))
+                                  *reduced-known-adjunct-attachments*)) ; see list just below
+                 collect (list (cat-name (itype-of (edge-referent fringe)))
+                               (intern (pname prep-word))))
               :test #'equal)))
       (declare (special right-fringe ambigs)) ; for debugging
 
@@ -399,8 +403,8 @@
         ;; Heuristically identifying things that are likely to be bad parses
         ;;  (p "Wild waters lead the tales of Peter Rabbit
         ;; Discover Cyprus as Britain prepares for MORE snow chaos")
-        ;; Wanted to adjoin 'as Britain' to 'Cyprus' but PNF didn't break the span
-        ;; properly given the lack off punctuation (a period after 'rabbit')
+        ;; This wanted to adjoin 'as Britain' to 'Cyprus' but PNF didn't break the span
+        ;; properly given the lack of punctuation (a period after 'rabbit')
         (return-from add-adjunctive-pp nil))
 
       (cond ((cdr ambigs)
@@ -422,17 +426,18 @@
                                  (sentence-string (sentence)))
                          (edge-referent head-edge)
                          pobj-referent)
-                   *adjunctive-attachments*)             
-             (make-edge-spec
-              :category (edge-category edge-taking-adjunct)
-              :form (edge-form edge-taking-adjunct)
-              :target edge-taking-adjunct
-              :direction :right
-              :function 'add-adjunctive-pp
-              :referent (bind-dli-variable 'adjunctive-modifier
-                                           pobj-referent
-                                           (edge-referent edge-taking-adjunct)
-                                           )))))))
+                   *adjunctive-attachments*)
+             (let ((form (adjust-group-level-head head-edge pp-edge))
+                   (referent (bind-variable
+                              'adjunctive-modifier pobj-referent
+                              (edge-referent edge-taking-adjunct))))
+               (make-edge-spec
+                :category (edge-category edge-taking-adjunct)
+                :form form
+                :target edge-taking-adjunct
+                :direction :right
+                :function 'add-adjunctive-pp
+                :referent referent)))))))
 
 (defun find-adjunctive-attachments (head &optional prep)
   (declare (special *adjunctive-attachments*))

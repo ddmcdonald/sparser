@@ -156,7 +156,7 @@
 
 
 (defun elevate-form-given-subcat (new-edge edge pattern)
-  ;; called from apply-subcat-patterns when the pattern has succeeded
+  ;; called from check-for-subcatorized-pps when the pattern has succeeded
   ;; and created the new edge. ///Ought to specifiy this explicitly,
   ;; but this move of elevating
   (let ((head-form ;; assumes that the subcat terms go to the right
