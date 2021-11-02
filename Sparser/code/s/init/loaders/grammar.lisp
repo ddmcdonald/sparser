@@ -85,12 +85,12 @@ omitted and then run (perhaps) after the image has been launched."
   (gate-grammar *brackets*
     ;; the bracket definitions reference syntactic categories
     (gload "brackets;loader"))
-
-  (gate-grammar *kinds*
-    (gload "kinds;0th-loader"))
   
   (gate-grammar *tree-families*
     (gload "tree-families;shortcut-loader"))
+
+  (gate-grammar *kinds*
+    (gload "kinds;0th-loader"))
 
   (gate-grammar *default-semantics-for-NP*
     (gload "syntax-art;early-syntactic-categories")) ;; tree-family for NP references these categories
