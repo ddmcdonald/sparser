@@ -33,7 +33,7 @@
                   ((itypep wh 'wh-pronoun) wh)
                   ((has-wh-determiner? wh) ;; "what proteins"
                     wh) ; use whole phrase
-                  (t (warn "New case of a WH individual: ~a~%   in sentence: ~s~%"
+                  (t (warn-or-error "New case of a WH individual: ~a~%   in sentence: ~s~%"
                            wh (sentence-string (sentence)))
                      nil)))
                (edge
@@ -505,7 +505,7 @@
       ;; happens for "why"
       (setq left-edge edge))
     (unless (find-wh-element left-edge)
-      (warn "find-wh-element couldn't find a wh in ~a~%within ~s"
+      (warn-or-error "find-wh-element couldn't find a wh in ~a~%within ~s"
             left-edge (current-string))
       (when *debug-questions*
         (break "Maybe find-wh-element is bad? edge = ~a" edge))

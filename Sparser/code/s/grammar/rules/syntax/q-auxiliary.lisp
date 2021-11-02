@@ -108,11 +108,11 @@
          (unless bound-in
            (if  *debug-questions*
              (cerror "keep going" "Null bound-in field on ~a" i)
-             (warn "Null bound-in field on ~a" i))
+             (warn-or-error "Null bound-in field on ~a" i))
            (return))
          (let ((var (binding-variable b))
                (j (binding-body b)))
-           (tr :walking-up-binding var j)   
+           (tr :walking-up-binding var j)
            (push var variables)
            (when (eq j i-end) (return))
            (setq i j)
