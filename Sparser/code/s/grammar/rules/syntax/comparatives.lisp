@@ -141,6 +141,87 @@ abstract > abstract-region >
     (when entry
       (continue-unpacking-lexical-entry word entry))))
 
+;;;---------------------------------------------------
+;;; for the :adjective head specifier or from Comlex
+;;;---------------------------------------------------
+
+#| These two function compensate for not having comparative
+or superlative realization options. The categories we instantiate
+here use :word as their realization spec to ensure that nobody
+mucks with the word under the covers. But the form specification
+is also the basis of the form label on the rule that realization
+creates, so these functions shift it over.
+   They're also recruited by the morphology code itself to get
+a reasonable referent for the cases that don't go through this
+route. That threading requires them to return a rule. 
+   Worse still, be have some duplicate definitions going on
+(e.g. "cycle" in core/collections and in biology/taxonomy)
+so to return a rule in those cases we have to look for
+comparative rather than content-word.  |#
+
+(define-category comparative-modifier
+  :specializes attribute-value
+  :mixins (comparative)
+  :index (:permanent :key name)
+  :realization (:word name)) ;; form category is content-word
+
+(defun define-comparative (word)
+  "Called from setup-comparative and by make-comparative-rules in
+   the morphology of adjectives"
+  (define-or-find-individual 'comparative-modifier :name word)
+  (switch-form-to-comparative word))
+
+(defun switch-form-to-comparative (word)
+  ;; simpler while designing these than extending the head keywords
+  (let ((rule (find-form-cfr word category::content-word)))
+    (when rule
+      (setf (cfr-form rule) category::comparative-adjective))
+    (or rule
+        (find-form-cfr word category::comparative-adjective))))
+
+
+(define-category superlative-modifier
+  :specializes attribute-value
+  :mixins (superlative)
+  :index (:permanent :key name)
+  :realization (:word name))
+
+(defun define-superlative (word)
+  "Called from setup-superlative (Comlex) and from the adjective
+   handler in morphology"
+  (define-or-find-individual 'superlative-modifier :name word)
+  (switch-form-to-superlative word))
+
+(defun switch-form-to-superlative (word)
+  (let ((rule (find-form-cfr word category::content-word)))
+    (when rule
+      (setf (cfr-form rule) category::superlative-adjective))
+    (or rule
+        (find-form-cfr word category::superlative-adjective))))
+
+
+
+(defun modify-comparatives-rule-labels (base-word er-word est-word)
+  (let* ((base-rule (find-form-cfr base-word category::adjective))
+         (base-label (cfr-category base-rule))
+         (er-rule (find-form-cfr er-word category::comparative-adjective))
+         (est-rule (find-form-cfr est-word category::superlative-adjective)))
+    (setf (cfr-category er-rule) base-label)
+    (setf (cfr-category est-rule) base-label)))
+       
+
+;;;----------------------------------------------
+;;; for anonymous comparatives, e.g. from Comlex
+;;;----------------------------------------------
+;;--- Minimal treatment for when we don't know the attribute
+;;    and have no principled way to determine what variable to bind
+
+(define-category comparative-modification
+  :specializes scalar-attribute
+  :bindings (var (find-variable-for-category 'modifier 'top))
+  :documentation "Modeled on comparative-quantification")
+
+
 
 ;;;-----------------
 ;;; base categories
@@ -158,11 +239,14 @@ abstract > abstract-region >
   :documentation "These could be on comparative and superlatives
  could inherit from comparative, but that would make a superative
  also be a comparative, which would be messy to reason with.")
-
+;;################################
 (define-mixin-category comparative
   ;; inherits the variable name and attribute from attribute-value
   :specializes attribute-value
+  :lemma (:common-noun "comparative")
   :mixins (shared-comparative-and-superlative)
+  :realization (:adj "comparative"
+                :adverb "comparatively")
   :documentation "This is included in (mixed into) every comparative.
  Comparatives are a particular kind of attribute
  value, so their principal link is to the attribute they
@@ -179,6 +263,7 @@ abstract > abstract-region >
 (define-mixin-category superlative
   :specializes attribute-value
   :mixins (shared-comparative-and-superlative)
+  :realization (:adj "superlative")
   :documentation "Shares properties with comparatives, but picks
  out the end of its reference-set's scalar attribute: 'biggest',
  'smallest'.")
@@ -353,87 +438,6 @@ is seen.  |#
       (bind-variable 'more m-category comparative)
       (bind-variable 'less l-category comparative)
       comparative)))
-
-
-;;;---------------------------------------------------
-;;; for the :adjective head specifier or from Comlex
-;;;---------------------------------------------------
-
-#| These two function compensate for not having comparative
-or superlative realization options. The categories we instantiate
-here use :word as their realization spec to ensure that nobody
-mucks with the word under the covers. But the form specification
-is also the basis of the form label on the rule that realization
-creates, so these functions shift it over.
-   They're also recruited by the morphology code itself to get
-a reasonable referent for the cases that don't go through this
-route. That threading requires them to return a rule. 
-   Worse still, be have some duplicate definitions going on
-(e.g. "cycle" in core/collections and in biology/taxonomy)
-so to return a rule in those cases we have to look for
-comparative rather than content-word.  |#
-
-(define-category comparative-modifier
-  :specializes attribute-value
-  :mixins (comparative)
-  :index (:permanent :key name)
-  :realization (:word name)) ;; form category is content-word
-
-(defun define-comparative (word)
-  "Called from setup-comparative and by make-comparative-rules in
-   the morphology of adjectives"
-  (define-or-find-individual 'comparative-modifier :name word)
-  (switch-form-to-comparative word))
-
-(defun switch-form-to-comparative (word)
-  ;; simpler while designing these than extending the head keywords
-  (let ((rule (find-form-cfr word category::content-word)))
-    (when rule
-      (setf (cfr-form rule) category::comparative-adjective))
-    (or rule
-        (find-form-cfr word category::comparative-adjective))))
-
-
-(define-category superlative-modifier
-  :specializes attribute-value
-  :mixins (superlative)
-  :index (:permanent :key name)
-  :realization (:word name))
-
-(defun define-superlative (word)
-  "Called from setup-superlative (Comlex) and from the adjective
-   handler in morphology"
-  (define-or-find-individual 'superlative-modifier :name word)
-  (switch-form-to-superlative word))
-
-(defun switch-form-to-superlative (word)
-  (let ((rule (find-form-cfr word category::content-word)))
-    (when rule
-      (setf (cfr-form rule) category::superlative-adjective))
-    (or rule
-        (find-form-cfr word category::superlative-adjective))))
-
-
-
-(defun modify-comparatives-rule-labels (base-word er-word est-word)
-  (let* ((base-rule (find-form-cfr base-word category::adjective))
-         (base-label (cfr-category base-rule))
-         (er-rule (find-form-cfr er-word category::comparative-adjective))
-         (est-rule (find-form-cfr est-word category::superlative-adjective)))
-    (setf (cfr-category er-rule) base-label)
-    (setf (cfr-category est-rule) base-label)))
-       
-
-;;;----------------------------------------------
-;;; for anonymous comparatives, e.g. from Comlex
-;;;----------------------------------------------
-;;--- Minimal treatment for when we don't know the attribute
-;;    and have no principled way to determine what variable to bind
-
-(define-category comparative-modification
-  :specializes scalar-attribute
-  :bindings (var (find-variable-for-category 'modifier 'top))
-  :documentation "Modeled on comparative-quantification")
 
 
 
