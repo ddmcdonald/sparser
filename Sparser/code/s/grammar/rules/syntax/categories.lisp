@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "categories"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  April 2021
+;;;  Version:  November 2021
 
 ;; 0.1 (9/392 v2.3)) Redid them as "form categories", with an indicator on their plists
 ;; 0.2 (10/12) flushed "mvb" for "verb", 10/24 added common-noun/plural
@@ -225,7 +225,7 @@
 (def-form-category  vp+past)
 ;; disambiguate vp+ed vs case where there is an explicit object
 ;; "phosphorylated at Ser746" vs "phosphorylated Ser746"
-(def-form-category  vp+passive) ;; vp with an be and V+ED
+(def-form-category  vp+passive) ;; vp with a 'be' and V+ED
 
 (def-form-category  vg)
 (def-form-category  vg+ing) ;; vg with an untensed (no aux or modal) V+ING
@@ -500,6 +500,24 @@
         (when (or (eq left-form category::s)
                   (eq right-form category::s))
           category::s)))))
+
+
+(defun adjust-group-level-head (head-edge adjunct-edge)
+  "Called from add-adjunctive-pp but should migrate to
+ edge-form-adjuctment for any edge constructor where we
+ can identify head and adjunct constituents.
+ If the head is a group-level form category we have to 'elevate'
+ is as soon as it composes with any argument or adjunct."
+  ;; Writing this for the presenting case of vg+ed adjoine to a pp
+  (let* ((head-form (edge-form-name head-edge)) ; returns a symbol
+         (adj-form (edge-form-name adjunct-edge))
+         (group-level? (group-level-category? head-form)))
+    (if group-level?
+      (phrase-level-equivalent-of-group-form head-form)
+      (else
+        ;; we're using this function to set the form of
+        ;; an edge, so we have to return something useful
+        (edge-form head-edge)))))
 
 
 
