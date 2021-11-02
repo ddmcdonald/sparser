@@ -53,6 +53,15 @@
    (speech-acts
     acknowledgement)
 
+   ;; (punctuation
+   ;;  comma ;; have to be categories for regular mach. to work
+   ;;  colon)
+   
+   (brackets
+    parentheses
+    quotation
+    square-brackets) ; angle-brackets, curly-brackets ?
+
    ))
 
 
