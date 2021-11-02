@@ -528,6 +528,12 @@
                   *arabic-names*)
              (cap-seq-continues-from-here? next-position))
 
+            ((and  (word-at-this-position-is-capitalized? next-position)
+                   *acumen*)
+             ;; if we're sentence terminal -- i.e. the scan didn't get the next pos
+             ;; then it could well be a typo: "what are you giving up for Lent' Every ..."
+             position)
+
             (t
              (break "new case for single-quote while looking to extend ~
                      a capitalized sequence.~%The next word is ~A ~
