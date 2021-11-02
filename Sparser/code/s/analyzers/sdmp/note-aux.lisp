@@ -235,6 +235,13 @@ discourse history.
            (when *debug-cached-new-adjudication*
              (break "new edge ~a subsumes cached edge ~a ~
                  what should we do?" edge cached-edge)))))
+
+      ((eq (edge-cat-name cached-edge) 'quotation)
+       ;; normally very long
+       (pass-cached-edge-to-note)
+       (load-edge-into-note-cache edge)
+       (empty-note-cache))
+     
       
       ((disjoint-edges cached-edge edge)
        ;; the polyword pass can create cached edges that are

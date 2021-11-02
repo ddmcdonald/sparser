@@ -129,28 +129,30 @@
                "Just cover the span between the punctuation (inclusive)
               with an edge labeled according to the type of bracket."
                (tr :vanila-paired-edge pos-before-open pos-after-close)
-               (make-edge-over-long-span
-                pos-before-open
-                pos-after-close
-                (case type
-                  (:angle-brackets  (category-named 'angle-brackets))
-                  (:square-brackets (category-named 'square-brackets))
-                  (:curly-brackets  (category-named 'curly-brackets))
-                  (:parentheses     (category-named 'parentheses))
-                  (:quotation-marks (category-named 'quotation))
-                  (otherwise
-                   (break "unexpected type: ~a" type)))
-                :form (case type
-                        (:angle-brackets  (category-named 'angle-brackets))
-                        (:square-brackets (category-named 'square-brackets))
-                        (:curly-brackets  (category-named 'curly-brackets))
-                        (:parentheses     (category-named 'parentheses))
-                        (:quotation-marks (category-named 'quotation))
-                        (otherwise
-                         (break "unexpected type: ~a" type)))
-                :referent (or referent
-                              (referent-for-vanila-edge))
-                :rule  :default-edge-over-paired-punctuation))
+               (let ((edge
+                      (make-edge-over-long-span
+                       pos-before-open
+                       pos-after-close
+                       (case type
+                         (:angle-brackets  (category-named 'angle-brackets))
+                         (:square-brackets (category-named 'square-brackets))
+                         (:curly-brackets  (category-named 'curly-brackets))
+                         (:parentheses     (category-named 'parentheses))
+                         (:quotation-marks (category-named 'quotation))
+                         (otherwise
+                          (break "unexpected type: ~a" type)))
+                       :form (case type
+                               (:angle-brackets  (category-named 'angle-brackets))
+                               (:square-brackets (category-named 'square-brackets))
+                               (:curly-brackets  (category-named 'curly-brackets))
+                               (:parentheses     (category-named 'parentheses))
+                               (:quotation-marks (category-named 'quotation))
+                               (otherwise
+                                (break "unexpected type: ~a" type)))
+                       :referent (or referent
+                                     (referent-for-vanila-edge))
+                       :rule  :default-edge-over-paired-punctuation)))
+                 (note? edge)))
 
              (interior-hook (label)
                "Does this label have an 'interior action' associated with it.
