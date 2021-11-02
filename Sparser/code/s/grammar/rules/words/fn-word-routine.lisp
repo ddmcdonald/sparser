@@ -181,9 +181,9 @@
   (let ((word (if (typep string 'word)
                 (prog1 string
                   (assign-brackets-to-word string brackets))
-                (define-function-word string 
-                  :brackets brackets ;; this does bracket assignment
-                  :form form))))
+                (define-function-word string
+                    :brackets brackets
+                    :form form))))
     (let* ((base-name (or category-name-to-use
                           (name-to-use-for-category string)))
            (category-name 
@@ -210,15 +210,16 @@
 
       (let* ((effective-rule-label (or rule-label category-name))
              (category ;; for the function word
-              (define-category/expr category-name  ;; e.g. 'only'
-                  `(:specializes ,super-category
-                                 :instantiates nil
-                                 :mixins ,mixins
-                                 :binds ,binds
-                                 :rule-label ,effective-rule-label
-                                 :bindings (,word-variable ,word)
-                                 :realization ,realization
-                                 :documentation ,documentation))))
+              ;;(or (category-named category-name)
+                  (define-category/expr category-name  ;; e.g. 'only'
+                      `(:specializes ,super-category
+                        :instantiates nil
+                        :mixins ,mixins
+                        :binds ,binds
+                        :rule-label ,effective-rule-label
+                        :bindings (,word-variable ,word)
+                        :realization ,realization
+                        :documentation ,documentation)))) ;;)
         
         (let* ((word-key (intern (symbol-name word-variable)
                                  (find-package :keyword)))
