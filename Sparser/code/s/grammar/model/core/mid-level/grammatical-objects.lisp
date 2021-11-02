@@ -42,12 +42,12 @@
              (cfr (def-cfr/expr category (list word)
                     :form (category-named 'noun)
                     :referent object)))
-        (add-rule cfr object)
+        (add-rule cfr category)
         object))))
 
 
 
-(eval-when (:compile-toplevel :load-toplevel)
+(eval-when (:compile-toplevel :load-toplevel :execute)
   ;; This list originated in the old list in
   ;; category-defining-words.
   ;; Other than the major parts of speech and grammatical
@@ -57,7 +57,6 @@
   (mapcar #'define-type-of-grammatical-element
           '(
             "adjective"
-            "comparative"
             "conjunction"
             "definite"
             "demonstrative"
