@@ -306,7 +306,7 @@
 (define-category scalar
   :instantiates nil
   :specializes quality
-  ;;:lemma (:adjective "scalar")
+  ;; :lemma (:adjective "scalar")
   :documentation "'scalar' per se is a meta-property. 
  It is a quality of some other category and says about it 
  that it can take on different values along some dimention")
