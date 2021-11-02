@@ -33,7 +33,7 @@ modification facts in aid of getting a better picture of
 what the phrase denotes.
 
   It is called from segment-finished within the PTS code in
-drivers/chart/psp/pts[#].lisp after it has invoked the parser
+drivers/chart/psp/pts.lisp after it has invoked the parser
 to make any semantic or form edges that the grammar dictates. 
 
 |#
@@ -84,11 +84,11 @@ to make any semantic or form edges that the grammar dictates.
 (defparameter *require-known-words-in-order-to-cover-a-segment* nil)
 
 (defun just-cover-segment (coverage)
-  (declare (special *inhibit-just-spanning-segments*))
   "Don't look at the edge or try to find more relations inside it,
    just make sure it's all covered with one edge, propagating the
    edge information from its suffix."
   (declare (special *debug-segment-handling*
+                    *inhibit-just-spanning-segments*
                     *left-segment-boundary* *right-segment-boundary*))
   (case coverage
     (:one-edge-over-entire-segment
