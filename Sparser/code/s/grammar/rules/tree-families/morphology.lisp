@@ -1042,15 +1042,6 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
 
 ;;--- comparative/superlative
 
-(defparameter *inhibit-constructing-comparatives* nil
-  "Used when the caller knows more about how to construct 
-   the comparatives than the default routines. See define-attribute")
-
-(defmacro without-comparatives (&body body)
-  `(let ((*inhibit-constructing-comparatives* t))
-     (declare (special *inhibit-constructing-comparatives*))
-     ,@body))
-
 (defun make-comparative/superlative (word &key (suffix "er") (y-suffix "ier"))
   (declare (type word word)
            (type string suffix y-suffix))

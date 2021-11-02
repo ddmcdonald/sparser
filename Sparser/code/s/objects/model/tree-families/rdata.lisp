@@ -466,6 +466,21 @@ Should mirror the cases on the *single-words* ETF."
            (and head-var (binding-value head-var))))))))
 
 
+;;;--------------------------------
+;;; option to inhibit comparatives
+;;;--------------------------------
+
+(defparameter *inhibit-constructing-comparatives* nil
+  "Used when the caller knows more about how to construct 
+   the comparatives than the default routines. See define-attribute
+   for examples. This global is read in the adjective case of
+   the make-rules-for-head methods")
+
+(defmacro without-comparatives (&body body)
+  `(let ((*inhibit-constructing-comparatives* t))
+     (declare (special *inhibit-constructing-comparatives*))
+     ,@body))
+
 ;;;-----------------
 ;;; handling lemmas
 ;;;-----------------
@@ -495,7 +510,10 @@ Should mirror the cases on the *single-words* ETF."
        (let ((head (deref-rdata-word lemma category)))
          (when (stringp lemma) (setq lemma (resolve lemma)))
          (integrate-lemma-rdata category key lemma)
-         (let ((rules (make-rules-for-head key head category category)))
+         (let ((rules
+                (without-comparatives
+                  ;; adjective lemmas make for weird generated comparatives
+                  (make-rules-for-head key head category category))))
            ;; n.b. call invokes make-corresponding-mumble-resource
            (setf (lemma category key) head) ;; store lemma on category
            (add-rules rules category)))))
