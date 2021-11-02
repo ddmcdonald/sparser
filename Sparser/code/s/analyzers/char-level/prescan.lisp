@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "prescan"
 ;;;   Module:  "analyzers;char-level:"   ("character level processing")
-;;;  Version:   July 2021
+;;;  Version:   November 2021
 
 ;; Initiated 4/16/19 -- Before doing any analysis, sweep through the input
 ;; text at the character level to normalize newlines (paragraphs), convert
@@ -83,6 +83,7 @@ scan-name-position -> add-terminal-to-chart
   (declare (special *paragraphs-from-orthography*))
   
   (multiple-value-bind (source sink) (character-buffer-being-used)
+    (declare (special source sink))
     (let* ((index-into-source 0)
            (index-into-sink 0)
            (starting? t)
@@ -156,6 +157,18 @@ scan-name-position -> add-terminal-to-chart
             (#\^M ;;(break "cntrl-M")
              (handle-newline char))
 
+            (#\' ;; detect and convert paired single quotes
+             (if (eql (schar sink (1- index-into-sink)) #\')
+               (then
+                 ;; There is a single-quote already on the sink,
+                 ;; which plus the one we just encountered means we have two adjacent ones.
+                 ;; Back the sink up over to remove the #\' that we just pushed,
+                 ;; and then push a double quote instead
+                 (setf index-into-sink (1- index-into-sink))
+                 (push-char #\"))
+               (else ; let the first one go through to the sink
+                 (push-char char))))
+               
             ((#\. #\,)
              (if (eql (schar source (1+ index-into-source)) #\")
                (then ;; swap them
