@@ -202,6 +202,10 @@ when contemplating using a new tree family
             (theme . comp-slot)))
 
 
+
+;;=========== These are ostensibly incomplete (11/8/21 ddm)
+;;   They should have explicit arguments
+
 ;;--- NP schema
 
 (define-realization-scheme pre-mod premodifier-adds-property 
