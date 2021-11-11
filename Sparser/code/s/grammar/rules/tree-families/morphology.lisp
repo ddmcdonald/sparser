@@ -981,14 +981,16 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
            (double nil))
       ;; http://dictionary.cambridge.org/us/grammar/british-grammar/spelling
 
-      ;; list the reasong not to double and by default
+      ;; list the reason not to double and by default
       ;; we'll double a final consonant. 
       (cond
         ((eql #\e last-letter)
          (setq pname (subseq pname 0 (1- (length pname))))
          ;; "ie" => "ying
          (when (eql 2d-to-last #\i)
-           (setq pname (string-append pname "y"))))
+           (setq pname (string-append
+                        (subseq pname 0 (1- (length pname))) ;; need to remove the "i" too
+                        "y"))))
         
         ((eql #\w last-letter)) ;; "snow"
         ((eql #\x last-letter)) ;; "tax"
@@ -999,7 +1001,7 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
            ((= 1 number-of-vowels)
             (cond
               ((vowel? 2d-to-last) "put" "run" "get"
-               ;; applies to ading "-er", "-en" "-ish"
+               ;; applies to adding "-er", "-en" "-ish"
                (setq double t))))
            
            ((and (vowel? 2d-to-last) (vowel? 3d-to-last))
