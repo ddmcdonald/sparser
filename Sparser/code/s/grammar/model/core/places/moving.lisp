@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2011-2014=6  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011-2021  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "moving"
 ;;;   Module:  "model;core:places:"
-;;;  version:  January 2016
+;;;  version:  November 2021
 
 ;; Intended for modeling movement in direction or w.r.t. some
 ;; spatial feature.
@@ -91,12 +91,12 @@
 
 ;;--- Debris: convert a name because of its context
 
-(define-debris-analysis-rule move+to+name
-  :pattern ( move "to" name )
-  :action (:function convert-name-to-place-name third))
-
-
 (unless (current-script :biology)
+  
+  (define-debris-analysis-rule move+to+name
+      :pattern ( move "to" name )
+      :action (:function convert-name-to-place-name third))
+
   (define-debris-analysis-rule move+to+named-object
       :pattern ( move "to" named-object )
       :action (:function convert-name-to-place-name third)))
