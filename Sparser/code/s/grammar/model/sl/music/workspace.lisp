@@ -2,6 +2,25 @@
 
 (in-package :sparser)
 
+sp> (setup-musical-notes)
+(#<music-flat "Ab" 4768> #<music-note "A" 4773> #<music-sharp "A#" 4770>
+ #<music-flat "Bb" 4776> #<music-note "B" 4780> #<music-sharp "B#" 4777>
+ #<music-flat "Cb" 4783> #<music-note "C" 4787> #<music-sharp "C#" 4784>
+ #<music-flat "Db" 4790> #<music-note "D" 4794> #<music-sharp "D#" 4791>
+ #<music-flat "Eb" 4797> #<music-note "E" 4801> #<music-sharp "E#" 4798>
+ #<music-flat "Fb" 4804> #<music-note "F" 4808> #<music-sharp "F#" 4805>
+ #<music-flat "Gb" 4811> #<music-note "G" 4815> #<music-sharp "G#" 4812>)
+
+sp> (make-note-sequence)
+#<music-flat "Ab" 4768>
+#<1273 previous = #<music-sharp "G#" 4812>>
+
+sp> (setup-note-lengths)
+(#<note-length "whole note" 4875> #<note-length "half note" 4876>
+ #<note-length "quarter note" 4877> #<note-length "eighth note" 4878>
+ #<note-length "sixteenth note" 4879>)
+
+
 ;; From 4/17/18 telcon notes
 Clay: "give me 4 more measures like that"
 "move the G"
