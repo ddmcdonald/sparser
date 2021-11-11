@@ -1118,11 +1118,11 @@
     ((null item)
      (cond
        ((and (boundp '*pobj-edge*) *pobj-edge*)
-	(warn "~&*** null item in subcategorized pobj for ~
+	(warn-or-error "~&*** null item in subcategorized pobj for ~
                  edge ~s~&  in sentence: ~s~%" *pobj-edge*
                  (current-string)))
        ((eq label :subject)
-        (warn "~&*** null item in subcategorized subject for ~
+        (warn-or-error "~&*** null item in subcategorized subject for ~
                  clause ~s~&  in sentence: ~s~%"
               (retrieve-surface-string head)
               (current-string)))
@@ -1132,13 +1132,13 @@
               (retrieve-surface-string head)
               (current-string)))
        (t
-        (warn "~&*** null item in subcategorized-variable~& ~
+        (warn-or-error "~&*** null item in subcategorized-variable~& ~
                  edge ~s~&  in sentence: ~s~%" *pobj-edge*
                  (current-string))))
      nil)
     ((consp item)
      (unless *subcat-test*
-       (warn "what are you doing passing a CONS as an item, ~s~&" item))
+       (warn-or-error "what are you doing passing a CONS as an item, ~s~&" item))
      nil)
     (t
      (find-subcat-var item label head))))
@@ -1188,7 +1188,7 @@
                              (not (itypep (subcat-restriction pat) 'blocked-category)))
                      do (return pat)))))
     (declare (special category subcat-patterns of-object ambiguous-of-object))
-    (when ambiguous-of-object (warn "ambiguous-of-object is ~a" ambiguous-of-object))
+    (when ambiguous-of-object (warn-or-error "ambiguous-of-object is ~a" ambiguous-of-object))
 
     (when of-object
       (if ambiguous-of-object
@@ -1196,7 +1196,7 @@
               (setq label :object)
               (unless *subcat-test*
                 ;;(lsp-break "of-object")
-                (warn "ambiguous-of-object for ~s attaching to ~s in ~s"
+                (warn-or-error "ambiguous-of-object for ~s attaching to ~s in ~s"
                       item head (current-string))))
           (setq label :object)))
     
@@ -1349,7 +1349,7 @@
   (declare (special category::number))
   (when (and (not (itypep item 'pronoun))
              (not (itypep item 'part-of-a-whole)) ;; "a subset"
-             (not (itypep item 'requires-context));; new, for "those", "these"
+             (not (itypep item 'requires-context));; for "those", "these"
              (loop for pat in pats
                    thereis
                      (not (consp (subcat-restriction pat)))))
