@@ -489,8 +489,9 @@ dm #79 "a more precise answer" --> see answer/info in mid-level/things.lisp
 
 (unless (or (current-script :biology)
             (current-script :blocks-world)
-            (current-script :score))
-  ;; Let bio;verbs avoid hassle of trying to overwite these
+            (current-script :score)
+            (current-script :acumen))
+  ;; Lets bio;verbs avoid hassle of trying to overwite these
   (define-movement-verb "cross")
   (define-movement-verb "drive")
   (define-movement-verb '("follow" :past-tense "followed") ; suppress doubling of #\w
@@ -503,20 +504,23 @@ dm #79 "a more precise answer" --> see answer/info in mid-level/things.lisp
 
 ;;------------------------------ music ---------------
 
-;(define-category make-ditrans
-  ;:specializes process
-  ;:mixins (action-verb with-goal)
-  ;:restrict ((actor physical-agent)
-             ;(patient symbolic))
-  ;:binds ((goal symbolic))
-  ;:documentation ""
-  ;:realization
-    ;(:verb ("make" :past-tense "made")
-     ;:etf svoa 
-     ;:s actor
-     ;:o patient
-     ;:a goal
-     ;:mumble ("make" svoa :s actor :o patient :a goal)))
+;;/// Fix svoa -- this errors out in make-scheme-mapping with
+;;  No value for loc-v/r among the substitution args
+;;
+;; (define-category make-ditrans
+;;   :specializes process
+;;   :mixins (action-verb with-goal)
+;;   :restrict ((actor physical-agent)
+;;              (patient symbolic))
+;;   :binds ((goal symbolic))
+;;   :documentation ""
+;;   :realization
+;;     (:verb ("make" :past-tense "made")
+;;      :etf svoa 
+;;      :s actor
+;;      :o patient
+;;      :a goal
+;;      :mumble ("make" svoa :s actor :o patient :a goal)))
 
 
 
