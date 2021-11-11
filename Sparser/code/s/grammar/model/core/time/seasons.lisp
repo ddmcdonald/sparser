@@ -19,7 +19,7 @@
 (define-category  season
   :specializes time
   :instantiates self
-  :rule-label time ;;rule-label time sets the syntactic label as "time"
+ ;; :rule-label time ;;rule-label time sets the syntactic label as "time"
   :binds ((name :primitive word)
           (abbreviation :primitive word) ;; really? I'm skeptical
           (position-in-year . ordinal))
