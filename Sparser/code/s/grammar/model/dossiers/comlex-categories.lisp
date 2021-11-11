@@ -7544,7 +7544,7 @@
                "felt" )))
 
 
-
+#+ignore
 (define-adjective "fall"
   :cat (quote fall-modifier )
   :super-category (quote modifier )
