@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1995,2010-2020  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2010-2021  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "list hacking"
 ;;;    Module:   "util:"
-;;;   Version:   September 2020
+;;;   Version:   November 2021
 
 ;; initiated 12/30/93 v2.3.  4/11/95 added nil-checkers. 
 ;; 8/24/10 moved in quote-every-second-one from forms/categories
@@ -42,7 +42,7 @@
 
 (defun pl (list &optional (number-them? t) (stream *standard-output*))
   "Print the elements of a list on successive lines, numbering them by default."
-  (loop for item in list and index upfrom 1
+  (loop for item in list and index upfrom 0
         do (if number-them?
              (format stream "~&~2t~A.  ~A~%" index item)
              (format stream "~&~A~%" item))
