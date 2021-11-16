@@ -260,6 +260,8 @@
 (include-grammar-module  *disease*) ; disease too tightly entwined w/ bio types
 (include-grammar-module  *biology*)
 (include-grammar-module  *score-stats*)
+(include-grammar-module *score-verbs*)
+
 (include-grammar-module  *hurricanes*)
 (include-grammar-module  *musica*)
 (include-grammar-module  *generic-military*)

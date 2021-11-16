@@ -207,8 +207,6 @@
 
 ;; (include-grammar-module  *ern*)
 
-
-
 (include-grammar-module  *reports*)
 
 (include-grammar-module  *internet*)
@@ -223,6 +221,7 @@
 (include-grammar-module  *score-stats*)
 (include-grammar-module *score-verbs*)
 
+;; (include-grammar-module  *musica*) -- include it?
 ;; (include-grammar-module  *hurricanes*)
 ;;(include-grammar-module  *generic-military*)
 
@@ -230,6 +229,8 @@
 ;; (include-grammar-module *Banking*)
 ;; (include-grammar-module *ISR*)
 ;; (include-grammar-module *waypoints*)
+(include-grammar-module *blocks-world*)
+;; (include-grammar-module *biocuration*)
 
 ;; (include-grammar-module  *load-Tipster-grammar-into-image*)
 ;; (include-grammar-module  *jv/phrases*)
