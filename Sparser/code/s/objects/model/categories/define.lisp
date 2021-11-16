@@ -235,12 +235,15 @@
                                     index-field
                                     instantiates-field
                                     rule-label)
-  
+  "These are special, optional tailored things that haven't seemed
+   central enough to add more slots to the category struct for them.
+   Instead, we stash them on an instance of another struct,
+   category-operations, which we could extend further if it
+   is ever useful. 
+     To permit redefinition of category definitions during development
+   we overwrite the indexes/objects that are created here."
   (declare (special *supply-instantiates-data*))
 
-  ;; to permit redefinition of category definitions during development
-  ;; we overwrite most of the indexes/objects that are created as a
-  ;; side-effect of the definition.
   (let ((op-object
          (setf (cat-operations category)
                (make-category-operations :category category))))
@@ -269,7 +272,7 @@
       (instantiates-field
        (decode-category-to-instantiate category instantiates-field)))
         
-    ;; find, index, delete
+    ;; find, index, delete, some special cases
     (decode-index-field category op-object index-field)
 
     ;; override default label when generating rules
