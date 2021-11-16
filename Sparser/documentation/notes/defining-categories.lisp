@@ -1,5 +1,5 @@
-define-category note.lisp
-7/28/16, extended 7/24/19
+Note on defining-categories
+7/28/16, extended 7/24/19, 11/13/21
 (in-package :sparser)
 
 ;;------ category names
@@ -310,8 +310,7 @@ or a two element list
    (<var name> <restricting category>)
 or a larger list where the cdr of the list specifies the value restriction.
 
-The restriction expression is handled by resolve-variable-restriction which
-is the final arbiter of what is a syntactically valid restriction, though
+The restriction expression is handled by resolve-variable-restriction which is the final arbiter of what is a syntactically valid restriction, though
 all it checks is the form of the restriction
 
 symbol  -- taken to be a category. Resolve-or-make/symbol-to-category
@@ -324,3 +323,54 @@ through. For :or, the symbols in the remainder of the expression are
 converted to categories, but the disjunctive type restriction created by
 the :or can also include the specification any number of primitive
 restrictions interspersed with the category restrictions.
+
+
+;;------------------ Other fields
+
+;;--- :index  :permanent vs. :temporary
+Lets switch to these examples from our model of names and our model of time to understand the 'index' parameter. Decades ago with less available memory, marking the individuals of a category as :temporary or :permanent was significant. Individuals of temporary categories were reclaimed between runs. Now we can run for a long time before memory will clog with objects that can't be garbage collected, and there are other data structures we would flush before we have to apply this to individuals.
+
+The index field is managed by the code in objects/model/categories/index-instances.lisp, particularly the function decode-index-field, which is always evaluated when the expression for the category is. This operation sets whatever the contents of the index field calls for.
+
+;;--- style of linking
+Many categories specify the kinds of indexing to use for its individuals: hashing on a particular variable or pair of variables, etc. See objects/model/individuals/index.lisp for all the options. In some cases, the linkages are so ideosyncratic that we have a provision for :special-case index, find, and reclaim operations, as with the name-word category.
+
+
+(define-category  name-word
+  :instantiates name
+  :specializes  name
+  :binds ((name :primitive word)
+          (name-of collection)) ;; the named-objects it names
+  :index (:permanent :apply
+          :special-case
+          ;; needed because these are extensively cross-linked to the
+          ;; words involved, and those links have to be taken off by hand
+          :find find/name-word
+          :index index/name-word
+          :reclaim reclaim/name-word))
+
+;; :index (... :apply ...)
+In practice, all individuals are entwined at some particular place in the description-lattice by warrant of their bindings -- variable/value combinations -- and can't be reclaimed. We do, however zero the bound-in fields of individuals, effectively reclaiming half of the binding information. The :apply keyword overrides this releasing to GC. It calls register-category-for-original-index which puts the name of the category on a list that is consulted in make-simple-individual where it signals to use the regular indexing which is done by calling index/individual. (We also call it if the description lattice isn't active.) The two-way linking provided by bindings makes it possible to identify subsequent references to names and things with names such as people.
+
+;; :index (... :get ...)
+We only occasionally need make a call to find-individual, and when we do what we get depends on correctly ordering the bindings that we specify or requires walking down through the indexes of the description lattice to find the instance of the individual that we're looking for (see m::unwind-to-i-with-lp for an example). For multi-binding categories like the months, it is simpler to just setup a direct link to the correct object via a hashtable, which we can do by including the keyword :get in the category's index field.
+
+(define-category  month
+  :specializes time
+  :instantiates self
+  ;; :rule-label time
+  :mixins (cyclic)
+  :binds ((name :primitive word)
+          (abbreviation :primitive word)
+          (position-in-year . ordinal)
+          (number-of-days . number))
+  :index (:permanent :key name :get)
+  :realization (:proper-noun name ))
+
+The immediate effect of detecting this keyword (during decode-index-field-aux) is to pass the category to register-category-for-indexing with puts in on a table. The hash table is populated as part of make-simple-individual. It supports a generic function, get-by-name, and lets us set up calls like this.
+
+(defun get-season (name)
+  (if *description-lattice*
+    (get-by-name category::season name)
+    (find-individual 'season :name name)))
+
