@@ -22,6 +22,7 @@
     (declare (special *legal-to-add-bindings-to-categories*))
     (make-months-sequence)
     (make-weekdays-sequence)
+    (make-seasons-sequence)
     (today))) ;; makes a temporal-index
 
 

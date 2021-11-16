@@ -326,26 +326,34 @@
   (:documentation "Walk through the sequence of a category that
    is cyclic and set the previous and next variables of each
    of the items in the sequence, wrapping the two ends.
-   Designed for months and weeks. Uses old bindings because
-   we're operating over a sequence of a fixed set individuals
-   and the continued replacement of individuals as the result
-   of making new DL individuals with each binding when the
-   variables represent fixed properties like the cycle length
-   of the months in a year is not warranted.")
+   Designed for months and weekdays. Uses old bindings because
+   we're operating over a sequence of a fixed set individuals.
+   The continued replacement of individuals from regular bindings
+   making new DL individuals with each variable is not warranted
+   for variables that represent fixed properties like the cycle length
+   of the months in a year.")
   (:method ((sequence category::sequence))
     (let* ((items (value-of 'items sequence))
            (first (car items))
            (last (car (last items))))
       (flet ((set-prior (prior item)
-               (old-bind-variable 'next item prior)
-               (old-bind-variable 'previous prior item)))
+               (if (consp prior)
+                 (loop for i in prior
+                    do (progn (old-bind-variable 'next item i)
+                              (old-bind-variable 'previous i item)))
+                 (else
+                   (old-bind-variable 'next item prior)
+                   (old-bind-variable 'previous prior item)))))
         (do ((prior last item)
              (item (car items) (if rest (car rest) first))
              (rest (cdr items) (cdr rest)))
             ((null rest)
              (set-prior prior item)
              (set-prior item first))
-          (set-prior prior item))))))
+          (if (consp item) ; two elements at the same position
+            (loop for sub-item in item
+               do (set-prior prior sub-item))
+            (set-prior prior item)))))))
 
 
 (def-k-function next-item (item)
