@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2020 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2020-2021 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "general-verbs"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: November 2020
+;;; version: November 2021
 
 ;; Lifted out of verbs.lisp 2/23/17. These verbs are either
 ;; quite general (applicable to many domains), or are needed
@@ -131,14 +131,19 @@
            :to cause))
 
 
-(define-category block :specializes negative-bio-control
+(define-category block/prevent
+  :specializes negative-bio-control
   :realization
      (:verb "block"
-      :noun "blocking"
-      :etf (svo-passive)
-      :with object))
-;; which one wins? 
-(define-category block
+      :noun ("blocking" "blockage")
+      :with object)
+  :documentation "The action of 'blocking' a process
+ an involve introducing some sort of 'blockage' into the
+ path the process would go through. We can also speak about
+ the act of blocking', which means that this is a kind of
+ process/result relationship.")
+
+#+ignore(define-category block
   :specializes negative-bio-control
   :realization
     (:verb "block"

@@ -1,9 +1,9 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; -*-
-;;; Copyright (c) 2015-2017 David D. McDonald  All Rights Reserved
+;;; Copyright (c) 2015-2017,2021 David D. McDonald  All Rights Reserved
 ;;;
 ;;;      File:  "vocabulary"
 ;;;    Module:  grammar/model/sl/blocks-world/
-;;;   version:  November 2017
+;;;   version:  November 2021
 
 ;; Initiated 12/3/15.
 
@@ -13,13 +13,17 @@
 ;;; Things
 ;;;--------
 
-(define-category block
+(define-category block/object
   :specializes rectangular-solid ;; n.b. includes partonomy
   :mixins (can-change-location)
   :instantiates :self
   :index (:permanent :key name)
   :lemma (:common-noun "block")
-  :realization (:proper-noun name))
+  :realization (:proper-noun name)
+  :documentation "The Colins dictionary lists nine different
+ possibilities for what a 'block' refers to, form a block of buildings
+ in a town to a block of tickets or shares. Right now we also have
+ the meaning of blocking a process, as block/prevent.")
 
 (define-category ball
   :specializes object

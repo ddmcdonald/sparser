@@ -21,7 +21,7 @@
         as block-name = (format nil "B~d" block-number)
         as var-name = (format nil "*~a*" block-name)
         as var = (intern var-name :mumble)
-        as block = (sp::define-individual 'sp::block :name block-name)
+        as block = (sp::define-individual 'sp::block/object :name block-name)
         do (proclaim `(special ,var))
            (set var block)
         collect block))
@@ -54,7 +54,7 @@
                       "Twitter"
                       "UPS")
         as name = (format nil "the ~a block" corp)
-        as block = (sp::define-individual 'sp::block :name name)
+        as block = (sp::define-individual 'sp::block/object :name name)
         do (setf (sp::indiv-id block) (intern (string-upcase corp) :keyword))
         collect block))
 
