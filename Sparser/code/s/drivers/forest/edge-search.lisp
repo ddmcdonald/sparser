@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "edge-search"
 ;;;   Module:  "drivers/forest/"
-;;;  version:  December 2020
+;;;  version:  November 2021
 
 ;; Broken out of analyzers/forest/treetops/ 7/21/16. Has all of the
 ;; code that implements the "whack a rule" search that's driven from
@@ -510,20 +510,19 @@
                     category::adjective *ng-head-categories*
                     *adjg-head-categories* *vg-head-categories*))
   "The goal here is to put off object attachment until the object 
-   is as large as possible.
-"
-  ;; Don't do right-to-left activation for the subj+verb rules
+   is as large as possible. We get here when the two triples have
+   overlapping edges that they are contenting over. The default 
+   is to take the right-triple. If it loses the competiton over the
+   shared edge to the left-triple we return non-nil."
   
   (when (and (eq (left-edge-of-triple r-triple) (right-edge-of-triple l-triple))
              (not (high-priority-postmod? r-triple)))
-    ;; there is an edge which is being competed for
-
 
     (let* ((l-triple-rhs (cfr-rhs (triple-rule l-triple)))
            (l-triple-left (and (category-p l-triple-rhs) (cat-symbol (car l-triple-rhs))))
            (r-triple-3 (right-edge-of-triple r-triple)))
       (declare (special l-triple-rhs l-triple-left triple-1-rhs r-triple-3))
-      ;;(lsp-break "compete")
+      ;;(break "competing: ~a and ~a" l-triple r-triple)
       (or
        (member (cat-name (cfr-form (triple-rule l-triple)))
                '(syntactic-there)) ;; competing against a "there BE"
@@ -563,11 +562,14 @@
                       (member (form-cat-name r-triple-3) '(vp+ed vp+ing))))
                   
             (or
-             (and (eq (form-cat-name r-triple-3) 'pp)
-                  (member (edge-left-daughter (edge-left-daughter r-triple-3))
-                          (get-tag :loc-pp-complement
-                                   (itype-of (edge-referent (left-edge-of-triple l-triple)))))
-                  (not (some-edge-satisfying? (edges-after r-triple-3) #'pp?)))
+             (when (eq (form-cat-name r-triple-3) 'pp)
+               (let* ((prep (identify-preposition r-triple-3))
+                      (head (itype-of (edge-referent (left-edge-of-triple l-triple))))
+                      (approved-preps (get-tag :loc-pp-complement head)))
+                 ;; "push the red block next to the table"
+                 (and (member prep approved-preps)
+                      (not (some-edge-satisfying? (edges-after r-triple-3) #'pp?)))))
+
              (not (member (form-cat-name r-triple-3)
                           '(whycomp thatcomp
                             pp vg+ing ;;and prevent GTP loading"
@@ -575,8 +577,7 @@
                             to-comp where-relative-clause when-relative-clause
                             transitive-clause-without-object
                             pp-relative-clause
-                            subject-relative-clause comma-separated-subject-relative-clause))))))
-       
+                            subject-relative-clause comma-separated-subject-relative-clause)))))) ; matches 'or'
       )))
 
 (defparameter *l-triple-tests* nil
