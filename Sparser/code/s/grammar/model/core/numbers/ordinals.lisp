@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2013-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2013-2021 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "ordinals"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  March 2020
+;;;  Version:  November 2021
 
 ;; initiated [ordinals1] 9/18/93 v2.3 as completely new treatment
 ;; 1.0 (1/7/94) redesigned as specialized categories
@@ -52,11 +52,22 @@
   :index (:key number)
   :realization (:quantifier word))
 
-(defun string/ordinal (category)
+
+;;--- printing
+
+(setf (cat-ops-print (cat-operations category::ordinal))
+      'print-individual/ordinal)
+
+(defun print-individual/ordinal (o stream)
+  (write-string "<ordinal " stream)
+  (write-string (string/ordinal o) stream)
+  (write-string ">" stream))
+
+(defun string/ordinal (o)
   ;; see special check in String-for that gets us here
-  (let ((number (value-of 'number category))
-        (*print-short* t))
-    (format nil "~A" number)))
+  (let* ((number (value-of 'number o))
+         (lisp-value (value-of 'value number)))
+    (format nil "~A" lisp-value )))
 
 
 ;;;-----------------------
