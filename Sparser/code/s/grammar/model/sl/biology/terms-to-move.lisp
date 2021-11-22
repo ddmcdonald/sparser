@@ -90,7 +90,7 @@ be biology specific, since they aren't. |#
 
 
 (adj "rapid" :super bio-predication)
-(adj "same" :super bio-predication)
+
 
 ;;---- likely to want a different interpretation
 ;;     when the attribute-value "high" is available
@@ -276,8 +276,10 @@ be biology specific, since they aren't. |#
 
 (adj  "exclusive" :super bio-predication)
 
+#| conflicts with direct-control which was deliberately written
+   to avoid conflict with the modifier
 (delete-adj-cfr (resolve "direct"))
-(adj "direct" :super bio-predication)
+(adj "direct" :super bio-predication) |#
 
 ;; in dossier/directions.lisp
 ;;(adj "forward" :super bio-predication) ;; added to avoid problem with complex lookup
@@ -285,6 +287,7 @@ be biology specific, since they aren't. |#
 ;; "#<word "forward">:: (ADJECTIVE ADVERB ADVPART NOUN VERB)
 
 (adj "full" :super bio-predication)
+
 
 
 (adj "further" :super bio-predication)
