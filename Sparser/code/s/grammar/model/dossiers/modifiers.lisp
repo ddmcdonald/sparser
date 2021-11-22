@@ -723,6 +723,10 @@
 ;;should there be a rule for past participles --> adjectives
 ;; "given" as in "For a given cell, ..."
 
+;;--- antonym pairs /// need an account / use-case
+(define-adjective "different")
+(define-adjective "same")
+
 ;;;-----
 ;;; bulk of adjectives
 ;;;-----
@@ -797,7 +801,7 @@
 (define-adjective "derivative")
 (define-adjective "detailed")
 (define-adjective "dichotomous")
-(define-adjective "different") ;interesting
+
 (define-adjective "differential")
 (define-adjective "difficult")
 (define-adjective "direct")
