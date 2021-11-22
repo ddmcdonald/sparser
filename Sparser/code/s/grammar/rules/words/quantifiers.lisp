@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1999,2011-2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2021  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "quantifiers"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   February 2019
+;;;   Version:   November 2021
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3.  Added some 1/13/94
 ;; 0.1 (7/25) revised "many" and "several" to be like the others rather than
@@ -202,15 +202,45 @@
 ;; (for "a bigger block than that block" where we have to provide
 ;; a binding value (i.e. attribute-value) that is itypep 'comparative
 
-(defun define-scalar-quantifier (&key dir base base-count base-mass er est)
+(defun define-scalar-quantifier (&rest pairs)
   "All three (or four) words share the same basic meaning as a quantifier.
    The comparative (:er) and superlative  (:est) forms add the
    notion of a scale or attribute (attr) along with the
    term they quantify varies relative to some reference set.
-   They pattern like adjectival comparatives."
+   They pattern like adjectival comparatives.
+     Note that given the loop structure, we can have several alternatives
+   of a given key to permit synonyms
+"
   (let ((*inhibit-constructing-comparatives* t))
     (declare (special *inhibit-constructing-comparatives*))
 
+    (flet ((for-count-word (word)
+             (define-function-term word 'quantifier ;; had been 'adjective
+               :super-category (category-named 'scalar-quantifier)))
+           ;; should these have :rule-label fields that identify
+           ;; the attribute these are refering to? (cf. setup-comparatives)
+           (for-mass-word (word)
+             (define-function-term word 'quantifier
+               :super-category (category-named 'scalar-quantifier)))
+
+           (for-er-word (word)
+             (define-function-term word 'comparative-adjective
+               :super-category (category-named 'comparative-scalar-quantifier)
+               :rule-label 'comparative))
+
+           (for-est-word (word)
+             (define-function-term word 'superlative-adjective
+               :super-category (category-named 'superlative-scalar-quantifier)
+               :rule-label 'superlative)))
+
+      (loop for (key string) on pairs by #'cddr
+         do (case key
+              (:base-count (for-count-word (resolve/make string)))
+              (:base-mass (for-mass-word (resolve/make string)))
+              (:er (for-er-word (resolve/make string)))
+              (:est (for-est-word (resolve/make string))))))))
+
+#+ignore
     (let ((count-word (when base-count (resolve/make base-count)))
           (mass-word (when base-mass (resolve/make base-mass)))
           (er-word (when er (resolve/make er)))
@@ -233,9 +263,9 @@
       (when est-word ; "most"
         (define-function-term est-word 'superlative-adjective
           :super-category (category-named 'superlative-scalar-quantifier)
-          :rule-label 'superlative)))))
-      
+          :rule-label 'superlative)))
 
+      
 ;; count
 (define-scalar-quantifier :base-count "few" :er "fewer" :est "fewest")
 
