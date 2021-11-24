@@ -139,6 +139,24 @@
   (write-string ">" stream))
 
 
+(defun princ-word (word &optional (stream *standard-output*))
+  "Called by routines that want the word presented as a string
+rather than as an object. Takes polywords as well as words for
+the convenience of model routines."
+  (if word
+    (if (get-tag :use-symbol-name-when-printing word)
+      (princ
+       (if (polyword-p word)
+         (pw-symbol word)
+         (word-symbol word))
+       stream)
+      (format stream "\"~a\"" (pname word)))
+    (write-string "<word>" stream)))
+
+(defun word-string (word)
+  "Like princ-word, but returns the string instead of printing it."
+  (pname word))
+
 
 
 (defun display-word (word  &optional (stream *standard-output*))
@@ -168,7 +186,6 @@
   ;; can be set to a predictable size.
   ;; Includes the princ conventions for words, e.g. enclosing them
   ;; in double quotes and using the symbol when there's no pname
-
   (let ((pname (word-pname w))
         symbol-string )
     (if (get-tag :use-symbol-name-when-printing w)

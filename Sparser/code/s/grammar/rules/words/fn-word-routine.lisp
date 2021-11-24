@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "fn word routine"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   October 2021
+;;;   Version:   November 2021
 
 ;; 0.1 (12/17/92 v2.3) redid the routine so it was caps insensitive and handled
 ;;      bracketing.
@@ -41,8 +41,12 @@
                                ((:form name-of-form-category)))
   "Defines the word, notes its grammatical form, and assigns
    its brackets. Does not create any rules for it."
+
+
   (let ((word (etypecase string
-                ((or word polyword) string)
+                ((or word polyword)
+                 (update-file-location string)
+                 string)
                 (string (resolve-string-to-word/make string))))
         (form (if name-of-form-category
                 (resolve-form-category name-of-form-category)
@@ -180,10 +184,12 @@
 
   (let ((word (if (typep string 'word)
                 (prog1 string
-                  (assign-brackets-to-word string brackets))
-                (define-function-word string
+                  (assign-brackets-to-word string brackets)
+                  (update-file-location string))
+                (define-function-word string ; calls define-word/expr
                     :brackets brackets
                     :form form))))
+    
     (let* ((base-name (or category-name-to-use
                           (name-to-use-for-category string)))
            (category-name 

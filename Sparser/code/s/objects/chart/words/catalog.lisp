@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-1994,2012,2016,2020  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1994,2012,2016,2020-2021  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "catalog"
 ;;;   Module:  "objects/chart/words/"
-;;;  Version:  July 2020
+;;;  Version:  November 2021
 
 ;; 1.1 (2/13 v2.2) Moved the the file and grammar module checking into
 ;;     the catalog routine.
@@ -47,6 +47,29 @@
 
 (defvar *words-defined* nil
   "A list, filled by Define-word, of all #<word> objects.")
+
+
+;;;--------------------------------------
+;;; tracking all the locations of a word
+;;;--------------------------------------
+
+(defun update-file-location (word)
+  "Called from define-word/expr is the word is not new,
+   i.e. we've already catalogued it. Add the current
+   file location to any that are already there.
+     The first time catalog/word calls note-file-location
+   to put the file-being-loaded on the word's :file-location
+   property (where 'loc' will look for it)."
+  (declare (special *file-being-lloaded*))
+  (let ((known (ensure-list (get-tag :file-location word))))
+    (unless (memq *file-being-lloaded* known)
+      (let ((augmented
+             (if (listp known)
+               (push *file-being-lloaded* known)
+               (list *file-being-lloaded* known))))
+        ;; (format t "  ~s " (pname word))
+        (setf (get-tag :file-location word) augmented)))))
+
 
 
 ;;;-------------------------

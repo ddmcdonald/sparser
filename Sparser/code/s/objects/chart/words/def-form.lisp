@@ -3,8 +3,8 @@
 ;;; extensions copyright (c) 2007-2008 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "def form"
-;;;   Module:  "objects;words:"
-;;;  Version:  March 2021
+;;;   Module:  "objects/chart/words/"
+;;;  Version:  November 2021
 
 ;; broken out on its own 1/92
 ;; (5/24/93 v2.3) added a data-check
@@ -56,9 +56,10 @@
                      :symbol symbol
                      :pname  string )))))
 
-      (when (or new?
-                (get-tag :used-in-pw word))
-        (catalog/word word symbol))
+      (if (or new?
+              (get-tag :used-in-pw word))
+        (catalog/word word symbol)
+        (update-file-location word))
       (when (word-p word)
         (calculate-properties-of-words-pname/in-buffer word))
       (when new?
