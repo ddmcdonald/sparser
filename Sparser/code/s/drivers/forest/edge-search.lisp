@@ -447,9 +447,9 @@
    evidence that an edge on the left should be right-extended as part of a
    NP or a VP so that we create the largest possible constituents.
    Called from best-treetop-rule as the last step in the triple-selection
-   process. The triple this returns is the one that
-   is executed on that cycle. Note that if the left triple of an adjacent
-   pair doesn't 'win' then we take the first of the remaining triples."
+   process. The triple this returns is the one that is executed on that cycle.
+   Note that if the left triple of an adjacent pair doesn't 'win' then
+   we take the first of the remaining triples."
   (multiple-value-bind (right-group left-group)
       (first-two-groups triples)
     (or (left-winner? right-group left-group)
@@ -474,6 +474,7 @@
                              (triple-rule right-triple)
                              (current-string))
                        *losing-competitions*))
+               (tr ::filter-takes-left left-triple)
                (return-from left-winner? left-triple)))))
 
 
@@ -506,7 +507,7 @@
 
 
 (defun losing-competition? (l-triple r-triple)
-  (declare (special r-triple l-triple category::as
+  (declare (special #|r-triple l-triple|# category::as
                     category::adjective *ng-head-categories*
                     *adjg-head-categories* *vg-head-categories*))
   "The goal here is to put off object attachment until the object 
@@ -514,15 +515,17 @@
    overlapping edges that they are contenting over. The default 
    is to take the right-triple. If it loses the competiton over the
    shared edge to the left-triple we return non-nil."
-  
+  (push-debug `(,l-triple ,r-triple))  
   (when (and (eq (left-edge-of-triple r-triple) (right-edge-of-triple l-triple))
              (not (high-priority-postmod? r-triple)))
 
     (let* ((l-triple-rhs (cfr-rhs (triple-rule l-triple)))
-           (l-triple-left (and (category-p l-triple-rhs) (cat-symbol (car l-triple-rhs))))
+           (l-triple-left (and (category-p l-triple-rhs)
+                               (cat-symbol (car l-triple-rhs))))
            (r-triple-3 (right-edge-of-triple r-triple)))
-      (declare (special l-triple-rhs l-triple-left triple-1-rhs r-triple-3))
-      ;;(break "competing: ~a and ~a" l-triple r-triple)
+      ;;(declare (special l-triple-rhs l-triple-left triple-1-rhs r-triple-3))
+      (tr :triples-competing-over l-triple r-triple (right-edge-of-triple l-triple))
+      ;;(break "competing over ~a" (right-edge-of-triple l-triple))
       (or
        (member (cat-name (cfr-form (triple-rule l-triple)))
                '(syntactic-there)) ;; competing against a "there BE"
@@ -664,7 +667,8 @@
      (member sym *vg-head-categories*)
      (member sym *adjg-head-categories*)
      (member sym 
-             '(category::vp category::vg 
+             '(category::superlative-adjective ; "most (of us) actually get ..."
+               category::vp category::vg 
                category::vg+ed category::vp+ed category::vp+past 
                category::vg+ing category::vp+ing
                category::vg+passive category::vp+passive
