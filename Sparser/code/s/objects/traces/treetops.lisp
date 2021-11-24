@@ -700,15 +700,26 @@
   (when (or *trace-island-driving* *trace-whack-a-rule*)
     (trace-msg "[whack]   no")))
 
+
+(deftrace :triples-competing-over (l-triple r-triple shared-edge)
+  ;; called from losing-competition?
+  (when (or *trace-island-driving* *trace-whack-a-rule*)
+    (trace-msg "[whack] competing for ~a between ~a and ~a"
+               shared-edge
+               (format-triple l-triple)
+               (format-triple r-triple))))
+
+;; unused
 (deftrace :filter-choose-between-two-triples (left)
    (when (or *trace-island-driving* *trace-whack-a-rule*)
      (trace-msg "[whack] two triples share ~a"
                 (left-edge-of-triple left))))
 
 (deftrace :filter-takes-left (triple)
+  ;; called from left-winner?
   (when (or *trace-island-driving* *trace-whack-a-rule*)
     (trace-msg "[whack]   using left triple: ~a"
-               (triple-rule triple))))
+               (format-triple triple))))
 
 (deftrace :filter-takes-right (triple)
   (when (or *trace-island-driving* *trace-whack-a-rule*)
