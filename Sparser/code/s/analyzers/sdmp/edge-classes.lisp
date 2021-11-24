@@ -3,7 +3,7 @@
 ;;;
 ;;;      File: "edge-classes"
 ;;;    Module: analyzers/sdmp/
-;;;   Version: August 2021
+;;;   Version: November 2021
 
 ;; Broken out of word-spotting classes 8/9/21
 
@@ -59,6 +59,10 @@
     (get-edge-record (edge# number)))
   (:method ((e edge))
     (gethash e *current-edge-records*)))
+
+(defgeneric edge-of-edge-record (record)
+  (:method ((record edge-record))
+    (edge# (edge-record-number record))))
 
 
 (defgeneric show-edge-records (note-entry &optional stream)
