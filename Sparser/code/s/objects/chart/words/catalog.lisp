@@ -61,14 +61,16 @@
    to put the file-being-loaded on the word's :file-location
    property (where 'loc' will look for it)."
   (declare (special *file-being-lloaded*))
-  (let ((known (ensure-list (get-tag :file-location word))))
-    (unless (memq *file-being-lloaded* known)
-      (let ((augmented
-             (if (listp known)
-               (push *file-being-lloaded* known)
-               (list *file-being-lloaded* known))))
-        ;; (format t "  ~s " (pname word))
-        (setf (get-tag :file-location word) augmented)))))
+  (when *file-being-lloaded*
+    ;; only do this while the grammar is being loaded
+    (let ((known (ensure-list (get-tag :file-location word))))
+      (unless (memq *file-being-lloaded* known)
+        (let ((augmented
+               (if (listp known)
+                 (push *file-being-lloaded* known)
+                 (list *file-being-lloaded* known))))
+          ;; (format t "  ~s " (pname word))
+          (setf (get-tag :file-location word) augmented))))))
 
 
 
