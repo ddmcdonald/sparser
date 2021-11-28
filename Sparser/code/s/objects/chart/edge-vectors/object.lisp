@@ -443,6 +443,20 @@
         (return edge)))))
 
 
+(defgeneric includes-edge-over-literal? (position)
+  (:documentation "Are any of the edges starting at this position
+    edges over a literal?")
+  (:method ((e edge))
+    (includes-edge-over-literal? (edge-starts-at e)))
+  (:method ((p position))
+    (includes-edge-over-literal? (pos-starts-here p)))
+  (:method ((ev edge-vector))
+    (loop for edge in (all-edges-on ev)
+       when (literal-edge? edge)
+       return t
+       finally (return nil))))
+
+
 ;;--- editing the vector
 
 (defun specify-top-edge (edge)
