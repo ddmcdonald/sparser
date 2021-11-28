@@ -267,7 +267,12 @@
 
       
 ;; count
-(define-scalar-quantifier :base-count "few" :er "fewer" :est "fewest")
+(define-scalar-quantifier :base-count "few" :base-count "a few" :er "fewer" :est "fewest")
+#| "From this day to the ending of the world,
+But we in it shall be remembered-
+We few, we happy few, we band of brothers;
+For he to-day that sheds his blood with me
+Shall be my brother" -- Shakespeare's Henry the 5th |#
 
 ;; mass
 (define-scalar-quantifier :base-mass "a little" :er "less" :est "least")
