@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2013-2020 David D. McDonald -- all rights reserved
+;;; copyright (c) 2013-2021 David D. McDonald -- all rights reserved
 ;;;
 ;;;     File:  "content-methods"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  June 2020
+;;;  Version:  November 2021
 
 ;; Created 5/12/15 to hold the container mixings and such that need
 ;; to have the document model elements already defined so they can
@@ -420,7 +420,33 @@
             a ))))))
     
 
+;;--- accessors, sited here because has to be loaded -after- article is defined
 
+(defgeneric get-noted-groups (article)
+  (:documentation "Return a flat list of the group-entries
+    within the group-instances of the article")
+  (:method ((a article))
+    (let ((group-instances (items (contents a))))
+      (loop for note-entry in group-instances
+         append (note-instances note-entry)))))
+
+(defgeneric number-of-words-note-spans (notable)
+  (:documentation "How many words does a note object cover?
+    Goal is to get notion of the percentage of an article
+    that various note instance objects cover.")
+  (:method ((entry note-entry)) ; 
+    (let ((edge-records (text-strings entry)))
+      (loop for record in edge-records
+         as edge = (edge-of-edge-record record)
+         sum (edge-length edge))))
+  (:method ((group-instance note-group-instance))
+    (let ((entries (note-instances group-instance)))
+      (loop for entry in entries
+         sum (number-of-words-note-spans entry))))
+  (:method ((a article))
+    (let ((groups (get-noted-groups a)))
+      (loop for group-instance in groups
+         sum (number-of-words-note-spans group-instance)))))
                               
 
 ;;;--------------------------------
