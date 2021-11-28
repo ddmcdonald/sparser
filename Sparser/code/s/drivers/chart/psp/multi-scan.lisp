@@ -929,19 +929,6 @@
 ;;  (not (and (itypep (edge-referent left-edge) 'amino-acid)
 ;;            (itypep (edge-referent right-edge) 'number)))
 
-;; -- ddm this function is an example of that (and belongs in edge-vectors/object.lisp
-(defgeneric includes-edge-over-literal? (position)
-  (:documentation "Are any of the edges starting at this position
-    edges over a literal?")
-  (:method ((e edge))
-    (includes-edge-over-literal? (edge-starts-at e)))
-  (:method ((p position))
-    (includes-edge-over-literal? (pos-starts-here p)))
-  (:method ((ev edge-vector))
-    (loop for edge in (all-edges-on ev)
-       when (literal-edge? edge)
-       return t
-       finally (return nil))))
 
 
 ;;;------------------------------
