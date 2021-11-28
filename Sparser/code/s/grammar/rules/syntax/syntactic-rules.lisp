@@ -96,10 +96,18 @@
            :form np
            :referent (:function possessive-np left-edge right-edge))))
 
+
+;; These are pre-determiners -- lets us have multiple 'determiners'
+
 (def-syntax-rule (possessive np) 
            :head :right-edge
            :form np
            :referent (:function possessive-np left-edge right-edge))
+
+(def-syntax-rule (det np) 
+           :head :right-edge
+           :form np
+           :referent (:function determiner-noun left-edge right-edge))
 
 
 ;;--- Partitive NPs
