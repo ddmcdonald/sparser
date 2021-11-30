@@ -1057,7 +1057,7 @@ than a bare "to".  |#
 
 (defmethod ng-head? ((e edge) &optional end)
   ;; methods over words and categories in category-predicates.lisp
-  (declare (special e end *chunk* word::comma category::demonstrative)) 
+  (declare (special e end *chunk* word::comma category::demonstrative))
   (let ((edges-before (edges-before e))
         (e-form-name  (form-cat-name e))
         (plural-det? (chunk-has-plural-det?)))
@@ -1113,7 +1113,8 @@ than a bare "to".  |#
                                          preposition
                                          adverb punctuation))))))
         
-          (unless (or (preceding-adverb e edges-before)
+          (unless (or (and (preceding-adverb e edges-before)
+                           (not (preceding-adjective e edges-before)))
                       (some-edge-satisfying? (all-edges-at e) #'preposition-edge?)
                       (eq e-form-name 'verb+ed))
             (cond
@@ -1968,6 +1969,14 @@ than a bare "to".  |#
   (loop for ee in edges
      thereis
           (and (eq (form-cat-name ee) 'adverb)
+               ;; first is now optionally an adverb (as in "we first rinsed ...")
+               ;;  but in an NP it is an ordinal
+               (not (eq (edge-cat-name ee) 'first)))))
+
+(defun preceding-adjective (e &optional (edges (edges-before e)))
+  (loop for ee in edges
+     thereis
+          (and (eq (form-cat-name ee) 'adjective)
                ;; first is now optionally an adverb (as in "we first rinsed ...")
                ;;  but in an NP it is an ordinal
                (not (eq (edge-cat-name ee) 'first)))))
