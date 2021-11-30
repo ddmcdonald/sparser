@@ -880,8 +880,10 @@
          (eq (edge-referent left-edge) *the-punctuation-plus-minus*)                   
          (eq (edge-category right-edge) category::number))
 
+        #| remove these -- bad form (probably should have been an (and ...), also probably not needed as early rules
         (itypep (edge-referent left-edge) 'approximator) ; "only 35%"
         (itypep (edge-referent right-edge) 'time-unit) ; 'a month'
+        |#
 
         (not (pos-preceding-whitespace mid-pos))
         (and (eq script :biology)
