@@ -390,9 +390,6 @@ and make that file easier to understand. |#
   (format stream "~&~a: ~a" (name group) (group-count group)))
 
 
-
-
-
 (defun show-motif-term-context (&optional (stream *standard-output*))
   (declare (special *germaine-spotter-group-instances* *abbreviated*))
   (unless *germaine-spotter-group-instances*

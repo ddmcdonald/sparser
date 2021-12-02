@@ -3,30 +3,16 @@
 ;;;
 ;;;      File: "analysis"
 ;;;    Module: "analyzers;psp:word-spotting:"
-;;;   Version:  August 2021
+;;;   Version:  November 2021
 
 ;; Initiated 7/29/21 to hold routines to explore the context
 ;; of motif triggers in their articles
 
 (in-package :sparser)
 
-;;;---------------                                        ;
+;;;---------------                                        
 ;;; for exploring
-;;;---------------                                        ;
-
-#| (defvar a *)
-sp> (items (contents a))
-(#<note-group-instance quantities> #<note-group-instance vague-names>
- #<note-group-instance identified-names> #<note-group-instance places>
- #<note-group-instance leprechaun> #<note-group-instance time>
- #<note-group-instance verbs> #<note-group-instance speech-acts>)
-
-sp> (find-note-group 'quantities a)
-#<note-group-instance quantities>
-
-sp> (find-note-group 'leprechaun a)
-#<note-group-instance leprechaun>
-|#
+;;;---------------                                       
 
 (defgeneric find-note-group (name)
   (:documentation "Retrieve from the contents field of the
@@ -61,27 +47,49 @@ sp> (find-note-group 'leprechaun a)
 
 
 
-;;--- predicate
-;;
-(defgeneric all-instances-are-inside-proper-names (group)
-  (:documentation "Does every instance of one of the entries in
-    this group occur inside a proper name?  Return those that
-    do not, and compute the ratio.")
-  ;;  How to represent the others?
-  (:method ((name symbol))
-    (all-instances-are-inside-proper-names (find-note-group name)))
-  (:method ((group note-group-instance))
-    (let ( satisfy  fail  )
-      (loop for entry in (note-instances group)
-         do (loop for record in (text-strings entry)
-               as edge-number = (edge-record-number record)
-               as chain = (edge-record-chain record)
-               do (if (edge-context-for-name? chain)
-                    (push record satisfy)
-                    (push record fail))))
-      (format t "~&~a pass, ~a fail~%" (length satisfy) (length fail))
-      (if (null fail) t fail))))
+;;;--------------------------------------------
+;;; setup the context after parsing an article
+;;;--------------------------------------------
 
+(defgeneric apply-context-predicates (article)
+  (:documentation "Called as part of the after-actions method on articles.
+ We identify what group instances we should work on, the we iterate through
+ the edges in their entries and create and store their used-in chains.
+ That's the raw material we apply context predicates to, or explore as part
+ of developing the predicates.")
+  (:method ((a article))
+    (declare (special *compute-items-contexts*))
+    (when *compute-items-contexts*
+      (let* ((items-field (items (contents a)))
+             (group-instances (collect-germane-group-instances items-field)))
+        (loop for group in group-instances
+           do (loop for entry in (note-instances group)
+                 do (loop for record in (text-strings entry)
+                       as edge-number = (edge-record-number record)
+                       as chain = (upward-used-in-chain edge-number)
+                       do (store-edge-chain record chain))))
+        (loop for gi in group-instances
+             do (analyze-trigger-contexts gi))))))
+
+(defvar *germaine-spotter-group-instances* nil)
+
+(defun collect-germane-group-instances (list-of-group-instances)
+  "We want the motif-spotting group instances. Right now we only want
+ word spotters since those are where the motifs have been stored."
+  (declare (special *motif-groups*))
+  (let ((groups
+         (loop for group in list-of-group-instances
+            as name = (name group)
+            when (find name *motif-groups* :key #'name)
+            collect group)))
+    (setq *germaine-spotter-group-instances* groups)
+    groups))
+
+
+
+;;;--------
+;;; driver
+;;;--------
 
 (defparameter *debug-context-predicates* nil
   "Incorporated into predicates to flag cases that go beyond what they
@@ -89,9 +97,10 @@ sp> (find-note-group 'leprechaun a)
  a break, otherwise the predicate will return nil")
 
 (defgeneric analyze-trigger-contexts (key)
-  (:documentation "Walk down through the germane note-group instances in
+  (:documentation "Called from apply-context-predicates.
+ Walks down through the germane note-group instances in
  the current article. Each instance contains one or more note-entry objects.
- Each note-entry contains a list of more or more edge-record instances,
+ Each note-entry contains a list of more or more edge-record instances:
  one for each edge the spotter creates over that notable's trigger phrase.
    We pass these edge records through a set of increasingly more heuristic
  categorizing predicates on their chains, storing their conclusions on the
@@ -112,27 +121,6 @@ sp> (find-note-group 'leprechaun a)
              as chain = (edge-record-chain record)
              do (identify-edge-configuration record edge chain)))))
 
-
-(defun identify-edge-configuration (record edge chain)
-  "Try the edge and its chain against the context predicates looking for
-   one that succeeds and provides a categorization of the edge configuration
-   that this edge is in"
-  (declare (special *debug-context-predicates*))
-  (let ((configuration nil))
-    (setq configuration
-          (edge-context-for-name? chain))
-    (unless configuration
-      (setq configuration
-            (position-in-np-head edge chain)))
-    (if configuration
-      (setf (edge-record-configuration record) configuration)
-      (else
-        (when *debug-context-predicates*
-          (push-debug `(,edge ,chain))
-          (break "New configuration~
-                ~%  chain ~a~
-                ~%  edge ~a" chain configuration))
-        nil))))
 
 (defgeneric edge-config (edge)
   (:documentation "For testing individual cases. Depends on the tables

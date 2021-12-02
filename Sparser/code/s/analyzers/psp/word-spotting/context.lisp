@@ -3,51 +3,45 @@
 ;;;
 ;;;      File: "context"
 ;;;    Module: "analyzers;psp:word-spotting:"
-;;;   Version:  August 2021
+;;;   Version:  November 2021
 
 ;; Initiated 8/2/21 to gather together routines for determining the linguistic
 ;; context something occurs in. 
 
 (in-package :sparser)
 
-;;;--------------------------------------------
-;;; setup the context after parsing an article
-;;;--------------------------------------------
+;;;------------------------------------
+;;; driver over the context predicates
+;;;------------------------------------
 
-(defgeneric apply-context-predicates (article)
-  (:documentation "Called as part of the after-actions method on articles.
- We identify what group instances we should work on, the we iterate through
- the edges in their entries and create and store their used-in chains.
- That's the raw material we apply context predicates to, or explore as part
- of developing the predicates.")
-  (:method ((a article))
-    (declare (special *compute-items-contexts*))
-    (when *compute-items-contexts*
-      (let* ((items-field (items (contents a)))
-             (group-instances (collect-germane-group-instances items-field)))
-        (loop for group in group-instances
-           do (loop for entry in (note-instances group)
-                 do (loop for record in (text-strings entry)
-                       as edge-number = (edge-record-number record)
-                       as chain = (upward-used-in-chain edge-number)
-                       do (store-edge-chain record chain))))
-        (loop for gi in group-instances
-             do (analyze-trigger-contexts gi))))))
 
-(defvar *germaine-spotter-group-instances* nil)
+(defun identify-edge-configuration (record edge chain)
+  "Try the edge and its chain against the context predicates looking for
+   one that succeeds and provides a categorization of the edge configuration
+   that this edge is in.
+   Not the most elegant of control structures. This is a sequence of calls
+   to particular configuration-assigning predicates. If the predicate is
+   satisfied it returns a keyword, our present minimal model for labeling
+   a configuration. The first satisfied predicate wins."
+  (declare (special *debug-context-predicates*))
+  (let ((configuration nil))
+    (setq configuration (edge-context-for-name? chain))
+    (unless configuration
+      (setq configuration (position-in-np-head edge chain)))
+    (unless configuration
+      (setq configuration (short-chain-configurations chain)))
+    (unless configuration
+      (setq configuration (slightly-longer-chain-configurations chain)))
 
-(defun collect-germane-group-instances (list-of-group-instances)
-  "We want the motif-spotting group instances. Right now we only want
- word spotters since those are where the motifs have been stored."
-  (declare (special *motif-groups*))
-  (let ((groups
-         (loop for group in list-of-group-instances
-            as name = (name group)
-            when (find name *motif-groups* :key #'name)
-            collect group)))
-    (setq *germaine-spotter-group-instances* groups)
-    groups))
-
+    (if configuration
+      (setf (edge-record-configuration record) configuration)
+      (else
+        (when *debug-context-predicates*
+          (push-debug `(,edge ,chain))
+          (warn-or-error "New configuration~
+                ~%  chain ~a~
+                ~%  form: ~a" chain (form-labels chain)))
+        nil))))
 
 
 ;;;-----------------------------
@@ -64,18 +58,7 @@
 (defparameter *categories-over-np*
   '(np n-bar))
 
-
-;;--- proper name
-
-(defgeneric edge-context-for-name? (chain)
-  (:documentation "Does this chain of edges include an edge
-    whose label indicates that spans some sort of names?
-    Note that the chain is from lowest to highest.")
-  (:method ((chain edge-chain))
-    (dolist (edge (edges chain) nil)
-      (when (or (memq (edge-cat-name edge) *categories-over-names*)
-                (memq (form-cat-name edge) *categories-over-names*))
-        (return :part-of-a-name)))))
+;;--- subroutines
 
 (defgeneric covered-by-person? (chain) ;; "El Chupacabra"
   (:documentation "Does any edge on this chain have the category
@@ -94,6 +77,61 @@
        when (memq (form-cat-name edge) *categories-over-np*)
        return edge)))
 
+;;--- configuration returning predicates
+
+(defgeneric short-chain-configurations (chain)
+  (:method ((edge-number integer))
+    (short-chain-configurations (get-chain edge-number)))
+  (:method ((chain edge-chain))
+    (let ((form-categories (form-labels chain)))
+      (when (= 1 (length form-categories))
+        (let ((form-category (car form-categories)))
+          (unless (memq form-category *n-bar-category-names*)
+            (when *debug-context-predicates*
+              (warn-or-error "unexpected single label: ~a" form-category)))
+          (ecase form-category
+            ((common-noun/plural noun/verb-ambiguous common-noun
+              np)
+             :isolated-common)
+            ;; n-bar -- included in *n-bar-category-names*
+            ((proper-noun proper-name)
+             :isolated-proper)))))))
+
+(defgeneric slightly-longer-chain-configurations (chain)
+  (:documentation "Chains of two edges. Motif will be the head.")
+  (:method ((edge-number integer))
+    (slightly-longer-chain-configurations (get-chain edge-number)))
+  (:method ((chain edge-chain))
+    (let ((form-categories (form-labels chain)))
+      (when (= 2 (length form-categories))
+        (let ((head (first form-categories))
+              (second (second form-categories)))
+          (case second
+            (pp
+             :in-relation)
+            (quotation
+             ;;/// have to check for long ones, though region may not be parsed
+             :scare-quoted)
+            (s
+             :subject)
+            (vp
+             :object)
+            (otherwise
+             (when *debug-context-predicates*
+               (warn-or-error "Unhandled second label: ~a" second))
+             nil)))))))
+
+
+(defgeneric edge-context-for-name? (chain)
+  (:documentation "Does this chain of edges include an edge
+    whose label indicates that spans some sort of names?
+    Note that the chain is from lowest to highest.")
+  (:method ((chain edge-chain))
+    (dolist (edge (edges chain) nil)
+      (when (or (memq (edge-cat-name edge) *categories-over-names*)
+                (memq (form-cat-name edge) *categories-over-names*))
+        (return :part-of-a-name)))))
+
 (defgeneric position-in-np-head (edge chain)
   (:documentation "if this edge is covered by a minimal np, it will be
     one of the daughters of that np edge. 
@@ -108,5 +146,31 @@
             ((eq target-edge left) :np-modifier)
             ((eq target-edge right) :np-head)
             (t (when *debug-context-predicates*
-                 (break "No head criteria for ~a" np-edge)))))))))
-           
+                 (warn-or-error "No head criteria for ~a~%  in ~a"
+                                np-edge chain)))))))))
+
+
+
+;;;-------------
+;;; experiments
+;;;-------------
+
+(defgeneric all-instances-are-inside-proper-names (group)
+  (:documentation "Does every instance of one of the entries in
+    this group occur inside a proper name?  Return those that
+    do not, and compute the ratio.")
+  ;;  How to represent the others?
+  (:method ((name symbol))
+    (all-instances-are-inside-proper-names (find-note-group name)))
+  (:method ((group note-group-instance))
+    (let ( satisfy  fail  )
+      (loop for entry in (note-instances group)
+         do (loop for record in (text-strings entry)
+               as edge-number = (edge-record-number record)
+               as chain = (edge-record-chain record)
+               do (if (edge-context-for-name? chain)
+                    (push record satisfy)
+                    (push record fail))))
+      (format t "~&~a pass, ~a fail~%" (length satisfy) (length fail))
+      (if (null fail) t fail))))
+
