@@ -189,7 +189,7 @@ sp> (stree 7)
         "Wednesday"
 ```
 The top edge is syntactically an 'S'. It is the result of applying a
-syntactic rule combining that took the subject np (e2) and assimilated
+syntactic rule that took the subject np (e2) and assimilated
 it into the verb phrase predicate (e6).
 ```
 sp> (irr 1390)
@@ -209,12 +209,12 @@ ssp> (semtree 7)
  (present #<ref-category PRESENT>))
 
 ```
-This show an instance of the category representing 'be', whose index
+This shows an instance of the category representing 'be', whose index
 is 105673. This category has two local variables, 'subject' and
 'predicate', and also binds a variable it inherited, 'present'.
 An expression for values of the variables follows them. The predicate,
 for example, is an instance of the category 'relative-time', which
-itself has variables for it relativizer and reference-time.
+itself has variables for its relativizer and reference-time.
 
 This a description of the semantic content of the input text.
 In a application that provided the necessary context, this description
@@ -232,5 +232,5 @@ Sparser is written in Lisp, and until we restore some form
 of the interactive workbench it had on earlier versions of
 the MacOS, extending Sparser's abilities and understanding
 its operation requires you to have a working knowledge
-of Lisp and are comforable reading code.
+of Lisp and are comfortable reading code.
 
