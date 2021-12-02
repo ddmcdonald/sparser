@@ -56,11 +56,15 @@
             ;; as interpreted by standardized-apply-da-function-action
             ;; since the whole purpose of trapping this is to help debug
             ;; what the rule does.
-            (warn-or-error  "~%in tuck-new-edge-under-already-knit for rule ~s: ~
+            (unless (DA-rule-not-reliable *current-da-rule*)
+              ;; These are cases where the coverage is so weak and we're not
+              ;; going to improve it, so there's no point in bringing it to
+              ;; our attention.
+              (warn-or-error  "~%in tuck-new-edge-under-already-knit for rule ~s: ~
                     ~%edge-right-daughter in dominating edge ~s ~
                     ~%is not subsumed-edge ~s in sentence:~%~s~%"
-                    *current-da-rule* dominating-edge subsumed-edge
-                    (current-string)))
+                              *current-da-rule* dominating-edge subsumed-edge
+                              (current-string))))
           (setf (edge-right-daughter dominating-edge) new-edge))
          
          ((eq direction :left)
@@ -110,6 +114,7 @@
            ;;(break "About to reinterpret ~a" dominating-edge)
            (reinterpret-dominating-edges dominating-edge)))
        dominating-edge))))
+
 
 (defparameter *reinterpret-dominating-edges-warning* nil)
 

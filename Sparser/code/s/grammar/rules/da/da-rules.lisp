@@ -2381,6 +2381,26 @@ assumed. |#
 
 
 
+;;;-----------------------
+;;; 'unreliable' DA rules
+;;;-----------------------
+#| We know that some applications will not get the attention
+ to rules and lexicon that other will. Acumen is a prime case
+ where the base parses are too erratic to support the surgury
+ done by the tuck routines and its very unlikely that we'll
+ ever improve it. The purpose of this is to block the warnings
+ that would bring these to our attention, which we're not going
+ to supply. |#
 
+(defparameter *unreliable-da-rules*
+  (list
+   (da-rule-named 'attach-comma-appositive-np-under-pp)
+   (da-rule-named 'np-conj-pp)
+   (da-rule-named 's-with-np-conj-pp)
+   ))
 
-
+(defun DA-rule-not-reliable (da-rule)
+  "Called in tuck-new-edge-under-already-knit where its effect
+   is to block a warning"
+  (when *acumen*
+    (memq da-rule *unreliable-da-rules*)))
