@@ -106,7 +106,9 @@
        (let* ((bound-in (indiv-bound-in i))
               (b (car bound-in)))
          (unless bound-in
-           (if  *debug-questions*
+           ;; "OHIP sent me an ugly green application for temporary premium assistance, which I returned, asking again for an application for premium assistance."
+           ;; This 'which' is a relative clause marker. Error is no bound-in on "I"
+           #+ignore(if  *debug-questions*
              (cerror "keep going" "Null bound-in field on ~a" i)
              (warn-or-error "Null bound-in field on ~a" i))
            (return))
