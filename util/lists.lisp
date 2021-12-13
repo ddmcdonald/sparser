@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:  "list hacking"
 ;;;    Module:   "util:"
-;;;   Version:   November 2021
+;;;   Version:   December 2021
 
 ;; initiated 12/30/93 v2.3.  4/11/95 added nil-checkers. 
 ;; 8/24/10 moved in quote-every-second-one from forms/categories
@@ -193,6 +193,18 @@ edge of the tree, except for nils. Can deal with non-list cdrs."
        do (return nil)
          finally (return t))))
 
+(defun matches-prefix (sequence prefix-terms)
+  "Compare the terms in prefix-terms order to the initial terms
+   of the sequence using EQ. Returns the rest of the sequence
+   if its beginning is a match"
+  (cond
+    ((> (length prefix-terms) (length sequence)) nil)
+    ((null prefix-terms) nil)
+    (t (do ((s1 (pop sequence) (pop sequence))
+            (p1 (pop prefix-terms) (pop prefix-terms)))
+           ((null p1) (cons s1 sequence))
+         (unless (eq s1 p1)
+           (return nil))))))
 
 
 (defun list-of-nil? (list)

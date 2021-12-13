@@ -1,5 +1,5 @@
 ;;; -*- Mode: Lisp; Syntax: COMMON-LISP; -*-
-;;; Copyright (c) 2011-2020 David D. McDonald. All Rights Reserved.
+;;; Copyright (c) 2011-2021 David D. McDonald. All Rights Reserved.
 
 ;; initiated 3/8/11. Pulled in file-local exports 10/6/14 in effort
 ;; to accommodate changes in MCL 10.0
@@ -44,6 +44,7 @@
            #:deep-copy
            #:flatten #:flattenc
            #:all-the-same
+           #:matches-prefix
            #:list-of-nil?
            #:remove-nil-values
            #:invert-type
