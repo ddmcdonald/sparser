@@ -415,6 +415,7 @@
              (push (list ambigs (sentence-string (sentence))) *ambiguous-adjuncts*)
              nil)
             (edge-taking-adjunct
+             ;;(break "head: ~a, pp: ~a" head-edge pp-edge) ;; (trace-da-execution)
              (push (list (list
                           (intern (string-upcase (pname prep-word)) :sp)
                           (cat-name (itype-of (edge-referent edge-taking-adjunct)))
