@@ -417,11 +417,15 @@ and make that file easier to understand. |#
                           record-count categorized-count
                           group-count uncategoried-records)
         (edge-record-summary)
-      (format stream "~&Functional categorizations for ~a out of ~a instances~
-                      ~%   ~{~a  ~}"
-              categorized-count
-              record-count
-              configurations)
+      (if (null categorized-count)
+        (format stream "~&No Functional categorization for any of ~a instances~%"
+                record-count)
+        (format stream "~&Functional categorizations for ~a out of ~a instances~%"
+                categorized-count  record-count))
+      (let ((index 0))
+        (loop for config in configurations
+           do (progn (format stream "  ~a" config)
+                     (when (= 4 (incf index)) (terpri stream) (setq index 0)))))
       (when uncategoried-records
         (format stream "~&Uncategorized instances:")
         (loop for record in uncategoried-records
