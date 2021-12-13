@@ -32,7 +32,8 @@
       (setq configuration (short-chain-configurations chain)))
     (unless configuration
       (setq configuration (slightly-longer-chain-configurations chain)))
-
+    (unless configuration
+      (setq configuration (long-chain-configuration chain)))
     (if configuration
       (setf (edge-record-configuration record) configuration)
       (else
@@ -42,6 +43,12 @@
                 ~%  chain ~a~
                 ~%  form: ~a" chain (form-labels chain)))
         nil))))
+
+  
+(defparameter *debug-context-predicates* nil
+  "Incorporated into predicates to flag cases that go beyond what they
+ anticipated that we want to look into. If this flag is up we'll go into
+ a warn-or-error, otherwise the predicate will just return nil")
 
 
 ;;;-----------------------------
@@ -80,6 +87,7 @@
 ;;--- configuration returning predicates
 
 (defgeneric short-chain-configurations (chain)
+  (:documentation "chains of length 1")
   (:method ((edge-number integer))
     (short-chain-configurations (get-chain edge-number)))
   (:method ((chain edge-chain))
@@ -90,7 +98,7 @@
             (when *debug-context-predicates*
               (warn-or-error "unexpected single label: ~a" form-category)))
           (ecase form-category
-            ((common-noun/plural noun/verb-ambiguous common-noun
+            ((common-noun/plural noun/verb-ambiguous common-noun np
               np)
              :isolated-common)
             ;; n-bar -- included in *n-bar-category-names*
@@ -104,22 +112,67 @@
   (:method ((chain edge-chain))
     (let ((form-categories (form-labels chain)))
       (when (= 2 (length form-categories))
-        (let ((head (first form-categories))
-              (second (second form-categories)))
-          (case second
-            (pp
-             :in-relation)
-            (quotation
-             ;;/// have to check for long ones, though region may not be parsed
-             :scare-quoted)
-            (s
-             :subject)
-            (vp
-             :object)
-            (otherwise
-             (when *debug-context-predicates*
-               (warn-or-error "Unhandled second label: ~a" second))
-             nil)))))))
+        (length-two-configurations form-categories)))))
+
+(defun length-two-configurations (form-categories)
+  (let ((head (first form-categories))
+        (second (second form-categories)))
+    (case second
+      (pp
+       :in-relation)
+      (quotation
+       ;;/// have to check for long ones, though region may not be parsed
+       :scare-quoted)
+      ((s transitive-clause-without-object)
+       :subject)
+      (vp
+       :object)
+      (vp+past
+       :object)
+      (to-comp
+       :object)
+      (proper-noun
+       :isolated-proper)
+      (otherwise
+       (when *debug-context-predicates*
+         (warn-or-error "Unhandled second label: ~a" second))
+       nil))))
+
+
+(defgeneric long-chain-configuration (chain)
+  (:documentation "Chains of more than 2 edges. Lots of heuristics
+    and shortcut assumptions since it's clear there's a ton of content
+    in these if it was worth modeling it")
+  (:method ((chain edge-chain))
+    (let* ((form-categories (form-labels chain))
+           (length (length form-categories))
+           (highest (car (last form-categories))))
+
+      ;;/// just trim from the end? Remove doesn't respect order
+      (setq form-categories
+            ;; (proper-noun pp np np)
+            ;; (proper-noun possessive np s s)
+            (remove-duplicates form-categories))
+      (setq length (length form-categories))
+      (push-debug `(,form-categories ,length))
+
+      (cond
+        ((eq highest 'quotation)
+         (if (= length 3)
+           (length-two-configurations form-categories)
+           ))
+        ((equal form-categories '(proper-noun pp np))
+         :in-relation)
+        ((equal form-categories '(proper-noun transitive-clause-without-object))
+         :subject)
+        ((eq highest 'transitive-clause-without-object)
+         :subject)
+        ((matches-prefix form-categories '(proper-noun possessive))
+         :posessive)
+        (t
+         (when *debug-context-predicates*
+           (format t "~%chain ~a  labels: ~a" chain form-categories))
+         nil)))))
 
 
 (defgeneric edge-context-for-name? (chain)
@@ -144,12 +197,7 @@
               (right (edge-right-daughter np-edge)))
           (cond
             ((eq target-edge left) :np-modifier)
-            ((eq target-edge right) :np-head)
-            (t (when *debug-context-predicates*
-                 (warn-or-error "No head criteria for ~a~%  in ~a"
-                                np-edge chain)))))))))
-
-
+            ((eq target-edge right) :np-head)))))))
 
 ;;;-------------
 ;;; experiments
