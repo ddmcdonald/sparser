@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "single quote"
 ;;;   Module:  "grammar;rules:FSAs:"
-;;;  Version:  October 2021
+;;;  Version:  December 2021
 
 ;; initiated 4/23/91 v1.8.4, tweeked 4/24,25, Comment added 1/3/92
 ;; 1.0 (11/24/92 v2.3) Flushed the old use of fake names as referents
@@ -62,30 +62,43 @@ along with definitions as function words for "s", "t", "re", etc. |#
     ,category::apostrophe-ve
     ,category::apostrophe-ll
     ,category::apostrophe-d))
-    
+
+
+;; (trace-fsas)
 
 ;;;-----
 ;;; fsa
 ;;;-----
 ;;//// It can also signal missing letters in a word "sec'y" for "secretary"
 
+(defvar *in-scope-of-apostrophe-fsa* nil)
+
 (defun apostrophe-fsa (single-quote starting-position)
-  ;; There's a single-quote (apostrophe) at the starting position.
-  ;; We check here whether there's an "s", "t", "re", or "ll" just after it,
-  ;; without any interveening space.
+  "There's a single-quote (apostrophe) at the starting position.
+   We know what the apostrophe might be eliding, if there is no
+   interveening space between the apostrophe and one of the contracted forms
+   (see *categories-based-on-apostrophe*) we combine the apostrophe
+   and the contraction into an edge.
+     In other contexts, we look at the previous word and if it ends
+   in 's' we take that to be a possessive marker.
+     The single quote character might also be part of a pairs, so we
+   call into its code if we don't have a treatment for the apostrophe
+   (aka single-quote) here."
   (declare (ignore single-quote)
            (special category::verb category::modal category::verb+present
                     word::|s| word::|t| word::|re| word::|d|
-                    word::|ve| word::|ll| word::|m| ))
+                    word::|ve| word::|ll| word::|m|
+                    *pending-single-quote*))
   (tr :apos-start starting-position)
 
-  (let ((next-position (chart-position-after starting-position)))
+  (let ((next-position (chart-position-after starting-position))
+        (*in-scope-of-apostrophe-fsa* t))
+    (declare (special *in-scope-of-apostrophe-fsa*))
     (unless (pos-assessed? next-position)
       (scan-next-position))
-
+    
     (let ((word (pos-terminal next-position))
           spanning-category  form  referent  edge  position-after )
-
       (cond ((eq word word::|s|)
              (setq spanning-category category::apostrophe-s))
             ((eq word word::|t|)
@@ -132,22 +145,26 @@ along with definitions as function words for "s", "t", "re", etc. |#
         (if (pos-preceding-whitespace starting-position)
           ;; there's a space to the left of the apostrophe
           (then (tr :apos-space-to-left)
+                (notice-single-quote starting-position next-position)
                 nil)
 
           ;; check for "xxxs' -- possessive off of a plural
           (let ((prior-word
                  (pos-terminal (chart-position-before starting-position))))
-            (if (word-morphology prior-word)
-              ;; something to look at
-              (if (eq :ends-in-s (word-morphology prior-word))
-                (mark-possessive-on-prior-word starting-position
-                                               next-position prior-word)
-                (else
-                  (tr :apos-end prior-word)
-                  next-position))
-              (else ;;/// should we complain? -- define-adjective is an offender
-               ;;(break "No morphology recorded on ~a" prior-word)
-               ))))))))
+            ;;(break "prior-word = ~a" prior-word) ;; question-mark
+            (cond
+              ((punctuation? prior-word) ; e.g. question-mark
+               (notice-single-quote starting-position next-position))
+              ((and (word-morphology prior-word)
+                    (eq :ends-in-s (word-morphology prior-word)))
+               (mark-possessive-on-prior-word starting-position
+                                              next-position prior-word))
+              (*pending-single-quote*
+               (notice-single-quote starting-position next-position))
+              (t
+               (tr :apos-end prior-word)
+               next-position))
+              ))))))
 
   
 
