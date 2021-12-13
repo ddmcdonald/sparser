@@ -222,13 +222,13 @@
 
 (deftrace :apos-encountered (p)
   ;; called from apostrophe-fsa
-  (when *trace-fsas*
+  (when (or *trace-fsas* *trace-single-quotes*)
     (trace-msg "[FSA] apostrophe encountered at p~a"
                (pos-token-index p))))
 
 (deftrace :apos-start (p)
   ;; called from apostrophe-fsa
-  (when *trace-fsas*
+  (when (or *trace-fsas* *trace-single-quotes*)
     (trace-msg "[FSA: apostrophe] Starting FSA for |'s_or't| at p~A"
                (pos-token-index p))))
 
@@ -246,12 +246,12 @@
 
 (deftrace :s-on-prior-word-apostrophe-afterwards (edge word)
   ;; called from mark-possessive-on-prior-word
-  (when *trace-fsas*
+  (when (or *trace-fsas* *trace-single-quotes*)
     (trace-msg "  The prior word, \"~A\", ends in 's', so the ' ~
               ~%    is spanned as ~A" (word-pname word) edge)))
 
 (deftrace :apos-space-to-left ()
   ;; called from apostrophe-fsa
-  (when *trace-fsas*
+  (when (or *trace-fsas* *trace-single-quotes*)
     (trace-msg "[FSA: apostrophe] space to the left. Not completing")))
 
