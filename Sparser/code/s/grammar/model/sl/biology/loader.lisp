@@ -23,8 +23,6 @@
 
 (in-package :sparser)
 
-(break)
-
 (gload "bio;allowable-protein-heads")
 (gload "bio;mechanics")
 
