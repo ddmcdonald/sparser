@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "traversal"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  October 2021
+;;;  Version:  December 2021
 
 ;; created 10/5/21 to consolidate traces over traversal routines
 
@@ -50,25 +50,51 @@
 
 ;;---- single-quotes
 
-(defvar *trace-single-quotes* nil)
+(defvar *trace-single-quote-spans* nil
+  "Just the minimal information of setting the flag
+   and making edges")
 (defun trace-single-quotes ()
-  (setq  *trace-single-quotes* t))
-(defun untrace-single-quotes ()
-  (setq  *trace-single-quotes* nil))
+  (setq *trace-single-quote-spans* t))
+(defun untrace-single-quote ()
+  (setq *trace-single-quote-spans* nil))
 
+(defvar *trace-single-quotes* nil
+  "Tracks every interaction involving #\' particularly
+   in apostophy handling, and inside the paired punct handler")
+(defun trace-single-quote-interactions ()
+  (setq  *trace-single-quotes* t))
+(defun untrace-single-quote-interactions ()
+  (setq  *trace-single-quotes* nil))
 
 (deftrace :single-start-span (p)
   ;; called from notice-single-quote
-  (when *trace-single-quotes*
+  (when (or *trace-single-quotes* *trace-single-quote-spans*)
     (trace-msg "Starting a single-quote span at p~a" (pos-token-index p))))
 
 (deftrace :single-end-span (p)
   ;; called from span-single-quotation
-  (when *trace-single-quotes*
-    (trace-msg "[FSA: single-quote-span ends a p~a" (pos-token-index p))))
+  (when (or *trace-single-quotes* *trace-single-quote-spans*)
+    (trace-msg "single-quote-span ends at p~a" (pos-token-index p))))
                
 (deftrace :single-new-situation (p)
   ;; called from notice-single-quote
-  (when *trace-single-quotes*
+  (when (or *trace-single-quotes* *trace-single-quote-spans*)
     (trace-msg "Single-quote: Unclassified context at p~a" (pos-token-index p))))
-  
+
+(deftrace :single-start-equals-end (pos)
+  ;; called from notice-single-quote
+  (when (or *trace-single-quotes* *trace-single-quote-spans*)
+    (trace-msg "Single: Open &፡ close positions are equal: ~a" pos)))
+
+(deftrace :single-quote-span-over (string)
+  ;; called from handle-single-quotes-span
+  (when (or *trace-single-quotes* *trace-single-quote-spans*)
+    (trace-msg "Single-quote: putting edge over ~s" string)))
+
+(deftrace :single-spanning-edge-over-span (edge spanned)
+  ;; called from handle-single-quotes-span
+  (when (or *trace-single-quotes* *trace-single-quote-spans*)
+    (trace-msg "Single-quote: putting edge e~a over ~s"
+               (edge-position-in-resource-array edge)
+               spanned)))
+
