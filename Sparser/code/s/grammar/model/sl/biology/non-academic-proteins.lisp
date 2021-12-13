@@ -153,7 +153,7 @@
 (def-family-with-id "HGNC:5853" ("IGL" "igl" "immunoglobulin lambda locus" "IgGl")) ;; will add members later
 
 (def-family-with-id "IgE-receptor" "GO:0019767" :name "IgE receptor activity" :synonyms ("FCER" "IgE receptor activity" "Fc epsilon R" "Lymphocyte IgE receptor")) ; :members ("UP:P06734" "UP:Q01362")
-(define-protein "NCIT:C127014" ("IGHV3-21" "V-H" "q16927" "Immunoglobulin Heavy Variable 3-21 wt Allele"))
+;(define-protein "NCIT:C127014" ("IGHV3-21" "V-H" "q16927" "Immunoglobulin Heavy Variable 3-21 wt Allele"))
 
 (def-family-with-id "Hemagglutinin" "XFAM:PF00509.16" :synonyms ("haemagglutinin" "haemoagglutinin" "hemagglutinin" "hemagglutinins"))
 (def-family-with-id "histone" "NCIT:C16687")
