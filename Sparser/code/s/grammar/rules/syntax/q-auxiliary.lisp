@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "q-auxiliary"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  September 2021
+;;;  Version:  December 2021
 
 ;; Broken out of questions.lisp for ease of development
 
@@ -378,26 +378,25 @@
 
       (s ;; "How does KRAS activate MAPK3?"
        (let ((wh-pronoun? (itypep wh 'wh-pronoun))
-             (wh-category (wh-edge? wh-edge)))
+             (wh-category (wh-edge? wh-edge))
+             (embedded-wh (or (value-of 'quantifier wh)
+                              (value-of 'has-determiner wh))))
          (cond
+           (embedded-wh ;; "what drug" wh is a determiner
+            ;; value is a wh-pronoun category
+            (bind-wh-to-stmt-variable embedded-wh wh-edge stmt))
            ((and wh-pronoun?
                  (memq (cat-symbol (itype-of wh))
                        '(category::how category::why
                          category::where category::when
-                         category::what))) ;; "What does it do?"
+                         category::what ;; "What does it do?"
+                         category::who))) ;; "When questioned who would she consider Orthodox"
             (bind-wh-to-stmt-variable wh wh-edge stmt))
-           
-           (wh-category ;; "what drug" wh is a determiner
-            (let ((embedded-wh (or (value-of 'quantifier wh)
-                                   (value-of 'has-determiner wh))))
-              ;; value is a wh-pronoun category
-              (bind-wh-to-stmt-variable embedded-wh wh-edge stmt)))
-           
            ((not wh-pronoun?)
             (when *debug-questions*
               (break "WH is not a wh-pronoun: ~a" wh)))
            (t (when *debug-questions*
-                (break "New 's' case  WH: ~a" wh))))))
+                (break "New 's' question case  WH: ~a" wh))))))
       
       (otherwise
        (when *debug-questions*
