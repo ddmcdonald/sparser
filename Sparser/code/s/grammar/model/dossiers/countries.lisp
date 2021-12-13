@@ -144,7 +144,7 @@
     :cities '("Qom" "Tehran"))
 (define-country "Iraq" :adjective "Iraqi")
 (define-country "Ireland" :adjective "Irish")
-(define-country "Israel"
+(define-country "Israel" :aliases '("the State of Israel" "the state of Israel")
     :adjective '("Israeli" "Jewish") ;; jewish is problematic -- we need a religions section 
     :language "Hebrew"
     :cities '("Jerusalem"))
