@@ -481,7 +481,7 @@
   ;; the sequence -- handling the meaning of these cases is left to
   ;; classification.
   ;;   Good list of chars in the word-never-in-ns-sequence function
-  (declare (special *lc-person-words*))
+  (declare (special *lc-person-words* *pending-single-quote*))
   (unless *lc-person-words* (populate-lc-person-words))
 ;;#########################################################################
   (let ((next-position (chart-position-after position)))         
@@ -503,6 +503,9 @@
                  (eq next-word *the-punctuation-hyphen*)
                  (eq next-word *newline*))
              ;; Return and leave the "'s" to be gotten later as a concatenation
+             position)
+
+            (*pending-single-quote* ; single-quote span gets it
              position)
 
             ((and (word-at-this-position-is-capitalized? next-position) ; "O'Gill", "Baha'i"
