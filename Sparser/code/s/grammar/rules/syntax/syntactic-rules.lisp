@@ -103,10 +103,10 @@
            :head :right-edge
            :form np
            :referent (:function possessive-np left-edge right-edge))
-
+#+ignore
 (def-syntax-rule (det np) 
            :head :right-edge
-           :form np
+s           :form np
            :referent (:function determiner-noun left-edge right-edge))
 
 

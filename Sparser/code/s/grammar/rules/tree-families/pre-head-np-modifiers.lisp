@@ -120,10 +120,10 @@
      and now refers to a specific individual, a specific instance
      of the head term. E.g. \"last year\""
   :binding-parameters ( individuator  base-category )
-  :labels ( np modifier np-head result-type )
+  :labels ( n-bar modifier np-head result-type )
   :cases
      ((:definite-modifier
-        (np (modifier np-head)
+        (n-bar (modifier np-head)
           :instantiate-individual result-type
           :binds (individuator left-edge
                   base-category right-edge)

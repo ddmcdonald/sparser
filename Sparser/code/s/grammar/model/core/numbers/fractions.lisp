@@ -156,7 +156,7 @@ as the default since the generic case will presumably be marked.
                 :mapping ((result-type . :self)
                           (base-category . unit)
                           (individuator . selector)
-                          (np . :self)
+                          (n-bar . :self)
                           (modifier . ordinal)
                           (np-head . (quarter half)))))
                              ;; Given the way the tree-family is executed, this

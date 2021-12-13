@@ -51,7 +51,7 @@
           (reference-time (:or time time-unit month weekday)))
   :index (:sequential-keys reference-time relativizer)
   :realization (:tree-family  modifier-creates-definite-individual
-                :mapping ((np . time)
+                :mapping ((n-bar . time)
                           (modifier . (approximator
                                        sequencer ))
                           (np-head . (time
