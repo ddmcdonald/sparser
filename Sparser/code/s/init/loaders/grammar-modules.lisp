@@ -444,6 +444,10 @@
                        :name "Biology for Big Mechanism"
                        :parent *sublanguages*)
 
+(define-grammar-module *non-academic-biology*
+                       :name "Subset of *biology* for non-academic contexts"
+                       :parent *sublanguages*)
+
 (define-grammar-module *score-stats*
                        :name "Social and Behavior Science for SCORE program"
   :parent *sublanguages*)

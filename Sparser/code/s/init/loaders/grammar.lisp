@@ -325,7 +325,12 @@ omitted and then run (perhaps) after the image has been launched."
     (declare (special *inhibit-construction-of-systematic-semantic-rules*))
     (gate-grammar *biology*
                   (gload "bio;loader")))
-  
+
+  (let ((*inhibit-construction-of-systematic-semantic-rules* t))
+    (declare (special *inhibit-construction-of-systematic-semantic-rules*))
+    (gate-grammar *non-academic-biology*
+                  (gload "bio;non-academic-loader")))  
+
   (gate-grammar *disease*
     (disease-loaded-after-bio))
 

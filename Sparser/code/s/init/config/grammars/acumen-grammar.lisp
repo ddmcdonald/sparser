@@ -215,7 +215,8 @@
 ;; (include-grammar-module  *call-signs*)
 ;; (include-grammar-module  *checkpoint-ops*)
 (include-grammar-module  *disease*)
-(include-grammar-module  *biology*)
+;;(include-grammar-module  *biology*)
+(include-grammar-module  *non-academic-biology*)
 
 ;; preliminary version of sublanguage where statistical tests and measures are getting defined - temporarily commented out until it's more functional
 (include-grammar-module  *score-stats*)
