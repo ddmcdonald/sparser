@@ -3,7 +3,7 @@
 
 ;;;      File: "note"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: September 2021
+;;;   Version: December 2021
 
 ;; Initiated 1/29/20. To make an easy to use, structured, ability to
 ;; 'note and record interesting objects' 
@@ -48,9 +48,9 @@
 
   (:method ((e edge))
     (cond ;; this is effectively an OR but we want values not the boolean
+      ((noteworthy? (edge-form e))) ; sees square-brackets before its referent
       ((noteworthy? (edge-referent e)))
       ((noteworthy? (edge-category e)))
-      ((noteworthy? (edge-form e)))
       (t nil)))
 
   (:method ((w word)) nil)
