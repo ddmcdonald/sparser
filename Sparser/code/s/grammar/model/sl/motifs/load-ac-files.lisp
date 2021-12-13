@@ -20,7 +20,7 @@ and the homedir conditionalization in sparser-driver.
 
 -----------
 
-Laurel contribute a pattern in her init file that does
+Laurel contributed a pattern in her init file that does
 the first step of loading sparser-driver, ddm added the
 last step of initializing the file names.
 
@@ -40,5 +40,7 @@ last step of initializing the file names.
 (in-package :common-lisp-user)
 
 (defun initialize-acumen-file-names ()
+  ;; note that in the init file we're in common-lisp-user,
+  ;; not sparser.
   (sparser::compute-all-acumen-namestrings)
   (sparser::compute-motific-file-names))
