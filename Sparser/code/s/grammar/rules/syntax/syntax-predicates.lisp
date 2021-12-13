@@ -390,7 +390,8 @@
                                   (second (edge-constituents prep-edge)))
                                  ((edge-p (edge-right-daughter prep-edge))
                                   (edge-right-daughter prep-edge))
-                                 (t nil)))))    
+                                 (t nil)))))
+    (push-debug `(,prep-edge ,left-daughter ,right-daughter))
     (flet ((prep-edge? (edge)
              (memq (form-cat-name edge) *prep-forms*)))
       (cond
@@ -400,11 +401,16 @@
          ;; strange case "qRT-PCR- Smyd3 -For 5′ TGCGCACCATGGAGCCGTAC"
          ;; probably not a preposition, but avoid this error
          right-daughter)
+        
         ((word-p left-daughter)
          left-daughter)
 
         ((edge-p left-daughter) ;; formerly left-daughter = prep-word
          (cond
+           ((eq (form-cat-name left-daughter) 'subordinate-conjunction) ; "before"
+            ;; "before (Christopher Columbus') discovery of Puerto Rico"
+            (edge-left-daughter left-daughter))
+
            ((polyword-p (edge-rule left-daughter))
             (edge-rule left-daughter)) ;; return the pw
 
