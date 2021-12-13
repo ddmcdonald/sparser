@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "loader"
 ;;;  Module: "grammar/model/sl/motifs/
-;;; version: November 2021
+;;; version: December 2021
 
 ;;; started 7/13/21 to hold classes for motifs.
 
@@ -11,4 +11,5 @@
 
 (gload "motifs;base-categories")
 (gload "motifs;load-ac-files")
+(gload "motifs;tailored-predicates")
 
