@@ -17,6 +17,8 @@
 
 ;; contains bacteria, cancers, disease terms, other diseases, and viruses
 
+;; all moved to diseases;medical-taxonomy
+
 (in-package :sparser)
 
 ;;;-------------------------------
@@ -36,8 +38,8 @@
 ;;; disease terms
 ;;;--------------
 
-(noun "abnormality" :super disease)
-(noun "disorder" :super disease)
+;(noun "abnormality" :super disease)
+;(noun "disorder" :super disease)
 ;(noun "normoxia" :super disease) ; not really a disease - the opposite, but we have hypoxia as a disease and there's no ncit id for normoxia so I'm adding htis here
 
 ;;;----------------

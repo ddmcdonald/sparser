@@ -50,7 +50,7 @@
 (define-country "Botswana")
 (define-country "Brazil")
 (define-country "Great Britain"
-    :aliases '("United Kingdom" "UK" "Britain") ;; u.k. and great britain aren't actuallythe same
+    :aliases '("United Kingdom" "UK" "Britain") ;; u.k. and great britain aren't actually the same
     :adjective "British"
     :cities '("London" "Birmingham" "Brighton" "Cardiff"
        "Edinburgh" "Glasgow" "Oxford" "Cambridge" "Leeds"))
@@ -188,7 +188,7 @@
                              "Yucatán" "Yucatan" "Zacatecas"))
 (define-country "Moldova")
 (define-country "Monaco")
-(define-country "Mongolia")
+(define-country "Mongolia" :adjective "Mongolian")
 (define-country "Montenegro")
 (define-country "Morocco")
 (define-country "Mozambique")
@@ -218,7 +218,7 @@
 (define-country "Poland")
 (define-country "Portugal" :adjective "Portuguese"
                 :cities '("Lisbon"))
-(define-country "Puerto Rico")
+(define-country "Puerto Rico" :adjective "Puerto Rican") ;; U.S. territory
 (define-country "Qatar")
 (define-country "Romania")
 (define-country "Russia" :adjective "Russian"

@@ -314,8 +314,7 @@
 (define-category rna-region :specializes bio-chemical-entity
                  :documentation "subpart of RNA, e.g., UTR for untranslated region")
 
-(define-category ion :specializes bio-chemical-entity
-  :binds ((molecule molecule)))
+
 
 
 
@@ -796,6 +795,12 @@
   :realization
     (:noun "substance"))
 
+;; should possibly define element and its relation, and also add some
+;; relation to molecule
+(define-category atom :specializes bio-chemical-entity
+                 :binds ((molecule molecule))
+                 :lemma (:common-noun "atom"))
+
 (define-category molecule :specializes bio-chemical-entity ;; SBCL caught random backquote here!
   ;; makes more sense for ATP than H20, but not worrying about whether
   ;; we're doing organic or inorganic chemistry. 
@@ -808,7 +813,8 @@
     (:common-noun name
      :of molecule-type))
 
-
+(define-category ion :specializes bio-chemical-entity
+  :binds ((molecule molecule)))
 
 
 (define-category bio-component
@@ -816,7 +822,7 @@
   :restrict ((whole (:or bio-complex bio-process))))
 
 
-(noun "toxin" :super molecule)
+(noun "toxin" :super molecule) ;;"CHEBI:27026"
 (noun "cytotoxin" :super toxin)
 (noun "cardiotoxin" :super toxin)
 
@@ -860,8 +866,12 @@
   :realization
      (:common-noun name))
 
+(define-category carbohydrate :specializes molecule
+                 :bindings (uid "CHEBI:16646")
+                 :realization (:noun "carbohydrate"))
+(def-synonym carbohydrate (:noun "saccharide"))
 
-(define-category polysaccharide :specializes molecule
+(define-category polysaccharide :specializes carbohydrate
   :realization 
     (:noun "polysaccharide"))
 
@@ -1304,7 +1314,7 @@
 
 (define-category cell-line :specializes cell-entity
   :realization
-    (:noun "cell-line"))
+    (:noun ("cell-line" "cell line")))
 
 (define-category cell-type :specializes cell-entity
                  :binds ((associated-disease disease)

@@ -34,15 +34,31 @@
  :realization
    (:common-noun name))
 
-(define-category plant
+(define-category prokaryote
     :specializes organism
+    :bindings (uid "NCIT:C14263") 
+  :instantiates self 
+  :lemma (:common-noun ("prokaryote" "prokaryota"))
+  :realization (:common-noun name
+                             :adj "prokaryotic"))
+
+(define-category eukaryote
+    :specializes organism
+    :bindings (uid "NCIT:C25796") 
+  :instantiates self 
+  :lemma (:common-noun ("eukaryote" "eukaryota"))
+  :realization (:common-noun name
+                             :adj "eukaryotic"))
+
+(define-category plant
+    :specializes eukaryote
     :bindings (uid "NCIT:C14258") ;; "BTO:0001481"
   :instantiates self 
   :lemma (:common-noun "plant")
   :realization (:common-noun name))
 
 (define-category animal
-  :specializes organism
+  :specializes eukaryote
   :instantiates self 
   :lemma (:common-noun "animal")
   :realization (:common-noun name))
@@ -99,7 +115,7 @@
   :realization  (:noun "metazoa" :adj "metazoan"))
 
 (define-category fungus
-    :specializes organism ;; fungi are not animals
+    :specializes eukaryote ;; fungi are not animals
     :bindings (uid "NCIT:C14209") ;; "BTO:0001494"
  :realization (:common-noun ("fungus" :plural ("fungi" "funguses"))))
 

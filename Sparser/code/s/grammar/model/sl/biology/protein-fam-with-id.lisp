@@ -21,9 +21,10 @@
 (def-family-with-id "env" "IPR018154" :name "envelope protein" :synonyms ("env polyprotein") :members ("UP:C1JJY3" "UP:P03386" "UP:U3LIR9" "UP:C6FX96" "UP:P03386"))
 (def-family-with-id "gag" "IPR004957" :name "gag protein" :synonyms ("NCIT:C16614" "GAG" "GAG gene") :members ("UP:Q79354" "UP:Q79360" "UP:P03333"))
 (def-family-with-id "VP1" "IPR000662" :name "Major capsid protein VP1" :synonyms ("major capsid protein VP1" "capsid protein VP1") :members ("UP:P03135" "UP:P04010" "UP:D2XYZ5"))
-(def-family-with-id "capsid" "NCIT:C16383" :name "capsid protein")
+(def-family-with-id "capsid protein" "NCIT:C16383" :members ("UP:P14836" "UP:P21942" "UP:Q68985" "UP:P03135" "UP:P04010" "UP:D2XYZ5")) 
 
-;;
+;; ion channels
+(def-family-with-id "ion channel" "XFAM:PF07885") 
 (def-family-with-id "calcium channel" "FPLX:Calcium_channels")
 (def-family-with-id "cation channel" "FPLX:Cation_channels")
 (def-family-with-id "chloride channel" "FPLX:Chloride_channels")
@@ -31,7 +32,121 @@
 (def-family-with-id "potassium channel" "FPLX:KCN")
 (def-family-with-id "sodium channel" "FPLX:Sodium_channels")
 (def-family-with-id "voltage gated" "FPLX:Voltage_gated_ion_channels" :synonyms ("voltage gated ion channel" "voltage-gated" "voltage-gated ion channel"))
+(def-family-with-id "epithelial sodium channel" "IPR004724") 
 
+(def-family-with-id "multi-pass" "UP:SL-9909" :name "Multi-pass membrane protein")
+(def-family-with-id "multipass" "UP:SL-9909" :name "Multi-pass membrane protein") 
+(def-family-with-id "multispan" "UP:SL-9909" :name "Multi-pass membrane protein") 
+(def-family-with-id "single-pass" "UP:SL-9904" :name "Single-pass membrane protein") 
+
+(def-family-with-id "co-receptor" "GO:0015026" :name "coreceptor" :members ("UP:P61073")) ; many more
+(def-family-with-id "symporter" "GO:0015293" :name "symporter" :synonyms ("cotransporter" "co-transporter"))
+(def-family-with-id "antiporter" "GO:0015297" :name "antiporter")
+(def-family-with-id "uniporter" "GO:0015292" :name "uniporter")
+(def-family-with-id "auto-transporter" "GO:0015474" :name "autotransporter")
+
+
+;; neurotransmitter receptors
+(def-family-with-id "dopamine receptor" "FPLX:DRD") 
+(def-family-with-id "GABA receptor" "FPLX:GABR") 
+(def-family-with-id "adrenergic receptor" "GO:0004935" :synonyms ("adrenoreceptor") :members ("UP:P07550" "UP:P08588" "UP:P08913" "UP:P13945" "UP:P25100" "UP:P18825" "UP:P18089"))
+(def-family-with-id "alpha-adrenergic receptor" "FPLX:ADRA" :members ("UP:P08913" "UP:P25100" "UP:P18825" "UP:P18089") :synonyms ("a-adrenoreceptor" "alpha adrenoceptor" "alpha-adrenoreceptor" "alpha1 adrenoceptor" "α-adrenergic receptor" "α-adrenoreceptor"))
+(def-family-with-id "alpha2-AR" "FPLX:ADRA2" :members ("UP:P08913" "UP:P18825" "UP:P18089") :synonyms ("alpha(2)-adrenoceptor" "alpha(2)-AR" "alpha2 adrenoceptor" "ofalpha(2)-adrenoceptor" "ofα(2)-adrenoceptor" "α(2)-adrenoceptor" "α(2)-AR" "α2-AR")) 
+(def-family-with-id "betaAR" "FPLX:ADRB" :synonyms ("βAR" "β-adrenergic receptor" "β-adrenoreceptor" "beta-adrenergic receptor") :members ("UP:P08588" "UP:P07550" "UP:P13945")) 
+(def-family-with-id "betaARK" "FPLX:ADRBK")
+(def-family-with-id "nicotinic acetylcholine receptor" "FPLX:CHRN" :synonyms ("nAChR"))
+(def-family-with-id "opioid receptor" "IPR001418" :members ("UP:P35372" "UP:P41143" "UP:P41145" "UP:P41146" "UP:Q14982"))
+(def-family-with-id "ER" "FPLX:ESR" :name "estrogen receptor" :members ("UP:P03372" "UP:Q92731") :synonyms ("Er" "ESR" "estradiol receptor" "estro-gen receptor" "estrogen receptor" "estrogen-receptor" "E/R" "oestrogen-receptor")) ;"GO:0030284"
+
+
+(def-family-with-id "chemoattractant" "GO:0042056" :name "chemoattractant activity" :synonyms ("attractant" "attractants" "chemo-attractant"))
+(def-family-with-id "chemorepellent" "GO:0045499" :name "chemorepellent activity")
+
+(def-family-with-id "casein" "IPR001588" :members ("UP:P47710" "UP:P05814" "UP:P07498"))
+(def-family-with-id "collagen" "MESH:D003094" :members ("UP:P02452" "UP:P02461" "UP:P08123" "UP:P17301")) 
+(def-family-with-id "collagen type IV" "FPLX:COL4" :synonyms ("Collagen Type IV" "collagen type IV" "ColIV" "Col4" "collagen IV" "type IV collagen"))
+(def-family-with-id "keratin" "IPR003461") ;; there are more than 80 human members including :members ("UP:P05783" "UP:P05787" "UP:P04259" "UP:P04264" "UP:P08727" "UP:P08779" "UP:P12035" "UP:P13645" "UP:P13646" "UP:P13647" "UP:P19012" "UP:P19013" "UP:P35527" "UP:P35900" "UP:P48668" "UP:Q04695" "UP:Q14533" "UP:Q2M2I5" "UP:Q5XKE5" "UP:Q6A162" "UP:Q6KB66" "UP:Q7Z3Z0")
+(def-family-with-id "prion" "FA:03015" :name "prion family" :synonyms ("prion-protein" "IPR000817"))
+
+(def-family-with-id "G protein" "FPLX:G_protein" :name "G-protein" :synonyms ("NCIT:C17458" "Gprotein" "g protein" "g-protein" "Guanine Nucleotide Binding Protein" "GTP-Binding Protein"))
+(def-family-with-id "phosphoprotein" "NCIT:C16982")
+(def-family-with-id "glycoprotein" "CHEBI:17089")
+(def-family-with-id "immunoprotein" "NCIT:C16725") 
+(def-family-with-id "ubiquitin" "FPLX:Ubiquitin" :synonyms ("ub" "Ub" "UB") :members ("UP:P0CG47" "UP:P0CG48")) 
+(def-family-with-id "profilin" "FPLX:PFN" :synonyms ("PFN" "Pfn" "PFn") :members ("UP:P07737" "UP:P35080" "UP:P60673" "UP:Q8NHR9")) 
+(def-family-with-id "protease" "FPLX:Protease" :members ("UP:C3VI15" "UP:P10265" "UP:P63120" "UP:P63121" "UP:P63122" "UP:P63123" "UP:P63124" "UP:P63125" "UP:P63127" "UP:P63129" "UP:P63131" "UP:Q07CK6" "UP:Q9Y6I0"))
+(def-family-with-id "proteasome" "FPLX:Proteasome" :synonyms ("XFAM:PF00227.24"))
+(def-family-with-id "actin" "FPLX:Actin" :members ("UP:P63267" "UP:P68133") :synonyms ("actin filament" "f-actin" "F-actin"))
+                    
+(def-family-with-id "globin" "XFAM:PF01152")
+(def-family-with-id "globulin" "NCIT:C17125" :name "serum globulin")
+
+;; immunoglobulins
+(def-family-with-id "immunoglobulin superfamily" "FA:01833" :name "immunoglobulin superfamily" :synonyms ("XFAM:PF00047" "IgSF"))
+;; moved immunoglobulin and its isotypes/subclasses to bio-complexes but we do need some way to merge families and complexes. also the receptors  
+
+(def-family-with-id "HGNC:5853" ("IGL" "igl" "immunoglobulin lambda locus" "IgGl")) ;; will add members later
+
+(def-family-with-id "IgE-receptor" "GO:0019767" :name "IgE receptor activity" :members ("UP:P06734" "UP:Q01362") :synonyms ("FCER" "IgE receptor activity" "Fc epsilon R" "Lymphocyte IgE receptor")) 
+(define-protein "NCIT:C127014" ("IGHV3-21" "V-H" "q16927" "Immunoglobulin Heavy Variable 3-21 wt Allele"))
+
+(def-family-with-id "Hemagglutinin" "XFAM:PF00509.16" :synonyms ("haemagglutinin" "haemoagglutinin" "hemagglutinin" "hemagglutinins"))
+(def-family-with-id "histone" "NCIT:C16687")
+(def-family-with-id "histone H2B" "FA:01763" :synonyms ("histone 2B" "H2B") :members ("UP:Q16778"))
+(def-family-with-id "histone H3" "FPLX:Histone_H3" :synonyms ("histone-H3" "histoneH3" "NCIT:C16685")) 
+(def-family-with-id "histone H4" "FPLX:Histone_H4" :synonyms ("h4 histone family") :members ("UP:P62805"))
+
+(def-family-with-id "integrin" "NCIT:C16748") 
+
+(def-family-with-id "inhibin" "NCIT:C2276" :members ("UP:P05111" "UP:P08476" "UP:P09529"))
+(def-family-with-id "inhibin A" "FPLX:Inhibin_A" :synonyms ("inhibin-A") :members ("UP:P05111"))
+
+;; cytokines
+(def-family-with-id "cytokine" "NCIT:C20464" :members ("UP:P23219" "UP:P35354")) ;; many more
+(def-family-with-id "chemokine" "FPLX:Chemokine" :name "Chemokine") 
+(def-family-with-id "adipokine" "NCIT:C123810" :name "adipokine") 
+(def-family-with-id "cyclooxygenase" "NCIT:C17015" :synonyms ("cyclo-oxygenases" "cyclo-oxygenase") :members ("UP:P23219" "UP:P35354"))
+(def-family-with-id "angiokine" "NCIT:C113246" :name "angiokine") 
+(def-family-with-id "gastrokine" "FA:01473" :name "gastrokine family") 
+(def-family-with-id "myokine" "NCIT:C157583" :name "myokine") 
+(def-family-with-id "lymphokine" "NCIT:C20498" :name "lymphokine") 
+
+
+(def-family-with-id "interferon" "FPLX:Interferon" :synonyms ("IFN") :members ("UP:P01563" "UP:P01562" "UP:P01566" "UP:P01567" "UP:P01568" "UP:P01569" "UP:P01570" "UP:P01571" "UP:P01574" "UP:Q9P0W0" "UP:P05000" "UP:Q8IU54" "UP:Q8IZJ0" "UP:Q8IZI9" "UP:K9M1U5" "UP:P01579"))
+(def-family-with-id "interferon alpha" "FPLX:IFNA" :synonyms ("NCIT:C20494" "IFN-alpha" "IFN-α" "IFNA" "IFNalpha" "IFNα" "IFN-a" "IFNa" "ifnα") :members ("UP:P01563" "UP:P01562" "UP:P01566" "UP:P01567" "UP:P01568" "UP:P01569" "UP:P01570" "UP:P01571" "UP:Q8IU54" "UP:Q8IZJ0" "UP:Q8IZI9" "UP:K9M1U5"))
+(def-family-with-id "interferon beta"  "FPLX:IFNB" :synonyms ("IFN-beta" "IFN beta" "IFN-β" "IFNB" "IFNbeta") :members ("UP:P01574")) ;; not sure why HMS has this family because it seems to just have one member and they overload the synonyms to point to both so now we do too...
+(def-family-with-id "IFN-I" "IPR000471" :name "interferon type I" :synonyms ("type I interferon"  "IFN I" "type I IFN" "interferon-I" "interferon I") :members ("UP:P01563" "UP:P01562" "UP:P01566" "UP:P01567" "UP:P01568" "UP:P01569" "UP:P01570" "UP:P01571" "UP:P01574" "UP:Q9P0W0" "UP:P05000"))
+;; type II consists of one protein in humans - interferon-gamma - so that's why it's not family
+(def-family-with-id "IFN-III" "IPR029177" :name "interferon type III" :synonyms ("type III interferon"  "IFN III" "type III IFN" "IFN-lambda" "IFN-λ" "IFNL" "IFN-L" "IFNlambda" "IFN lambda" "IFNλ" "interferon lambda" "ifnλ" "IFN-k" "IFNk") :members ("UP:Q8IU54" "UP:Q8IZJ0" "UP:Q8IZI9" "UP:K9M1U5")) ;; note: while there  is an IFN-kappa, "IFN-k" is much more frequently a bad OCR of "IFN-λ" -- nearly all google hits are for "IFN-ks" are for this while IFNK is the real
+
+(def-family-with-id "IL" "NCIT:C20497" :name "interleukin" :synonyms ("interleukine") :members ("UP:P01583" "UP:P01584" "UP:P05231" "UP:P08700" "UP:P10145" "UP:P13232" "UP:P60568" "UP:O95760")) 
+(def-family-with-id "IL-1" "FPLX:IL1" :synonyms ("NCIT:C20506" "IL1" "il-1" "interleukin 1" "interleukin-1" "FA:01820" "interleukin 1 family") :members ("UP:P01583" "UP:P01584"))
+(def-family-with-id "IL-12" "FPLX:IL12" :synonyms ("IL12" "il12" "interleukin-12" "interleukin 12" "IL-12p70" "IL12p70") :members ("UP:P29459" "UP:P29460"))
+(def-family-with-id "IL2R" "FPLX:IL2R" :synonyms ("IL-2-R" "IL-2R" "IL2R" "interleukin-2 receptor" "interleukin-2 receptor activity") :members ("UP:P14784" "UP:P31785")) ;more members
+(def-family-with-id "IL23" "XFAM:PF16649.3" :synonyms ("Il23" "il23"))
+(def-family-with-id "Interleukin-27" "NCIT:C118114" :name "interleukin-27" :synonyms ("Il27" "il27" "IL-27" "IL-27") :members ("UP:Q8NEV9" "UP:Q14213"))
+;; (define-protein "NCIT:C20514" ("IL-12" "interleukin-12")) 
+(def-family-with-id "interleukin-17" "NCIT:C20519" :members ("UP:Q16552" "UP:Q8TAD2" "UP:Q9H293" "UP:Q9P0M4" "UP:Q9UHF5")) 
+(def-family-with-id "interleukin 31" "XFAM:PF15209") 
+
+(def-family-with-id "FSH" "FPLX:FSH" :name "follicle-stimulating hormone" :synonyms ("follicle stimulating hormone") :members ("UP:P01215" "UP:P01225"))
+(def-family-with-id "luteinizing hormone" "FPLX:LH")
+(def-family-with-id "thyroid hormone receptor" "FPLX:THR") 
+(def-family-with-id "TSH" "NCIT:C2280" :synonyms ("thyroid stimulating hormone") :members ("UP:P01215" "UP:P01222"))
+(def-family-with-id "neurotrophin" "PR:000021998" :members ("UP:P20783" "UP:P34130" "UP:Q9UBD9")) 
+(def-family-with-id "gonadotropin" "IPR000476" :synonyms ("gonadotrophin"))
+(def-family-with-id "relaxin" "IPR022421" :members ("UP:P04808" "UP:P04090" "UP:Q8WXF3"))
+(def-family-with-id "replicase" "XFAM:PF03090")
+(def-family-with-id "RNA polymerase" "NCIT:C20076" :synonyms ("RdRp" "RNA-polymerase"));"GO:0097747"
+
+(def-family-with-id "pertussis toxin" "FPLX:Pertussis_toxin") 
+(def-family-with-id "oncoprotein" "NCIT:C16934" :name "oncoprotein" :members ("UP:P16949")) ; many more
+(def-family-with-id "autoantibody" "NCIT:C48966" :synonyms ("auto-antibody" )) 
+(def-family-with-id "antinuclear antibody" "NCIT:C70547" :synonyms ("ana" "ANA" "anti-nuclear antibody" "antinuclear factor" "ANF")) 
+
+
+
+;;; general families
 
 ;;(def-family-with-id "ATV""ATV" "NCIT:C21171" :name "nibrin")
 (def-family-with-id "CMOS" "NCIT:C17327" :name "proto-oncogene serine/Threonine-protein kinase mos") 
@@ -48,9 +163,6 @@
 (def-family-with-id "OSD" "XFAM:PF03392" :name "OS-D") 
 ;(def-family-with-id "SSV" "NCIT:C51520" :name "PDGFB") 
 (def-family-with-id "TREX" "FA:01185" :name "TREX family") 
-(def-family-with-id "adipocytokine" "NCIT:C123810" :name "adipokine") 
-(def-family-with-id "chemoattractant" "GO:0042056" :name "chemoattractant activity" :synonyms ("attractant" "attractants" "chemo-attractant"))
-(def-family-with-id "chemorepellent" "GO:0045499" :name "chemorepellent activity")
 (def-family-with-id "dta" "GO:0043876" :name "D-threonine aldolase activity") 
 (def-family-with-id "gtf" "GO:0140223" :name "general transcription initiation factor activity") 
 (def-family-with-id "nae" "NCIT:C95815" :name "NEDD8 activating enzyme") 
@@ -58,8 +170,8 @@
 (def-family-with-id "srv" "XFAM:PF10323" :name "7TM GPCR Srv") 
 ;(def-family-with-id "trans" "XFAM:PF06986" :name "TraN") 
 (def-family-with-id "BlpI" "NCIT:C29979" :name "antileukoproteinase") 
-(def-family-with-id "CSis" "NCIT:C51520" :name "PDGFB") 
-(def-family-with-id "Chemokine" "FPLX:Chemokine" :name "Chemokine") 
+(def-family-with-id "CSis" "NCIT:C51520" :name "PDGFB")
+
 ;(def-family-with-id "Dakar" "NCIT:C84305" :name "CARD8") 
 (def-family-with-id "Epsin" "FPLX:EPN" :name "EPN") 
 ;(def-family-with-id "Fabs" "NCIT:C86023" :name "FANCB") 
@@ -98,12 +210,11 @@
 (def-family-with-id "bornavirus" "XFAM:PF06208" :name "BDV G") 
 (def-family-with-id "cand" "FA:00453" :name "CAND family") 
 (def-family-with-id "cbil" "GO:0043781" :name "cobalt-factor II C20-methyltransferase activity") 
-(def-family-with-id "chemokine" "FPLX:Chemokine" :name "Chemokine") 
 (def-family-with-id "cycline" "FPLX:Cyclin_E" :name "Cyclin-E") 
 (def-family-with-id "fetuin" "FA:01341" :name "fetuin family") 
 (def-family-with-id "nido" "XFAM:PF06119" :name "NIDO") 
 ;(def-family-with-id "trans" "XFAM:PF06986" :name "TraN") 
-(def-family-with-id "AmiGO" "FA:01834" :name "AMIGO family") 
+(def-family-with-id "AMIGO" "FA:01834" :name "AMIGO family" :maintain-case t) 
 (def-family-with-id "Crea" "XFAM:PF05981" :name "CreA") 
 (def-family-with-id "DpnI" "XFAM:PF06044" :name "DpnI") 
 (def-family-with-id "Klee" "XFAM:PF17394" :name "KleE") 
@@ -116,9 +227,8 @@
 (def-family-with-id "WN-TX" "FPLX:Wnt" :name "Wnt") 
 (def-family-with-id "class-3" "FA:02985" :name "class-3 subfamily") 
 (def-family-with-id "eIFE4" "FPLX:EIF4" :name "EIF4") 
-(def-family-with-id "multi-pass" "UP:SL-9909" :name "Multi-pass membrane protein") 
 (def-family-with-id "pH-or" "XFAM:PF11808" :name "PhoR") 
-(def-family-with-id "Alpha-Mannosidase" "GO:0004559" :name "alpha-mannosidase activity") 
+(def-family-with-id "Alpha-Mannosidase" "GO:0004559" :name "alpha-mannosidase activity")
 (def-family-with-id "beta-glucanase" "GO:0052736" :name "beta-glucanase activity") 
 (def-family-with-id "t-SNARE" "GO:0005484" :name "SNAP receptor activity") 
 (def-family-with-id "β-glactosidase" "GO:0004565" :name "beta-galactosidase activity") 
@@ -148,7 +258,7 @@
 (def-family-with-id "ALDO" "FPLX:ALDO" :synonyms ("ALDO" "aldo" "fructose-bisphosphate aldolase" "aldolase") :members ("UP:P04075" "UP:P05062""UP:P09972" "UP:P05063")) 
 
 (def-family-with-id "ANP" "XFAM:PF00212.16") 
-(def-family-with-id "ANT" "XFAM:PF03374.12") 
+(def-family-with-id "ANT" "XFAM:PF03374.12" :maintain-case t) 
 (def-family-with-id "APH" "XFAM:PF01636.21" :synonyms ("APHs" "Aph" "aph")) 
 (def-family-with-id "ARD1" "FA:00067") 
 (def-family-with-id "ARP2" "FA:00080") 
@@ -188,13 +298,7 @@
 (def-family-with-id "CD8" "FPLX:CD8") 
 (def-family-with-id "CDC14" "XFAM:PF08045.9" :synonyms ("Cdc14"))
 (def-family-with-id "CDC25" "FPLX:CDC25" :synonyms ("cdc25") :members ("UP:P30304" "UP:P30305" "UP:P30307")) ;; overloaded with "UP:Q13972" which is a different cdc25 as far as I can tell but still on uniprot
-(def-family-with-id "immunoglobulin superfamily" "FA:01833" :name "immunoglobulin superfamily" :synonyms ("XFAM:PF00047" "IgSF"))
-;; moved immunoglobulin and its isotypes/subclasses to bio-complexes but we do need some way to merge families and complexes. also the receptors  
 
-(def-family-with-id "HGNC:5853" ("IGL" "igl" "immunoglobulin lambda locus" "IgGl")) ;; will add members later
-
-(def-family-with-id "IgE-receptor" "GO:0019767" :name "IgE receptor activity" :members ("UP:P06734" "UP:Q01362") :synonyms ("FCER" "IgE receptor activity" "Fc epsilon R" "Lymphocyte IgE receptor")) 
-(define-protein "NCIT:C127014" ("IGHV3-21" "V-H" "q16927")) 
 
 (def-family-with-id "CDK" "FPLX:CDK" :synonyms ("NCIT:C17767" "cyclin dependent kinase" "cyclin-dependent kinase" "cdk")) 
 (def-family-with-id "CEA" "FA:01836")
@@ -227,7 +331,6 @@
 (def-family-with-id "DPPIV" "FA:02787") 
 ;(def-family-with-id "DVL" "XFAM:PF08137.10" :synonyms ("Dvl" "dvl")) 
 (def-family-with-id "discoidin domain receptor" "FPLX:DDR" :members ("UP:Q08345" "UP:Q16832")) 
-(def-family-with-id "dopamine receptor" "FPLX:DRD") 
 (def-family-with-id "Doppel" "XFAM:PF11466.6" :synonyms ("doppel")) 
 (def-family-with-id "E6" "XFAM:PF00518.15" :synonyms ("e6")) 
 (def-family-with-id "EIF2alpha" "FA:01067" :synonyms ("eIF-2-alpha" "eIF2alpha" "eIF-2A") :members ("UP:P05198" "UP:Q9BY44"))
@@ -239,7 +342,6 @@
 (def-family-with-id "elastase" "FPLX:ELA" :members ("UP:Q9UNI1" "UP:P08217" "UP:P08861" "UP:P08246" "UP:P39900")) ;there are 3 other human elastases but we don't have the base proteins defined "UP:Q99895" "UP:P09093" "UP:P08218"
 (def-family-with-id "elongation factor-1" "NCIT:C38958" :synonyms ("eF1" "EF1" "elongation factor 1") :members ("UP:P24534" "UP:P26641" "UP:P29692" "UP:P68104" "UP:Q05639"))
 (def-family-with-id "elongin" "NCIT:C95244" :members ("UP:Q14241" "UP:Q15369" "UP:Q15370"))
-(def-family-with-id "keratin" "IPR003461")
 (def-family-with-id "ELF" "XFAM:PF03317.11" :synonyms ("elf")) 
 (def-family-with-id "ephrin receptor" "FPLX:Ephrin_receptor" :members ("UP:P21709")) 
 (def-family-with-id "ERD2" "FA:01126" :synonyms ("erd2"))
@@ -251,9 +353,8 @@
 (def-family-with-id "FBA" "XFAM:PF04300.11") 
 (def-family-with-id "FKBP-1" "FA:01359" :synonyms ("FKBP1")) 
 (def-family-with-id "FPP" "XFAM:PF05911.9")
-(def-family-with-id "FSH" "FPLX:FSH" :synonyms ("follicle stimulating hormone") :members ("UP:P01215" "UP:P01225"))
+
 ;(def-family-with-id "Fos" "FA:00408" :synonyms ("fos"))
-(def-family-with-id "GABA receptor" "FPLX:GABR") 
 (def-family-with-id "GADD45" "FA:01442") 
 (def-family-with-id "GAP" "XFAM:PF00616") 
 (def-family-with-id "GATA" "FA:04921" :synonyms ("Gata" "gatA" "gata"))
@@ -263,12 +364,9 @@
 (def-family-with-id "GIN" "XFAM:PF10764.7" :synonyms ("gin")) 
 (def-family-with-id "GMF" "FA:00087") 
 (def-family-with-id "GNT-I" "XFAM:PF03071.13" :synonyms ("GnTI"))
-(def-family-with-id "gonadotropin" "IPR000476" :synonyms ("gonadotrophin"))
 (def-family-with-id "GP3" "XFAM:PF03076.12") 
 (def-family-with-id "GP41" "XFAM:PF00517.15" :synonyms ("gp41")) 
-(def-family-with-id "G protein" "NCIT:C17458" :synonyms ("g protein" "g-protein" "Guanine Nucleotide Binding Protein" "GTP-Binding Protein"))
-(def-family-with-id "globin" "XFAM:PF01152")
-(def-family-with-id "globulin" "NCIT:C17125" :name "serum globulin")
+
 (def-family-with-id "Glypicans" "FA:01627" :synonyms ("glypican"))
 (def-family-with-id "glutaminase" "GO:0004359")
 (def-family-with-id "GnRH" "FA:01630" :synonyms ("GnRHs"))
@@ -297,26 +395,9 @@
 (def-family-with-id "class II HDAC" "FPLX:HDAC_II" :synonyms ("HDACII")) 
 (def-family-with-id "HDACIII" "FPLX:HDAC_III" :name "HDAC-III" :synonyms ("class III HDAC"))
 
-(def-family-with-id "Hemagglutinin" "XFAM:PF00509.16" :synonyms ("haemagglutinin" "haemoagglutinin" "hemagglutinin" "hemagglutinins"))
+
 (def-family-with-id "HLA-DR" "NCIT:C16692" :synonyms ("HLA-DR antigen")) 
 
-(def-family-with-id "histone" "NCIT:C16687")
-(def-family-with-id "histone H3" "FPLX:Histone_H3") 
-(def-family-with-id "inhibin" "NCIT:C2276" :members ("UP:P05111" "UP:P08476" "UP:P09529"))
-(def-family-with-id "inhibin A" "FPLX:Inhibin_A" :synonyms ("inhibin-A") :members ("UP:P05111"))
-(def-family-with-id "interferon" "FPLX:Interferon" :synonyms ("IFN") :members ("UP:P01563" "UP:P01562" "UP:P01566" "UP:P01567" "UP:P01568" "UP:P01569" "UP:P01570" "UP:P01571" "UP:P01574" "UP:Q9P0W0" "UP:P05000" "UP:Q8IU54" "UP:Q8IZJ0" "UP:Q8IZI9" "UP:K9M1U5" "UP:P01579"))
-(def-family-with-id "interferon alpha" "FPLX:IFNA" :synonyms ("NCIT:C20494" "IFN-alpha" "IFN-α" "IFNA" "IFNalpha" "IFNα" "IFN-a" "IFNa" "ifnα") :members ("UP:P01563" "UP:P01562" "UP:P01566" "UP:P01567" "UP:P01568" "UP:P01569" "UP:P01570" "UP:P01571" "UP:Q8IU54" "UP:Q8IZJ0" "UP:Q8IZI9" "UP:K9M1U5"))
-(def-family-with-id "interferon beta"  "FPLX:IFNB" :synonyms ("IFN-beta" "IFN beta" "IFN-β" "IFNB" "IFNbeta") :members ("UP:P01574")) ;; not sure why HMS has this family because it seems to just have one member and they overload the synonyms to point to both so now we do too...
-(def-family-with-id "IFN-I" "IPR000471" :name "interferon type I" :synonyms ("type I interferon"  "IFN I" "type I IFN" "interferon-I" "interferon I") :members ("UP:P01563" "UP:P01562" "UP:P01566" "UP:P01567" "UP:P01568" "UP:P01569" "UP:P01570" "UP:P01571" "UP:P01574" "UP:Q9P0W0" "UP:P05000"))
-;; type II consists of one protein in humans - interferon-gamma - so that's why it's not family
-(def-family-with-id "IFN-III" "IPR029177" :name "interferon type III" :synonyms ("type III interferon"  "IFN III" "type III IFN" "IFN-lambda" "IFN-λ" "IFNL" "IFN-L" "IFNlambda" "IFN lambda" "IFNλ" "interferon lambda" "ifnλ" "IFN-k" "IFNk") :members ("UP:Q8IU54" "UP:Q8IZJ0" "UP:Q8IZI9" "UP:K9M1U5")) ;; note: while there  is an IFN-kappa, "IFN-k" is much more frequently a bad OCR of "IFN-λ" -- nearly all google hits are for "IFN-ks" are for this while IFNK is the real
-
-(def-family-with-id "IL" "NCIT:C20497" :name "interleukin" :synonyms ("interleukine") :members ("UP:P01583" "UP:P01584" "UP:P05231" "UP:P08700" "UP:P10145" "UP:P13232" "UP:P60568" "UP:O95760")) 
-(def-family-with-id "IL-1" "FPLX:IL1" :synonyms ("NCIT:C20506" "IL1" "il-1" "interleukin 1" "interleukin-1" "FA:01820" "interleukin 1 family") :members ("UP:P01583" "UP:P01584")) 
-(def-family-with-id "IL23" "XFAM:PF16649.3" :synonyms ("Il23" "il23"))
-(def-family-with-id "Interleukin-27" "NCIT:C118114" :name "interleukin-27" :synonyms ("Il27" "il27" "IL-27" "IL-27") :members ("UP:Q8NEV9" "UP:Q14213"))
-;; (define-protein "NCIT:C20514" ("IL-12" "interleukin-12")) 
-(def-family-with-id "interleukin-17" "NCIT:C20519" :members ("UP:Q16552" "UP:Q8TAD2" "UP:Q9H293" "UP:Q9P0M4" "UP:Q9UHF5")) 
 (def-family-with-id "ITIH" "FA:01924") 
 ;(def-family-with-id "Jun" "FA:00409" :synonyms ("jun"))
 (def-family-with-id "KIN17" "FA:01961" :synonyms ("Kin17")) 
@@ -327,7 +408,7 @@
 (def-family-with-id "LARP" "FA:02014" :synonyms ("Larp")) 
 (def-family-with-id "LDH" "FA:02022") 
 (def-family-with-id "LEM" "FA:02030") 
-(def-family-with-id "LIP" "XFAM:PF03583.12") 
+(def-family-with-id "LIP" "XFAM:PF03583.12" :maintain-case t) 
 (def-family-with-id "Lin28" "FA:02093" :synonyms ("lin-28")) 
 (def-family-with-id "Lst2" "FA:02122" :synonyms ("lst-2" "lst2"))
 (def-family-with-id "LXR" "NCIT:C128275" :synonyms ("lxr" "liver X receptor-like family") :members ("UP:Q13133" "UP:P55055"))
@@ -385,7 +466,7 @@
 (def-family-with-id "PIM" "FA:03078" :synonyms ("Pim")) 
 (def-family-with-id "PKK" "XFAM:PF12474.6")
 (def-family-with-id "phospholipase A2" "FPLX:PLA2" :members ("UP:O15496" "UP:P04054" "UP:P47712") :synonyms ("Phospholipase A 2" "Phospholipase A2" "phospholipase A 2" "cytosolic phospholipase A 2" "cytosolic phospholipase A2" "cPLA 2" "cPLA 2 protein" "cPLA2"))
-(def-family-with-id "PLA2G4" "FPLX:PLA2G4" :synonyms ("PLA2g4") :members ("UP:P47712" "UP:P0C869" "UP:Q9UP65" "UP:Q86XP0" "UP:Q3MJ16" "UP:Q68DD2"))
+(def-family-with-id "PLA2G4" "FPLX:PLA2G4" :synonyms ("PLA2g4" "Phospholipase A2 Group IVA") :members ("UP:P47712" "UP:P0C869" "UP:Q9UP65" "UP:Q86XP0" "UP:Q3MJ16" "UP:Q68DD2"))
 (def-family-with-id "Phospholipase C" "FPLX:PLC" :synonyms ("phospholipase C" ) :members ("UP:Q00722" "UP:Q01970" "UP:Q15147" "UP:P51178")) ; more members
 (def-family-with-id "Phospholipase D" "FPLX:PLD" :synonyms ("phospholipase D" "IPR015679"))
 
@@ -393,14 +474,13 @@
 (def-family-with-id "PP-1" "FA:03001" :synonyms ("PP1"))
 (def-family-with-id "PP1R" "FPLX:PPP1R")
 (def-family-with-id "peroxisome proliferative activated receptor" "FPLX:PPAR" :synonyms ("PPAR") :members ("UP:P37231" "UP:Q03181" "UP:Q07869"))
-(def-family-with-id "pertussis toxin" "FPLX:Pertussis_toxin") 
 (def-family-with-id "PPE" "XFAM:PF00823.17") 
 (def-family-with-id "PPP5" "XFAM:PF08321.10" :synonyms ("ppp5"))
 (def-family-with-id "polycomb repressive complex 1" "FPLX:PRC1_complex") 
 (def-family-with-id "PRC2" "FPLX:PRC2_complex" :synonyms ("polycomb repressive complex 2" "PRC-2" "PRC2 complex" "Polycomb Repressive Complexes 2") :members ("UP:O75530" "UP:Q92800" "UP:Q15910" "UP:Q09028" "UP:Q16576" "UP:Q15022"))
 
 (def-family-with-id "PRF" "XFAM:PF06875.9") 
-(def-family-with-id "PRUNE" "FA:02994" :synonyms ("prune")) 
+(def-family-with-id "PRUNE" "FA:02994" :synonyms ("prune") :members ("UP:Q86TP1" "UP:Q8WUY3")) 
 (def-family-with-id "R-spondin" "FA:03208" :synonyms ("r-spondin")) 
 (def-family-with-id "RAB" "FPLX:RAB" :synonyms ("Rab" "rab" "rasB" "FA:03661") :members ("UP:A4D1S5" "UP:Q14088" "UP:O00194" "UP:O14966" "UP:O15211" "UP:O95716" "UP:O95755")) ;many more
 (def-family-with-id "RAD9" "FA:03221" :synonyms ("Rad9" "rad9"))
@@ -417,7 +497,7 @@
 (def-family-with-id "RhoGAP" "IPR000198" :synonyms ("Rho GTPase-activating protein" "Rho-GAP" "rhoGAP" "XFAM:PF00620"))
 (def-family-with-id "RhoGDI" "FPLX:RhoGDI" :synonyms ("Rho-GDI") :members ("UP:P52565" "UP:P52566" "UP:Q99819"))
 (def-family-with-id "Ric-8" "XFAM:PF10165.7" :synonyms ("ric-8" "ric8"))
-(def-family-with-id "RING" "XFAM:PF00097")
+(def-family-with-id "RING" "XFAM:PF00097" :maintain-case t)
 (def-family-with-id "RNA polymerase 1" "FPLX:RNApo_I") 
 (def-family-with-id "RNA polymerase II" "FPLX:RNApo_II" :synonyms ("RPII" "RNAP II") :members ("UP:Q9Y5B0" "UP:P24928")) ; >1000 other human ones as well
 (def-family-with-id "RPA" "FPLX:RPA" :synonyms ("Replication protein A" "Replication-associated protein A" "REPA" "RepA" "replication-associated protein" "Replication factor A" "RP-A") :members ("UP:P27694" "UP:P15927" "UP:P35244" "UP:Q13156")) 
@@ -440,12 +520,12 @@
 (def-family-with-id "SMC1" "FPLX:SMC1" :synonyms ("SMC-1" "smc1") :members ("UP:Q14683" "UP:Q8NDV3"))
 (def-family-with-id "SMN" "FA:03696") 
 (def-family-with-id "SMP" "XFAM:PF04927.10" :synonyms ("SMPs")) 
-(def-family-with-id "SNAP" "FA:03701" :synonyms ("SNAPs")) 
+(def-family-with-id "SNAP" "FA:03701" :synonyms ("SNAPs") :maintain-case t)  
 (def-family-with-id "SNF5" "FA:03709")
-(def-family-with-id "SOD" "FPLX:SOD" :members ("UP:P00441" "UP:P04179" "UP:P08294"))
-(def-family-with-id "SOUL" "XFAM:PF04832.10") 
+(def-family-with-id "SOD" "FPLX:SOD" :members ("UP:P00441" "UP:P04179" "UP:P08294") :maintain-case t)
+(def-family-with-id "SOUL" "XFAM:PF04832.10" :maintain-case t) 
 (def-family-with-id "SPF27" "FA:03804")
-(def-family-with-id "SPRY" "FPLX:SPRY" :synonyms ("XFAM:PF05210" "FA:03814" "SPROUTY" "sprouty" "sprouty family") :members ("UP:O43609" "UP:O43597" "UP:O43610" "UP:Q9C004"))
+(def-family-with-id "SPRY" "FPLX:SPRY" :synonyms ("XFAM:PF05210" "FA:03814" "SPROUTY" "sprouty" "sprouty family") :members ("UP:O43609" "UP:O43597" "UP:O43610" "UP:Q9C004") :maintain-case t)
 (def-family-with-id "SPT20" "FA:05167" :synonyms ("Spt20")) 
 (def-family-with-id "SPT4" "FA:03817" :synonyms ("Spt4")) 
 (def-family-with-id "SSF" "XFAM:PF00474.15") 
@@ -467,7 +547,7 @@
 (def-family-with-id "STAT-5" "FPLX:STAT5" :synonyms ("STAT5" "Stat5" "stat5") :members ("UP:P42229" "UP:P51692")) 
 (def-family-with-id "Stearoyl-CoA desaturase" "FPLX:SCD" :members ("UP:Q86SK9" "UP:O00767")) 
 (def-family-with-id "SWI/SNF complex" "FPLX:SWI_SNF")
-(def-family-with-id "synapsin" "IPR001359" :members ("UP:P17600"))
+(def-family-with-id "synapsin" "IPR001359" :members ("UP:P17600" "UP:Q92777" "UP:O14994"))
 (def-family-with-id "syntaxin" "XFAM:PF00804" :members ("UP:P61266" "UP:Q12846" "UP:Q13190" "UP:Q13277" "UP:Q16623" "UP:Q9UNK0" "UP:O14662" "UP:O15400" "UP:O43752" "UP:O60499" "UP:O75558" "UP:P32856"))
 (def-family-with-id "TAP" "FPLX:TAP" :members ("UP:O60763" "UP:O75369") :maintain-case t)
 (def-family-with-id "TCRP1" "XFAM:PF14944.4") 
@@ -479,7 +559,7 @@
 (def-family-with-id "TSA" "XFAM:PF03249.11" :synonyms ("TSAs")) 
 (def-family-with-id "Tctex-1" "XFAM:PF03645.11" :synonyms ("tctex-1"))
 (def-family-with-id "TIAM" "FPLX:TIAM") 
-(def-family-with-id "Tie" "FA:03134" :synonyms ("TIE") :maintain-case t) 
+(def-family-with-id "Tie" "FA:03134" :synonyms ("TIE" "tie subfamily") :maintain-case t :members ("UP:P35590" "UP:Q02763")) 
 (def-family-with-id "Timeless" "FA:04022" :synonyms ("timeless"))
 (def-family-with-id "TOP" "NCIT:C20646" :synonyms ("topoisomerase" "topo") :members ("UP:P11387" "UP:Q969P6" "UP:P11388" "UP:Q02880") :maintain-case t)
 (def-family-with-id "topoisomerase I" "XFAM:PF09266" :synonyms ("DNA topoisomerase 1" "topoisomerase 1" "Topo-I" "TopoI" "topoI" "Top-I") :members ("UP:P11387" "UP:Q969P6"))	
@@ -492,7 +572,6 @@
 (def-family-with-id "Zeta" "FA:01677" :synonyms ("zeta" "zeta family")) 
 (def-family-with-id "cIII" "XFAM:PF08134.9")
 (def-family-with-id "C1" "FPLX:C1") 
-(def-family-with-id "casein" "IPR001588")
 (def-family-with-id "caspase" "FPLX:Caspase" :synonyms ("NCIT:C18153" "cysteine-aspartic protease") :members ("UP:P29466" "UP:P42575"  "UP:P42574" "UP:P49662" "UP:P51878" "UP:P55212" "UP:P55210" "UP:Q14790" "UP:P55211" "UP:Q92851" "UP:P31944" ))
 (def-family-with-id "Caspase-3/7" "FPLX:Caspase_3_7" :synonyms ("caspase-3/7") :members ("UP:P42574" "UP:P55210")) 
 (def-family-with-id "cholinesterase" "FPLX:Cholinesterase" :synonyms ("choline esterase") :members ("UP:P06276")) 
@@ -503,10 +582,6 @@
 (def-family-with-id "fibrillin" "FA:01347" :synonyms ("fibrillins")) 
 (def-family-with-id "glycogenin" "FA:05057")
 (def-family-with-id "HES" "FPLX:HES") 
-(def-family-with-id "histone" "NCIT:C16687") 
-(def-family-with-id "histone H2B" "FA:01763" :synonyms ("histone 2B" "H2B") :members ("UP:Q16778")) 
-(def-family-with-id "histone H4" "FPLX:Histone_H4" :synonyms ("h4 histone family") :members ("UP:P62805")) 
-(def-family-with-id "integrin" "NCIT:C16748") 
 (def-family-with-id "kallikrein" "FA:02764" :synonyms ("kallikreins" "tissue kallikrein") :members ("UP:P20151")) 
 (def-family-with-id "lipooxygenase" "FA:02101" :synonyms ("lipoxygenase")) 
 (def-family-with-id "liprin" "FA:02102" :synonyms ("liprins"))
@@ -584,11 +659,9 @@
 
 (def-family-with-id "cofilin" "FPLX:Cofilin" :synonyms ("cofil-ins") :members ("UP:P23528" "UP:Q9Y281")) 
 
-(def-family-with-id "collagen" "MESH:D003094" :members ("UP:P02452" "UP:P02461" "UP:P08123" "UP:P17301")) 
 
-(def-family-with-id "cyclooxygenase" "NCIT:C17015" :synonyms ("cyclo-oxygenases" "cyclo-oxygenase") :members ("UP:P23219" "UP:P35354"))
+
 (def-family-with-id "cyclophilin" "FPLX:Cyclophilin" :synonyms ("CYP") :members ("UP:P62937" "UP:P23284" "UP:P30405" "UP:Q08752" "UP:Q13356" "UP:Q96L50" "UP:Q9H2H8" "UP:Q9H2H8" "UP:Q9Y3C6" "UP:O43447")) ;("UP:P34887" "UP:Q27450")) 
-(def-family-with-id "cytokine" "NCIT:C20464" :members ("UP:P23219" "UP:P35354")) 
 (def-family-with-id "DDR" "XFAM:PF08841.8" :synonyms ("diol dehydratase-reactivating factor" "IPR003208"))
 (def-family-with-id "DUSP" "FPLX:DUSP" :synonyms ("dusp")) 
 (def-family-with-id "EGR" "FPLX:EGR" :synonyms ("early growth response protein") :members ("UP:P18146" "UP:P11161" "UP:Q05159" "UP:Q05215" "UP:Q06889"))
@@ -610,9 +683,7 @@
 (def-family-with-id "IFNGR" "FPLX:Interferon_gamma_receptor" :synonyms ("interferon gamma receptor") :members ("UP:P15260"))
 (def-family-with-id "IkappaB" "NCIT:C17583" :synonyms ("I-kappa-B" "I-kappa-B protein" "I-kappaB" "I-κBs" "IkappaBs" "IκB"  "I-kappa-B protein" "IkB" "Ikappa-B" "I-κB" "IKB" "iκB" "IκBs") :members ("UP:O14920" "UP:O15111" "UP:P25963" "UP:O00221" "UP:Q15653" "UP:Q8NI38" "UP:Q9BYH8" "UP:Q9Y6K9"))
 (def-family-with-id "IKK" "NCIT:C104199" :synonyms ("FPLX:IKK_family" "I-kappa-B kinase" "IKappaB kinase" "I-kappa-B-kinase" "IkappaB Kinase" "IkappaB kinase" "IkB kinase" "IkK") :members ("UP:O15111" "UP:O14920" "UP:Q14164"))
-(def-family-with-id "IL-12" "FPLX:IL12" :synonyms ("IL12" "il12" "interleukin-12" "interleukin 12" "IL-12p70" "IL12p70") :members ("UP:P29459" "UP:P29460"))
 (def-family-with-id "IRS" "FPLX:IRS") ;overloaded with "UP:P41252" which also has IRS abbreviation
-(def-family-with-id "IL2R" "FPLX:IL2R" :synonyms ("IL-2-R" "IL-2R" "IL2R" "interleukin-2 receptor" "interleukin-2 receptor activity") :members ("UP:P14784" "UP:P31785")) ;more members
 (def-family-with-id "JAK" "FPLX:JAK" :members ("UP:P23458" "UP:O60674"))
 ;;(def-family-with-id "JNK1/2" "FPLX:JNK" :synonyms ("JNK1-2") :members ("JNK1" "JNK2"))
 (def-family-with-id "Jnk" "FPLX:JNK" :members ("JNK1" "JNK2" "JNK3A") :synonyms ("JNK" "JNK MAPK" "JUN kinase activity" "c-JNK" "c-Jun N-terminal kinase" "c-Jun N-terminal protein kinase" "c-Jun NH2-terminal kinase" "c-jun-NH2-terminal kinase" "c-Jun N-terminal Kinase" "c-JUN N-terminal kinase" "c-jun NH2-terminal kinase" "c-jun N-terminal kinase" "C-jun N-terminal kinase" "C-Jun NH2-terminal kinase" "C-Jun NH2-Terminal Kinase" "C-Jun N-terminal kinase" "c-Jun NH2-Terminal Kinase" "c-Jun N-Terminal Kinase" "c-Jun  N-terminal kinase" "C-jun NH2-terminal kinase" "C-JNK" "JNK1/2"))
@@ -637,9 +708,6 @@
 ;(def-family-with-id "PDGR" "NCIT:C17322" :synonyms ("platelet-derived growth factor-activated receptor" "PDGF receptor"  "PDGF-R" "pdgfr" "derived growth factor-receptor" "derived growth-factor receptor" "platelet-derived growth factor-activated receptor activity" "FPLX:PDGR") :members ( "UP:P09619" "UP:P16234")) 
 (def-family-with-id "phosphodiesterase" "GO:0008081" :synonyms ("PDE" "phosphoric diester hydrolase" "FPLX:PDE") :members ("UP:Q08499" "UP:Q08493" "UP:Q13370" "UP:Q13946" "UP:Q14432" "UP:Q9HCR9" "UP:Q9NP56")) ;more members
                                         ;(def-family-with-id "PDE4" "FPLX:PDE4" :members ("UP:Q86V67" "UP:Q07343" "UP:P27815" "UP:P08493" "UP:Q08499"))
-(def-family-with-id "phosphoprotein" "NCIT:C16982")
-(def-family-with-id "glycoprotein" "CHEBI:17089")
-(def-family-with-id "replicase" "XFAM:PF03090")
 (def-family-with-id "Pol delta" "FPLX:DNA_polymerase_delta" :synonyms ("DNA polymerase delta" "pol delta")) 
 
 (def-family-with-id "AKT" "FPLX:AKT" :synonyms ("FA:03066" "Akt" "AKt" "NCIT:C41625" "protein kinase B" "pkba" "PR:000029189" "PKB" "Protein Kinase B" "protein kinase b" "Protein kinase B") :members ("AKT1" "AKT2" "AKT3"))
@@ -652,8 +720,6 @@
 (def-family-with-id "RASAL" "FPLX:RASAL" :synonyms ("rasal") :members ("UP:O95294" "UP:Q9UJF2" "UP:Q86YV0"))
 (def-family-with-id "RASGRP" "FPLX:RASGRP" :synonyms ("RAS guanyl releasing protein" "RASGRP family" "RasGRP" "ras guanyl-releasing protein") :members ("UP:O95267" "UP:Q7LDG7" "UP:Q8IV61" "UP:Q8TDF6"))
 
-(def-family-with-id "relaxin" "IPR022421" :members ("UP:P04808" "UP:P04090" "UP:Q8WXF3"))
-(def-family-with-id "RNA polymerase" "NCIT:C20076" :synonyms ("RdRp"))
 (def-family-with-id "RFX" "FPLX:RFX" :synonyms ("rfx") :members ("UP:P22670")) ;others
 (def-family-with-id "SAE2" "XFAM:PF08573.8" :synonyms ("sae2" "Sae2") :members ("UP:Q99708" "UP:Q9UBT2")) 
 (def-family-with-id "SGT1" "XFAM:PF07093.9" :synonyms ("Sgt1" "sgt1") :members ("UP:O43765" "UP:Q9Y2Z0")) 
@@ -664,22 +730,18 @@
 (def-family-with-id "troponin T" "FPLX:Troponin_T" :synonyms ("TPNT" "cTNT" "cTnT" "TNT" "Troponin T" "tnt" "TnT") :members ("UP:P45378" "UP:P45379" "UP:P13805")) 
 (def-family-with-id "troponin I" "FPLX:Troponin_I" :synonyms ("cTnI" "TPNI" "TnI") :members ("UP:P48788" "UP:P19237" "UP:P19429"))
 (def-family-with-id "troponin" "FPLX:Troponin")
-(def-family-with-id "thyroid hormone receptor" "FPLX:THR") 
 
 (def-family-with-id "TIP49" "XFAM:PF06068.11" :synonyms ("Tip49" "tip49") :members ("UP:Q9Y230" "UP:Q9Y265"))
 (def-family-with-id "TSC" "FPLX:TSC" :synonyms ("tuberous sclerosis protein") :members ("UP:Q92574" "UP:Q99576")) 
 
-(def-family-with-id "TSH" "NCIT:C2280" :synonyms ("thyroid stimulating hormone") :members ("UP:P01215" "UP:P01222"))
 
 (def-family-with-id "VEGFR" "FPLX:VEGFR" :synonyms ("Vascular endothelial growth factor receptor" "VEGF receptor" "vascular endothelial growth factor-activated receptor activity" "GO:0005021") :members ("UP:P17948" "UP:P35968" "UP:P35916"))
 (def-family-with-id "acetyltransferase" "GO:0016407" :synonyms ("acetyl-transferase" "acetylase"))
 
-(def-family-with-id "actin" "FPLX:Actin" :members ("UP:P63267" "UP:P68133") :synonyms ("actin filament" "f-actin" "F-actin"))
 
 (def-family-with-id "bone morphogenetic protein" "FPLX:BMP" :synonyms ("NCIT:C17274" "BMP" "bmp") :members ("UP:O95390" "UP:O95393" "UP:O95972" "UP:P12643" "UP:P12644" "UP:P12645" "UP:P13497" "UP:P18075" "UP:P22003" "UP:P22004" "UP:P34819" "UP:P34820" "UP:P43026" "UP:P55107" "UP:Q6KF10" "UP:Q7Z5Y6" "UP:Q9UK05")) 
 ;(def-family-with-id "calcineurin" "NCIT:C17275" :members ("UP:P42322" "UP:Q08209"))
 (def-family-with-id "calpain" "FPLX:CAPN" :members ("UP:P04632" "UP:P07384")) 
-(def-family-with-id "capsid protein" "NCIT:C16383" :members ("UP:P14836" "UP:P21942" "UP:Q68985")) 
 (def-family-with-id "fibroblast growth factor receptor family" "FPLX:FGFR" :name "Fibroblast growth factor receptor" :synonyms ("NCIT:C17297" "FGFR" "FGF receptor" "Fgfr" "FGFr") :members ("UP:Q8N441" "UP:Q92913" "UP:Q92914" "UP:Q92915" "UP:Q9GZV9" "UP:Q9HCT0" "UP:Q9NP95" "UP:Q9NSA1"))
 (def-family-with-id "Fibroblast Growth Factor" "FPLX:FGF" :synonyms ("fgf" "fibroblast growth factor" "XFAM:PF00167")) 
 (def-family-with-id "farnesyltransferase" "FPLX:FNT" :synonyms ("ECCODE:2.5.1.58") :members ("UP:P49354" "UP:P49356")) 
@@ -695,9 +757,9 @@
 (def-family-with-id "myosin heavy chain" "FPLX:MYH" :members ("UP:A7E2Y1" "UP:P11055" "UP:P12882" "UP:P12883" "UP:P13533" "UP:P13535" "UP:P35579" "UP:P35580" "UP:P35749" "UP:Q9UKX2" "UP:Q9UKX3" "UP:Q9Y2K3" "UP:Q9Y4I1" "UP:Q9Y623"))
 (def-family-with-id "myosin light chain" "FPLX:MYL" :synonyms ("MLC" "MyLC" "Mlc") :members ("UP:O14950" "UP:P05976" "UP:P10916" "UP:P12829" "UP:P19105" "UP:P24844" "UP:P60660" "UP:Q01449" "UP:Q02045"   "UP:Q12965" "UP:Q13402" "UP:Q96A32" "UP:Q9BUA6"))
 (def-family-with-id "regulatory myosin light chain" "FPLX:MYL_regulatory") 
-(def-family-with-id "neurotrophin" "PR:000021998" :members ("UP:P20783" "UP:P34130" "UP:Q9UBD9")) 
+
 ;(def-family-with-id "nudf" "FA:02562" :synonyms ("nudF" "nudF subfamily" "ADP-ribose pyrophosphatase" "ASPPase") :members ("UP:Q9BW91")) 
-(def-family-with-id "opioid receptor" "IPR001418" :members ("UP:P35372" "UP:P41143" "UP:P41145" "UP:P41146" "UP:Q14982"))
+
 (def-family-with-id "p38 mitogen activated protein kinase" "FPLX:p38" :synonyms ("p38 MAP kinase" "P38 MAP kinase" "p38 MAPK" "MAPK-p38" "p38-MAPK" "p38 mitogen-activated protein kinase" "p38 Mitogen-activated protein kinase" "p38" "p38" "p38MAPK" "p38  MAPK" "MAPK p38" "p-38" "p38mapk" "P38MAPK" "P38 MAPK") :members ("UP:O15264" "UP:P46108" "UP:P53778" "UP:Q15759" "UP:Q16539"))
 (def-family-with-id "p85" "FPLX:PI3K_p85" :members ("UP:O00459" "UP:O43439" "UP:Q14155")) 
 ;(def-family-with-id "DC" "FPLX:PDC") 
@@ -707,9 +769,7 @@
 (def-family-with-id "PLCG" "FPLX:PLCG" :synonyms ("NCIT:C126114" "PLCγ" "phospholipase C gamma" "phospholipase-C-γ" "phospholipase-Cγ")) 
 ;(def-family-with-id "PLCγ" "NCIT:C126114" :name "phospholipase C gamma") 
 
-(def-family-with-id "profilin" "FPLX:PFN" :synonyms ("PFN" "Pfn" "PFn") :members ("UP:P07737" "UP:P35080" "UP:P60673" "UP:Q8NHR9")) 
-(def-family-with-id "protease" "FPLX:Protease" :members ("UP:C3VI15" "UP:P10265" "UP:P63120" "UP:P63121" "UP:P63122" "UP:P63123" "UP:P63124" "UP:P63125" "UP:P63127" "UP:P63129" "UP:P63131" "UP:Q07CK6" "UP:Q9Y6I0"))
-(def-family-with-id "proteasome" "FPLX:Proteasome" :synonyms ("XFAM:PF00227.24"))
+
 (def-family-with-id "protein phosphatase 2" "FPLX:PPP2" :synonyms ("PPP2" "phosphatase 2") :members ("UP:P62714" "UP:P67775" "UP:Q06124"))
 (def-family-with-id "protein phosphatase 2A" "FPLX:PPP2" :synonyms ("protein phosphatase 2A" "PP-2A" "PP2A" "Phosphatase 2A") :members ("UP:P62714" "UP:P67775")) 
 (def-family-with-id "PPP3" "FPLX:PPP3" :synonyms ("NCIT:C17275" "FA:03002" "calcineurin" "protein phosphatase 2B" "protein phosphatase 3" "protein phosphatase 3 (formerly 2B)" "PP2B" "PP-2B subfamily") :members ("UP:Q08209" "UP:P16298" "UP:P48454" "UP:P63098"))
@@ -720,14 +780,7 @@
 
 (def-family-with-id "thrombospondin" "FA:04006" :synonyms ("NCIT:C17339" "TSP" "THBS" "FPLX:THBS" "Thbs") :members ("UP:P07996" "UP:P35443")) 
 (def-family-with-id "tid" "PR:000006572" :members ("UP:Q96EY1"))
-(def-family-with-id "ubiquitin" "FPLX:Ubiquitin" :synonyms ("ub" "Ub" "UB") :members ("UP:P0CG47" "UP:P0CG48")) 
 
-(def-family-with-id "adrenergic receptor" "GO:0004935" :synonyms ("adrenoreceptor") :members ("UP:P07550" "UP:P08588" "UP:P08913" "UP:P13945" "UP:P25100" "UP:P18825" "UP:P18089"))
-(def-family-with-id "alpha-adrenergic receptor" "FPLX:ADRA" :members ("UP:P08913" "UP:P25100" "UP:P18825" "UP:P18089") :synonyms ("a-adrenoreceptor" "alpha adrenoceptor" "alpha-adrenoreceptor" "alpha1 adrenoceptor" "α-adrenergic receptor" "α-adrenoreceptor"))
-(def-family-with-id "alpha2-AR" "FPLX:ADRA2" :members ("UP:P08913" "UP:P18825" "UP:P18089") :synonyms ("alpha(2)-adrenoceptor" "alpha(2)-AR" "alpha2 adrenoceptor" "ofalpha(2)-adrenoceptor" "ofα(2)-adrenoceptor" "α(2)-adrenoceptor" "α(2)-AR" "α2-AR")) 
-
-(def-family-with-id "betaAR" "FPLX:ADRB" :synonyms ("βAR" "β-adrenergic receptor" "β-adrenoreceptor" "beta-adrenergic receptor") :members ("UP:P08588" "UP:P07550" "UP:P13945")) 
-(def-family-with-id "betaARK" "FPLX:ADRBK") 
 
 ;; previously in the post TRIPS-defs new-defs file
 
@@ -742,25 +795,23 @@
 ;(def-family-with-id "eukaryotic initiation factor 4E" "XFAM:PF01652" :synonyms ("initiation factor 4E")) 
 (def-family-with-id "MAGE family" "XFAM:PF01454") 
 (def-family-with-id "dual specificity phosphatase" "IPR024950") 
-(def-family-with-id "epithelial sodium channel" "IPR004724") 
 (def-family-with-id "natriuretic peptide" "IPR000663") 
-(def-family-with-id "interleukin 31" "XFAM:PF15209") 
 (def-family-with-id "Protein Kinase C" "IPR012233" :synonyms ("FPLX:PKC" "PKC" "PRKC" "protein kinase C") :members ("UP:O94806" "UP:P05129" "UP:P05771" "UP:P17252" "UP:P24723" "UP:P41743" "UP:Q02156" "UP:Q04759" "UP:Q05513" "UP:Q05655" "UP:Q15139" "UP:Q9BZL6"))
 (def-family-with-id "PKA" "NCIT:C16479" :synonyms ("FPLX:PKA" "protein kinase-A" "pka" "PK-A" "protein kinase A") :members ("UP:P17612" "UP:P22694" "UP:P22612" "UP:P10644" "UP:P31321" "UP:P13861" "UP:P31323")) 
 (def-family-with-id "PKA catalytic subunit" "FPLX:PRKAC" :synonyms ("protein kinase A catalytic subunit") :members ("UP:P17612" "UP:P22694" "UP:P22612")) 
 (def-family-with-id "PKA regulatory subunit" "FPLX:PRKAR" :synonyms ("PKA R" "pkaR") :members ("UP:P31321" "UP:P31323")) 
 
 ;(define-protein "UP:P28867" ("PKCD")) 
-(def-family-with-id "collagen type IV" "FPLX:COL4" :synonyms ("Collagen Type IV" "collagen type IV" "ColIV" "Col4" "collagen IV" "type IV collagen")) 
 
-(def-family-with-id "ribonuclease" "GO:0004540" :name "ribonuclease activity") 
+;(def-family-with-id "tumour necrosis factor" "IPR006053") this is just "UP:P01375"
+
+(def-family-with-id "RNase" "IPR000026" :name "ribonuclease" :members ("UP:P10266" "UP:P43082")) ;"GO:0004540" more members
 
 (def-family-with-id "GEF" "FPLX:GEF" :synonyms ("guanine nucleotide exchange factor" "guanyl-nucleotide-exchange factor"))
 (def-family-with-id "α-catenin" "FPLX:CTNNA" :members ("UP:P35221" "UP:Q9UBT7") :synonyms ("a-cathenin" "alpha catenin" "alpha-catenin" "catenin alpha" "catenin α" "α catenin"))
 (def-family-with-id "immediate early response" "IPR008653") 
 ;(def-family-with-id "transforming growth factor-beta" "IPR016319") 
-(def-family-with-id "bacterial lipoprotein" "XFAM:PF12182") 
-(def-family-with-id "tumour necrosis factor" "IPR006053") 
+(def-family-with-id "bacterial lipoprotein" "XFAM:PF12182")
 ;(def-family-with-id "eukaryotic translation initiation factor 4E binding protein" "IPR008606") 
 (def-family-with-id "cyclin D" "FPLX:Cyclin_D" :synonyms ("IPR015451" "Cyclin D")) 
 (def-family-with-id "cyclin E" "FPLX:Cyclin_E" :synonyms ("IPR028858" "NCIT:C104197" "cyclin-E" "cyclin E family")) 
@@ -772,7 +823,6 @@
 (def-family-with-id "AP-1 transcription factor" "IPR000837") 
 (def-family-with-id "alkaline phosphatase" "XFAM:PF00245") 
 ;(def-family-with-id "phospholipase D" "IPR015679") double definition
-(def-family-with-id "ion channel" "XFAM:PF07885") 
 (def-family-with-id "calcitonin gene related peptide" "IPR015476") 
 (def-family-with-id "desmoglein" "FPLX:Desmoglein") 
 (def-family-with-id "virulence factor" "XFAM:PF13769") 
@@ -785,12 +835,13 @@
 (def-family-with-id "EF-hand" "XFAM:PF09068") 
 (def-family-with-id "amino acid synthesis" "XFAM:PF06684") 
 ;(def-family-with-id "il12" "XFAM:PF03039") 
+(def-family-with-id "kinesin" "IPR001752" :members ("UP:Q02224" "UP:Q96L93")) ;; actually about 30 members 
 (def-family-with-id "glycogen synthase" "XFAM:PF05693") 
 (def-family-with-id "E3 ligase" "FPLX:E3_Ub_ligase" :synonyms ("XFAM:PF12483" "E3 ubiquitin ligase" "ubiquitin ligase" "e3-ubiquitin ligase" "E3") :members ("UP:P78317" "UP:P98170" "UP:Q00987" "UP:Q05086" "UP:Q06587" "UP:Q13049" "UP:Q13191" "UP:Q14258" "UP:Q14669" "UP:Q15034" "UP:Q15386" "UP:Q15751" "UP:Q2Q1W2" "UP:Q5GLZ8" "UP:Q5T447" "UP:Q5T4S7" "UP:Q5TA31" "UP:Q5U5Q3" "UP:Q5U5R9" "UP:Q5VTB9" "UP:Q5VTR2" "UP:Q5XPI4" "UP:Q63HN8" "UP:Q6AZZ1" "UP:Q6Q0C0" "UP:Q6UWE0" "UP:Q6VVB1" "UP:Q6ZMZ0" "UP:Q6ZNA4" "UP:Q75N03" "UP:Q76N89" "UP:Q7Z3V4" "UP:Q7Z419" "UP:Q7Z569" "UP:Q7Z6E9" "UP:Q7Z6J0" "UP:Q7Z6J8" "UP:Q7Z6Z7"))
 (def-family-with-id "endothelin" "FPLX:EDN" :name "endothelin" :synonyms ("XFAM:PF00322.15"))
-(def-family-with-id "ER" "FPLX:ESR" :name "estrogen receptor" :members ("UP:P03372" "UP:Q92731") :synonyms ("Er" "ESR" "estradiol receptor" "estro-gen receptor" "estrogen receptor" "estrogen-receptor" "E/R"))
+
 (def-family-with-id "tribbles" "FA:03081" :name "tribbles subfamily") 
-(def-family-with-id "prion" "FA:03015" :name "prion family" :synonyms ("prion-protein" "IPR000817")) 
+
 (def-family-with-id "janus" "FA:01933" :name "janus family") 
 (def-family-with-id "SREBP" "FA:03825" :name "SREBP family") 
 (def-family-with-id "KRAB" "XFAM:PF01352.25" :name "KRAB")
@@ -811,7 +862,7 @@
 (def-family-with-id "MGPC" "XFAM:PF05220.10" :name "MgpC") 
 (def-family-with-id "EXOC" "FPLX:EXOC" :synonyms ("exocyst complex")) 
 (def-family-with-id "FOXO" "FPLX:FOXO" :name "FOXO family" :synonyms ("NCIT:C118892" "Foxo" "FoxO") :members ("UP:Q12778" "UP:O43524" "UP:P98177")) ;more members
-(def-family-with-id "FLAG" "XFAM:PF03646.13" :name "FlaG") 
+(def-family-with-id "FLAG" "XFAM:PF03646.13" :name "FlaG" :maintain-case t) 
 (def-family-with-id "FLRT" "FPLX:FLRT") 
 (def-family-with-id "AMPKalpha" "NCIT:C116019" :name "5-AMP-activated protein kinase catalytic subunit alpha")
 (def-family-with-id "alpha1beta1gamma1" "FPLX:AMPK_A1B1G1" :synonyms ("AMPK (alpha 1, beta 1, gamma 1)" "AMPK (α 1, β 1, γ 1)" "AMPK (A1/B1/G1)" "AMPK a1b1g1" "AMPK alpha1beta1gamma1" "AMPK α1β1γ1" "α1β1γ1" "AMPKalpha1beta1gamma1")) 
@@ -837,9 +888,9 @@
 (def-family-with-id "glutathione peroxidase" "FPLX:GPX" :members ("UP:Q00277" "UP:Q98234")) ;both non-human
 (def-family-with-id "peroxidase" "FA:02795" :name "peroxidase family") 
 ;(def-family-with-id "p53−" "FA:02632" :name "p53 family") 
-(def-family-with-id "follicle-stimulating hormone" "FPLX:FSH" :members ("UP:P01215" "UP:P01225")) 
+
 (def-family-with-id "GCR" "XFAM:PF02155.13" :name "GCR") 
-(def-family-with-id "Lamp" "FA:02009" :name "LAMP family")
+(def-family-with-id "LAMP" "FA:02009" :name "LAMP family" :maintain-case t)
 (def-family-with-id "ATP1A" "FPLX:ATP1A" :synonyms ("ATPase Na+/K+ transporting subunit alpha" "ATPase Na+/K+ transporting subunit beta" "ATPase Na+/K+ transporting subunit α" "ATPase Na+/K+ transporting subunit β" "Na/K ATPase alpha" "Na/K ATPase α" "AT1a") :members ("UP:P05023" "UP:P13637"))
 (def-family-with-id "ATP1B" "FPLX:ATP1B" :synonyms ("Na,K-ATPase beta subunit" "Na,K-ATPase β subunit") :members ("UP:P05026" "UP:P14415"))
 (def-family-with-id "ATP5G" "FPLX:ATP5G" :synonyms ("ATP synthase H + transporting mitochondrial F0 complex subunit G"))
@@ -857,7 +908,7 @@
 (def-family-with-id "TGS" "XFAM:PF02824.19" :name "TGS") 
 (def-family-with-id "dans" "FA:00874" :name "DAN family") 
 (def-family-with-id "hap" "XFAM:PF03866.11" :name "HAP") 
-(def-family-with-id "mask" "FA:02180" :name "mask family") 
+;(def-family-with-id "mask" "FA:02180" :name "mask family") 
 (def-family-with-id "mical" "FA:04980" :name "mical family") 
 (def-family-with-id "tenascin" "FPLX:TN" :members ("UP:P24821" "UP:Q92752" "UP:Q9UQP3"))
 (def-family-with-id "ter" "XFAM:PF05472.9" :name "ter") 
@@ -881,7 +932,6 @@
 (def-family-with-id "Tim50" "FA:04021" :name "TIM50 family") 
 (def-family-with-id "SpvB" "XFAM:PF03534.11" :name "SpvB") 
 (def-family-with-id "Sed5p" "XFAM:PF11416.6" :name "syntaxin-5 N") 
-(def-family-with-id "multispan" "UP:SL-9909" :name "Multi-pass membrane protein") 
 (def-family-with-id "monothiol" "FA:01551" :name "monothiol subfamily") 
 (def-family-with-id "kinin" "XFAM:PF08260.9" :name "kinin") 
 (def-family-with-id "espA" "XFAM:PF03433.11" :name "EspA") 
@@ -889,7 +939,7 @@
 (def-family-with-id "UBE2" "FPLX:UBE2" :name "UBE2" :synonyms ("ubiquitin conjugating enzyme" "E2" "XFAM:PF00179" "ube2" "UBE2" "E2 ubiquitin-conjugating enzyme" "E2 enzyme" "ubiquitin-conjugating enzyme") :members ("UP:P41226" "UP:Q7Z7E8")) ;; note: E2 definition is intentionally overloaded to match HMS defs; also this has many more members
 (def-family-with-id "CCMB" "XFAM:PF03379" :name "CcmB" :synonyms ("ccmb"))
 (def-family-with-id "STK"  "NCIT:C17325" :name "serine/Threonine protein kinase")
-(def-family-with-id "Gauge" "FA:01443" :name "GAGE family") 
+;(def-family-with-id "Gauge" "FA:01443" :name "GAGE family") 
 (def-family-with-id "Galpha" "FA:01401" :name "G-alpha family") 
 (def-family-with-id "Gab" "FA:01441" :name "GAB family") 
 (def-family-with-id "GSAP16" "XFAM:PF14959.4" :name "GSAP-16") 
@@ -898,7 +948,7 @@
 (def-family-with-id "Ftz" "XFAM:PF03867.12" :name "FTZ")
 (def-family-with-id "FOS" "FPLX:FOS_family" :name "FOS" :members ("UP:P01100" "UP:P53539" "UP:P15407" "UP:P15408") :synonyms ("Fos" "fos" "FA:00408" "fos subfamily")) 
 (def-family-with-id "Flot" "FPLX:FLOT" :name "FLOT") 
-(def-family-with-id "Fit" "FA:01356" :name "FIT family") 
+(def-family-with-id "FIT" "FA:01356" :name "FIT family" :maintain-case t :members ("UP:A5D6W6" "UP:Q8N6M3")) 
 (def-family-with-id "FcγRs" "NCIT:C104675" :name "Fc-gamma receptor") 
 (def-family-with-id "FcR" "NCIT:C17070" :name "Fc receptor") 
 (def-family-with-id "Farps" "XFAM:PF01581.14" :name "FARP") 
@@ -917,10 +967,10 @@
 (def-family-with-id "IBB" "XFAM:PF01749.18" :name "IBB") 
 (def-family-with-id "Hspa" "FPLX:HSPA" :name "HSPA") 
 (def-family-with-id "Hmga" "FA:01780" :name "HMGA family") 
-(def-family-with-id "Hit" "FA:01775" :name "HIT family") 
+(def-family-with-id "HIT" "FA:01775" :name "HIT family" :maintain-case t) 
 (def-family-with-id "HisG" "XFAM:PF01634.16" :name "HisG") 
 (def-family-with-id "Hin" "XFAM:PF02760.13" :name "HIN") 
-(def-family-with-id "Hey" "FA:01749" :name "HEY family") 
+(def-family-with-id "HEY" "FA:01749" :name "HEY family" :maintain-case t) 
 (def-family-with-id "HSPB" "FPLX:HSPB" :name "HSPB") 
 (def-family-with-id "HSP90AA" "FPLX:HSP90AA" :name "HSP90AA") 
 (def-family-with-id "HR1" "XFAM:PF02185.14" :name "HR1") 
@@ -948,7 +998,7 @@
 (def-family-with-id "MLO" "XFAM:PF03094.13" :name "mlo") 
 (def-family-with-id "MLFs" "FA:02319" :name "MLF family") 
 (def-family-with-id "MIC" "FA:02295" :name "MIC subfamily") 
-(def-family-with-id "MERE" "XFAM:PF05052.10" :name "MerE") 
+(def-family-with-id "MERE" "XFAM:PF05052.10" :name "MerE" :maintain-case t) 
 (def-family-with-id "MECA" "XFAM:PF05389.10" :name "MecA") 
 (def-family-with-id "MCTP" "FA:02189" :name "MCTP family") 
 ;(def-family-with-id "MAP2Ks" "BE:MAP2K" :name "MAP2K") 
@@ -981,7 +1031,6 @@
 (def-family-with-id "Notch" "FA:02506" :name "NOTCH family" :synonyms ("FPLX:Notch" "notch" "NOTCH")) 
 (def-family-with-id "Noda" "XFAM:PF02474.13" :name "NodA") 
 (def-family-with-id "Nico" "XFAM:PF03824.14" :name "NicO")
-(def-family-with-id "nicotinic acetylcholine receptor" "FPLX:CHRN" :synonyms ("nAChR")) 
 (def-family-with-id "Nesprin" "FA:02442" :name "nesprin family") 
 (def-family-with-id "NSG" "FA:02525" :name "NSG family") 
 (def-family-with-id "NLRP" "FA:02482" :name "NLRP family") 
@@ -1017,7 +1066,7 @@
 (def-family-with-id "Otubain" "XFAM:PF10275.7" :name "peptidase C65") 
 (def-family-with-id "Osta" "XFAM:PF03968.12" :name "OstA") 
 (def-family-with-id "Orai" "FA:02595" :name "orai family") 
-(def-family-with-id "Opacity" "XFAM:PF02462.13" :name "opacity") 
+(def-family-with-id "Opacity porin" "XFAM:PF02462.13" :name "opacity porin") 
 (def-family-with-id "Omega" "FA:01673" :name "omega family") 
 (def-family-with-id "OTU" "XFAM:PF02338.17" :name "OTU") 
 (def-family-with-id "PorB" "XFAM:PF11565.6" :name "PorB") 
@@ -1052,7 +1101,7 @@
 (def-family-with-id "SAPAP" "FA:03495" :name "SAPAP family") 
 (def-family-with-id "S6e" "XFAM:PF01092.17" :name "ribosomal S6e") 
 (def-family-with-id "S1PR" "FPLX:S1PR" :name "S1PR") 
-(def-family-with-id "Run" "XFAM:PF02759.17" :name "RUN") 
+(def-family-with-id "RUN" "XFAM:PF02759.17" :name "RUN" :maintain-case t) 
 (def-family-with-id "Rrn6" "XFAM:PF10214.7" :name "rrn6") 
 (def-family-with-id "Ror" "FA:03130" :name "ROR subfamily" :synonyms ("FPLX:ROR" "RoR")) 
 (def-family-with-id "Robo" "FA:01845" :name "ROBO family") 
@@ -1074,7 +1123,7 @@
 (def-family-with-id "SBE2" "XFAM:PF17076.3" :name "SBE2") 
 (def-family-with-id "TACC" "FA:03908" :name "TACC family") 
 (def-family-with-id "T4SS" "XFAM:PF07996.9" :name "T4SS") 
-(def-family-with-id "Sun" "XFAM:PF03856.11" :name "SUN") 
+(def-family-with-id "SUN" "XFAM:PF03856.11" :name "SUN" :maintain-case t) 
 (def-family-with-id "Ste5" "XFAM:PF11610.6" :name "ste5") 
 (def-family-with-id "SspI" "XFAM:PF14098.4" :name "SSPI") 
 (def-family-with-id "Sprr2" "XFAM:PF14820.4" :name "SPRR2") 
@@ -1085,7 +1134,7 @@
 (def-family-with-id "Sec2p" "XFAM:PF06428.9" :name "sec2p") 
 (def-family-with-id "Sdf" "XFAM:PF00375.16" :name "SDF") 
 (def-family-with-id "Tiam" "FA:04014" :name "TIAM family") 
-(def-family-with-id "Tea" "XFAM:PF01285.16" :name "TEA") 
+(def-family-with-id "TEA" "XFAM:PF01285.16" :name "TEA" :maintain-case t) 
 (def-family-with-id "Tco89" "XFAM:PF10452.7" :name "TCO89") 
 (def-family-with-id "Tbx" "XFAM:PF12598.6" :name "TBX") 
 (def-family-with-id "TSP9" "XFAM:PF11493.6" :name "TSP9") 
@@ -1116,15 +1165,13 @@
 (def-family-with-id "BIRC" "FPLX:BIRC") 
 (def-family-with-id "beclin" "FA:00348" :name "beclin family") 
 (def-family-with-id "bZIP" "FA:00404" :name "bZIP family") 
-(def-family-with-id "aurora" "FA:03097" :name "aurora subfamily") 
+(def-family-with-id "aurora kinase" "FA:03097" :name "aurora subfamily") 
 (def-family-with-id "atg11" "XFAM:PF10377.7" :name "ATG11") 
 (def-family-with-id "asterix" "FA:04971" :name "asterix family") 
 (def-family-with-id "aros" "FA:00261" :name "AROS family") 
 (def-family-with-id "argos" "XFAM:PF11581.6" :name "argos") 
 (def-family-with-id "apoA" "FPLX:APOA" :name "APOA" :synonyms ("ApoA" "apolipoprotein (a)" "apolipoprotein A" "apolipoprotein(A)" "apolipoprotein(a)") :members ("UP:P08519" "UP:P02647" "UP:P02652" "UP:P06727" "UP:Q6Q788"))
-(def-family-with-id "angiokine" "NCIT:C113246" :name "angiokine") 
 (def-family-with-id "alae" "XFAM:PF06610.11" :name "AlaE") 
-(def-family-with-id "adipokine" "NCIT:C123810" :name "adipokine") 
 (def-family-with-id "cortexin" "FA:00743" :name "cortexin family") 
 (def-family-with-id "condensin" "XFAM:PF04079.14" :name "SMC ScpB") 
 (def-family-with-id "classII" "FA:04726" :name "class-II subfamily") 
@@ -1134,15 +1181,10 @@
 (def-family-with-id "calsarcin" "XFAM:PF05556.9" :name "calsarcin") 
 (def-family-with-id "cGMP" "FA:03061" :name "cGMP subfamily") 
 (def-family-with-id "cBid" "XFAM:PF01888.15" :name "CbiD")
-(def-family-with-id "co-receptor" "GO:0015026" :name "coreceptor" :members ("UP:P61073")) ; many more
-(def-family-with-id "symporter" "GO:0015293" :name "symporter" :synonyms ("cotransporter" "co-transporter"))
-(def-family-with-id "antiporter" "GO:0015297" :name "antiporter")
-(def-family-with-id "uniporter" "GO:0015292" :name "uniporter")
-(def-family-with-id "auto-transporter" "GO:0015474" :name "autotransporter")
 (def-family-with-id "cyclase" "GO:0009975" :name "cyclase" :members ("UP:O43306" "UP:O60503" "UP:O95622" "UP:P40145" "UP:P51828" "UP:Q08462" "UP:Q08828" "UP:Q8NFM4" "UP:Q96PN6" "UP:P51841" "UP:O75343" "UP:P16066" "UP:P25092" "UP:P33402" "UP:Q02108" "UP:Q02153" "UP:Q02846")) 
 (def-family-with-id "adenylate cyclase" "FPLX:ADCY" :name "adenylate cyclase" :synonyms ("GO:0004016" "adenylyl cyclase" "adenylyl-cyclase") :members ("UP:O43306" "UP:O60503" "UP:O95622" "UP:P40145" "UP:P51828" "UP:Q08462" "UP:Q08828" "UP:Q8NFM4" "UP:Q96PN6"))
 (def-family-with-id "cathepsin" "NCIT:C16389" :name "cathepsin" :members ("UP:P08311" "UP:P09661" "UP:P10606" "UP:P14091" "UP:P25774" "UP:P43234" "UP:P43235" "UP:P53634" "UP:P56202" "UP:Q9UBR2" "UP:Q9UBX1" "UP:O60911" "UP:P07339" "UP:P07711" "UP:P07858"))
-(def-family-with-id "oncoprotein" "NCIT:C16934" :name "oncoprotein" :members ("UP:P16949")) ; many more
+
 (def-family-with-id "V-SRC" "NCIT:C19106" :name "V-SRC" :synonyms ("v-Src" "vSrc" "vsrc") :members ("UP:P15054" "UP:P00524"))
 (def-family-with-id "glycosidase" "GO:0016798" :name "glycosylase") ;many members
 (def-family-with-id "glycosyltransferase" "NCIT:C17434") 
@@ -1178,7 +1220,7 @@
 (def-family-with-id "fibrinogen" "FPLX:Fibrinogen" :members ("UP:P02671" "UP:P22775"))  
 (def-family-with-id "fch" "XFAM:PF00611.21" :name "FCH") 
 (def-family-with-id "fasciclin" "XFAM:PF02469.20" :name "fasciclin") 
-(def-family-with-id "eukaryotic" "FA:03419" :name "eukaryotic subfamily") 
+(def-family-with-id "eukaryotic protein" "FA:03419" :name "eukaryotic subfamily") 
 (def-family-with-id "ephrinA" "NCIT:C113247" :name "ephrin-A") 
 (def-family-with-id "Eph receptor" "FPLX:Ephrin_receptor") 
 (def-family-with-id "endosulfine" "FA:01106" :name "endosulfine family")
@@ -1186,7 +1228,7 @@
 (def-family-with-id "homer" "FA:01786" :name "homer family") 
 (def-family-with-id "heme oxygenase" "FPLX:HMOX" :synonyms ("haem oxygenase")) 
 (def-family-with-id "hedgehog" "FA:01729" :name "hedgehog family" :members ("UP:Q15465" "UP:O43323" "UP:Q14623")) 
-(def-family-with-id "hairpins" "XFAM:PF04877.10" :name "hairpins") 
+(def-family-with-id "hairpin" "XFAM:PF04877.10" :name "hairpins") 
 (def-family-with-id "HrpE" "XFAM:PF06188.10" :name "HrpE" :maintain-case t) 
 ;(def-family-with-id "matrices" "XFAM:PF00661.19" :name "matrix") 
 ;(def-family-with-id "mates" "XFAM:PF01554.16" :name "MatE") 
@@ -1256,10 +1298,8 @@
 (def-family-with-id "DHC" "XFAM:PF09626.8" :name "DHC") 
 (def-family-with-id "Egl1" "XFAM:PF11430.6" :name "EGL-1") 
 (def-family-with-id "Lin7" "FA:02096" :name "lin-7 family")
-(def-family-with-id "luteinizing hormone" "FPLX:LH") 
 (def-family-with-id "NPP1" "XFAM:PF05630.9" :name "NPP1") 
 (def-family-with-id "Tcf-Lef" "FPLX:TCF_LEF" :name "TCF-LEF" :synonyms ("FA:03943" "Tcf/Lef" "Tcf" "TCF" "TCF/LEF" "TCF/LEF family"))
-(def-family-with-id "TNF-receptor family" "FPLX:TNFRSF" :synonyms ("TNFR superfamily receptors" "TNFR family")) 
 (def-family-with-id "UNC-5" "FA:04300" :name "unc-5 family") 
 (def-family-with-id "humanin" "FA:04811" :name "humanin family") 
 (def-family-with-id "mEGF" "FA:02225" :name "MEGF family") 
@@ -1360,11 +1400,10 @@
 ;(def-family-with-id "pKID" "XFAM:PF02173.15" :name "pKID") 
 (def-family-with-id "rabaptin" "FA:03214" :name "rabaptin family") 
 (def-family-with-id "semaphorin" "FA:03563" :name "semaphorin family") 
-(def-family-with-id "single-pass" "UP:SL-9904" :name "Single-pass membrane protein") 
 ;(def-family-with-id "β-APP" "XFAM:PF03494.11" :name "beta-APP") 
 ;(def-family-with-id "Nef" "XFAM:PF00469" :name "Negative Regulatory Factor")
 (def-family-with-id "dynamin" "FPLX:DNM" :name "dynamin" :synonyms ("XFAM:PF00350") :members ("UP:Q05193" "UP:P50570" "UP:Q9UQ16")) ;; all the human one
-(def-family-with-id "TNFR" "FPLX:TNFRSF" :members ("UP:P25942" "UP:Q9Y5U5" "UP:P26842" "UP:P28908" "UP:P36941" "UP:P43489" "UP:P83626" "UP:Q02223" "UP:Q07011" "UP:Q92956" "UP:Q93038" "UP:Q96RJ3" "UP:Q9HAV5" "UP:Q9NP84" "UP:Q9NS68" "UP:Q9UBN6" "UP:Q9Y6Q6" "UP:O00220" "UP:O00300" "UP:O14763" "UP:O14798" "UP:O14836" "UP:O75509" "UP:O95407" "UP:P08138" "UP:P19438" "UP:P20333" "UP:P25445") :synonyms ("TNFR superfamily" "TNF receptor family protein" "TNF-R" "tnfr" "TNFRSF" "TNFR superfamily members" "TNFR subfamily" "TNF-R superfamily")) 
+(def-family-with-id "TNFR" "FPLX:TNFRSF" :members ("UP:P25942" "UP:Q9Y5U5" "UP:P26842" "UP:P28908" "UP:P36941" "UP:P43489" "UP:P83626" "UP:Q02223" "UP:Q07011" "UP:Q92956" "UP:Q93038" "UP:Q96RJ3" "UP:Q9HAV5" "UP:Q9NP84" "UP:Q9NS68" "UP:Q9UBN6" "UP:Q9Y6Q6" "UP:O00220" "UP:O00300" "UP:O14763" "UP:O14798" "UP:O14836" "UP:O75509" "UP:O95407" "UP:P08138" "UP:P19438" "UP:P20333" "UP:P25445") :synonyms ("TNFR superfamily" "TNF receptor family protein" "TNF-R" "tnfr" "TNFRSF" "TNFR superfamily members" "TNFR subfamily" "TNF-R superfamily" "TNF-receptor superfamily" "TNF-receptor family" "TNFR superfamily receptors" "TNFR family")) 
 ;;;
 ;; these are genes that code for multiple proteins, so we're using the hgnc id as the uid and then including the multiple human proteins they code for
 (def-family-with-id "AKAP7" "HGNC:377" :name "A-kinase anchoring protein 7" :synonyms ("a-kinase anchoring protein 7") :members ("UP:O43687" "UP:Q9P0M2"))
@@ -1462,7 +1501,6 @@
 (def-family-with-id "DEHI" "XFAM:PF10778" :name "DehI") 
 (def-family-with-id "PYG" "FPLX:PYG" :name "PYG") 
 (def-family-with-id "SUF" "XFAM:PF05843" :name "suf") 
-(def-family-with-id "AMIGO" "FA:01834" :name "AMIGO family") 
 (def-family-with-id "CTI" "XFAM:PF06934" :name "CTI") 
 (def-family-with-id "LPAR" "FPLX:LPAR" :name "LPAR") 
 (def-family-with-id "ACDP" "FA:00064" :name "ACDP family") 
@@ -1512,11 +1550,9 @@
 (def-family-with-id "calcipressin" "XFAM:PF04847" :name "calcipressin") 
 (def-family-with-id "sumt" "GO:0004851" :name "uroporphyrin-III C-methyltransferase activity") 
 (def-family-with-id "tela" "XFAM:PF05816" :name "TelA") 
-(def-family-with-id "multipass" "UP:SL-9909" :name "Multi-pass membrane protein") 
 (def-family-with-id "nfe" "FPLX:NFE" :name "NFE") 
 (def-family-with-id "multiubiquitin" "XFAM:PF14452" :name "multi ubiq") 
 (def-family-with-id "pertactin" "XFAM:PF03212" :name "pertactin") 
-(def-family-with-id "gastrokine" "FA:01473" :name "gastrokine family") 
 (def-family-with-id "gliadin" "XFAM:PF13016" :name "gliadin") 
 (def-family-with-id "apamin" "XFAM:PF17454" :name "bee toxin") 
 (def-family-with-id "ano" "FPLX:ANO" :name "ANO") 
@@ -1529,7 +1565,6 @@
 (def-family-with-id "rrmj" "FA:02275" :name "rrmJ family") 
 (def-family-with-id "lunapark" "FA:02129" :name "lunapark family") 
 (def-family-with-id "otubain" "XFAM:PF10275" :name "peptidase C65") 
-(def-family-with-id "chemorepellant" "GO:0045499" :name "chemorepellent activity") 
 (def-family-with-id "lipin" "FA:02100" :name "lipin family") 
 (def-family-with-id "dtw" "FA:01020" :name "DTW family") 
 (def-family-with-id "secretoglobin" "FA:03544" :name "secretoglobin family") 
@@ -1641,7 +1676,7 @@
 (def-family-with-id "Popeye" "FA:02917" :name "popeye family") 
 (def-family-with-id "Ppase" "FA:02995" :name "PPase family") 
 (def-family-with-id "tSNARE" "GO:0005484" :name "SNAP receptor activity") 
-(def-family-with-id "Alex" "FA:00152" :name "ALEX family") 
+(def-family-with-id "ALEX" "FA:00152" :name "ALEX family" :maintain-case t) 
 (def-family-with-id "FimA" "XFAM:PF16970" :name "FimA") 
 (def-family-with-id "SacI" "XFAM:PF09566" :name "SacI restriction endonuclease" :synonyms ("SacI restriction enzyme"))
 (def-family-with-id "CCMH" "XFAM:PF03918" :name "CcmH") 
@@ -1657,7 +1692,6 @@
 (def-family-with-id "ince" "XFAM:PF17627" :name "IncE") 
 (def-family-with-id "kinaselike" "XFAM:PF14531" :name "kinase-like") 
 (def-family-with-id "mucinlike" "XFAM:PF16058" :name "mucin-like") 
-(def-family-with-id "myokine" "NCIT:C157583" :name "myokine") 
 (def-family-with-id "rele" "XFAM:PF06296" :name "RelE") 
 (def-family-with-id "Mybp" "FA:01844" :name "MyBP family") 
 (def-family-with-id "Styelin" "XFAM:PF17562" :name "styelin") 
@@ -1682,7 +1716,5 @@
 (def-family-with-id "PRX6" "FA:00130" :name "prx6 subfamily") 
 (def-family-with-id "fpv060" "XFAM:PF17614" :name "FPV060") 
 (def-family-with-id "gp49" "XFAM:PF05973" :name "gp49") 
-(def-family-with-id "Gprotein" "FPLX:G_protein" :name "G-protein") 
 (def-family-with-id "lnterferon" "FPLX:Interferon" :name "Interferon") 
 (def-family-with-id "eiF4E" "FPLX:EIF4E" :members ("UP:P06730")) 
-(def-family-with-id "immunoprotein" "NCIT:C16725") 

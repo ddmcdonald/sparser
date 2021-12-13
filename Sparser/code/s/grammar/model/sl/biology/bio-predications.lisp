@@ -37,6 +37,11 @@
 (adj "encapsulated" :super bio-predication) ;; about a virus
 
 (adj "-like" :super bio-predication) ;; as in "UBA (ubiquitin-associated)-like domains" where we don't combine the "-like"
+;; moved from bio-methods -- seems to be duplication
+(define-category -like :specializes bio-predication
+  :mixins (post-adj)
+  :realization
+  (:adj "-like"))
 (adj "in excess" :super bio-predication)
 (adj "abundant" :super bio-predication)
 (adj "nonreducing" :super bio-predication)
@@ -60,7 +65,7 @@
 (adj "double-stranded" :super bio-predication)
 (adj "single-stranded" :super bio-predication)
 (adj "standard" :super bio-predication)
-(adj "familial" :super bio-predication)
+;(adj "familial" :super bio-predication) added to family
 (adj "nonsignaling" :super bio-predication)
 (def-synonym nonsignaling (:adj "nonsignalling"))
 (adj "intermolecular" :super bio-predication)
@@ -129,7 +134,7 @@
 (adj "mutual" :super bio-predication) ;; keyword: (al ADJ) 
 (adj "naked" :super bio-predication)
 (adj "native" :super bio-predication)
-(adj "oncogenic" :super bio-predication)
+;(adj "oncogenic" :super bio-predication) added to oncogenesis
 (adj "parallel" :super bio-predication)
 (adj "pharmacological" :super bio-predication) ;; keyword: (al ADJ) 
 (adj "physiological" :super bio-predication)

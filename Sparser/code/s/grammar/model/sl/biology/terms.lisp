@@ -42,10 +42,6 @@
 
 (adj "open" :super bio-relation)
 
-
-
-
-
 ;; avoid errors for words describing processes in biology and computation
 
 ;; turns out "line" is a protein
@@ -63,17 +59,18 @@
 (define-adverb "homeostatically")
 (define-adverb "metabolically")
 (define-adverb "mitotically")
+(define-adverb "sterically")
 
 (define-adjective "bioactive")
 ;; (define-adjective "biological") -- see taxonomy
 (define-adjective "cancerous")
 (define-adjective "catalytic")
-(define-adjective "chromosomal") ;chromosome
+;(define-adjective "chromosomal") ;chromosome
 (define-adjective "conserved")
 (define-adjective "non-conserved")
-(define-adjective "embryonic")
+;(define-adjective "embryonic") added to embryo
 (define-adjective "endothelial") ; endothelium is noun
-(define-adjective "epidermal")
+;(define-adjective "epidermal")added to epidermis
 (define-adjective "epigenetic")
 (define-adjective "epithelial")
 (define-adjective "extracellular" :form 'spatial-adjective)
@@ -83,14 +80,14 @@
 (define-adjective "heterotypic")
 (define-adjective "histopathological")
 (define-adjective "homeostatic")
-(define-adjective "immune")
+(define-adjective "immune") ;; add to immune system?
 (define-adjective "immunosuppressive")
 (define-adjective "intracellular" :form 'spatial-adjective)
 (define-adjective "intratumoral" :form 'spatial-adjective)
 (define-adjective "medical")
 (define-adjective "metabolic")
 (define-adjective "metastatic")
-(define-adjective "mitochondrial")
+;(define-adjective "mitochondrial") added to mitochondria
 (define-adjective "mitogenic")
 (define-adjective "multicellular")
 (define-adjective "necrotic")
@@ -101,7 +98,7 @@
 (define-adjective "pericellular" :form 'spatial-adjective)
 (define-adjective "peritumoral" :form 'spatial-adjective)
 (define-adjective "physiologic")
-(define-adjective "pituitary")
+;(define-adjective "pituitary") added to pituitary
 (define-adjective "premalignant")
 (define-adjective "preneoplastic")
 (define-adjective "proangiogenic")
@@ -109,19 +106,15 @@
 (define-adjective "proinflammatory") 
 (define-adjective "proliferative") ;opposite: "antiproliferative" or "nonproliferative"
 (define-adjective "proteolytic")
-(define-adjective "renal") ;kidney
+;(define-adjective "renal") ;kidney
 (define-adjective "replicative") 
 (define-adjective "somatic")
 (define-adjective "stromal") ;stroma
-(define-adjective "telomeric") ;telomere
+;(define-adjective "telomeric") ;telomere
 (define-adjective "therapeutic") ;related to therapy
 (define-adjective "tractable")
 (define-adjective "transmembrane")
-(define-adjective "tumorigenic") ;tumorigenesis
-
-
-
-
+;(define-adjective "tumorigenic") ;tumorigenesis
 
 ;; new nouns and verbs used in Ras model comments
 
@@ -136,11 +129,6 @@
 ;;(noun "king" :super abstract) ;; actually an author's name, but treated as a verb because of morphology
 
 
-
-
-(define-adverb "sterically")
-
-
 ;;proteins from comments -- TO-DO move out to proteins file and do correctly
 ;;(define-protein "KBTBD7 E3 RING" ("KBTBD7 E3 RING" )) ;; this isn't a protein but part of a complex "the CUL3:KBTBD7 E3 RING ligase complex" (CUL3 is an E3 RING ligase)
 
@@ -151,9 +139,6 @@
 
 
 ;;(def-synonym not (:adj "non"))
-
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -181,31 +166,7 @@
 (def-synonym anti (:adj "anti-"))
 |#
 
-(define-category antibody :specializes protein
-                 :binds ((antigen molecule))
-                 :bindings (uid "NCIT:C16295")
-  :realization
-        (:noun ("antibody" "anti-" "anti" "Ab") ;; often plural "Abs"
-         :m antigen
-         :to antigen
-         :against antigen
-         :for antigen))
 
-;; note: monoclonal antibody and polyclonal antibody are currently
-;; defined as drugs, because they are frequently used for that
-;; purpose-- currently they are individuals despite the fact that we
-;; have several monoclonal antibodies defined that could be under a
-;; subcategory and possibly we should have a whole biological drug
-;; category that are both drugs and proteins
-
-;; immunoglobulin is basically a synonym for antibody, at least by
-;; wikipedia, but it had been defined as a protein familly. It's very
-;; unclear whether to consider the immunoglobulin isotypes complexes
-;; or proteins, and then there are subclasses of those. For now, I've
-;; moved immunoglobulin and its isotypes and subclasses to
-;; bio-complexes where it specializes antibody and has bio-complex as
-;; a mixin
-;; 
 
 
 ;;(noun "condition" :super experimental-condition) OBE -- i taxonomy

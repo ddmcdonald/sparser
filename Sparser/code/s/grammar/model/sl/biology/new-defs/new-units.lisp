@@ -39,7 +39,7 @@
                           :name "angstrom"
                           :synonyms (,(format nil "~a" #\LATIN_CAPITAL_LETTER_A_WITH_RING_ABOVE))))
 
-(def-indiv-with-id unit-of-measure "Gray" "UO:0000134" :name "Gray") 
+(def-indiv-with-id unit-of-measure "Gray" "UO:0000134" :name "Gray" :maintain-case t) 
 (def-indiv-with-id unit-of-measure "mGy" "UO:0000142" :name "milligray" :maintain-case t) 
 
 (def-indiv-with-id unit-of-measure "Da" "UO:0000221" :name "dalton" :maintain-case t)

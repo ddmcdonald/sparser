@@ -25,7 +25,7 @@
 
 
 (def-synonym cell-line (:noun "line"))
-(def-synonym cell-line (:noun "cell line"))
+;;(def-synonym cell-line (:noun "cell line"))
 ;;(def-synonym cell-line (:noun "cell"))
 ;;(def-synonym cell-line (:noun "cultured cell"))
 ;;(def-synonym cell-line (:noun "cultured cell line"))
@@ -55,7 +55,7 @@
 (def-cell-line "SkMel28")
 (def-cell-line "WM266.4")
 (def-cell-line "WM852")
-(def-cell-line "HeLa")
+;(def-cell-line "HeLa")
 (def-cell-line "hBRIE")
 (def-cell-line "HEK293")
 (def-cell-line "HEK293T")
@@ -84,7 +84,7 @@
 ;; Fibroblasts are the most common cells of connective tissue in animals.
 ;(noun "fibroblast" :super cell-type)
 
-(noun "keratin" :super cell-type) ;; NOT SURE THIS IS HOW IT IS BEING USED
+;(noun "keratin" :super cell-type) ;; NOT SURE THIS IS HOW IT IS BEING USED -- it's a protein family
 
 (noun "MenSC" :super cell-type) ;; TRIPS wanted to define this as a protein domain stemming from MANSC -> MENSC, but that's clearly not right in context -- it's really "Menstrual Stem Cell" but, unfortunately for some reason that isn't in either cellosaurus or cell ontology, so I can't give it an ID
 (def-synonym MenSC (:noun "menstrual stem cell"))

@@ -231,6 +231,8 @@ athogenic Asian Avian Influenza A (H5N2) Virus" "HPAI H5N2 Virus" "Highly Pathog
 (def-synonym iVDPV (:noun "immunodeficiency-related vaccine-derived poliovirus"))
 (noun "ArkDPI" :super virus) ;; virus strain used in vaccines
 
+(noun ("gRSV" "ground ringspot virus") :super virus)
+
 (def-indiv-with-id virus "DENV1" "NCIT:C112266" :name "dengue virus 1") 
 (def-indiv-with-id virus "DENV2" "NCIT:C112267" :name "dengue virus 2") 
 (def-indiv-with-id virus "DENV3" "NCIT:C112268" :name "dengue virus 3") 
@@ -238,7 +240,7 @@ athogenic Asian Avian Influenza A (H5N2) Virus" "HPAI H5N2 Virus" "Highly Pathog
 (def-indiv-with-id virus "EIAV" "NCIT:C14205" :name "equine infectious anemia virus") 
 (def-indiv-with-id virus "FIV" "NCIT:C14288" :name "feline immunodeficiency virus") 
 (def-indiv-with-id virus "Flaviviridae" "NCIT:C113201" :name "flaviviridae" :synonyms ("Flaviridae")) 
-(def-indiv-with-id virus "HBV" "NCIT:C14215" :name "hepatitis B virus") 
+(def-indiv-with-id virus "HBV" "NCIT:C14215" :name "hepatitis B virus" :synonyms ("HepB")) 
 (def-indiv-with-id virus "HCV" "NCIT:C14312" :name "hepatitis C virus") 
 (def-indiv-with-id virus "HERV-K" "NCIT:C128305" :name "HERV-K") 
 (def-indiv-with-id virus "HEV" "NCIT:C14295" :name "hepatitis E virus") 

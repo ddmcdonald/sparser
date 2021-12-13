@@ -3,12 +3,12 @@
 ;; many things were moved out of bio to mid-level/organisms in 9/2021
 
 ;;(def-indiv-with-id organism "strain" "NCIT:C14419" :name "organism strains") use def from taxonomy
-(def-indiv-with-id organism "prokaryote" "NCIT:C14263" :name "prokaryote") 
-(def-indiv-with-id organism "eukaryote" "NCIT:C25796" :name "eukaryota")
-(def-indiv-with-id organism "protista" "NCIT:C77914" :name "protista") 
-(def-indiv-with-id organism "archaea" "NCIT:C61092" :name "archaea") 
+;;(def-indiv-with-id organism "prokaryote" "NCIT:C14263" :name "prokaryote") 
+;;(def-indiv-with-id organism "eukaryote" "NCIT:C25796" :name "eukaryota")
+(def-indiv-with-id eukaryote "protista" "NCIT:C77914" :name "protista") 
+(def-indiv-with-id prokaryote "archaea" "NCIT:C61092" :name "archaea") 
 ;;(def-indiv-with-id organism "amoeba" "NCIT:C119581" :name "amoeba" :plural ("amoebas" "amoebae")) 
-(def-indiv-with-id organism "protozoan" "NCIT:C77916" :name "protozoa") 
+(def-indiv-with-id eukaryote "protozoan" "NCIT:C77916" :name "protozoa") 
 #| added to mid-level organisms as categories
 (def-indiv-with-id organism "Plant" "BTO:0001481" :name "plant") ;; NCIT:C14258
 (def-indiv-with-id organism "fungus" "BTO:0001494" :name "fungus" :plural ("fungi"))
@@ -202,7 +202,7 @@
 (def-indiv-with-id organism "Cryprosporidium" "NCIT:C77214" :name "cryptosporidium") 
 (def-indiv-with-id organism "Andromeda" "NCIT:C74316" :name "andromeda") 
 (def-indiv-with-id organism "Plasmodium" "NCIT:C98268" :name "plasmodium" :plural ("plasmodium" "plasmodia")) ;;parasite
-(def-indiv-with-id organism "helminth" "NCIT:C125642" :name "helminth") ;;parasite
+(def-indiv-with-id organism "helminth" "NCIT:C125642" :name "helminth" :plural ("helminthes")) ;;parasite
 (def-indiv-with-id organism "Boswellia" "NCIT:C54081" :name "boswellia serrata") 
 (def-indiv-with-id organism "SUS" "NCIT:C160990" :name "sus") 
 (def-indiv-with-id organism "Chlorocebus" "NCIT:C161031" :name "chlorocebus") 
@@ -220,7 +220,7 @@
 (def-indiv-with-id organism "Suid" "NCIT:C14322" :name "suidae") 
 (def-indiv-with-id organism "Taenia" "NCIT:C125925" :name "taenia") 
 (def-indiv-with-id organism "Trichinella" "NCIT:C125928" :name "trichinella") 
-(def-indiv-with-id organism "ViteX" "NCIT:C72243" :name "angus castus") 
+(def-indiv-with-id plant "ViteX" "NCIT:C72243" :name "angus castus") 
 (def-indiv-with-id organism "Wuchereria" "NCIT:C122013" :name "wuchereria")
 (def-indiv-with-id organism "yohimbe" "NCIT:C93306" :name "pausinystalia yohimbe") 
 (def-indiv-with-id organism "cricetid" "NCIT:C79741" :name "cricetidae") 

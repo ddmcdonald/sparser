@@ -22,7 +22,7 @@
                 :of group-members))
 
 (define-category set :specializes group :realization (:noun "set"))
-(define-category family :specializes group :realization (:noun "family"))
+(define-category family :specializes group :realization (:noun "family" :adj "familial"))
 (define-category pool :specializes group :realization (:noun "pool"))
 (define-category portion :specializes group :realization (:noun  "portion"))
 (define-category superfamily :specializes group :realization (:noun "superfamily"))

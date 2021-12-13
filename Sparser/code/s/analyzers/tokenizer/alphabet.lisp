@@ -2022,8 +2022,8 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (10815 (:punctuation  .,(punctuation-named (code-char 10815)))) ;; ⨿
     (10848 (:punctuation  .,(punctuation-named (code-char 10848)))) ;; #\LOGICAL_AND_WITH_DOUBLE_UNDERBAR 
     (10869 (:punctuation  .,(punctuation-named (code-char 10869)))) ;; #\TWO_CONSECUTIVE_EQUALS_SIGNS 
-    (10877 (:punctuation  .,(punctuation-named (code-char 10877)))) ;;"⩽", (code = 10878)
-    (10878 (:punctuation  .,(punctuation-named (code-char 10878)))) ;;"⩾", (code = 10878)
+    (10877 (:punctuation  .,(punctuation-named (code-char 10877)))) ;;"⩽", (code = 10877) LESS-THAN_OR_SLANTED_EQUAL_TO
+    (10878 (:punctuation  .,(punctuation-named (code-char 10878)))) ;;"⩾", (code = 10878) GREATER-THAN_OR_SLANTED_EQUAL_TO
     (10913 (:punctuation  .,(punctuation-named (code-char 10913)))) ;; #\DOUBLE_NESTED_LESS-THAN 
     (11361 (:punctuation ., (punctuation-named (code-char 11361)))) ;; #\LATIN_SMALL_LETTER_L_WITH_DOUBLE_BAR 
     (11373 (:punctuation  .,(punctuation-named (code-char 11373)))) ;; Ɑ
@@ -2034,7 +2034,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (12290 (:punctuation  .,(punctuation-named (code-char 12290)))) ;; 。
     (12296 (:punctuation  .,(punctuation-named (code-char 12296)))) ;; 〈
     (12297 (:punctuation  .,(punctuation-named (code-char 12297)))) ;; 〉
-    (12298 (:punctuation  ., (punctuation-named (code-char 12298)))) ;; #\LEFT_DOUBLE_ANGLE_BRACKET 
+    (12298 (:punctuation  .,(punctuation-named (code-char 12298)))) ;; #\LEFT_DOUBLE_ANGLE_BRACKET 
     (12298 (:punctuation ., (punctuation-named (code-char 12298)))) ;; #\LEFT_DOUBLE_ANGLE_BRACKET 
     (12299 (:punctuation  ., (punctuation-named (code-char 12299)))) ;; #\RIGHT_DOUBLE_ANGLE_BRACKET 
     (12299 (:punctuation ., (punctuation-named (code-char 12299)))) ;; #\RIGHT_DOUBLE_ANGLE_BRACKET

@@ -30,7 +30,11 @@
                  :bindings (uid "NCIT:C2191")
                  :realization (:noun
                                ("si-RNA" "small interfering RNA"
-                                         "siRNA" "sirna"))) 
+                                         "siRNA" "sirna")))
+
+(noun "siNC" :super sirna)
+(def-synonym siNC (:noun "small interfering negative control RNA"))
+
 (noun "SARSi-1" :super sirna)
 (noun "SARSi-2" :super sirna)
 (noun "SARSi-3" :super sirna)

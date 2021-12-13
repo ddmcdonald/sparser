@@ -30,6 +30,7 @@
 ;;; nucleobases
 ;;;-------------
 
+#| MOVED to non-academic-molecules
 ;(def-bio "adenine" nucleobase)
 (def-indiv-with-id nucleobase "adenine" "CHEBI:16708")
 ;(def-bio "cytosine" nucleobase)
@@ -40,6 +41,7 @@
 (def-indiv-with-id nucleobase "thymine" "CHEBI:17821")
 ;(def-bio "uracil" nucleobase)
 (def-indiv-with-id nucleobase "uracil" "CHEBI:17568")
+|#
 
 ;;;-------------
 ;;; nucleotides
@@ -49,6 +51,7 @@
 (noun "dGTP" :super nucleotide)
 (def-bio "GDP" nucleotide  :identifier "CHEBI:17552" :mitre-link "PubChem:8977")
 (noun "dGDP" :super nucleotide)
+(def-indiv-with-id nucleotide "Cyclic GMP" "PUBCHEM:24316") 
 
 (def-indiv-with-id nucleotide "adenosine monophosphate" "PUBCHEM:6083" :synonyms ("AMP" "adenosine 3',5'-monophosphate" "adenosine monophosphate"))
 
@@ -123,9 +126,14 @@
 ;;; types and variants
 ;;;-------------------
 
+#| MOVED to non-academic-molecules
 (noun "chemical product" :super bio-chemical-entity)
 (noun "carcinogen" :super bio-agent)
 (noun "neurotoxin" :super bio-agent)
+(noun "agonist":super molecule) ;; keyword: (ist N) ;; 
+(noun "mitogen" :super molecule)
+
+|#
 
 (define-category activator :specializes molecule
   :binds ((activated molecule))
@@ -133,13 +141,10 @@
   (:noun "activator"
          :of activated))
 
-(noun "agonist":super molecule) ;; keyword: (ist N) ;; 
 (noun "anchor" :super molecule) ;; "cytoplasmic anchor"
 (noun "derivative" :super molecule)
-(noun "mitogen" :super molecule)
 
-;;In biochemistry, a protein ligand is an atom, a molecule or an ion that can bind to a specific site (the binding site) on a protein. 
-(noun "ligand" :super bio-chemical-entity)
+
 (define-category lysate :specializes bio-entity
   :realization
   (:noun "lysate"))
@@ -159,6 +164,11 @@
 
 (def-synonym fragment (:noun  "subunit"))
 
+
+#| MOVED to non-academic-molecules
+;;In biochemistry, a protein ligand is an atom, a molecule or an ion that can bind to a specific site (the binding site) on a protein. 
+(noun "ligand" :super bio-chemical-entity)
+
 (define-category substrate :specializes bio-chemical-entity
       :binds ((enzyme protein))
   :realization
@@ -166,30 +176,24 @@
          :of enzyme
          :for enzyme))
 
-
-#|
-(noun "class" :super variant  ;;NOT SURE THIS IS RIGHT
-      )
-(noun "type" :super variant)
-(noun "variety" :super variant)
-|#
-
 (noun "allele" :super variant)
 (noun "analog" :super variant)
 (noun "isoform" :super variant)
 
-
+(noun ("single nucleotide polymorphism" "SNP") :super variant)
+|#
 (noun "transition state intermediate" :super molecule-state)
 
-(noun ("single nucleotide polymorphism" "SNP") :super variant)
 
 ;;;-------------
 ;;; miscellaneous
 ;;;-------------
 
+#| MOVED to non-academic-molecules
 (noun "acid" :super molecule) ;; could be in more of a hierarchy and have things under it, but at least this replaces the spurious defintion we previously had where we had it as just a synonym "acotinic acid"
 
 (noun "dextran" :super polysaccharide)
+|#
 
 #-allegro (noun "O2˙-" :super molecule) ;; :synonyms ("superoxide anion")
 (noun "MeHg" :super molecule)
@@ -207,5 +211,8 @@
 
 (def-indiv-with-id molecule "enoyl" "CHEBI:23916") ;; acyl group -- mostly comes up in Enoyl-CoA hydratase, and was previously defined erroneously as the name for that protein
 (def-indiv-with-id molecule "stearoyl" "CHEBI:26753") ;; mostly comes up in Stearoyl-CoA enzyme, and was previously defined erroneously as the name for that protein
+
+#| MOVED to non-academic-molecules
 (def-indiv-with-id molecule "citrate" "CHEBI:30769" :name "citric acid")
 (def-indiv-with-id molecule "ice" "NCIT:C67342" :name "ice") ;; while there's a protein with a gene name ICE, it's much more likely that the lowercase "ice" is referring to frozen water not the protein
+|#

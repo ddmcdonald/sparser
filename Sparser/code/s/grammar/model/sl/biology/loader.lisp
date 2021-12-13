@@ -23,6 +23,8 @@
 
 (in-package :sparser)
 
+(break)
+
 (gload "bio;allowable-protein-heads")
 (gload "bio;mechanics")
 
@@ -32,13 +34,16 @@
 (gload "disease;medical-taxonomy") ;; defines 'drug'
 
 (gload "bio;attributes") ;;start to move the (general) attributes out of biology
+(gload "bio;non-academic-cell-locs")
 (gload "bio;cellular-locations")
 (gload "bio;new-defs;new-cell-loc")
-(gload "bio;non-cellular-locations") ;; needs to be before protein families so human is defined
-(gload "bio;new-defs;new-noncell-loc")
-(gload "bio;new-defs;new-organisms")
+(gload "bio;non-cellular-locations") 
+(gload "bio;new-defs;new-noncell-loc") ;; now contains only academic-level items
+(gload "bio;new-defs;new-organisms") ;; now contains only academic-level items and some that are potential confounds with locations/demonyms (e.g., "Newfoundland" the dog, also chihuahua)
 (gload "bio;aux-taxonomy")
 ;; have to get the uniprot-names before you do any define-protein's
+
+(gload "bio;non-academic-proteins")
 (gload "bio;uniprot-names.lisp")
 ;;(gload "bio;new-prot-defs-from-reach") temporary -- need to fold in
 (gload "bio;new-defs;suspect-trips-protein-defs") ;; these will be vetted more later but are being moved to load before the main protein defs so they don't inadvertantly overwrite some good defs
@@ -63,16 +68,19 @@
 (gload "bio;bio-complexes")
 (gload "bio;new-defs;new-bio-complexes")
 (gload "bio;bio-methods")
-(gload "bio;new-defs;new-bio-meth")
+(gload "bio;non-biology-tech") ;; pieces of software/apps (like "EndNote" and "GitHub" and "WhatsApp") -- currently still defined a bio-methods but should be something else eventually and move out of bio
+;(gload "bio;new-defs;new-bio-meth") ;; empty -- all moved to subfiles
+(gload "bio;academic-bio-methods") ;; very bio specific and may have confounds
 (gload "bio;bio-stats") ;; new set, broken out from bio-methods
 (gload "bio;bio-processes")
 (gload "bio;new-defs;new-bio-proc")
 (gload "bio;bio-predications")
-(gload "bio;cells")
+(gload "bio;non-academic-cells")
+(gload "bio;cells") ;; just 30 cell lines without ids
 (gload "bio;new-defs;new-cells")
 (gload "bio;cellular-processes")
 (gload "bio;new-defs;new-cell-proc")
-(gload "bio;diseases-pathogens")
+;; (gload "bio;diseases-pathogens") ;; all has been moved to sl/disease/medical-taxonomy, bottom 1000 lines has list of diseases known to bob at bottom, to cross-ref if we ever want to make sure we have full coverage...
 ;;(gload "bio;new-defs;new-diseases")
 ;; now moved to sl/disease and split into bacteria, viruses, cancers, and other-medical-conditions
 (gload "bio;measurements")
@@ -80,10 +88,10 @@
 (gload "bio;molecular-locations")
 (gload "bio;plasmids-rna")
 (gload "bio;new-defs;new-rna")
-(gload "bio;post-trans-mods")
-(gload "bio;new-defs;new-post-trans-mod")
-(gload "bio;substances")
-(gload "bio;new-defs;new-substances")
+(gload "bio;post-trans-mods") 
+(gload "bio;new-defs;new-post-trans-mod");; empty 
+(gload "bio;substances") ;; a couple things to move
+;(gload "bio;new-defs;new-substances") ;; mostly general empty
 (gload "bio;other-defs-from-reach") ; temporary -- will be folded into the correct definition files once checked
 ;(gload "bio;new-defs;reach-additional-proteins") folded into std prot
 (gload "bio;new-defs;suspect-trips-defs") ;; these will be vetted more later
@@ -94,6 +102,7 @@
 (gload "bio;terms-to-move")
 (gload "bio;terms")
 
+(gload "bio;non-academic-drugs") ;; needed by verbs
 (gload "bio;drugs") ;; needed by verbs
 (gload "bio;new-defs;new-drugs")
 
@@ -120,6 +129,7 @@
 (gload "bio;new-defs;new-prot-dom")
 (gload "bio;verbs") ;; after phenomena, with bio synonyms of general verbs
 
+(gload "bio;non-academic-molecules")
 (gload "bio;molecules")
 (gload "bio;new-defs;new-molecules")
 ;; get rid of old incomplete list in favor of new one with ids

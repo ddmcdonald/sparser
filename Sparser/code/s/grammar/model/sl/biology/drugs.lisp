@@ -20,6 +20,8 @@
 ; following treatment with the MEK inhibitor AZD6244
 ; retaining transcriptional response to vemurafenib and AZD6244
 
+
+#| MOVED to non-academic-drugs
 (define-category inhibitor :specializes drug
   :realization (:noun "inhibitor"
                 :m target
@@ -35,6 +37,7 @@
 
 
 (noun "therapeutics" :super drug) ;; keyword: (ics N) 
+|#
 
 #+ignore
 (defun define-drug (drug-name)
@@ -78,7 +81,6 @@
 (define-drug "anti-adalimumab")
 (define-drug "anti-infliximab")
 (define-drug "antib")
-(define-drug "antiestrogen")
 (define-drug "arhgdib")
 (define-drug "arry-142886")
 (define-drug "arry300")
@@ -111,7 +113,7 @@
 (define-drug "bay61-3606")
 ;(define-drug "bevacizumab")
 ;(define-drug "bevasizumab")
-(define-drug "bib")
+;(define-drug "bib")
 (define-drug "blinatumomab")
 ;(define-drug "bortezomib")
 (define-drug "bosutinib")
@@ -392,8 +394,8 @@
 (define-drug "reslizumab")
 (define-drug "rg7204")
 (define-drug "rhumab")
-(define-drug "rib")
-(define-drug "ribs")
+;(define-drug "rib")
+;(define-drug "ribs")
 (define-drug "rilotumumab")
 (define-drug "rituxamab")
 (define-drug "rituximab")

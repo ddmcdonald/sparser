@@ -3,7 +3,7 @@
 ;;;--------------
 ;;; protein-types
 ;;;--------------
-;; very general protein classes (functionally defined)
+;; very general protein classes (functionally defined) -- have been moved to non-academic-proteins
 
 (define-category effector :specializes protein ;; NOT SURE WHAT THE RIGHT SUPER is
   :binds ((for-process bio-process))
@@ -52,6 +52,13 @@
 (noun "growth factor" :super protein) ;; actually, either a protein or hormone, but occasionally some other molecule
 
 (noun "polyprotein" :super protein) ;; any protein cleaved into multiple peptide proteins, often but not always viruses
+
+
+(def-family "growth factor receptor" :members ("UP:P00533" "UP:P04629" "UP:P08138" "UP:P08581" "UP:P16234" "UP:P17948" "UP:P35968")) 
+(def-family "growth-factor" :long "growth factor" :members ("EGF_HUMAN")) 
+(def-family "lactase" :members ("UP:P09848" "UP:P16278")) 
+
+(def-family "proton pump" :members ("UP:P20648" "UP:P54707")) 
 
 
 ;; likely figure numbers
@@ -432,8 +439,6 @@
 ;(def-family "gag protein" :members ("UP:Q79354" "UP:Q79360")) ;; both unreviewed hiv
 (def-family "gene 1" :members ("UP:O14503" "UP:O15503" "UP:O95997" "UP:P49788" "UP:Q2M385" "UP:Q86UE4")) 
 (def-family "glyceraldehyde-3-phosphate dehydrogenase" :members ("UP:O14556" "UP:P04406")) 
-(def-family "growth factor receptor" :members ("UP:P00533" "UP:P04629" "UP:P08138" "UP:P08581" "UP:P16234" "UP:P17948" "UP:P35968")) 
-(def-family "growth-factor" :long "growth factor" :members ("EGF_HUMAN")) 
 (def-family "hCAP" :members ("UP:P49913" "UP:Q9UQE7")) 
 (def-family "hK2" :members ("UP:O00139" "UP:P52789")) 
 (def-family "hbeta3" :members ("UP:Q9NPA1" "UP:Q9Y691")) 
@@ -443,7 +448,6 @@
 ;(def-family "interleukin-6" :members ("UP:P05231" "UP:P40189")) 
 ;(def-family "jagged1" :members ("UP:P78504" "UP:Q90Y57"))
 (def-family "l-dopachrome tautomerase" :members ("UP:P14174" "UP:P40126")) 
-(def-family "lactase" :members ("UP:P09848" "UP:P16278")) 
 (def-family "laminin" :members ("UP:P07942" "UP:P11047" "UP:Q13751" "UP:Q13753")) 
 (def-family "latency-associated peptide" :members ("UP:P01137" "UP:P10600" "UP:P61812")) 
 (def-family "lectin" :members ("UP:P05046" "UP:P16300" "UP:P84849" "UP:Q01MB6")) 
@@ -519,7 +523,7 @@
 ;(def-family "skeletal muscle" :members ("UP:P35523" "UP:P68133")) 
 (def-family "stomatin" :members ("UP:P27105" "UP:Q9UBI4")) 
 (def-family "tapasin" :members ("UP:O15533" "UP:Q9BX59")) 
-(def-family "thyroid hormone receptor beta" :members ("UP:P10828" "UP:Q9PVE4")) 
+;(def-family "thyroid hormone receptor beta" :members ("UP:P10828" "UP:Q9PVE4")) 
 (def-family "transforming growth factor" :members ("UP:P01135" "UP:P01137" "UP:P10600" "UP:P36897" "UP:P37173" "UP:Q15582")) 
 (def-family "tuftelin" :members ("UP:Q9NNX1" "UP:Q9UBB9"))
 
@@ -1241,7 +1245,7 @@
 
 (def-family "RNA-directed RNA polymerase" :members ("UP:P25328" "UP:Q8AZL8")) 
 (def-family "RNH1" :members ("UP:O60930" "UP:P13489")) 
-(def-family "RNase" :members ("UP:P10266" "UP:P43082")) 
+;(def-family "RNase" :members ("UP:P10266" "UP:P43082")) 
 (def-family "RO" :members ("UP:P10181" "UP:P27797")) 
 (def-family "ROC1" :members ("UP:P62877" "UP:Q92963")) 
 (def-family "RP" :members ("UP:P00846" "UP:Q5U5M8")) 
@@ -1384,7 +1388,7 @@
 (def-family "TRK-T1" :members ("UP:P04629" "UP:P42765")) 
 (def-family "TRX1" :members ("UP:P10599" "UP:Q8KEA4")) 
 (def-family "TRX2" :members ("UP:Q8KE49" "UP:Q99757")) 
-(def-family "TRbeta" :members ("UP:Q9NNW7" "UP:Q9PVE4")) 
+(def-family "TRbeta" :members ("UP:Q9NNW7" "UP:P10828"))
 (def-family "TS2" :members ("UP:O95450" "UP:Q9SSP5")) 
 (def-family "TSC" :members ("UP:Q92574" "UP:Q99576")) 
 (def-family "TTP" :members ("UP:P26596" "UP:P26651")) 
@@ -1539,7 +1543,7 @@
 ;(def-family "cyclin-dependent kinase inhibitor-2C" :members ("UP:O43324" "UP:P42773")) 
 (def-family "cyclinT1" :members ("UP:O60563" "UP:Q6T8E9")) 
 ;(def-family "cyclophilin" :members ("UP:P34887" "UP:Q27450")) 
-(def-family "cytokeratin" :members ("UP:P08727" "UP:P13647")) 
+(def-family "cytokeratin" :members ("UP:P08727" "UP:P13647")) ;; many more
 (def-family "cytolysin" :members ("UP:P14222" "UP:P19247")) 
 ;(def-family "dUTPase" :members ("UP:P33316" "UP:P87630")) ;"deoxyuridine 5'-triphosphate nucleotidohydrolase"
 (def-family "dcp" :members ("UP:P12821" "UP:P24171")) 
@@ -1563,7 +1567,7 @@
 (def-family "dynactin subunit 2" :members ("UP:Q13561" "UP:Q7K2D2")) 
 (def-family "dynein light chain" :members ("UP:O96015" "UP:Q94758")) 
 (def-family "dynein light chain 1, cytoplasmic" :members ("UP:P63167" "UP:P63168")) 
-(def-family "dysbindin" :members ("UP:Q2HJA5" "UP:Q96EV8")) 
+;(def-family "dysbindin" :members ("UP:Q2HJA5" "UP:Q96EV8")) 
 (def-family "eIF3" :members ("UP:O00303" "UP:O15371" "UP:O15372" "UP:O75821" "UP:O75822" "UP:P55884" "UP:Q7L2H7" "UP:Q99613" "UP:Q9UBQ5" "UP:Q9Y262" "UP:P60228")) 
 ;(def-family "eIF3a" :members ( "UP:Q14152")) 
 ;(def-family "eIF4A1" :members ("UP:P41376" "UP:P60842")) 
@@ -1614,7 +1618,7 @@
 ;(def-family "frizzled-8" :members ("UP:Q61091" "UP:Q9IA03")) 
 ;(def-family "frizzled-9" :members ("UP:O00144" "UP:Q9IA02") :synonyms ("fz9")) 
 (def-family "frs2alpha" :members ("UP:Q8C180" "UP:Q8WU20")) 
-(def-family "fru" :members ("UP:O15209" "UP:Q0V7X4")) 
+;(def-family "fru" :members ("UP:O15209" "UP:Q0V7X4")) 
 ;(def-family "fzd3" :members ("UP:O00144" "UP:Q9NPG1")) ;"FZD3"
 (def-family "galactosidase" :members ("UP:P16278" "UP:Q8NCI6")) 
 ;(def-family "galanin" :members ("UP:P22466" "UP:P47215")) 
@@ -1676,8 +1680,8 @@
 (def-family "kaiso" :members ("UP:A8DU70" "UP:Q86T24")) 
 (def-family "kallikrein-1" :members ("UP:P00758" "UP:P06870")) 
 (def-family "kexin" :members ("UP:O13359" "UP:P13134")) 
-(def-family "kinectin" :members ("UP:Q86UP2" "UP:Q90631")) 
-(def-family "kinesin" :members ("UP:Q02224" "UP:Q96L93")) 
+;(def-family "kinectin" :members ("UP:Q86UP2" "UP:Q90631")) 
+;(def-family "kinesin" :members ("UP:Q02224" "UP:Q96L93")) 
 ;(def-family "laforin" :members ("UP:B3EWF7" "UP:Q1M199")) 
 (def-family "light chain 1" :members ("UP:P05976" "UP:Q9XHH2")) 
 (def-family "light chain 3" :members ("UP:P08590" "UP:Q9H492" "UP:Q9GZQ8" "UP:Q9BXW4")) 
@@ -1715,7 +1719,7 @@
 (def-family "mpr1" :members ("UP:P11717" "UP:P43588")) 
 (def-family "mtf1" :members ("UP:Q01538" "UP:Q14872")) 
 
-(def-family "multidrug resistance" :members ("UP:P08183" "UP:P96712")) ; both are valid... and there are many more
+(def-family "multidrug resistance protein" :members ("UP:P08183" "UP:P96712")) ; both are valid... and there are many more
 (def-family "mum2" :members ("UP:Q15007" "UP:Q9Y5R8")) 
 (def-family "mycb" :members ("UP:P15171" "UP:Q6P8Z1")) 
 (def-family "myosin 2a" :members ("UP:Q875X3" "UP:Q9UKX2")) 
@@ -1803,7 +1807,7 @@
 (def-family "pS6K" :members ("UP:P23443" "UP:Q8BSK8")) 
 (def-family "paf1" :members ("UP:P28328" "UP:Q8N7H5")) 
 (def-family "pal" :members ("UP:P19021" "UP:P35511")) 
-(def-family "pancreatic hormone" :members ("UP:P01298" "UP:P06305")) 
+;(def-family "pancreatic hormone" :members ("UP:P01298" "UP:P06305")) 
 (def-family "parafibromin" :members ("UP:Q5ZLM0" "UP:Q6P1J9")) 
 ;(def-family "parvalbumin" :members ("UP:P20472" "UP:P35491")) 
 (def-family "parvulin" :members ("UP:P0A9L5" "UP:P0A9L7")) 
@@ -1843,7 +1847,6 @@
 ;(def-family "prothymosin alpha" :members ("UP:P06454" "UP:Q90ZK2"))
 ;(define-protein "UP:Q90ZK2" ("ProTalpha" "ProTα" "proTα")) 
 
-(def-family "proton pump" :members ("UP:P20648" "UP:P54707")) 
 (def-family "prx2" :members ("UP:Q90963" "UP:Q99811")) 
 (def-family "pse1" :members ("UP:O00410" "UP:P32337")) 
 (def-family "psim" :members ("UP:P48185" "UP:Q5MZZ8")) 
