@@ -171,7 +171,7 @@
   "Set and read by the traversal routine Check-quotation.")
 
 (defvar *pending-single-quote* nil
-  "Set and read by apostrophe-fsa")
+  "Set and read by notice-single-quote")
 
 (defvar *pending-open-angle-bracket* nil
   "Set by the traversal routine Open-angle-bracket-traversed and
