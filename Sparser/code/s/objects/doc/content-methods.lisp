@@ -430,6 +430,14 @@
       (loop for note-entry in group-instances
          append (note-instances note-entry)))))
 
+(defgeneric get-note-instance (name)
+  (:documentation "Return the note-instance with this name from
+   the current article")
+  (:method ((name symbol))  
+    (let* ((a (article))
+           (note-instances (get-noted-groups a)))
+      (find name note-instances :key #'name))))
+
 (defgeneric number-of-words-note-spans (notable)
   (:documentation "How many words does a note object cover?
     Goal is to get notion of the percentage of an article
