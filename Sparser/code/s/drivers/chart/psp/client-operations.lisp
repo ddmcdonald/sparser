@@ -29,7 +29,8 @@
                     *indra-post-process* *callisto-compare*
                     *localization-interesting-heads-in-sentence*
                     *colorized-sentence* *localization-split-sentences*
-                    *save-bio-processes*
+                    *save-bio-processes* *category-to-collect*
+                    *collected-edges* *collected-words-per-sentence*
                     *clause-semantics-list*))
   (declaim (optimize (debug 3)))
   
@@ -78,7 +79,9 @@
       (when (fboundp 'save-bob-sparser-indra-forms)
         (save-bob-sparser-indra-forms))))
   (when *callisto-compare* (extract-callisto-data sentence))
-    
+  (when *category-to-collect* (collect-words-by-category sentence)
+        (setq *collected-edges* nil)
+        (setq *collected-words-per-sentence* nil)) ;; after processing, need to reset otherwise sometimes inactive edges stick around, and we only want to clear words per sentence
   (when *localization-interesting-heads-in-sentence*
     (let ((colorized-sentence (split-sentence-string-on-loc-heads)))
       (setf (gethash sentence *colorized-sentence*) colorized-sentence)
@@ -366,8 +369,52 @@
              *make-clause-ref*)
        ref-id))))
 
+(defparameter *collected-words-by-category* nil) ;; will hold examples of words and their context from running articles, when category-to-collect is set
+(defparameter *category-to-collect* nil) ;; setting this to a category will turn on a switch to catch examples of that category being used (for looking at bio words in acumen)
+(defparameter *collected-edges* nil);; making sure we don't look through same edge twice
+(defparameter *collected-words-per-sentence* nil) ;; if a word appears twice in one sentence, we don't need to ccollect the sentence twice
+(defun collect-words-by-category (sentence)
+  (let* ((mentions
+           (remove-collection-item-mentions
+            (mentions-in-sentence-edges sentence)))
+         (mentions-copy mentions))
+    (declare (special mentions-copy *category-to-collect* *collected-words-by-category*))
+    (loop for mention in mentions
+          do (let* ((ref (base-description mention))
+                    (edge (mention-source mention))
+                    (head-edge (find-head-edge edge))
+                    (dependencies (dependencies mention))
+                    (word (trim-whitespace
+                           (extract-string-spanned-by-edge head-edge))))
+               (cond ((itypep ref *category-to-collect*)
+                      (unless (or
+                               (member word *collected-words-per-sentence*
+                                       :test #'equal)
+                               (edge-subsumed-by-edge-in-list edge *collected-edges*))
+                        (if (and (is-basic-collection? ref)
+                                 (not (eq (edge-rule edge) 'make-protein-collection))
+                                 (loop for item in (get-mention-items dependencies)
+                                       always (typep item 'discourse-mention)))
+                            (extract-cat-conjunction-data dependencies)
 
+                            (push `((:category ,(cat-name (itype-of ref)))
+                                    (:word ,word)
+                                    (:sent ,(sentence-string *sentence-in-core*)))
+                                  *collected-words-by-category*))
+                        (push edge *collected-edges*))))))))
 
+(defun extract-cat-conjunction-data (dependencies)
+  (loop for sub-mention in (get-mention-items dependencies)
+        do
+          (let* ((ref (base-description sub-mention))
+                 (edge (mention-source sub-mention))
+                 (head-edge (find-head-edge edge))
+                 (dependencies (dependencies sub-mention)))
+            (push `((:category ,(cat-name (itype-of ref)))
+                                    (:word ,(trim-whitespace
+                                             (extract-string-spanned-by-edge head-edge)))
+                                    (:sent ,(sentence-string *sentence-in-core*)))
+                                  *collected-words-by-category*))))
 ;;;----------------------------------
 ;;; processing for comparison to callisto annotations
 ;;;----------------------------------
