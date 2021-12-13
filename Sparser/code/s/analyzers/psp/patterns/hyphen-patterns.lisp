@@ -24,13 +24,13 @@
    more than one edge and hyphen(s) is the only punctuation."
   ;; (push-debug `(,pattern ,words ,edges ,hyphen-positions ,start-pos ,end-pos))
   ;; (break "starting hyphen pattern: ~a" pattern)
-  
-
   (let ((edges (treetops-between start-pos end-pos))
         (hyphen-count 0))
     (when (not (eq (length edges) (length pattern)))
-      (error "pattern is longer than set of edges! ~s longer than ~s in ~s"
-             pattern edges (current-string)))
+      (push-debug `(,pattern ,start-pos ,end-pos))
+      (warn-or-error "pattern is longer than set of edges! ~s longer than ~s in ~s"
+                     pattern edges
+                     (extract-characters-between-positions start-pos end-pos)))
     (dolist (item pattern)
       (when (eq item :hyphen ) (incf hyphen-count)))
     (case hyphen-count
