@@ -90,6 +90,17 @@
     (when config
       (format stream "~&~10T:~a" config))))
 
+(defun display-recorded-strings (group &optional (stream *standard-output*))
+  "Go through the edge-records on the note-group and print out their strings"
+  (when (symbolp group) ; e.g. 'parentheses
+    (setq group (get-note-instance group))) ; in current article
+  (let ((stream *standard-output*)
+        (records (text-strings group)))
+    (loop for r in (reverse records) ; sequence order in the article
+       as number = (edge-record-number r)
+       as string = (edge-record-string r)
+       do (format stream "~& e~a ~s" number string))))
+
 
 (defun edge-record-summary ()
   "Return the statistics on the motific edge records of
