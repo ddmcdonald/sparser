@@ -116,6 +116,12 @@ scan-name-position -> add-terminal-to-chart
             (#\^D ;; :end-of-buffer
              (push-debug `(,source ,sink))
              (error "Prescan walked off the end of the buffer"))
+            (#\^A ;; source start
+             (unless (= index-into-source 0)
+               (error "Encountered source-start character (\#^A) at ~
+                       index ~a" index-into-source))
+             (push-char char))
+                        
             (#\-
              (cond ((and (> index-into-source 0)
                          (alphabetic-char? (elt source (1- index-into-source)))
@@ -123,12 +129,6 @@ scan-name-position -> add-terminal-to-chart
                     ;;(pushnew (elt source (1+ index-into-source)) *post-hyphen-chars* :test #'equalp)
                     (incf index-into-source 2))
                    (t (push-char char))))
-                        
-            (#\^A
-             (unless (= index-into-source 0)
-               (error "Encountered source-start character (\#^A) at ~
-                       index ~a" index-into-source))
-             (push-char char))
 
             (#\space ;; remove leading spaces
              (if starting?
