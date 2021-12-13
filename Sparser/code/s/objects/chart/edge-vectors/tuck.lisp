@@ -21,7 +21,6 @@
    Now we have to reconstruct pointers so that the edge that
    had dominated the subsumed one dominates the new pair."
   (declare (special *current-da-rule*))
-  
   ;; (push-debug `(,subsumed-edge ,new-edge ,dominating-edge ,direction))
   ;; (setq subsumed-edge (car *) new-edge (cadr *) dominating-edge (caddr *))
   (tr :tuck-1 subsumed-edge new-edge dominating-edge direction)
@@ -35,6 +34,11 @@
     (t
      (setf (edge-used-in subsumed-edge) new-edge)
      (when dominating-edge
+
+       (when (eq 'quotation (edge-cat-name dominating-edge))
+         ;;/// edge vectors on these edges are funky and lead to weird errors
+         (return-from tuck-new-edge-under-already-knit nil))
+
        ;; otherewise this causes an error in wh-initial-five-edges
        ;;  for "What tissues is STAT3 expressed in?"
        (set-used-by new-edge dominating-edge)
