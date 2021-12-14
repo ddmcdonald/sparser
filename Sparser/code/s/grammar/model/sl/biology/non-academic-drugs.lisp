@@ -242,6 +242,7 @@
 (def-indiv-with-id drug "nicotine" "NCIT:C691" :name "nicotine" :no-plural t)
 (def-indiv-with-id drug "tobacco" "NCIT:C891" :name "tobacco" :no-plural t) 
 (def-indiv-with-id drug "cigarette" "NCIT:C1802" :name "cigarette") 
+(def-indiv-with-id drug "cigar" "NCIT:C1813" :name "cigar") 
 
 
 ;;anti-depressants

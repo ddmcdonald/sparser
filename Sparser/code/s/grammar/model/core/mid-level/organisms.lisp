@@ -276,6 +276,7 @@
 (def-indiv-with-id dog "Weimaraner" "NCIT:C53891" :name "weimaraner")
 (def-indiv-with-id dog "coonhound" "NCIT:C53921" :name "black and tan coonhound") 
 (def-indiv-with-id dog "papillon" "NCIT:C53939" :name "papillon") 
+(def-indiv-with-id dog "beagle" "NCIT:C53897" :name "beagle") 
 
 ;; some other dog breeds that conflict with locations/demonyms are in bio;new-defs:new-organisms
 ;; newfoundland, chihuahua, pyrenees, lab, brittany
