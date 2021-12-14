@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "fsa-aux"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  July 2021
+;;;  Version:  December 2021
 
 ;; Broken out of fsa-words 12/8/20
 
@@ -35,6 +35,8 @@ completed a battery of items")
 "one hundred million"
 
 "Twenty thousand two hundred and one (20,201)"
+
+social security numbers: 123-45-6789
 
 |#
 
@@ -139,4 +141,46 @@ completed a battery of items")
   (when *trace-digits-fsa*
     (trace-msg "[digits] too few digits in ~s at p~a"
                (pname digit-word) (pos-token-index next-position))))
+
+
+;;;------------------------------------------------
+;;; standard function for hyphenated number pairs
+;;;------------------------------------------------
+
+(defun make-hyphenated-number (left-edge right-edge)
+  "Called from one-hyphen-ns-patterns intended to label the pattern
+   (:digits :hyphen :digits). However there are several alternative
+   interpretations depending on what the edge actually denote
+   Also called from compose-number-around-hyphen for hyphenated number
+   words, and digit-FSA for hyphenated digits."
+  (declare (special category::hyphenated-number category::number))
+  (cond
+    ((and (eq (edge-cat-name left-edge) 'year) ; "2019-20"
+          (or (eq (edge-cat-name right-edge) 'year)
+              (eq (edge-cat-name right-edge) 'number)))
+     (look-for-year-expression left-edge right-edge))
+
+    ((and (edge-over-number-word? left-edge) ; "twenty-three"
+          (edge-over-number-word? right-edge)
+          (not (and (eq :ones (numeric-label left-edge)) ; "one-two punch"
+                    (eq :ones (numeric-label right-edge)))))
+     (multiple-value-bind (value edge)
+         (two-edge-number left-edge right-edge)
+       edge))
+
+    (t (let* ((i (find-or-make-individual
+                  'hyphenated-number
+                  :left (find-or-make-number (edge-referent left-edge))
+                  :right (find-or-make-number (edge-referent right-edge))))
+              (edge
+               (make-chart-edge
+                :starting-position (pos-edge-starts-at left-edge)
+                :ending-position (pos-edge-ends-at right-edge)
+                :left-daughter left-edge
+                :right-daughter right-edge
+                :category category::hyphenated-number
+                :form category::number
+                :referent  i
+                :rule 'make-hyphenated-number))) 
+         edge ))))
 

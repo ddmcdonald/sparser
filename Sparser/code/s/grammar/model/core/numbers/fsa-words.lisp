@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "fsa words"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  July 2021
+;;;  Version:  December 2021
 
 ;; initiated (redesigned from scratch) 11/30/93 v2.3, finished the first
 ;; version with stubs for the multi-word case 12/6.  Fixed a bug 1/14/94.
@@ -232,18 +232,14 @@
          (next-edge (edge-between next-position (chart-position-after next-position)))
          (prior-edge (edge-between pos-before hyphen-pos)))
     ;; could there ever be a multi-position edge to our left?
-    ;; could the prior-numer ever be a mulitplier like 'thousand'?
-    (let* ((value (two-edge-number prior-edge next-edge))
-           (edge (make-chart-edge
-                  :left-edge prior-edge :right-edge next-edge
-                  :category category::number ;???? more specific?
-                  :form category::number
-                  :referent value
-                  :rule 'compose-number-around-hyphen)))
-      (tr :nw-made-edge edge value)
+    ;; could the prior-number ever be a mulitplier like 'thousand'?
+    (let ((edge (make-hyphenated-number prior-edge next-edge)))
+      (tr :nw-made-edge edge (edge-referent edge))
+      
       ;; should we look further to our right, or assume someone else will?
 
       ;; stash the edge in case there's a pending collector to our left
+      ;;//// only for numeric values?  -- vs. hyphens
       (push edge *accumulated-number-word-phrases*)
       
       ;; This assumes we're returning to number-word-fsa
@@ -435,11 +431,14 @@
   (def-cfr number (number-produce multiplier)))
 
 (defparameter tens+ones
-  (def-cfr number (tens-number ones-number)))
+  (def-cfr number (tens-number ones-number)
+    :referent (:function two-word-number left-edge right-edge)))
 (defparameter ones*multiplier
-  (def-cfr number-product (ones-number multiplier)))
+  (def-cfr number-product (ones-number multiplier)
+    :referent (:function two-word-number left-edge right-edge)))
 (defparameter teens*multiplier
-  (def-cfr number (teens-number multiplier)))
+  (def-cfr number (teens-number multiplier)
+    :referent (:function two-word-number left-edge right-edge)))
 
 
 (defun compute-word-based-number (edges)
@@ -457,6 +456,32 @@
        (push-debug `(,edges))
        (error "no algorithm to compute the value of ~a number edges:~%~a"
               (length edges) labels)))))
+
+(defun two-word-number (left-number right-number)
+  "Used for the occasional times when the binary number rules are
+   used by the parser rather than the execution of the FSA.
+   Returns the referent that feeds into the normal edge-creation
+   machinery"
+  (let* ((left-label (numeric-label (left-edge-for-referent)))
+         (right-label (numeric-label (right-edge-for-referent)))
+         (labels (list left-label right-label))
+         (left-value (number-value left-number))
+         (right-value (number-value right-number))
+         (lisp-value
+          (cond
+            ((equal labels '(:tens :ones)) ; "twenty three"
+             (+ left-value right-value))       
+            ((equal labels '(:tens :multiplicand)) ; "twenty million"
+             (* left-value right-value))
+            ((equal labels '(:ones :multiplicand)) ; "two hundred"
+             (* left-value right-value))
+            ((equal labels '(:teens :multiplicand)) ; "sixteen hundred"
+             (* left-value right-value))
+            (t
+             (when *debug-numbers*
+               (break "next two-word number case: ~a" labels))))))
+    (find-or-make-number lisp-value)))
+ 
 
 (defgeneric two-edge-number (e1 e2)
   (:method ((e1 edge) (e2 edge))

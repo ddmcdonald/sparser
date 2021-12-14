@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "fsa digits"
 ;;;   Module:  "grammar;model:core:numbers:"
-;;;  Version:  January 2021
+;;;  Version:  December 2021
 
 ;; 5.0 (10/5 v2.3) rephrased the scan step to get subtler steps
 ;; 5.1 (9/14/93) updated the scanning calls, finished 9/16
@@ -216,20 +216,11 @@ the fsa would be identified at the word level rather than the category level.
                                ending-position
                                number-of-segments
                                *digit-position-array*)
+           
+
            (let* ((left-edge (aref *digit-position-array* 0))
-                  (left-ref (edge-referent left-edge))
-                  (right-edge (aref *digit-position-array* 1))
-                  (right-ref (edge-referent right-edge))
-                  (i (find-or-make-individual 'hyphenated-number
-                                              :left left-ref :right right-ref)))
-             (make-chart-edge :starting-position starting-position
-                              :ending-position ending-position
-                              :left-daughter left-edge
-                              :right-daughter right-edge
-                              :category category::hyphenated-number
-                              :form category::number
-                              :referent  i
-                              :rule 'digit-fsa))))
+                  (right-edge (aref *digit-position-array* 1)))
+             (make-hyphenated-number left-edge right-edge))))       
         
         ;; These two drop the middle words on the floor ("-", "through")
         ;; They're not plausible :constituent in the edges because there
