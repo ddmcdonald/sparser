@@ -2397,8 +2397,12 @@ assumed. |#
    (da-rule-named 'attach-comma-appositive-np-under-pp)
    (da-rule-named 'attach-comma-appositive-np-under-s)
    (da-rule-named 'attach-appositive-comma-np-comma-under-pp)
+   (da-rule-named 'attach-comma-appositive-proper-noun-under-s)
    (da-rule-named 'np-conj-pp)
+   (da-rule-named 'np-adjective)
+   (da-rule-named 'pp-comma-subj-relative)
    (da-rule-named 's-with-np-conj-pp)
+   (da-rule-named 's-conjunction-np)
    ))
 
 (defun DA-rule-not-reliable (da-rule)
