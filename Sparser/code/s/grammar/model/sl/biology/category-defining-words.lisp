@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "category-defining-words"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: October 2021
+;;; version: December 2021
 
 
 ;;;;;;;; These are definitions for words that have the same spelling as defined categories, and which
@@ -33,7 +33,7 @@
 
 (when (current-script :biology)
   (def-synonym background (:noun "background"))
-  (def-synonym beagle (:noun "beagle"))
+  ;;(def-synonym beagle (:noun "beagle")) not in R3 load
   (def-synonym candidate (:noun "candidate" :adj "candidate")))
 
 (when (current-script :biology)
