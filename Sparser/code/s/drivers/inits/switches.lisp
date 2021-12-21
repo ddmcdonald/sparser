@@ -592,6 +592,8 @@
   (include-comlex)
   (setq *incrementally-save-comlex-categories* t)
   (experimental-settings)
+
+  (setq *make-fresh-articles* t)
   
   ;;(parsing-protocol-for-documents) which is ...
   (what-to-do-at-the-forest-level :new-forest-protocol)
