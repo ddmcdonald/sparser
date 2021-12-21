@@ -473,7 +473,7 @@
   "Controls whether we forget all the individuals the analysis created
    when we start the next document, or accumlate them. Read in
    per-article-initializations, presently bound to T by the doc-stream
-   driver do-document-as-stream-of-files but could potentiallygo on all
+   driver do-document-as-stream-of-files but could potentially be on all
    of them.")
 
 (defparameter *initialize-with-each-unit-of-analysis* t
@@ -489,7 +489,7 @@
 
 (defparameter *break-on-multiple-single-term-completions* nil
   "Read in check routines to look at or ignore the cases when more
-   than on edge over a terminal has a rule that extends it.")
+   than one edge over a terminal has a rule that extends it.")
 
 (defparameter *interpret-in-context* nil
   "If applicable (not called in every parsing protocol), adds a
