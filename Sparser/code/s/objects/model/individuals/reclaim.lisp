@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1999,2011-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "reclaim"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  1.4 November 2015
+;;;  version:  December 2021
 
 ;; initiated 7/21/92 v2.3. Fleshed out 8/8/94. 
 ;; 10/3 Added some useful collectors.  11/16 added Delete/individual
@@ -117,8 +117,8 @@ put on its category's permanent list."
   (reap-individuals))
 
 (defun reap-individuals ()
-  "Called from per-article-initializations -- zeros everything
-that was instantiated in the last run."
+  "Called from per-article-initializations -- zeros every temporary
+   individual that was instantiated in the last run."
   (declare (special *objects-in-the-discourse*))
   (let ((type-list
          (additional-categories-of-active-individuals
@@ -129,13 +129,13 @@ that was instantiated in the last run."
         (format t "~&Nothing in the discourse history.~%")))
 
     (loop for category in type-list
-          unless (individuals-of-this-category-are-permanent? category)
-            nconc (reclaim-all-instances category) into individuals-touched
-          finally
-            (when *trace-reclaimation*
-              (format t "~&Reap touched ~d individuals.~%"
-                      (length individuals-touched)))
-            (cleanup-bindings-fields individuals-touched))
+       unless (individuals-of-this-category-are-permanent? category)
+       nconc (reclaim-all-instances category) into individuals-touched
+       finally
+         (when *trace-reclaimation*
+           (format t "~&Reap touched ~d individuals.~%"
+                   (length individuals-touched)))
+         (cleanup-bindings-fields individuals-touched))
 
     (did-we-forget-any-unreaped-individuals?)
     (when *trace-reclaimation*
@@ -203,8 +203,7 @@ e.g. when anaphora is turned off."
 
 (defvar *individuals-bound-onto* nil
   "Used by push-binding-onto-bound-in-field to keep track of every
-   individual that 
-Used by reclaim operation")
+   individual that is used by this reclaim operation")
 
 (defun initialize-bound-in-reclaimation ()
   "called by declare-all-existing-individuals-permanent which is called
