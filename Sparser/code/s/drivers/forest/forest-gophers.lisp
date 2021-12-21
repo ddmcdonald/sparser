@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "forest-gophers"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  September 2021
+;;;  Version:  December 2021
 
 ;; Initiated 8/30/14. To hold predicates and other little computations
 ;; done by the forest-level sweeping and island-driving. Also a good
@@ -497,6 +497,10 @@
       (error "Not a VP category: ~a in e~a"
              form (edge-position-in-resource-array edge)))
     (cond
+      ((eq (edge-rule edge) 'subordinate-s-comma-clause)
+       (let ((constituents (edge-constituents edge)))
+         (find-verb (car (last constituents)))))
+
       ((eq (edge-rule edge) 'add-adjunctive-pp)
        (find-verb (edge-left-daughter edge)))
 
