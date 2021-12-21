@@ -62,6 +62,7 @@
     (when *compute-items-contexts*
       (let* ((items-field (items (contents a)))
              (group-instances (collect-germane-group-instances items-field)))
+        (setf (germaine-items (contents a)) group-instances)
         (loop for group in group-instances
            do (loop for entry in (note-instances group)
                  do (loop for record in (text-strings entry)

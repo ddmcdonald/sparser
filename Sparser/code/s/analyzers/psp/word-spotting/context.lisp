@@ -167,6 +167,8 @@
          :subject)
         ((eq highest 'transitive-clause-without-object)
          :subject)
+        ((matches-prefix form-categories '(np s))
+         :subject)
         ((matches-prefix form-categories '(proper-noun possessive))
          :posessive)
         (t
