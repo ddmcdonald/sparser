@@ -786,6 +786,7 @@ saturated? is a good entry point. |#
               (deactivate-edge edge (pos-edge-ends-at edge)))))))))
 
 (defun long-term-ify/individual (i workbench? edge)
+  ;; beside position-clearner above, also called by manage-wrapped-edge-resource
   (declare (special *description-lattice*))
   (cond
    (*description-lattice*
