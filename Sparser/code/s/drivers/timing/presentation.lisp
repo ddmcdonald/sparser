@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "presentation"
 ;;;   Module:  "drivers;timing:"
-;;;  Version:  March 2021
+;;;  Version:  December 2021
 
 ;; file created 2/91. Given content 1/6/95
 ;; Added Time decoded 1/23. 10/2/07 Extended and added Allegro variation.
@@ -57,9 +57,12 @@ Evaluation took:
                   (1000 :msec)
                   (1000000 :microsec)))
          (word-count (token-count article))
-         (wps-string (compute-words-per-second
-                      word-count *time-to-read-document* units))
+         (known-speed (words-per-second (contents article)))
+         (wps-string (or known-speed
+                         (compute-words-per-second
+                          word-count *time-to-read-document* units)))
          (total-time *time-to-read-document*))
+    (setf (words-per-second (contents article)) wps-string)
     (format stream "~&~a words.  Time to parse: ~a msec  ~a~%"
             ;; (name article) "Parsing article: ~s,"
             (insert-commas-into-number-string word-count)

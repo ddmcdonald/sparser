@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "content-classes"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  April 2020
+;;;  Version:  December 2020
 
 #| Created 11/25/19 to separate out container component classes  |#
 
@@ -73,8 +73,9 @@
   ((s-count :initform 0 :accessor sentence-count
     :documentation "How many sentences in the paragraph")
    (total-words :initform 0 :accessor word-count
-    :documentation "How many words in the paragraph")
-   )
+     :documentation "How many words in the paragraph")
+   (wps :initform "" :accessor words-per-second
+     :documentation "A string to report. See compute-words-per-second"))
   (:documentation "A set of easily measured, largely structural
     rather than semantic, properties of a paragraph.
     Populated by collect-text-characteristics after each
@@ -123,7 +124,10 @@
 (defclass accumulate-items ()
   ((items-alist :initform nil :accessor items
     :documentation "Simple list. Items are just pushed onto it
-      making them in reverse cronological order."))
+      making them in reverse cronological order.")
+   (germaine :initform nil :accessor germaine-items
+     :documentation "List of the items that are of particular
+        interest in the current application"))
   (:documentation "Maintains a simple list or alist. Up to the
      reader of the list to sort it into various kinds of things."))
 

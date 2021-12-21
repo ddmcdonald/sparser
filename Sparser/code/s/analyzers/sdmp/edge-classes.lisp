@@ -13,10 +13,14 @@
 ;;; records for instances of edges and chains of them
 ;;;---------------------------------------------------
 
-(defvar *current-edge-records* (make-hash-table :size 200))
-(defvar *current-edge-chains* (make-hash-table :size 200))
+(defvar *current-edge-records* (make-hash-table :size 200)
+  "Set in store-edge-chain, accessed by get-edge-record")
+
+(defvar *current-edge-chains* (make-hash-table :size 200)
+  "Set in store-edge-chain, accessed by get-chain")
 
 (defun initialize-spotter-edge-records ()
+  ;; called from clear-spotting-tables
   (clrhash *current-edge-records*)
   (clrhash *current-edge-chains*))
 
@@ -55,6 +59,7 @@
     entry))
 
 (defgeneric get-edge-record (edge)
+  (:documentation "Retrieve the record for this edge")
   (:method ((number integer))
     (get-edge-record (edge# number)))
   (:method ((e edge))
@@ -102,15 +107,15 @@
        do (format stream "~& e~a ~s" number string))))
 
 
-(defun edge-record-summary ()
-  "Return the statistics on the motific edge records of
-   the current article. Analogous to show-motif-term-context and
-   show-edge-records without the display."
-  (declare (special *germaine-spotter-group-instances*))
-  (let ((group-count (length *germaine-spotter-group-instances*))
+(defun edge-record-summary (germaine-group-instances)
+  "Called by show-abbreviated--motif-edge-contexts to provide
+   the statistics on the motific edge records of an article.
+   Analogous to show-motif-term-context and show-edge-records
+   without theier display component."
+  (let ((group-count (length germaine-group-instances))
         records-per-group  records  configurations  uncategorized )
     ;; collect the records
-    (loop for group in *germaine-spotter-group-instances*
+    (loop for group in germaine-group-instances
        as entries = (note-instances group)
        do (loop for note-entry in entries
              as entry-records = (text-strings note-entry)
@@ -122,9 +127,12 @@
        do (if config
             (push config configurations)
             (push r uncategorized)))
+    
     (values (gather-and-count-terms configurations)
             (length records) ; record-count
-            (length configurations) ; categorized-count
+            (if configurations
+              (length configurations) ; categorized-count
+              0)
             group-count
             uncategorized))) ; uncategorized-records
 

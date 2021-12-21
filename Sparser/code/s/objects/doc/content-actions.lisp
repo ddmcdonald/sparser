@@ -342,8 +342,7 @@ and make that file easier to understand. |#
    such as run-json-article-from-handle")
   (:method ((a article) &optional stream)
     (unless stream (setq stream *standard-output*))
-    (format stream "~&~%For ~a  (~a words)"
-            a (insert-commas-into-number-string (token-count a)))
+    (format stream "~&~%For ~a" a)
     (report-time-to-read-article a stream)
     (show-parse-performance a stream)
     (when *print-bio-terms*
@@ -366,8 +365,7 @@ and make that file easier to understand. |#
           ((typep doc-element 'paragraph)
            (when *show-article-progress*
              (format  stream "~&~a, ~a, ~a~%" great medium horrible)))
-          (*readout-segments-inline-with-text*
-           ;; proxy for with-total-quiet
+          (*readout-segments-inline-with-text* ;; proxy for with-total-quiet
            (format stream "~&~%")))))))
 
 
@@ -390,15 +388,18 @@ and make that file easier to understand. |#
   (format stream "~&~a: ~a" (name group) (group-count group)))
 
 
-(defun show-motif-term-context (&optional (stream *standard-output*))
-  (declare (special *germaine-spotter-group-instances* *abbreviated*))
-  (unless *germaine-spotter-group-instances*
-    (format stream  "~&No motif triggers in article~%"))  
-  (when *germaine-spotter-group-instances*
-    (if *abbreviated*
-      (show-abbreviated-motif-edge-contexts stream)
-      (loop for group in *germaine-spotter-group-instances*
-         do (show-motif-edge-contexts group stream)))))
+(defun show-motif-term-context (article &optional (stream *standard-output*))
+  "Go through the note-group-instance objects that were picked out for
+   this application and print out their contents."
+  (declare (special #| *germaine-spotter-group-instances*|# *abbreviated*))
+  (let ((group-instances (germaine-items (contents article))))
+    (unless group-instances
+      (format stream  "~&No motif triggers in article~%"))
+    (when group-instances
+      (if *abbreviated*
+        (show-abbreviated-motif-edge-contexts group-instances stream)
+        (loop for group in group-instances
+           do (show-motif-edge-contexts group stream))))))
 
 (defgeneric show-motif-edge-contexts (group &optional stream)
   (:method ((group note-group-instance) &optional stream)
@@ -408,24 +409,26 @@ and make that file easier to understand. |#
       (loop for note-entry in entries
          do (show-edge-records note-entry)))))
 
-(defgeneric show-abbreviated-motif-edge-contexts (&optional stream)
+(defgeneric show-abbreviated-motif-edge-contexts (group-instances &optional stream)
   (:documentation "Gets data for the whole set of germaine groups
     and reports it compactly.")
-  (:method (&optional stream)
+  (:method ((groups #|||# list) &optional stream)
     (unless stream (setq stream *standard-output*))
     (multiple-value-bind (configurations
                           record-count categorized-count
                           group-count uncategoried-records)
-        (edge-record-summary)
+        (edge-record-summary groups)
       (if (null categorized-count)
         (format stream "~&No Functional categorization for any of ~a instances~%"
                 record-count)
         (format stream "~&Functional categorizations for ~a out of ~a instances~%"
                 categorized-count  record-count))
-      (let ((index 0))
-        (loop for config in configurations
-           do (progn (format stream "  ~a" config)
-                     (when (= 4 (incf index)) (terpri stream) (setq index 0)))))
+      (when configurations
+        (let ((index 0))
+          (loop for config in configurations
+             do (progn
+                  (format stream "  ~a" config)
+                  (when (= 4 (incf index)) (terpri stream) (setq index 0))))))
       (when uncategoried-records
         (format stream "~&Uncategorized instances:")
         (loop for record in uncategoried-records
