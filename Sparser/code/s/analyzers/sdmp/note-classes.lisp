@@ -116,6 +116,7 @@
 
 
 (defun increment-note-entry (entry)
+  "Called by note and handle-spotted-word"
   (incf (instance-count entry)))
 
 
@@ -151,17 +152,4 @@
       (setf (note-trigger n) category)
       n)))
 
-
-;;;----------------------
-;;; pre-article cleaning
-;;;----------------------
-
-(defun clear-note-tables ()
-  "Called from clean-out-history-and-temp-objects just before
-   the next text analysis is about to start. Since notables
-   and note-groups persist across articles and are accessed by
-   name, we have to clean out their per-article instance counterpart
-   objects or else we would have misleading counts."
-  (clear-note-entry)
-  (clear-note-group-instance))
 
