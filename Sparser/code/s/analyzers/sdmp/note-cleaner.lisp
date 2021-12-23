@@ -58,3 +58,13 @@ Time to read an article is not saved. Would be another slot(?) on article?
   (clear-spot-entry)
   (clear-word-spotting-group-instance)
   (initialize-spotter-edge-records))
+
+
+;;==- stripping
+
+(defun strip-unnecessary-article-parts (article)
+  (setf (children article) nil))
+
+(defun strip-parsed-articles ()
+  (loop for a in *acumen-motific-articles*
+     do (strip-unnecessary-article-parts (cdr a))))
