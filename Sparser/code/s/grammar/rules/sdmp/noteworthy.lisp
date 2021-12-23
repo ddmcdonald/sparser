@@ -3,7 +3,7 @@
 ;;;
 ;;;      File: "noteworthy"
 ;;;    Module: "grammar;rules:SDM&P:
-;;;   Version: June 2021
+;;;   Version: December 2021
 
 ;; Initiated 1/29/20 to hold the actual notes and their generalization
 
@@ -43,6 +43,7 @@
     amount
     measurement unit-of-measure
     number ordinal multiplier
+    number-sequence hyphenated-number
     approximator)
 
    (finance
