@@ -74,7 +74,7 @@
     :documentation "How many sentences in the paragraph")
    (total-words :initform 0 :accessor word-count
      :documentation "How many words in the paragraph")
-   (wps :initform "" :accessor words-per-second
+   (wps :initform nil :accessor words-per-second
      :documentation "A string to report. See compute-words-per-second"))
   (:documentation "A set of easily measured, largely structural
     rather than semantic, properties of a paragraph.
