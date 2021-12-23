@@ -100,10 +100,12 @@ like any other rule.
    or (3b) if it fails then recurse on the position just after
    the current start position."
   (let ((start region-start)
+        (*ignore-overshooting-treetops* t)
         (end region-end)
         tt  pos-after  next-pos
         treetops  da-node  edge  result
         trigger-position )
+    (declare (special *ignore-overshooting-treetops*))
     
     (loop
        (setq treetops (treetops-in-segment start end))
@@ -146,7 +148,9 @@ like any other rule.
                (keyword
                 (case result
                   (:trie-exhausted ; no match, so continue at next position
-                   (setq start next-pos))
+                   (if (position/<= region-end next-pos)
+                     (return-from apply-debris-analysis-to-region t)
+                     (setq start next-pos)))
                   (otherwise
                    (break "Unexpected keyword ~a as DA 'result'" result))))
                (otherwise

@@ -741,9 +741,11 @@ there were ever to be any.  ///hook into final actions ??  |#
 (defparameter *debug-overshooting-treetops* nil
   "If an edge somehow covers the final position this loop will not
    terminate cleanly. This blocks a noisy error when working with Acumen documents.")
+(defparameter *ignore-overshooting-treetops* nil
+  "Quiet version of the debug flag")
 
 (defun treetops-in-segment (starting-position ending-position)
-  (declare (special *debug-overshooting-treetops*))
+  (declare (special *debug-overshooting-treetops* *ignore-overshooting-treetops*))
   (let ((start starting-position)
         tts )
     (if (eq starting-position ending-position)
@@ -756,7 +758,14 @@ there were ever to be any.  ///hook into final actions ??  |#
               (push (pos-starts-here start) tts) ;; the edge vector
               (push tt tts))
 
-            (cond ((eq end ending-position)
+            (cond ((null tt)
+                   (return))
+                  ((null (pos-assessed? end))
+                   (return))
+                  ((eq end ending-position)
+                   (return))
+                  ((position/<= ending-position end)
+                   ;; ending-position is probably under an edge
                    (return))
                   ((eq (pos-terminal end) *end-of-source*)
                    ;; the final period might be in an abbreviation
@@ -765,10 +774,13 @@ there were ever to be any.  ///hook into final actions ??  |#
                    (return))
                   ((> (pos-token-index end)
                       (pos-token-index ending-position))
-                   (if *debug-overshooting-treetops*
-                     (error "Treetops-in-segment: the last edge ~
-                             overshoots the ending-position")
-                     (return)))
+                   (cond
+                     (*debug-overshooting-treetops*
+                      (error "Treetops-in-segment: the last edge ~
+                             overshoots the ending-position"))
+                     (*ignore-overshooting-treetops*
+                      (return))
+                     (t (return))))
                   (t (setq start end)))
 
             ;; (p "Inc.")
