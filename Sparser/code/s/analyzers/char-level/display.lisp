@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1994,2014-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2014-201 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "display"
 ;;;   Module:  "analyzers;char-level:"
-;;;  Version:  August 2017
+;;;  Version:  December 2021
 
 ;; initiated 1/92, fixed end-of-source glitch 3/13
 ;; Added the straight-through case for a word explicitly 6/26
@@ -183,7 +183,6 @@
   (trim-whitespace
    (extract-characters-between-positions pos-before pos-after)))
 
-
 (defgeneric string-for-edge (edge)
   (:documentation "Uses extract-string-spanned-by-edge, but
     cleans up the result for easier examination by people")
@@ -209,6 +208,29 @@
         (else (warn "can't extract string between ~s and ~s in ~s"
                     start end (current-string))
               ""))))
+
+(defun clean-string-for-polyword (string)
+  "Motivated by reify-spelled-name which makes a polyword from a sting
+   retried by extract-characters-between-positions which can get too much.
+   In particular it can get periods which we need to leave out."
+  (let ((s1 (trim-whitespace string))) ; includes newlines
+    (let ((period-pos (position #\. s1 :from-end t)))
+      (if period-pos
+        (remove #\. s1 :test #'char= :from-end t)
+        s1))))
+
+;;/// consider making this an flet on reify-spelled-name
+(defun clean-words-derived-from-string (words)
+  "When reify-spelled-name gets more characters in its string that it wants
+   (because the it terminated in a newline). The word list also has to have
+   its final period and final newline removed"
+  (let ((reversed (reverse words)))
+    (when (eq (car reversed) *newline*)
+      (setq reversed (cdr reversed)))
+    (when (eq (car reversed) *the-punctuation-period*)
+      (setq reversed (cdr reversed)))
+    (reverse reversed)))
+
 
 (defun write-characters-between-positions (start-pos end-pos stream)
   (format stream "~a" (extract-characters-between-positions start-pos end-pos)))

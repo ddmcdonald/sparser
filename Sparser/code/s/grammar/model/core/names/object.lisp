@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:names:"
-;;;  version:  September 2021
+;;;  version:  December 2021
 
 ;; initiated 5/28/93 v2.3. Broke name word routines out to their own file 4/20/95. 
 ;; 0.1 (5/2) added an explicit name-creator to hack "and".   5/12 remodularized
@@ -406,11 +406,22 @@ with sequences we'd prefer that PNF handled directly.
    so it misses the polyword (or any other sort of multi-word edge).
    We look for evidence that a polyword is involved."
   (let* ((words (words-between pos-before pos-after))
-         (string (extract-characters-between-positions pos-before pos-after)))
+         (string (trim-whitespace (extract-characters-between-positions pos-before pos-after)))
+         (length (length string)))
 
     (when (position #\space string) ;; hit a polyword
       ;; The catch is in collect-no-space-segment-into-word
       (throw :punt-on-nospace-without-resolution nil))
+
+    (let* ((period-pos (position #\. string :from-end t)))
+      ;; If there's a period in the string, it will be at the end, probably from
+      ;; how the pos-after was determined. The very end of the string will then
+      ;; often be a newline character.
+      (when period-pos
+        (setq string (clean-string-for-polyword string))
+        (setq length (length string))
+        (setq words (clean-words-derived-from-string words))))
+   
 
     (cond
       ((string-is-probably-partial-url string)
