@@ -227,10 +227,13 @@
 
 (defmethod print-object ((a article) stream)
   (print-unreadable-object (a stream :type t)
-    (format stream " ~a" (name a))
-    (when (article-date a)
-      (unless (string-equal (article-date a) "date-unknown")
-        (format stream " ~a" (article-date a))))))
+    (with-slots (title name) a
+      (if title
+        (format stream "~a" title)
+        (format stream "~a" (name a)))
+      (when (article-date a)
+        (unless (string-equal (article-date a) "date-unknown")
+          (format stream " ~a" (article-date a)))))))
 
 (define-resource article)
 
