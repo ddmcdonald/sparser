@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1994,2016-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2016-2017,2021 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "initials"
 ;;;   Module:  "model;core:names:"
-;;;  version:  September 2017 
+;;;  version:  December 2020 
 
 ;; 2.0 (11/10/92 v2.3)  Flushed the original and put in new semantics 
 ;;       version.
@@ -60,8 +60,6 @@
    often have non-ascii initials in them, so if we need to dynamically
    extend the set of letters that for initials we do."
   ;;/// This is for species names like "M. tuberculosis".
-  ;; It would be better to make initials actually run,
-  ;; but that doesn't look possible in a R3 configuration.
   ;; The position parameter is the one holding the period
   (declare (special category::single-capitalized-letter
                     category::greek-letter)
@@ -89,8 +87,8 @@
             ;;(lsp-break "make sure positions are the right ones")
             (multiple-value-bind (letter rule)
                 (define-single-capitalized-letter (pname prior-word))
-              (assert rule (prior-word)
-                      "No new capitalized letter created for ~a" prior-word)
+              (unless rule
+                (break "No capitalized letter found for ~a" prior-word))
               (let ((edge (install-preterminal-edge
                            rule prior-word prior-pos pos-before)))
                 (setq single-caps-edge edge))))
