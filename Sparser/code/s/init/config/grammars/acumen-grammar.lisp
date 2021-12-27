@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:  "acumen-grammar"
 ;;;    Module:  "init/config/grammars/"
-;;;   version:  July 2021
+;;;   version:  December 2021
 
 ;; created 8/13/21 from a copy of the score grammar configuration.
 
@@ -227,6 +227,7 @@
 ;;(include-grammar-module  *generic-military*)
 
 ;; (include-grammar-module *middle-east*)
+(include-grammar-module *academics*)
 ;; (include-grammar-module *Banking*)
 ;; (include-grammar-module *ISR*)
 ;; (include-grammar-module *waypoints*)

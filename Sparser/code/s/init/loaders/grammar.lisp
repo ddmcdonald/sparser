@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:  "grammar"
 ;;;    Module:  "init;loaders;"
-;;;   version:  July 2021
+;;;   version:  December 2021
 
 ;; broken out from loaders;master-loader 4/19/94. Added Whos-news-post-dossiers-loader
 ;;  4/29 added [words;whitespace assignments].  5/25 consolidated the
@@ -216,6 +216,9 @@ omitted and then run (perhaps) after the image has been launched."
 
   (gate-grammar *middle-east*
     (gload "mideast;loader"))
+
+  (gate-grammar *academics*
+    (gload "academics;loader"))
 
   (gate-grammar *Banking*
     (gload "banking;loader"))

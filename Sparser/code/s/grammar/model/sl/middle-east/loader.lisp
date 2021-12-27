@@ -14,4 +14,4 @@
 (gload "mideast;titles")
 (gload "mideast;martyrdom")
 (gload "mideast;months")
-(gload "mideast;academics")
+;;(gload "mideast;academics") -- replaced by model/sl/academics 12/27/21

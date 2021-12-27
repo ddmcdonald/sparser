@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  July 2021
+;;;  version:  December 2021
 
 ;; initiated in January 1991 v1.8
 ;; 0.1 (10/17/93 v2.3) started revampin to hold all the individuals
@@ -206,6 +206,8 @@
   (gate-grammar *company-core*
     (gload "dossiers;co rules")))
 
+(gate-grammar *academics*
+  (gload "dossiers;academic-degrees"))
 
 (gate-grammar *money*
   (gload "dossiers;denominations of money")

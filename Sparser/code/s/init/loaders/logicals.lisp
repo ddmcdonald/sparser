@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "logicals"
 ;;;   Module:  "init;loaders;"
-;;;  version:  May 2021
+;;;  version:  December 2021
 
 ;; 4/21/92 added new,  5/10 broke apart CA/HA,  7/18 promoted all the
 ;; directories under "names;" up to "core;",  7/23 added tools;time
@@ -299,6 +299,7 @@
 (def-logical-pathname "music;"        "sl;music;")
 
 (def-logical-pathname "mideast;"      "sl;middle-east;")
+(def-logical-pathname "academics;"    "sl;academics;")
 (def-logical-pathname "banking;"      "sl;banking;")
 (def-logical-pathname "isr;"          "sl;isr;")
 (def-logical-pathname "waypoints;"    "sl;waypoints;")

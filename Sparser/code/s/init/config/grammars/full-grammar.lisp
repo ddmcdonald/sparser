@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:  "full grammar"
 ;;;    Module:  "init/config/grammars/"
-;;;   version:  July 2021
+;;;   version:  December 2021
 
 ;; This records every grammar module that is currently defined,
 ;; even though loading them all at once could lead to an inconsistent
@@ -267,6 +267,7 @@
 (include-grammar-module  *generic-military*)
 
 (include-grammar-module *middle-east*)
+(include-grammar-module *academics*)
 (include-grammar-module *Banking*)
 (include-grammar-module *ISR*)
 (include-grammar-module *waypoints*)

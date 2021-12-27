@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:  "grammar modules"
 ;;;    Module:  "init;loaders;"
-;;;   version:  July 2021
+;;;   version:  December 2021
 
 ;; 12/4/92 pulled word options made irrelevant in master-loader
 ;; 5/11/93 added refinements in words and syntax
@@ -466,6 +466,10 @@
 
 (define-grammar-module *middle-east*
   :name "The Middle East"
+  :parent *sublanguages*)
+
+(define-grammar-module *academics*
+  :name "Schools, degrees, and their support structure"
   :parent *sublanguages*)
 
 (define-grammar-module *Banking*
