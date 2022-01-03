@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "modifiers"
 ;;;    Module:   "model;dossiers:"
-;;;   Version:   February 2021
+;;;   Version:   December 2021
 
 ;; Created 1/4/13 to group together comparatives, approximators, etc in
 ;; one place so they're easier to keep track of. (1/9/13) Moved in all
@@ -39,11 +39,11 @@
 
 ;;---- "so"
 ;; Also used anaphorically "and so did Harry"
-;; as an agreement "I think so"
+;; and as an agreement "I think so"
 ;;/// and a zillion other readings
 (define-adverb "so")
 
-;; Is defined as a subordinate conjunctino too in
+;; Is defined as a subordinate conjunction too in
 ;; words/conjunctions.lisp
 
 
@@ -96,15 +96,6 @@
 
 
 
-
-#|  approximator rules
-
-;; initiated 11/15/95
-
-(def-form-rule (approximator np)
-  :form np
-  :referent (:daughter right-edge))
-|#
 
 
 ;;;------------
@@ -316,6 +307,13 @@
 (define-adverb "earlier")
 (define-adverb "later") ;; "later on"?
 
+(define-simultaneous-adjective-adverb "early") ; :super-category??
+
+;; These are much more general
+#|
+(def-cfr phase-offset ("early"))
+(def-cfr phase-offset ("mid"))
+(def-cfr phase-offset ("late"))  |#
 
 ;;;---------
 ;;; adjectives / adverbs
