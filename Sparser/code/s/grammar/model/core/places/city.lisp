@@ -47,6 +47,32 @@
       "city-with-no-recorded-name")))
 
 
+;;;------------------
+;;; <person> of-city
+;;;------------------
+
+(define-marker-category of-city
+  :realization (:tree-family transparent-pp
+                :mapping ((pp . of-city)
+                          (preposition . of)
+                          (complement . city))))
+
+(def-csr name person ; name -> person / ___ of-city
+  :right-context of-city
+  :form np
+  :referent (:function interpret-name-as-person left-edge))
+
+(def-csr named-object person
+  :right-context of-city
+  :form np
+  :referent (:function interpret-name-as-person left-edge))
+
+(def-cfr person (person of-city)
+  :form np
+  :referent (:head left-edge
+             :bind (location right-edge)))
+
+
 ;;;---------------
 ;;; defining form
 ;;;---------------
