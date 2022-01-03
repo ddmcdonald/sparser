@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "quantifiers"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   November 2021
+;;;   Version:   December 2021
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3.  Added some 1/13/94
 ;; 0.1 (7/25) revised "many" and "several" to be like the others rather than
@@ -208,27 +208,27 @@
    notion of a scale or attribute (attr) along with the
    term they quantify varies relative to some reference set.
    They pattern like adjectival comparatives.
-     Note that given the loop structure, we can have several alternatives
-   of a given key to permit synonyms
-"
+     Note that given the flet and the loop, we can define several
+   alternatives of any given key."
   (let ((*inhibit-constructing-comparatives* t))
     (declare (special *inhibit-constructing-comparatives*))
 
-    (flet ((for-count-word (word)
+    (flet ((for-count-word (word) ; "many"
              (define-function-term word 'quantifier ;; had been 'adjective
                :super-category (category-named 'scalar-quantifier)))
-           ;; should these have :rule-label fields that identify
+           ;;/// should these have :rule-label fields that identify
            ;; the attribute these are refering to? (cf. setup-comparatives)
-           (for-mass-word (word)
+           ;;/// we're dropping the count/mass distinction on the floor
+           (for-mass-word (word) ; "much"
              (define-function-term word 'quantifier
                :super-category (category-named 'scalar-quantifier)))
 
-           (for-er-word (word)
+           (for-er-word (word) ; "more"
              (define-function-term word 'comparative-adjective
                :super-category (category-named 'comparative-scalar-quantifier)
                :rule-label 'comparative))
 
-           (for-est-word (word)
+           (for-est-word (word) ; "most"
              (define-function-term word 'superlative-adjective
                :super-category (category-named 'superlative-scalar-quantifier)
                :rule-label 'superlative)))
@@ -240,34 +240,11 @@
               (:er (for-er-word (resolve/make string)))
               (:est (for-est-word (resolve/make string))))))))
 
-#+ignore
-    (let ((count-word (when base-count (resolve/make base-count)))
-          (mass-word (when base-mass (resolve/make base-mass)))
-          (er-word (when er (resolve/make er)))
-          (est-word (when est (resolve/make est))))
-
-      (when count-word ; "many"
-        (define-function-term count-word 'quantifier ;; had been 'adjective
-          :super-category (category-named 'scalar-quantifier)))
-      ;; should these have :rule-label fields that identify
-      ;; the attribute these are refering to? (cf. setup-comparatives)
-      (when mass-word ; "much"
-        (define-function-term mass-word 'quantifier
-          :super-category (category-named 'scalar-quantifier)))
-
-      (when er-word ; "more"
-        (define-function-term er-word 'comparative-adjective
-          :super-category (category-named 'comparative-scalar-quantifier)
-          :rule-label 'comparative))
-
-      (when est-word ; "most"
-        (define-function-term est-word 'superlative-adjective
-          :super-category (category-named 'superlative-scalar-quantifier)
-          :rule-label 'superlative)))
 
       
 ;; count
-(define-scalar-quantifier :base-count "few" :base-count "a few" :er "fewer" :est "fewest")
+(define-scalar-quantifier :base-count "few" :base-count "a few"
+                          :er "fewer" :est "fewest")
 #| "From this day to the ending of the world,
 But we in it shall be remembered-
 We few, we happy few, we band of brothers;
@@ -275,7 +252,8 @@ For he to-day that sheds his blood with me
 Shall be my brother" -- Shakespeare's Henry the 5th |#
 
 ;; mass
-(define-scalar-quantifier :base-mass "a little" :er "less" :est "least")
+(define-scalar-quantifier :base-mass "a little" :er "less" :er "lesser"
+                          :est "least")
 ;;/// "at least N"
 
 (define-scalar-quantifier :base-count "many" :base-mass "much" :er "more" :est "most")
