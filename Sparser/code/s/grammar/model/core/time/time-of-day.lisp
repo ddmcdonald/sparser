@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "time-of-day"
 ;;;   Module:  "model;core:time:"
-;;;  version:  February 2021
+;;;  version:  December 2021
 
 ;; The dossier for these is time-of-day.lisp
 
@@ -26,7 +26,6 @@
   :realization (:common-noun name))
 
 (defun define-phase-of-day (string)
-  ;; hook to add arguments later
   (define-or-find-individual 'phase-of-day :name string))
 
 
@@ -34,7 +33,7 @@
 ;;; time of day
 ;;;-------------
 
-(define-category time-of-day
+(define-category time-of-day ; noon, daybreak
   :instantiates  self
   :specializes  time-interval
   :binds ((name :primitive word))
@@ -42,7 +41,6 @@
   :realization (:common-noun name))
 
 (defun define-time-of-day (string)
-  ;; hook to add arguments later
   (define-or-find-individual 'time-of-day :name string))
 
 
@@ -59,6 +57,44 @@
 
 (defun define-meal-time (string)
   (define-or-find-individual 'meal-time :name string))
+
+
+
+
+#| These are the synset of ont::event-time-rel in TRIPS
+
+after, afterward, afterwards, ago, anytime, as, as quick as possible,
+as soon as, as soon as possible, awhile, before, earlier, early,
+following, forthcoming, from, immediately, in progress, in the
+meantime, late, later, nowadays, once, one day, pending, previously,
+prior to, recently, right away, simultaneously, since, sometime, soon,
+then, til, till, to, today, tomorrow, tonight, underway, until,
+upcoming, when, whenever, while, yesterday, yet,  |#
+
+;;;-------------------------------------------------------------------------
+;;; shift from generic time periods to actual ones grounded in the calendar
+;;;-------------------------------------------------------------------------
+
+(define-category particular-time-of-day
+  :specializes time-interval
+  :binds ((phase (:or phase-of-day time-of-day))
+          (grounding time))
+  :documentation "This represents situating a general phase on
+ a specific time. Shifts from the generic concept of, e.g., 'morning'
+ to the actual time 'morning of March 5th'")
+
+(defun make-particular-time-of-day (phase time)
+  "Called from compose-of method in time-methods by way of
+   interpret-pp-adjunct-to-np"
+  (define-or-find-individual 'particular-time-of-day
+      :phase phase
+      :grounding time))
+
+
+(def-cfr time (weekday phase-of-day) ; "Sunday night"
+  :form np
+  :referent (:function make-particular-time-of-day right-edge left-edge))
+
 
 
 
@@ -80,7 +116,6 @@
   (let ((word (define-word string))) ;; reuses any already defined word
     (define-individual 'numeric-time
         :name word)))  |#
-
 
 ;;;---------------------------------
 ;;; post-modifying reference points
@@ -106,17 +141,6 @@
   :rule-label am-pm
   :index (:permanent :key name)
   :realization (:noun ("pm" "p.m.")))
-
-
-#| These are the synset of ont::event-time-rel in TRIPS
-
-after, afterward, afterwards, ago, anytime, as, as quick as possible,
-as soon as, as soon as possible, awhile, before, earlier, early,
-following, forthcoming, from, immediately, in progress, in the
-meantime, late, later, nowadays, once, one day, pending, previously,
-prior to, recently, right away, simultaneously, since, sometime, soon,
-then, til, till, to, today, tomorrow, tonight, underway, until,
-upcoming, when, whenever, while, yesterday, yet,  |#
 
 
 ;;;------------
@@ -183,22 +207,3 @@ timezone.  |#
 ;;; clock time 
 ;;;------------
 ;;  which will extend to timezone (with offsets) and seconds
-
-;;;-------------------------------------------------------------------------
-;;; shift from generic time periods to actual ones grounded in the calendar
-;;;-------------------------------------------------------------------------
-
-(define-category particular-time-of-day
-  :specializes time-interval
-  :binds ((phase (:or phase-of-day time-of-day))
-          (grounding time))
-  :documentation "This represents situating a general phase on
- a specific time. Shifts from the generic concept of, e.g., 'morning'
- to the actual time 'morning of March 5th'")
-
-(defun make-particular-time-of-day (phase time)
-  "Called from compose-of method in time-methods by way of
-   interpret-pp-adjunct-to-np"
-  (define-or-find-individual 'particular-time-of-day
-      :phase phase
-      :grounding time))
