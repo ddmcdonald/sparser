@@ -16,7 +16,8 @@
 
 (defun sweep-debris-in-sentence (sentence)
   "Runs the debris sweeper over this sentence and integrates
-   it into the paragraph level state layout"
+   it into the paragraph level state layout.
+   Called as the very last step in island-driven-forest-parse"
   (declare (special *trace-debris-sweep*))
   (sweep-debris-treetops sentence)
   (when *trace-debris-sweep*
