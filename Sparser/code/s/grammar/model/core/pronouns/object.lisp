@@ -187,6 +187,8 @@ with a special case just below. |#
               "There is more than one indefinite-pronoun rule defined for ~s"
               (pname word))
       (let ((rule (car rules)))
+        ;; n.b. indef-pronoun composes with the same pattern as pronoun
+        ;; but also like a quantifier
         (setf (cfr-form rule)
               (if (string-equal string "one") ;; special case. No
                 category::common-noun

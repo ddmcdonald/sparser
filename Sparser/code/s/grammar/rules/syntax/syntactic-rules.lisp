@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2022 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "syntactic rules"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  September 2018
+;;;  Version:  January 2022
 
 ;; Initiated 9/7/14 to collect the rules into one place. 10/25 flushed
 ;; the temporary vp+prep rules. 10/26/14 put in one for vg+pp
@@ -688,21 +688,22 @@ s           :form np
 ;;;--------------
 
 (loop for nb in `(vp+ing vg+ing ;; allow present-participles (gerunds) as objects
-                         np pronoun reflexive/pronoun
-                         demonstrative ,@*n-bar-categories*)
-  do
-        (loop for vv in '((vg vp) (vg+ing vp+ing)
-                          (vg+ed vp+past) ;; if there is a direct object, then mark the vg+ed as a past tense
-                          (infinitive to-comp) (to-comp to-comp))
-              do
-                (eval 
-                 `(def-syntax-rule (,(car vv) ,nb)
-                    :head :left-edge
-                    ;; NOTE -- when the first NP after a VG is reasonably an indirect object
-                    ;; or the verb takes an :oc (object complement), then the resulting
-                    ;; form is reset to a VG (not a VP) in assimilate-np-to-v-as-object
-                    :form ,(second vv)
-                    :referent (:function assimilate-np-to-v-as-object left-edge right-edge)))))
+                  np pronoun reflexive/pronoun indef-pronoun
+                  demonstrative ,@*n-bar-categories*)
+   do
+     (loop for vv in '((vg vp) (vg+ing vp+ing)
+                       (vg+ed vp+past) ;; if there is a direct object, then mark the vg+ed as a past tense
+                       (infinitive to-comp) (to-comp to-comp))
+        do
+          (eval 
+           `(def-syntax-rule (,(car vv) ,nb)
+                :head :left-edge
+                ;; NOTE -- when the first NP after a VG is reasonably
+                ;; an indirect object or the verb takes an :oc (object
+                ;; complement), then the resulting form is reset to a
+                ;; VG (not a VP) in assimilate-np-to-v-as-object
+                :form ,(second vv)
+                :referent (:function assimilate-np-to-v-as-object left-edge right-edge)))))
 
 ;;; NEED TO DEAL WITH INDIRECT-OBJECTS and OBJECT COMPLEMENTS
 ;;; "we gave John a book"
