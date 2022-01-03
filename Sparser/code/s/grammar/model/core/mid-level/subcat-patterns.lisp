@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2017-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2017-2022 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "subcat-patterns"
 ;;;   Module:  "model;core:mid-level::"
-;;;  version:  December 2020
+;;;  version:  January 2022
 
 (in-package :sparser)
 
@@ -21,8 +21,7 @@ participate in realizations.
 
 The goal is to makes these subcat mixins rich enough that all
 we have to do to define the realization of a specific verb is
-to specify the verb and any irregularities it has
-
+to specify the verb and any irregularities it has.
 
 
 The set of 'families' that can appear in the etf field of
@@ -33,7 +32,7 @@ a simplified realization for a verb are (5/17)
   svo-passive: s, v, o
   svcomp: s, v, c
 
-subcategorization-pattern is a daughter of linguistic, abstract
+'subcategorization-pattern' is a daughter of linguistic, abstract
 
 |#
 
@@ -351,10 +350,14 @@ subcategorization-pattern is a daughter of linguistic, abstract
 
 (define-mixin-category knowledge-verb
   :specializes subcategorization-pattern
-  :mixins (prop-attitude with-experiencer)
+  :mixins (prop-attitude ; agent, patient, theme
+           with-experiencer with-topic)
   :restrict ((experiencer (:or pronoun physical-agent social-agent))) ;; "I"
   :realization
-  (:s experiencer
+  (:s experiencer ; "I know"
+   :o patient  ; "I know something"
+   :about topic
+   :of topic
    :howcomp theme
    :whethercomp theme
    :whycomp theme

@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "verbs"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  August 2021
+;;;  version:  December 2021
 
 (in-package :sparser)
 
@@ -278,6 +278,25 @@ dm #79 "a more precise answer" --> see answer/info in mid-level/things.lisp
                        :past-tense "implied"
                        :present-participle "implying")))
 
+(define-category install-as
+  :specializes accomplishment
+  :mixins (with-agent with-theme with-goal)
+  :restrict ((goal title)
+             (theme person))
+  :realization (:verb ("install" "instal")
+                :o theme
+                :as goal)
+  :documentation "Idiosyncratic construction that doesn't seem
+   to warrant reifying a subcat pattern. Applies to the 2d sense
+   of 'install' in the dictionary: installing a person in a position
+   ('Professor Sayer was formally installed as President last Thursday')")
+#| Comlex
+((verb
+  (:subc
+  ((np-as-np) -- this reading
+   (np-pp :pval ("across" "on" "to" "between" "inside" "in" "with"))
+   (np))))) |#
+
 (define-category intend
   :specializes state
   :mixins (control-verb) ;;  except for not taking a simple object
@@ -286,18 +305,18 @@ dm #79 "a more precise answer" --> see answer/info in mid-level/things.lisp
     'intention' -- need a good use-case to tie them together
     like some early transformational grammar did.")
 
-
-;; know -- that P, John, John will P ("that" optional),
-;;   how to
-;;/// know of (any drug for cancer)
+;;// Rusty did it with mixins: raising-to-object create-mental-construction-concerning
 (define-category know
   :specializes process
   :mixins (knowledge-verb)
   :realization
     (:verb ("know" :past-tense "knew" :past-participle "known")))
 ;; "know the blocks are red", "what to do"
-;; know Spencer to be a good cat
-;; know that Spencer is a good cat
+;; "know Spencer to be a good cat"
+;; "know that Spencer is a good cat"
+;;  know -- that P, John, John will P ("that" optional),
+;;  how to
+;;/// know of (any drug for cancer)
 
 (define-category lay
   :specializes state

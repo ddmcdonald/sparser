@@ -831,7 +831,7 @@
 	   :etf (svo-passive)
            :o theme))
 
-
+#+ignore  ;; moved to verb dossier
 (define-category know :specializes bio-rhetorical
   :mixins (raising-to-object create-mental-construction-concerning)
   :restrict ((theme (:or be biological)))
