@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2016-2017 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2016-2021 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "term-to-move"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: January 2017
+;;; version: December 2021
 
 #| These are definitions that were in terms.lisp. They need
 to be moved to more general places and be modified to no longer
@@ -27,14 +27,16 @@ be biology specific, since they aren't. |#
       :mixins (related-thing))
 
 
-;;/// move to quantifiers -- lesser/least
-(adj "lesser" :super bio-predication)
+;;/// moved to quantifiers -- lesser/least
+;;(adj "lesser" :super bio-predication)
 
 (adj "prone" :binds ((prone-to top)) :realization (:to prone-to))
 
 ;;---- time
 
-(noun "the next day" :specializes time)
+;; doing it compositionally
+;;(noun "the next day" :specializes time)
+
 (noun "p.i" :specializes time) ;; post-infection!
 
 
@@ -272,7 +274,8 @@ be biology specific, since they aren't. |#
     :in compared
     :among compared ))
 
-(adj "early" :super bio-predication)
+;; moved to modifiers as adj/adv
+;;(adj "early" :super bio-predication)
 
 (adj  "exclusive" :super bio-predication)
 
@@ -301,8 +304,8 @@ be biology specific, since they aren't. |#
 (adj "novel" :super bio-predication)
 
 
-
-(adj "spatial" :super bio-predication)
+;; in core/places/object
+;;(adj "spatial" :super bio-predication)
 
 
 (adj "long-term" :super bio-predication)
