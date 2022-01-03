@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2022 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "interval"
 ;;;   Module:  "model;core:time:"
-;;;  version:  April 2020
+;;;  version:  January 2022
 
 ;; initiated 7/18/13
 ;;a category to represent intervals
@@ -41,6 +41,14 @@ that is a specialization of 'interval'
   :mixins (time)
   :restrict ((begin time)
              (end time)))
+
+(define-category interval-relation
+  :specializes relation
+  :documentation "Intended for the temporal notions that predicate
+ of events of some sort, i.e. things that occur over some period of
+ time. These relations typically identify some portion or sub-interval
+ of the reference event: 'early', 'late', 'mid'
+")
 
 
 ;;//// Look up Allen's relations
