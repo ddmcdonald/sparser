@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2011-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2018,2022 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "anaphors"
 ;;;   Module:  "model;core:time:"
-;;;  version:  March 2018
+;;;  version:  January 2022
 
 ;; 1.1 (10/19/94) completely reconceptualized.  10/30 fixed bad v/r
 ;;     (8/28/95) added simple phrases with sequencers
@@ -23,6 +23,12 @@
 
 (in-package :sparser)
 
+(defparameter *compute-deictic-times* nil
+  "When we reading something that has a specified date, or we're in
+   a conversation (where everything is in the ongoing present), 
+   then we can determine ('calculate') the time. That's usually not
+   the case, and so we just treat the as descriptive categories
+")
 
 ;;;----------------
 ;;;  "now", "then"
@@ -34,16 +40,15 @@
 (define-category  calculated-time 
   :specializes time
   :instantiates time
+  :mixins (indexical)
   :rule-label time
   :binds ((name :primitive word))
   :index (:key name)
-  :realization (:word name))  ;; //this needs a hook for doing 
-                              ;; the calculation
+  :realization (:word name))
 
 (defun define-calulated-time (string) ;; e.g. "now"
   (let* ((word (resolve/make string))
-         (i (find-or-make-individual 'calculated-time
-                                     :name word)))
+         (i (find-or-make-individual 'calculated-time :name word)))
     (assign-brackets-as-a-common-noun word)
     (make-corresponding-mumble-resource word :noun i)
     i))
@@ -53,32 +58,42 @@
 ;;; "yesterday", "today", "tomorrow"
 ;;;----------------------------------
 
-(define-category  calculated-day 
+(define-category calculated-day 
   :specializes calculated-time
   :instantiates time
   :rule-label time
-  :mixins (indexical)
   :binds ((name :primitive word)
           (calculator :primitive symbol))
   :index (:key name))
 
 (defun define-calculated-day (string calculation-fn)
+  "Defined as a category and specified individual. The choice
+   of referent is either that individual or the calculation
+   function. These have uses as both adverbs and nouns so we
+   make two rules and hope the chunker can sort it out."
+  (declare (special *compute-deictic-times*))
   (let* ((word (resolve/make string))
-         (i (find-or-make-individual 'calculated-day 
-                                     :name word
-                                     :calculator calculation-fn)))
-    (assign-brackets-as-a-common-noun word)
-    (make-corresponding-mumble-resource word :noun i)
-    ;; This is a completely ad-hoc rule, but pushing this
-    ;; through the existing single-word rdata construction
-    ;; was not going to happen easily
-    (let* ((rule-form `(def-cfr time ;; knows about the rule-label
-                               (,word)
-                         :form noun
-                         :referent (:function ,calculation-fn)))
-           (rule (eval rule-form)))
-      (add-rule rule category::calculated-day)
-      (values rule i))))
+         (category-name (name-to-use-for-category string))
+         (category-form
+          `(define-category ,category-name
+             :specializes calculated-day
+             :instantiates time
+             ;; :bindings ((name ,word)) --- format is wrong
+             ))
+         (category (eval category-form)))
+    (let* ((i (define-individual category :name word))
+           (referent (if *compute-deictic-times*
+                       `(:function ,calculation-fn)
+                       i))
+           (adv-rule (define-cfr category (list word)
+                       :form (category-named 'adverb)
+                       :referent referent))
+           (noun-rule (define-cfr category (list word)
+                        :form (category-named 'noun)
+                        :referent referent)))
+      (add-rules (list noun-rule adv-rule) i)
+      i)))
+ 
       
 
 
