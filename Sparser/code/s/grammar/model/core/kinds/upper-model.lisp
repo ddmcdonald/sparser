@@ -1,9 +1,9 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; Package: sparser; -*-
-;;; Copyright (c) 2010-2021 David D. McDonald 
+;;; Copyright (c) 2010-2022 David D. McDonald 
 ;;;
 ;;;     File:  "upper-model"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  October 2021
+;;;  version:  January 2022
 
 #| Defines the set of 'expressive categories' (see Meteer 1992) that we're
    experimenting with as the top tier of our domain model.  This sort of thing
@@ -172,8 +172,9 @@
 (define-category relation
   :instantiates nil
   :specializes abstract
-  ;; :lemma (:common-noun "relation")
-  :binds ((adverb))
+  ;; :lemma (:common-noun "relation") -- some sort of timing problem
+  :binds ((word :primitive word)
+          (adverb))
   :documentation
   "A relation designates a relationship between some number (arity) of
  entities. It is intended as the super class of more specifc types
