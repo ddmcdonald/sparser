@@ -106,14 +106,16 @@ The basis pattern is to give two strings. The first defines the
 new logical, the second gives its location relative to an existing
 logical, e.g.
 
-(def-logical-pathname "numbers;"      "core;numbers:")
+(def-logical-pathname "numbers;"      "core;numbers;")
 
 defines the new logical for numbers -- notice that it ends with
 a semicolon -- in terms of the logical for the grammar model
 core plus the specific directory. That reference pathname
 always starts with a logical, indicated by the semicolon, and
 can have as many intermediate directories as needed, each
-delimited by a colon.
+delimited by a semicolon, e.g.
+
+(def-logical-pathname "model-forms;"  "objects;model;forms;")
 
 
 Populating grammar modules:
