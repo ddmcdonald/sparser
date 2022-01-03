@@ -2,15 +2,17 @@
 ;;; copyright (c) 1990,1991  Content Technologies Inc.
 ;;; copyright (c) 1992 David D. McDonald  -- all rights reserved
 ;;;
-;;;     File:  "loader"
-;;;   Module:  "model;core:names:people"
+;;;     File:  "people-age"
+;;;   Module:  "model;core:people"
 ;;;  version:  0.0 December 1992
 
 ;; broken out from time;age 12/15/92 v2.3
 
-;; Not loaded anymore. Functionality has been distributed
-;; mostly to realizations on the person category. Also see the age file
-;; in core/time/ (5/13)
+;; Not loaded anymore.
+
+;; Functionality has been distributed mostly to realizations on the
+;; person category. See the age file in core/time/ (5/13). The CS
+;; rules have moved to people/names-to-people.lisp
 
 (in-package :sparser)
 
