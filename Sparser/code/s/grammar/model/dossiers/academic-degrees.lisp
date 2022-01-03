@@ -10,10 +10,10 @@
 
 (in-package :sparser)
 
-(make-academic-degree "B.A")
+(make-academic-degree "B.A.")
 (make-academic-degree "B.Sc.") ;; only one in javan-online
 
 (make-academic-degree "M.B.A.")
-;; (make-academic-degree )
-;; (make-academic-degree )
-;; (make-academic-degree )
+(make-academic-degree "M.S.")
+(make-academic-degree "M.A.")
+(make-academic-degree "Ph.D.")
