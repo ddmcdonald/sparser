@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 199-1995,2011-2020  David D. McDonald  -- all rights reserved
+;;; copyright (c) 199-1995,2011-2021 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "countries"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  March 2020
+;;;  version:  December 2021
 
 ;; 0.1 (10/12/92 v2.1) introducing new semantics
 ;;     (9/7 v2.3) revived the existing set of cases
@@ -277,7 +277,8 @@
   :adjective '("American")
   :cities '("Washington, D.C."
             "New York" "New York City"
-            "San Francisco" "Miami" "Boston" "Sunnyvale" "Seattle" "Portland" "Newark"
+            "San Francisco" "Miami" "Boston" "Sunnyvale" "Seattle" "Portland"
+            "Newark" "Los Angeles"
             "Minneapolis" "Milwaukee" "Indianapolis" "Denver" "Chicago"
             "Charlottesville" "Atlanta"))
 (define-country "Uruguay")
