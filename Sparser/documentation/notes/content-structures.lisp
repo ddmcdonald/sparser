@@ -1,10 +1,10 @@
-;; Note on the structure and assembly of document element 'contents' instances
+;; 'content-structures' a note on the structure and assembly of document element 'contents' instances
 ;; 5/24/21
 (in-package :sparser)
 
 (This note builds directly on the 'doc-structure' note.)
 
-Every document structure class has a standard set of slots. This is an example of the slots on a sentence. It's the first sentence in a paragraph worth of text that I wanted to look at because of a problem we were having with the company name at its start.
+Every document structure class has a standard set of slots. Here is an example of the slots on a sentence. It is the first sentence of a paragraph worth of text that I wanted to look at because of a problem we were having with the company name at its start.
 
 sp> (d s1)
 #<sentence p1 -- p51>
@@ -53,7 +53,6 @@ records-of-delayed-actions:
   preposed-aux                 = nil
   initial-wh                   = nil
   sentence-mentions            = (#<m:537918 i379252 #<holder plural 379252> #1=nil.s1 200-208>..
-used to to find selected remote
 ;; Records kept while parsing. It is also the home of the sentence-mentions                                           
 
 sentence-text-structure:
@@ -80,38 +79,38 @@ epistemic-status:
 ;; the arguments in the articles
 
 local-layout:  base-layout      = #<sentence-layout unknown>
-;; A description of what kinds of entities we have
-;; encountered in the parse just after we've finished the chunking sweep
+;; A description of what kinds of entities we have encountered
+;; in the parse just after we've finished the chunking sweep
 
 parsing-status: level-completed        = :chunked
 ;; which level of the sweep have we gotten to
 
 sentence-content:   backpointer                  = #<sentence p1 -- p51>
-                     metadata                     = nil
+                    metadata                     = nil
 
 
-If we defined an alternative class for the sentence content we could trim this down to just the ones that are actually relevant to ACUMEN. The epistemic and Grok classes are candidates for leaving off the everyday set of classes/slots were need to deal with. Doing that, however, would prompt examining all of the slots, which is not a pressing problem. 
+If we defined an alternative class for the sentence content we could trim this down to just the ones that are actually relevant to ACUMEN. The epistemic and Grok classes are candidates for leaving off the everyday set of classes/slots we need to deal with. Doing that, however, would prompt examining all of the slots, which is not a pressing problem. 
 
 
 
 @--------- when is information collected
 
-Like virtually every other aspect of text interpretation, we collect information and move it into content slots sentence by sentence. The last substantive call in sentence-processing-core is to record-sentence-model-data, and so long as *collect-model* control parameter is up (it virtually always is). That function makes a call to indentify-relations and then disburses the results to the entities, relations, and treetop count fields.
+Like virtually every other aspect of text interpretation, the information we collect is moved into content slots sentence by sentence. The last substantive call in sentence-processing-core is to record-sentence-model-data, so long as *collect-model* control parameter is up (it virtually always is). That function makes a call to indentify-relations and then disburses the results to the entities, relations, and treetop count fields.
 
-Identify-relations loops over the treetop edges of the sentence (in drivers/chart/psp/semantic-extraction.lisp). It applies the generic function collect-model to the referent of each edge and adds the result to a list. The list is then divided into relations and entities, where the criteria for being a relation is being something that has a subject (arbitrary, if workable).
+Identify-relations loops over the treetop edges of the sentence (in drivers/chart/psp/semantic-extraction.lisp). It applies the generic function collect-model to the referent of each edge and adds the result to a list. The list is then divided into relations and entities, where the criteria for being a relation is being something that has a subject (arbitrary, but workable).
 
-The 'raw' lists in identify-relations are then filtered for 'relevance'. The filter is embodied in the function relevant-type-of-individual, which is in interface/grammar/sweep.lisp. The filter per se is a list of categories in that file bound to a parameter called *names-of-irrelevant-to-dh-categories*. The 'dh' stands for 'discourse history' and that is actually its primary purpose -- to determine which types of individuals to leave out of the discourse history because it is quite unlikely, even grammatically imposible to ever refer to them anaphorically, e.g. by a pronoun.
+The 'raw' lists in identify-relations are then filtered for 'relevance'. The filter is embodied in the function relevant-type-of-individual, which is in interface/grammar/sweep.lisp. The filter per se is a list of categories bound to a parameter called *names-of-irrelevant-to-dh-categories*. The 'dh' stands for 'discourse history' and that is actually its primary purpose -- to determine which types of individuals to leave out of the discourse history because it is quite unlikely, even grammatically imposible, to ever refer to them anaphorically, e.g. with a pronoun.
 
-Any number of the types on that list could turn out to be interesting determinants of the characteristics of document. Augmented by other observables such a quotations or parentheticals they could be used as features when classifying or taken in aggregates as typifying what sort of document we have: financial news, events involving people, etc. There is a whole literature on this sort of classification that we could consider dipping into.
+Many of the types on that list could turn out to be interesting determinants of the characteristics of document. Augmented by other observables such quotations or parentheticals they could be used as features when classifying, or taken in aggregates as typifying what sort of document we have: financial news, events involving people, etc. There is a whole literature on this sort of classification that we could consider dipping into.
 
-Changing what's done would entail coming up with an alternative list of things we do want to ignore and parameterizing the function relevant-category-for-dh (which is where the actual comparison against the list is done -- it's a sort of open-coded version of itypep and worth reading carefully) such that it uses this alternative list. 
+Changing what's done would entail coming up with an alternative list of things we do want to ignore and parameterizing the function relevant-category-for-dh (which is where the actual comparison against the list is done -- it's a sort of open-coded version of itypep and worth reading carefully).
                                                                                                                                                                 
 
 There are just a few sentence-level slots that presently provide information we could consider using to characterize the properties of a text. Here are their raw values for this long sentence. ('s1-contents' is bound to its contents instance.)
 
 "Aug. 14, 1996, Ashanti Goldfields Co. Ltd. (ASL) said its board agreed to amend the terms of its proposed merger with Golden Shamrock Mines Ltd. following further discussions with representatives of holders of Golden Shamrock's 7.5% Conv."
 
-The entities and relations slots. These values get massaged when they're moved up to the paragraph level.
+Here are the entities and relations slots. These values get massaged when they're moved up to the paragraph level. The leading numbers were produced by pl ('print list'). They are conventient for looking at a list by hand using the nth function which is zero based.
 
 sp> (pl (entities-in-sentence s1-contents))
   1.  #<say 106111>
@@ -147,7 +146,7 @@ sp> (pl (relations-in-sentence s1-contents))
   2.  #<amend 106296>
 
   
-The individuals slot is a copy of the list of items that were entered into the discourse list. Notice that it has a lot of redundancy. A good deal of that reflects the structure of the parse tree, where an individual will be carried up as the referent of larger spans of text and gain bindings along the way. This is reflected in the indexes of the individuals. For example there are two instances of the company in this list, one with the index 106214 and a second with the larger index 106239 
+The individuals slot is a copy of the list of items that were entered into the discourse list. Notice that it has a lot of redundancy. A good deal of that reflects the structure of the parse tree, where an individual is often carried up as the referent of larger spans of text and gaisn bindings along the way. This is reflected in the indexes of the individuals. For example there are two instances of the company in this list, one with the index 106214 and a second with the larger index 106239.
 
 sp> (pl (sentence-individuals s1-contents))
   1.  #<company Ashanti Goldfields Co . Ltd .  9,106214>
@@ -187,7 +186,7 @@ sp> (pl (sentence-individuals s1-contents))
   35.  #<propose 106282>
   36.  #<follow 106290>
 
-The sentence-mentions slot holds a smaller list of what appears in the discourse history after the dust has settled. Notice that these objects contain the edge they were derived from. Its position information is what we use in the Covid article browser to determine the bounds of the selectable regions.
+The sentence-mentions slot holds a smaller list of what is in the discourse history after the dust has settled. Notice that these objects contain the edge they were derived from. Its position information is what we use in the Covid article browser to determine the bounds of the selectable regions.
 
 sp> (pl (sentence-mentions s1-contents))
   1.  #<m:328 i106281 #<term-name plural 106281> nil.s1 #<edge78 22 term-name 24>>
@@ -197,7 +196,7 @@ sp> (pl (sentence-mentions s1-contents))
 
 
   
-Here is the list of noted categories. Internally it is an alist of a category name as a symbol and its  note-entry object. The entry records how many instances of the category were noted along with their edges. The leading numbers were produced by pl ('print list'). They are conventient for looking at a list by hand using the nth function, which is zero based.
+Here is the list of noted categories. Internally it is an alist of a category name as a symbol and its note-entry object. The entry records how many instances of the category were noted along with their edges. 
 
 sp> (pl (items s1-contents))
   0.  (date #<date 1>)

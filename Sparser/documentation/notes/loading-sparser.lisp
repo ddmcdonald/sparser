@@ -10,11 +10,11 @@ As one might expect with a Lisp system that has been under mostly continuous dev
 
 We load Sparser using asdf, but since the system comes with many different configurations, the setup is more elaborate than the norm.
 
-Different configurations entail different sets of grammar modules to provide the grammar and semantic model, and different switch settings the dictate how the Sparser engine will process them. These differences are packaged into 'scripts'.
+Different configurations entail different sets of grammar modules to provide the grammar and semantic model, as well as different switch settings to dictate how the Sparser engine will process them. These differences are packaged into 'scripts'.
 
-At the heart of the asdf file -- ~/sparser/sparser.asd -- is a macrolet that defines a set of defsystem's where each incorporates a different script. The design is due to Alex Plotnik, a Lisp wizard who is reponsible for much of the tightest code in Sparser's engine.
+At the heart of the asdf file -- ~/sparser/sparser.asd -- is a macrolet that defines a set of defsystem objects where each incorporates a different script. The design is due to Alex Plotnik, a Lisp wizard who is reponsible for much of the tighter code in Sparser's engine.
 
-In your lisp init file, e.g. your ~/.sbclrc file when using SBCL, or wherever you store the code for loading Sparser, you should invoke a specific script defsystem. For example, this loads the configuration for the Acumen project by using :sparser/acumen as the argument to the asdf:load-system call. It also sets up a pointer to the acumen code base (on ddm's system, init files are personalized) and an initialization step there. 
+In your lisp init file, e.g. your ~/.sbclrc file when using SBCL, or wherever you store the code for loading Sparser, you should invoke a specific script defsystem. For example, this one loads the configuration for the Acumen project by using :sparser/acumen as the argument to the asdf:load-system call. It also sets up a pointer to the acumen code base (on ddm's system since init files are personalized) and an additional initialization step. 
 
 (defmacro acumen ()
   (defparameter cl-user::*use-all-proteins* t)
@@ -51,7 +51,7 @@ In sparser.asd the different systems there are distinguished by the 'script' tha
 
 @------ package and preloaders
 
-The file "Sparser/code/s/init/everything.lisp" is the only directly specified file in Sparser's base defsystem. The toplevel 'init' directory (for 'initialization') has the toplevel control parameters (in parameters.lisp), the various grammar configurations (in the subdirectory 'config'), and a set of workspaces in two different directories. 'workspace' has files for operations that are generally applicable, notably abbreviations.lisp. 'workspaces' has a set of project or person specific work code. The directory init/loaders/ has the preloader files that everything loads.
+The file "Sparser/code/s/init/everything.lisp" is the only directly specified file in Sparser's base defsystem. The toplevel 'init' directory (for 'initialization') has the relevant control parameters (in parameters.lisp), the various grammar configurations (in the subdirectory 'config'), and a set of workspaces in two different directories. 'workspace' has files for operations that are generally applicable, notably abbreviations.lisp. 'workspaces' has a set of project or person specific work code. The directory init/loaders/ has the preloader files that everything loads.
 
 The first thing done in everything.lisp is defining the :sparser package (with the nickname/short-form :sp). The principal thing it then does is to load the preloaders:
 
@@ -59,7 +59,7 @@ logical.lisp -- defines the code to manage Common Lisp logical pathnames. For th
 
 logicals.lisp -- specifies the logical pathname to every individual directory in the Sparser file tree.
 
-lload.lisp -- A wrapper around the load function that does book keeping and check the dates on the files: a source file that is newer than its corresponding compiled file (".fasl" for 'fast load') is recompiled. (Note that in SBCL redefining a function automatically compiles it. You are never working with interpreted code.)'
+lload.lisp -- A wrapper around the load function that does book keeping and checks the dates on the files, A source file that is newer than its corresponding compiled file (".fasl" for 'fast load') is recompiled. (Note that in SBCL redefining a function automatically compiles it. You are never working with interpreted code.)'
 
 @------ logical pathnames
 
@@ -67,17 +67,13 @@ When the preloader has been loaded, using direct calls to the load function. We 
 
 (lload "loaders;scripts")
 
-The string "loaders;scripts" is a CommonLisp logical pathname that is decoded to identify a particular file (scripts.lisp) in a particular directory (~/sparser/code/s/init/loaders/). The intermediary directories 'code' and 's' are artifacts of the original distribution mechanism for Sparser (on floppy disks) where there was the option to only ship the compiled version (code/f/). That is moot given the move to opensource via GitHub, but the structure remains. I always setup my sparser directory to use links to the direct subdirectories of 's' ('analyzers', 'drivers', 'grammar', 'init', 'interface', 'objects', and 'tools').
-
-All the directories that can be loaded must have a logical pathname registered in the file init/loader/logicals.lisp. The syntax is not natural. I always just copy the pattern given by the other logical. For Acumen's grammar we have
-
-(def-logical-pathname "motifs;"       "sl;motifs;")
+The string "loaders;scripts" is a Common Lisp logical pathname that is decoded to identify a particular file (scripts.lisp) in a particular directory (~/sparser/code/s/init/loaders/). The intermediary directories 'code' and 's' are artifacts of the original distribution mechanism for Sparser (on floppy disks) where there was the option to only ship the compiled version (code/f/). That is moot given the move to opensource via GitHub, but the structure remains. I always setup my sparser directory to use links to the direct subdirectories of 's' ('analyzers', 'drivers', 'grammar', 'init', 'interface', 'objects', and 'tools').
 
 @------ Scripts
 
-In sparser.asd the different systems there are distinguished by the 'script' that they invoke. If you look closely at the macrolet expression in the .asd file you'll notice that the choice of script is set before anything else happens. This is the script for acumen. It dictates the grammar-configuration, the switch settings, and provides values for some strategic variables. The set of variables that could be set here are in init/parameters.lisp. 
+In sparser.asd the different defsystem expressions are distinguished by the 'script' that they invoke. If you look closely at the macrolet expression in the .asd file you'll notice that the choice of script is set before anything else happens. This is the script for acumen. It dictates the grammar-configuration, the switch settings, and provides values for some strategic variables. The set of variables that could be set here are in init/parameters.lisp. 
 
-defscript acumen ()
+(defscript acumen ()
   (:script-variable *acumen*)
   (:parameters
    (*description-lattice* t)
@@ -88,6 +84,10 @@ defscript acumen ()
   (:grammar-configuration "acumen-grammar")
   (:switches neo-fire-setting))
 
+All the directories that can be loaded must have a logical pathname registered in the file init/loader/logicals.lisp. The syntax is not natural. I always just copy the pattern given by the other logical. For Acumen's grammar we have
+
+(def-logical-pathname "motifs;"   "sl;motifs;")
+
 
 
 @------ grammar modules
@@ -96,7 +96,7 @@ Virtually every directory of code or grammar/semantic-model includes a file call
 
 (gload "motifs;base-categories")
 
-'gload' is a wrapper around lload that keep even more records. In particular it links all the contents of the file to the grammar-module is was declared to be part of.
+'gload' is a wrapper around lload that keeps even more records. In particular it links all the contents of the file to the grammar-module is was declared to be part of.
 
 Grammar modules are a mechanism for deliberately constraining what parts of the engine and grammar we load, as dictated by the script. There is a note on these (see ~/sparser/Sparser/documentation/notes/note-on-grammar-modules.lisp), but the short form is that we register a new grammar module in init/loader/grammar-modules.lisp, e.g.
 
@@ -106,16 +106,16 @@ Grammar modules are a mechanism for deliberately constraining what parts of the 
 
 Broadly speaking the modules, like the logical pathnames, mirror the directory structure. 
 
-To specify what grammar modules should be loaded, the script specifies on of the files in the directory init/config/grammar/. In acumen's case the file is called acumen-grammar.lisp, and includes this statement.
+To specify what grammar modules should be loaded, the script specifies one of the files in the directory init/config/grammar/. In acumen's case the file is called acumen-grammar.lisp, and includes this statement.
 
 (include-grammar-module *acumen-motifs*)
 
 
 @----- organizing the actual loading
 
-The rest of the  whole operation is set in motion when everything.lisp loads the 'master-loader' (init/loader/master-loader.lisp). Note that loading a file evaluates all of the forms within it. In this case the forms are direct calls to lload, or calls that are conditional on the presence of a grammar module, which principally happens with the grammar. The loader for the grammar is invoked close to the end of master-loader.lisp with a call to lload the grammar load file: init/loaders/grammar.lisp.
+The rest of the loading operation is set in motion when everything.lisp loads the 'master-loader' (init/loader/master-loader.lisp). Note that loading a file evaluates all of the forms within it. In this case the forms are direct calls to lload, or calls that are conditional on the presence of a grammar module, which principally happens with the grammar. The loader for the grammar is invoked close to the end of master-loader.lisp with a call to lload the grammar load file: init/loaders/grammar.lisp.
 
-The order in which files are loader is very deliberate. The super classes of Lisp (CLOS) classes must be loader before their subclasses are defined. Similarly the categories that a Krisp category specializes or mixes in must be have been loaded (defined) before the category can be defined. In the case of categories this is particularly strict in recent years because categories can be used as type specifiers in method invocations. (See the note in the documentation on defining-categories.)
+The order in which files are loaded is very deliberate. The super classes of Lisp (CLOS) classes must be loaded before their subclasses are. Similarly the categories that a Krisp category specializes or mixes in must be have been loaded (defined) before the category can be defined. In the case of categories, this is particularly strict in recent years because categories can be used as type specifiers in method invocations. (See the note in the documentation on defining-categories.)
 
 This is the gated call to load the file with the categories for motifs.
 
@@ -125,26 +125,26 @@ This is the gated call to load the file with the categories for motifs.
 
 @----- initializations
 
-The last thing that happens in the loading process is loading the file init/session.lisp. When it load it does things like making the chart and the resource of edges, among other things. Its call to postprocess-grammar-indexes is responsible for printing out the statistics on what is in this particular load. E.g. 
+The last thing that happens in the loading process is loading the file init/session.lisp. When it is loaded it does things like making the chart and the resource of edges, among other things. Its call to postprocess-grammar-indexes is responsible for printing out the statistics on what is in this particular load. E.g. 
 
 -------------------------------------------
- 5,606  Referential categories
+ 6,432  Referential categories
  137  Syntactic form categories
  92   Mixin categories
- 268  Non-terminal categories
- 105,704  Individuals
+ 263  Non-terminal categories
+ 11,164   Individuals
                
 -------------------------------------------
- 134,350  Words
- 223,515  Polywords
- 62,672   Lexical rules
- 200,146  Semantic rules
- 15   Context sensitive rules
- 327  Form rules
- 918  Syntactic rules
- 280  Debris analysis rules
+ 26,057   Words
+ 8,141  Polywords
+ 23,280   Lexical rules
+ 8,752  Semantic rules
+ 16   Context sensitive rules
+ 304  Form rules
+ 924  Syntactic rules
+ 282  Debris analysis rules
  94   ETF tree schema
- 416  Grammar modules loaded
+ 321  Grammar modules loaded
 -------------------------------------------
 
 This is also where we stop the timer on the amount of time it took to do all this.
@@ -152,7 +152,7 @@ This is also where we stop the timer on the amount of time it took to do all thi
 (stop-timer '*time-to-load-everything*)
 (report-time-to-load-system)
 
-Prints out, e.g., "System loaded in 52.1 seconds". (Note that most of that time is loading all of our massive stock of proteins and other strictly biological things. We're working on factoring that aspect of the load to leave them out.)
+That prints out, e.g., "System loaded in 22.9 seconds".
 
 Finally it prints out the salutation:
 

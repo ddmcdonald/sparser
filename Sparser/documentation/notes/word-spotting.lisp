@@ -1,13 +1,13 @@
 word-spotting
-8/8/21, revised 9/6/21
+8/8/21, revised 9/6/21, 1/5/22
 
 (in-package :sparser)
 
-The list of motif indicator phrases that ACUMEN uses in collecting documents that potentially refer to motifs (or to place names, sports teams, mining companies, etc.) has been integrated into Sparser's word-spotting machinery. The list of indicator words with their labels (e.g. "tir-na-nog_PROP") is in the file
+We have integrated the list of motif indicator phrases that ACUMEN uses in collecting documents that potentially refer to motifs (or to place names, sports teams, mining companies, etc.) into Sparser's word-spotting machinery. The list of indicator words with their labels (e.g. "tir-na-nog_PROP") is in the file.
     grammar/model/dossiers/motif-key-words.lisp 
 
 The other files that are involved in doing word-spotting for motif phrases are
--- grammar/model/sl/motifs/base-categories.lisp for providing Krisp categories so that edges have the expected properties,  and the directory
+-- grammar/model/sl/motifs/base-categories.lisp for providing Krisp categories so that edges over motifs have the expected properties,  and the directory
 -- analyzers/psp/word-spotting/  which holds the word-spotting code itself.
 
 The classes and methods that support word-spotting are specializations of the ones developed earlier for noting instances of interesting categories. And, like those, the basic operation is to record designated edges and accumulate them in an article to produce a summary report.
@@ -38,7 +38,7 @@ The groups and the spotters are saved onto global variables and when assimilate-
 
 81 spotters in 39 groups
 
-The job of make-spotter-for-motif-pair is first to decompose the group string (e.g. "salmon_PROP") into its constituent parts: the kind of the motif ("PROP" for 'property') and the name of the group ("salmon"). The group string is broken apart and its substrings are converted to symbols in the sparser package.
+The job of make-spotter-for-motif-pair is first to decompose the group string (e.g. "salmon_PROP") into its constituent parts: the kind of the motif ("PROP" for 'property'), and the name of the group ("salmon"). The group string is broken apart and its substrings are converted to symbols in the sparser package.
 
 At that point we need to create a spotter object for the phrase, and find (or make) the group that it is associated with. The group is an instance of the word-spotting-group class.
 
@@ -62,7 +62,8 @@ The phrase, either a single word like "salmon" or a polyword like "tir na nog", 
 
 We link this spotter instance to the group it is part of and set the inherited 'trigger' slot to the word (or PW). The 'rdata' field of the spotter instance is created by setup-motifs-language-spec (in the base-categories file). We do this because the regular edge creation and manipulation code of Sparser expects the referents of the edges to be Krisp categories or individuals -- this setup function creates the category and a rule that will rewrite it as an edge with the label (semantic category) 'motif-trigger', which is what we'll see over spotted phrases in the edge. The rdata field is filled with enough information to recreate this edge.
 
-So part of setting up to create the edge is creating an individual that reflects what sort of motif this is (from the group recorded on the spotter instance). These are the Krisp categories involved. All in grammar/model/sl/motifs/base-categories.lisp.
+
+Part of setting up to create the edge is creating an individual that reflects what sort of motif this is (from the group recorded on the spotter instance). These are the Krisp categories involved. All in grammar/model/sl/motifs/base-categories.lisp.
 
 (define-category motif-trigger
   :specializes index
@@ -83,7 +84,7 @@ The last thing that make-spotter-for-motif-pair does is to integrate the phrase 
 
 @========== Running
 
-The actual 'spotting' of a phrase in the table happens very early in the layered processing that Sparser does. This first layer is emboddied in the function scan-sentences-and-pws-to-eos. Its job is to populate the chart with the words in the input stream and to delimit its sentences. Getting accurate sentence boundaries requires recognizing and expanding abbreviations and instantiating any polywords as they may also account for some of the periods ("G.M.B.H."). This function's code has been seeded with calls to the functions 'spot-word' and 'spot-polyword' positioned so that they will encounter words (or polywords) as soon as they are added to the chart. Here is the code for spot-word. Spot-polyword is essentially the same except that the words that constitute the polyword will have been convered by an edge.
+The actual 'spotting' of a phrase in the table happens very early in the layered processing that Sparser does. This first layer is emboddied by the function scan-sentences-and-pws-to-eos. Its job is to populate the chart with the words in the input stream and to delimit its sentences. Getting accurate sentence boundaries requires recognizing and expanding abbreviations and instantiating any polywords as they may also account for some of the periods ("G.M.B.H."). This function's code has been seeded with calls to the functions 'spot-word' and 'spot-polyword' positioned so that they will encounter words (or polywords) as soon as they are added to the chart. Here is the code for spot-word. Spot-polyword is essentially the same except that the words that constitute the polyword will have been convered by an edge.
 
 (defgeneric spot-word (term)
   (:method ((p position))
@@ -96,9 +97,9 @@ Spot-word checks the word at this position against the table. If the word has an
 
 Spot-entry objects are the per-article tokens that are associated with spotter types. The entries are temporary, the spotters are permanent (see word-spotting/object.lisp for all the class definitions). Like the note-entry objects they specialize, spot-entry instances are stored on an association list (alist) where the key is the name of the spotter (i.e. the symbol that names the motif group). This alist is shared with any note-entry's that have been triggered, and is stored in the 'items' slot of the 'contents' instance for the current sentence.
 
-The note-entry class has a associated print-object method. Any time a note-entry is returned or printed in the REPL it will appear and an unreadable object (e.g. enclosed in #<...>) and show the name of the entry and its present instance count, e.g.  #<shamrock 2>. On the alist we would see, e.g. (shamock #<shamrock 2>). Note that like note-entry objects, spot-entry's are created just once (per article), their instance count and set of linked edges are the only things that change.
+The note-entry class has an associated print-object method. Any time a note-entry is returned or printed in the REPL it will appear as an unreadable object (e.g. enclosed in #<...>) and show the name of the entry and its present instance count, e.g.  #<shamrock 2>. On the alist we would see, e.g. (shamock #<shamrock 2>). Note that like note-entry objects, spot-entry's are created just once per article, their instance count and set of linked edges are the only things that change.
 
-To link the edge, we use the same function as we do with notes, add-edge-to-note-entry (see analysers/sdmp/edge-classes.lisp). The association of edges and the entries that triggered them is mediated by instance of an edge-record structure (newly added for spotting).
+To link the edge, we use the same function as we do with notes, add-edge-to-note-entry (see analysers/sdmp/edge-classes.lisp). The association of edges and the entries that triggered them is mediated by an instance of an edge-record structure (newly added for spotting).
 
 (defstruct (edge-record
              (:print-function print-edge-record))
@@ -107,7 +108,7 @@ To link the edge, we use the same function as we do with notes, add-edge-to-note
   chain  ; its edge-chain following up its used-in field
   configuration)
 
-A list of these records will be stored in the text-strings field of the entry. Edge-record has a print function that uses the unique number for the edge, e.g. #<e27>.
+A list of these records will be stored in the text-strings field of the note entry. Edge-record has a print function that uses the unique number for the edge, e.g. #<e27>.
 
 Add edge-to-note-entry instantiates the record and sets its edge number and string. The chain and configuration field are not set until we have finished processing the article and are about to examine what we've found and create a report. (Equivalently we could create a JSON record for export.)
 
@@ -129,7 +130,6 @@ What to report about an article after its been analysed is dictated by specific 
       (error "Something other than paragraphs in ~a" section))
     (after-actions section)
     (after-actions article)
-
     (stop-timer '*time-to-read-document*)
     (report-time-to-read-article article)
     (show-parse-performance article)
@@ -161,15 +161,15 @@ The setup that lets us look at the properties of the spot entries is done in the
 
 Collect-germane-group-instances determines what we analyze, and while this will certainly change, with the present focus on motifs right now we concentrate on only the motif-based groups. These were gathered onto the global *motif-groups* when they were defined.
 
-We want to know where each of the spotted motif triggers has occurred in a text. This is a clear benefit when one occurs as a component of a name, and it ought to be possible to find other configurations that could provide heuristic evidence for classification.
+We want to know where each of the spotted motif triggers has occurred in a text. This is a clear benefit when a motif term occurs as a component of a name, and it ought to be possible to find other configurations that could provide heuristic evidence for classification.
 
-To set this up, apply-context-predicates walks through all the edge records on all of the note-instance objects in the germane groups and computed their 'chains'. Every edge has a 'used-in' field. This is an upwards pointer in the parse tree. Imagine that we had a rule A -> B C that has completed. The used-in fields of the edges for B and C are set to the C edge as part of the mechanics of applying rules.
+To set this up, apply-context-predicates walks through all the edge records on all of the note-instance objects in the germane groups and computes their 'chains'. Every edge has a 'used-in' field. This is an upwards pointer in the parse tree. Imagine that we had a rule A -> B C that has completed. The used-in fields of the edges for B and C are set to the C edge as part of the mechanics of applying rules.
 
 The function upwards-used-in-chain walks up through the used-in field and returns a list of all the edges it walked through, ordered from the bottom of the tree to the top. Store-edge-chain reifies the chain of edges as an instance of the edge-chain class, and stores that new object in the 'chain' field of the edge-record.
 
 With the chains in place, apply-context-predicates ends by applying the function analyze-trigger-context to each of the germaine note-group instances.
 
-The whole new collection process is directed by one of the functions in the after-action method for articles: apply-context-predicates. (In a new file in the word-spotting directory, context.lisp.) First it determines which of the group-instance objects in the items slot of the article's contents object are about motifs. It does that by comparing the names of those groups with the names of groups that were collected in motif-key-words.lisp when that file was loaded.
+The whole collection process is directed by one of the functions in the after-action method for articles: apply-context-predicates. (In a new file in the word-spotting directory, context.lisp.) First it determines which of the group-instance objects in the items slot of the article's contents object are about motifs. It does that by comparing the names of those groups with the names of groups that were collected in motif-key-words.lisp when that file was loaded.
 
 From analyze-trigger-contexts we call identify-edge-configuration. It applies the chain of each edge record to a sequence of predicates, stopping with the first one that returns a value. These predicates are at the bottom of word-spotting/context.lisp. Some of them do setup, but two of them, edge-context-for-name? and position-in-np-head return keywords (e.g. :np-modifier). These conclusions on the part of the predicates are stored in the 'configuration' field of the edge record.
 

@@ -1,12 +1,14 @@
-;; Note on 'notes'
+;; 'noteworthy'
 ;; Started 5/24/21
-;; This version 6/21/21
+;; This version 1/4/22
 
 (in-package :sparser)
 
-The information collection described in the note on content-structures is all derived from edges: appyling the rules of the grammar to the text to produce edges and collecting information based on the referents of those edges. However, unless we introduce an alternative for the filter that removes anything that's not germane for the discourse history (i.e. types that could be the basis of anaphora or elipsis), then that route will have to leave out a great many kinds of things that Sparser notices in a text and could help to provide features that characterize the semantic texture of a text and its variation across genres.
+The information collection described in the note on content-structures is all derived from edges: We apply the rules of the grammar to the text to produce edges and collect information based on the referents of those edges. However, unless we supply an alternative to the relevant for the discourse history filter, that route will leave out a great many of the kinds of things that Sparser notices in a text that could help to provide features that characterize the semantic texture of a text and its variation across genres.
 
 With that goal of a more flexible, less constrained record of the kinds of things Sparser's semantic model and rules have identified in an article, we have the facility known broadly as 'notes'. This is a largely self-contained module, so it is worth investing some time in exploring how it works.
+
+@---- What do we notice
 
 First is how we specify what kinds of things we want to take note of. This is done by adding the names of categories to a specific list. This list is bound to the parameter *noteworthy-categories* in the file grammar/rules/sdmp/noteworthy.lisp. ("sdmp" was originally "SDM&P" before we simplified the file name conventions. It stands for "simple domain-modeling & populating", and contains much of the less conventional aspects of Sparser.)
 
@@ -27,7 +29,7 @@ Here is an excerpt.
 
 Notice that it is organized as a list of lists (an 'association list', or 'alist'). One of the goals in an exploratory effort like applying Sparser to ACUMEN is to be able get an easy and quick to read description of what was found. To that end, part of the design from the beginning is how we want to view the results. This grouping is part of that information reduction.
 
-Like the rest of Sparser, all symbol and list expressions like these are actually manipulated as typed structured objects. In noteworthy.lisp just after the list of categories is this expression. It assimilates the category list and converts it to the objects we use at runtime.
+Like the rest of Sparser, all symbol and list expressions like these are actually converted to typed structured objects. In noteworthy.lisp, just after the list of categories is this expression. It assimilates the category list and converts it to the objects we use at runtime.
 
 (defparameter *note-groups* ;; parameter so we can update it
   (takeup-noteworthy-categories *noteworthy-categories*))
@@ -39,7 +41,7 @@ The note-specific code is all in the 'sdmp' subdirectory of the major Sparser di
 
 note-classes.lisp has the defclass expressions that define the types. It also has the general code that manipulates them, and the code that takes up the expressions from the list and instantiates instances of the classes.
 
-The object types sort out into types and tokens. The types are long-lasting, the tokens are specific to the article analyses and need to cleared between runs.
+The object types sort out into types and tokens. The types are long-lasting, the tokens are specific to the article analyses and need to cleared or put into some permanent form between runs.
 
 Each sublist of the noteworthy categories is an instances note-group.
 
@@ -49,7 +51,7 @@ Each sublist of the noteworthy categories is an instances note-group.
  in common semantically or textually. For notes, these are created
  by define-note-group and stashed on *note-groups* when defined."))
 
-In the course of an analysis we work with its token counterpart. In particular these are focused on how we present our results (see below).
+In the course of an analysis we work with its token counterpart. These are focused on how we present our results (see below).
 
 (defclass note-group-instance (named-object)
   ((doc-element :initform nil :accessor for)
@@ -85,14 +87,14 @@ At runtime, we tally counts and other information as instances of 'note-entry'.
 
 --- Resources
 
-In any object system you need to be able access the individual objects: manage resources of them including clearing, and retrieving particular individuals. The document structure (in objects/doc/object.lisp) has very tailored version of this. We have a quick and easy way to do this for -any- class provided that it is a subclass of named-object like these are. This is done by calling the macro 'setup-find-or-make' with the name of the class, e.g.
+In any object system you need to be able access the individual objects, e.g. manage resources of them including clearing, and create or retrive particular individuals. The document structure (in objects/doc/object.lisp) has very tailored version of this, but we have a quick and easy way to do this for -any- class provided that it is a subclass of named-object like these are. This is done by calling the macro 'setup-find-or-make' with the name of the class, e.g.
 
 (setup-find-or-make notable)
 (setup-find-or-make note-entry)
 
-This macro is in tools/basics/resource.lisp. It applies a template to create all of the standard object-manipulation functions for the class it is applied to: a hash table to record instances, e.g. *note-entry-table*. a function to retrieve instances by name, get-note-enty. a function to clear the hash table, clear-note-entry. And the function for defining the instances, find-or-make-note-entry.
+This macro is in tools/basics/resource.lisp. It applies a template to create all of the standard object-manipulation functions for the class it is applied to: A hash table to record instances, e.g. *note-entry-table*. A function to retrieve instances by name, get-note-entry. A function to clear the hash table, clear-note-entry. And a function for defining the instances, find-or-make-note-entry.
 
-'Find or make' is a design pattern that is crutial to a maintaining clean object system. It helps with being disciplined in creating object and managing the pointers to them. If we want to define, say, the notable for the category named 'person' (and we want to use that same symbol as the name of the class instance), then find-or-make-notable first looks in its hash table for an already existing instance that's keyed to that symbol. If there isn't one already, the it applies make-instance to create the object, puts it in the table, then returns it.
+'Find or make' is a design pattern that is crutial to a maintaining clean object system. It helps with being disciplined in creating object and managing the pointers to them. If we want to define, say, the notable for the category named 'person' (and we want to use that same symbol as the name of the class instance), then find-or-make-notable first looks in its hash table for an already existing instance that's keyed to that symbol. If there isn't one already it applies make-instance to create the object, puts it in the table, then returns it.
 
 In this pattern, the identity of the object is fixed once it is created. The values of its slots, however, can continually change. For example there will be just one instance of the note-entry for, say, pronoun. But its slot values will be updated every time a pronoun is encountered. The only way we could get a new object for the note-entry for pronoun will be if we have first cleared the existing instance from the table.
 
@@ -146,7 +148,7 @@ This asks whether any of the category labels on an edge is 'noteworthy?'. Catego
     (setf (get-tag :noteworthy c) t)))
 
 
-We keep track of the edges associated with a note in order to get the correct instance counts. Many categories lie on a headline in the parse and will pass through a note? call several times. If we counted each instance then the result would be greatly exagerated over what we really want. To accommodate this, the procedure for recording a noted category (or not) implements a 'subsuming edge' strategy similar to what we do when adding individuals into the discourse history.
+We keep track of the edges associated with a note in order to get the correct instance counts. Many categories lie on a headline in the parse and will pass through a note? call several times. If we counted each instance then the result would be greatly exagerated over what we want. To accommodate this, the procedure for recording a noted category (or not) implements a 'subsuming edge' strategy similar to what we do when adding individuals into the discourse history.
 
 This is the relevant method signature in note?
 
@@ -210,8 +212,6 @@ At the paragraph level we execute collect-noted-items (in content-methods.lisp).
            (alists (loop for c in contents
                       when (items c) collect (items c))))       
       (when alists
-        ;;(format t "~&Items alists for ~a~%~a~%" p alists)
-        ;;(push-debug `(,alists)) (break "do merge")
         (setf (items (contents p))
               (merge-items-alist alists)))
       p)))
