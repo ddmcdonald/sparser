@@ -73,138 +73,138 @@
 
     (cond
       ((= 2 (length pattern))
-      (cond
-       ;; the cases of -adjective and -verb+ed should be handled here, not by 
-       ;; composed-by-usable-rule, which makes "MAPK-dependent" be a protein
-       ((equal pattern '(:lower :hyphen)) ;; "mono- "
-        (resolve-trailing-stranded-hyphen pattern start-pos end-pos))
-       ((eq (car pattern) :hyphen)
-        (resolve-initial-stranded-hyphen pattern start-pos end-pos))
-       ((eq (second pattern) :hyphen)
-        (resolve-trailing-stranded-hyphen pattern start-pos end-pos))
-       (t (error "One hyphen NS: shouldn't be able to get here"))))        
+       (cond
+         ;; the cases of -adjective and -verb+ed should be handled here, not by 
+         ;; composed-by-usable-rule, which makes "MAPK-dependent" be a protein        
+         ((equal pattern '(:lower :hyphen)) ;; "mono- "
+          (resolve-trailing-stranded-hyphen pattern start-pos end-pos))
+         ((eq (second pattern) :hyphen)
+          (resolve-trailing-stranded-hyphen pattern start-pos end-pos))
+         ((eq (car pattern) :hyphen)
+          (resolve-initial-stranded-hyphen pattern start-pos end-pos))
+         (t (error "One hyphen NS: shouldn't be able to get here"))))        
 
 
-      ((and rel-edge (= 3 (length edges)))  ;; "Dimerization-independent" ERK #1
-       (unless (likely-spurious-hyphen (first edges) (third edges))
-         ;; if that condition is true we drop the hyphen on the floor
-         (do-relation-between-first-and-second
-             (when (edge-p (first edges))
-               (edge-referent (first edges)))
-           (edge-referent rel-edge)
-           (first edges)
-           rel-edge)))
-     
-     ((equal pattern '(:lower :hyphen :protein))
-      (resolve-protein-prefix (first edges) (third edges) start-pos end-pos))
-     
-     ((equal pattern '(:protein :hyphen :protein))
-      (make-protein-pair (first edges) (third edges) start-pos end-pos))
-     
-     ((equal pattern '(:protein :hyphen :bio-entity)) ;; RAS-ASSP
-      (make-protein-pair/convert-bio-entity start-pos end-pos :right))
-     
-     ((equal pattern '(:bio-entity :hyphen :protein)) ;; ??
-      (make-protein-pair/convert-bio-entity start-pos end-pos :left))
-     
-     ((equal pattern '(:protein :hyphen :lower)) ;; EGFR-positive
-      (resolve-protein-hyphen-word start-pos end-pos))
-     
-     ((equal pattern '(:full :hyphen :protein)) ;; "the PI3KC2β RBD-Ras complex"
-      (make-pair-with-protein (first edges) (third edges) start-pos end-pos))
-     
-     ((equal pattern '(:protein :hyphen :digits)) ;; GAP–334 Jan# 2
-      ;;/// should be something better for a case lke this if we know
-      ;; something about the the siginificane of the number
-      (make-bio-pair (first edges) (third edges) start-pos end-pos))
+       ((and rel-edge (= 3 (length edges)))  ;; "Dimerization-independent" ERK #1
+        (unless (likely-spurious-hyphen (first edges) (third edges))
+          ;; if that condition is true we drop the hyphen on the floor
+          (do-relation-between-first-and-second
+              (when (edge-p (first edges))
+                (edge-referent (first edges)))
+            (edge-referent rel-edge)
+            (first edges)
+            rel-edge)))
+       
+       ((equal pattern '(:lower :hyphen :protein))
+        (resolve-protein-prefix (first edges) (third edges) start-pos end-pos))
+       
+       ((equal pattern '(:protein :hyphen :protein))
+        (make-protein-pair (first edges) (third edges) start-pos end-pos))
+       
+       ((equal pattern '(:protein :hyphen :bio-entity)) ;; RAS-ASSP
+        (make-protein-pair/convert-bio-entity start-pos end-pos :right))
+       
+       ((equal pattern '(:bio-entity :hyphen :protein)) ;; ??
+        (make-protein-pair/convert-bio-entity start-pos end-pos :left))
+       
+       ((equal pattern '(:protein :hyphen :lower)) ;; EGFR-positive
+        (resolve-protein-hyphen-word start-pos end-pos))
+       
+       ((equal pattern '(:full :hyphen :protein)) ;; "the PI3KC2β RBD-Ras complex"
+        (make-pair-with-protein (first edges) (third edges) start-pos end-pos))
+       
+       ((equal pattern '(:protein :hyphen :digits)) ;; GAP–334 Jan# 2
+        ;;/// should be something better for a case lke this if we know
+        ;; something about the the siginificane of the number
+        (make-bio-pair (first edges) (third edges) start-pos end-pos))
 
-     ((equal pattern '(:protein :hyphen  ;; "BRAF-V600E"
-                       :single-cap :digits :single-cap))
-      (let ((point-mutation (reify-point-mutation (cddr edges)
-                             (chart-position-before
-                              (chart-position-before
-                               (chart-position-before end-pos)))
-                             end-pos)))
-        (make-edge-over-mutated-protein (first edges) point-mutation
-                                        start-pos end-pos)))
-     
-     ((equal pattern `(:amino-acid :hyphen :digits))
-      (reify-residue (first edges) (third edges) start-pos end-pos))
-     
-     ((and *work-on-ns-patterns*
-           (memq :protein pattern)) ;; :protein :hyphen :kinase PI3–Kinase
-      (push-debug `(,edges ,start-pos ,end-pos))
-      (break "new hypen pattern with protein: ~a" pattern))
-     
-     ((or (equal pattern '(:full :hyphen :single-lower)) ;; TGF-b
-          (equal pattern '(:capitalized :hyphen :single-digit)) ;; Sur-8, Bcl-2
-          (equal pattern '(:full :hyphen :digits)) ;; "CI-1040" actually a drug
-          (equal pattern '(:full :hyphen :single-digit :single-lower)) ;; IL-1a
-          (equal pattern '(:full :hyphen :single-digit :single-digit)))
-                          ;;/// IL-1a -bug somewhere
-      ;; We accept these as terms that won't deccompose or involve
-      ;; a rule. Experience may show that to be false, but it's a start
-      (reify-ns-name-and-make-edge start-pos end-pos))
-     
-     ((or (equal pattern '(:full :hyphen :full))
-          (equal pattern '(:capitalized :hyphen :full)) ;; Rho-GDI
-          (equal pattern '(:full :hyphen :capitalized)))
-      (if (= 3 (length edges))
-        (resolve-hyphen-between-two-terms pattern start-pos end-pos)
+       ((equal pattern '(:protein :hyphen  ;; "BRAF-V600E"
+                         :single-cap :digits :single-cap))
+        (let ((point-mutation (reify-point-mutation (cddr edges)
+                                                    (chart-position-before
+                                                     (chart-position-before
+                                                      (chart-position-before end-pos)))
+                                                    end-pos)))
+          (make-edge-over-mutated-protein (first edges) point-mutation
+                                          start-pos end-pos)))
+       
+       ((equal pattern `(:amino-acid :hyphen :digits))
+        (reify-residue (first edges) (third edges) start-pos end-pos))
+       
+       ((and *work-on-ns-patterns*
+             (memq :protein pattern)) ;; :protein :hyphen :kinase PI3–Kinase
+        (push-debug `(,edges ,start-pos ,end-pos))
+        (break "new hypen pattern with protein: ~a" pattern))
+       
+       ((or (equal pattern '(:full :hyphen :single-lower)) ;; TGF-b
+            (equal pattern '(:capitalized :hyphen :single-digit)) ;; Sur-8, Bcl-2
+            (equal pattern '(:full :hyphen :digits)) ;; "CI-1040" actually a drug
+            (equal pattern '(:full :hyphen :single-digit :single-lower)) ;; IL-1a
+            (equal pattern '(:full :hyphen :single-digit :single-digit)))
+        ;;/// IL-1a -bug somewhere
+        ;; We accept these as terms that won't deccompose or involve
+        ;; a rule. Experience may show that to be false, but it's a start
+        (reify-ns-name-and-make-edge start-pos end-pos))
+       
+       ((or (equal pattern '(:full :hyphen :full))
+            (equal pattern '(:capitalized :hyphen :full)) ;; Rho-GDI
+            (equal pattern '(:full :hyphen :capitalized)))
+        (if (= 3 (length edges))
+          (resolve-hyphen-between-two-terms pattern start-pos end-pos)
+          (when *work-on-ns-patterns*
+            ;; happens in Cure articles As-HCC where HCC is not a defined word
+            (break "Hyphen: more than three edges: ~a" edges)))) ;;/// two, not three on "HPB-ALL"
+       
+       ((equal pattern '(:full :hyphen :lower)) ;; "GTP-bound" "EGFR-positive"
+        (resolve-hyphen-between-two-words pattern start-pos end-pos))
+       
+       ((equal pattern '(:single-cap :hyphen :lower)) ;; Y-box
         (when *work-on-ns-patterns*
-          ;; happens in Cure articles As-HCC where HCC is not a defined word
-          (break "Hyphen: more than three edges: ~a" edges)))) ;;/// two, not three on "HPB-ALL"
-     
-     ((equal pattern '(:full :hyphen :lower)) ;; "GTP-bound" "EGFR-positive"
-      (resolve-hyphen-between-two-words pattern start-pos end-pos))
-     
-     ((equal pattern '(:single-cap :hyphen :lower)) ;; Y-box
-      (when *work-on-ns-patterns*
-        (break "stub :single-cap :hyphen :lower"))
-      (reify-ns-name-and-make-edge start-pos end-pos))
-     
-     ((equal pattern '(:little-p :hyphen :single-cap :digits)) ;; p-S311
-      (let ((amino-acid (single-letter-word-for-amino-acid? (third edges)))
-            (digits (fourth edges)))
-        (cond
-         (amino-acid
-          (reify-p-residue-and-make-edge start-pos end-pos amino-acid digits))
-         (*work-on-ns-patterns*
-          (push-debug `(,edges ,pattern ,start-pos ,end-pos))
-          (break "Little p for unknown type"))
-         (t (nospace-hyphen-specialist pattern start-pos end-pos)))))
-     
-     ((eq :no-space-prefix (car pattern))
-      (compose-salient-hyphenated-literals pattern start-pos end-pos))
-     
-     ((equal pattern '(:lower :hyphen :lower)) ;; "high-activity"
-      (let ((*inhibit-big-mech-interpretation* t))
-        (declare (special *inhibit-big-mech-interpretation*))
-        (resolve-hyphen-between-two-words pattern start-pos end-pos)))
-     
-     ((equal pattern '(:single-digit :hyphen :single-digit)) ;; "6-8" in a reference
-      ;; 4/14/16 Appears to be a bug in the state space of digit-FSA that keeps
-      ;; it from handling these.
-      (make-hyphenated-number (first edges) (third edges)))   
+          (break "stub :single-cap :hyphen :lower"))
+        (reify-ns-name-and-make-edge start-pos end-pos))
+       
+       ((equal pattern '(:little-p :hyphen :single-cap :digits)) ;; p-S311
+        (let ((amino-acid (single-letter-word-for-amino-acid? (third edges)))
+              (digits (fourth edges)))
+          (cond
+            (amino-acid
+             (reify-p-residue-and-make-edge start-pos end-pos amino-acid digits))
+            (*work-on-ns-patterns*
+             (push-debug `(,edges ,pattern ,start-pos ,end-pos))
+             (break "Little p for unknown type"))
+            (t (nospace-hyphen-specialist pattern start-pos end-pos)))))
+       
+       ((eq :no-space-prefix (car pattern))
+        (compose-salient-hyphenated-literals pattern start-pos end-pos))
+       
+       ((equal pattern '(:lower :hyphen :lower)) ;; "high-activity"
+        (let ((*inhibit-big-mech-interpretation* t))
+          (declare (special *inhibit-big-mech-interpretation*))
+          (resolve-hyphen-between-two-words pattern start-pos end-pos)))
+       
+       ((equal pattern '(:single-digit :hyphen :single-digit)) ;; "6-8" in a reference
+        ;; 4/14/16 Appears to be a bug in the state space of digit-FSA that keeps
+        ;; it from handling these.
+        (make-hyphenated-number (first edges) (third edges)))   
 
-     ((equal pattern '(:digits :hyphen :digits)) ;; "824-832"
-      ;; This should be caught by the digit-fsa, but if it's not
-      ;; this forestalls it going out as a bio-entity.
-      (make-hyphenated-number (first edges) (third edges)))
-     
-     ((and *work-on-ns-patterns*
-           (memq :hyphen pattern))
-      (cond
-        ((equal pattern '(:single-digit :single-lower :hyphen :bio-entity)) ;; "4a-phorbol"
-         (lsp-break "label type of entity, e.g. '4a-phorbo'"))
-        ((equal pattern '(:number :hyphen :lower)) ;; "12,13-dicanoate"
-         ;; problem is that dicanoate doesn't have any interpretation/edge
-         (lsp-break "Sort out adequate scheme for final word"))
-        (t
-         (push-debug `(,pattern ,start-pos ,end-pos))
-         (break "New hyphen pattern to resolve: ~a" pattern))))
-     
-     (t (nospace-hyphen-specialist pattern start-pos end-pos)))))
+       ((equal pattern '(:digits :hyphen :digits)) ;; "824-832"
+        ;; This should be caught by the digit-fsa, but if it's not
+        ;; this forestalls it going out as a bio-entity.
+        (make-hyphenated-number (first edges) (third edges)))
+       
+       ((and *work-on-ns-patterns*
+             (memq :hyphen pattern))
+        (cond
+          ((equal pattern '(:single-digit :single-lower :hyphen :bio-entity)) ;; "4a-phorbol"
+           (lsp-break "label type of entity, e.g. '4a-phorbo'"))
+          ((equal pattern '(:number :hyphen :lower)) ;; "12,13-dicanoate"
+           ;; problem is that dicanoate doesn't have any interpretation/edge
+           (lsp-break "Sort out adequate scheme for final word"))
+          (t
+           (push-debug `(,pattern ,start-pos ,end-pos))
+           (break "New hyphen pattern to resolve: ~a" pattern))))
+       
+       (t (nospace-hyphen-specialist pattern start-pos end-pos)))))
 
 
 ;;--- two hyphens
