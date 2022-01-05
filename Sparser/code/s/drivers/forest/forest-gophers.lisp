@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2022 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "forest-gophers"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  December 2021
+;;;  Version:  January 2022
 
 ;; Initiated 8/30/14. To hold predicates and other little computations
 ;; done by the forest-level sweeping and island-driving. Also a good
@@ -523,8 +523,9 @@
             (eq :single-term (edge-right-daughter edge)))
        edge)
 
-      ((eq :long-span (edge-right-daughter edge))
-       (find-verb (edge-left-daughter edge)))
+      ((and (vp-category? (edge-form edge))
+            (eq :single-term (edge-right-daughter edge)))
+       edge)
 
       ((and (vp-category? (edge-form edge))
             (or (word-p (edge-left-daughter edge))
@@ -532,6 +533,9 @@
                 ;; "the drug up-regulates..."
                 (polyword-p (edge-category (edge-left-daughter edge)))))
        edge)
+
+      ((eq :long-span (edge-right-daughter edge))
+       (find-verb (edge-left-daughter edge)))
 
       ((and (vp-category? (edge-form edge)) ;; vp: "are wooing"
             (vp-category? (edge-form (edge-left-daughter edge)))) ;; "be"
