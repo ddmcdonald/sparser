@@ -157,6 +157,7 @@
   ;; Subroutine of collect-no-space-segment-into-word that does the
   ;; dispatch. Every path is expected to form an edge over the
   ;; span one way or another.
+  
   (let* ((edges (treetops-between start-pos end-pos))
          (pattern ns-pattern))
     
@@ -168,6 +169,9 @@
       (when (null (cdr edges))
         (tr :single-word-followed-by-colon (car edges))
         (return-from ns-pattern-dispatch t)))
+
+    (when (known-bogus-pattern pattern)
+      (throw :punt-on-nospace-without-resolution nil))
     
     #+ignore
     (when edges
@@ -224,8 +228,53 @@
       
       (t 
        (tr :ns-taking-default)
-       (or (resolve-ns-pattern pattern start-pos end-pos)
-           (reify-ns-name-and-make-edge start-pos end-pos))))))
+       (unless (resolve-ns-pattern pattern start-pos end-pos)
+         (if (spurious-no-space pattern start-pos end-pos)
+           (throw :punt-on-nospace-without-resolution nil)
+           (reify-ns-name-and-make-edge start-pos end-pos)))))))
+
+(defun spurious-no-space (pattern start-pos end-pos)
+  "Last minute catch of patterns that are not workable but more elaborate
+   that in ones in the bogus list. Returns t if we should punt on this
+   pattern"
+  (declare (special *work-on-ns-patterns*))
+  (let ((string (trim-whitespace (extract-characters-between-positions start-pos end-pos)))
+        (length (length pattern)))
+    (cond
+      ((= 2 length)
+       (cond
+         ((eq (second pattern) :period) t) ; "Pluto."
+         ((eq (second pattern) :exclamation-point) t) ; "coffee!"
+         ((eq (second pattern) :question-mark) t) ; "2010?"
+         ((eq (second pattern) :comma) t) ; "worried,"
+         ((eq (second pattern) :-like) t) ; "With Indiana Jones-like"
+         ((memq :elipsis-dots pattern) t) ; "Or..
+         (t (when *work-on-ns-patterns*
+              (break "two term pattern: ~a~%string: ~s" pattern string)))))
+      ((memq :elipsis-dots pattern) t)
+      ((memq :asterisk pattern) t)
+      ((memq :ampersand pattern) t) ; "@anistonofficial"
+      ((memq :period pattern) t)
+      (t (when *work-on-ns-patterns*
+           (break "length: ~a pattern: ~a~%string: ~s" length pattern string))))))
+
+
+(defparameter *known-bogus-patterns*
+  '((:period :hyphen) ; m736 "Mexico, 25 Nov (Notimex).-\"after Babel."
+    (:money :lower) ; "$57bn" m737
+    (:unit-of-measure :digits :lower) ; "PS435bn"  m737
+    (:period :period :lower) ; "..and" m58
+    (:lower :elipsis-dots) ; "with..." m738 -- only two periods!
+    (:digits :unit-of-measure) ; "1600s"
+    ))
+
+(defun known-bogus-pattern (pattern)
+  "Called at the start of ns-pattern-dispatch and forces a throw out of
+   there if the pattern is in the list. So far much of what's here looks
+   like cases that could be fixed by tuning the accumulation sweep or
+   adding rules."
+  (declare (special *known-bogus-patterns*))
+  (member pattern *known-bogus-patterns* :test #'equal))
 
 
 ;; tally the odd punctuation noticed in the pattern dispatch
