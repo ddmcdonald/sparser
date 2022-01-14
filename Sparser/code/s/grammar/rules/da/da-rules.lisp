@@ -2398,6 +2398,7 @@ assumed. |#
    (da-rule-named 'attach-comma-appositive-np-under-s)
    (da-rule-named 'attach-appositive-comma-np-comma-under-pp)
    (da-rule-named 'attach-comma-appositive-np-under-vp)
+   (da-rule-named 'attach-comma-appositive-np-under-vp+past)
    (da-rule-named 'attach-appositive-comma-proper-noun-under-pp)
    (da-rule-named 'attach-comma-appositive-proper-noun-under-pp)
    (da-rule-named 'attach-comma-appositive-proper-noun-under-s)
