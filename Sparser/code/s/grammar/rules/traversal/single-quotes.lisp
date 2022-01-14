@@ -59,13 +59,15 @@
          (pos-after-open (chart-position-after start-pos)))
     (setq *pending-single-quote* nil)
 
-    (when *in-scope-of-apostrophe-fsa*
-      (terminal-edges-sweep pos-after-open pos-before-close))
+    (unless (eq start-pos pos-before-close) ; nothing between them
 
-    (do-paired-punctuation-interior 
+      (when *in-scope-of-apostrophe-fsa*
+        (terminal-edges-sweep pos-after-open pos-before-close))
+
+      (do-paired-punctuation-interior 
 	  :single-quotation-marks
-	  pos-before-open pos-after-open
-	  pos-before-close pos-after-close)))
+          pos-before-open pos-after-open
+	  pos-before-close pos-after-close))))
  
 
 (defun handle-single-quotes-span (layout
