@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1995,2012-2021  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2012-2022  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  August 2021
+;;;  Version:  January 2022
 
 ;; initiated 10/91
 ;; 0.1  (10/21 v2.0) Bumped [section] to "1".  Added [SGML tags]
@@ -44,6 +44,7 @@
 (lload "doc;style")
 (lload "doc;object") ;; defines all the document classes
 (lload "doc;paragraphs")
+(lload "doc;content-output")
 (lload "doc;content-classes")
 (lload "doc;content-actions") ;; depends on object
 (lload "doc;content-methods")
