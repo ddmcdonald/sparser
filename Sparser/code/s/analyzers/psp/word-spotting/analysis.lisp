@@ -128,5 +128,25 @@
     (when (polyword-p (edge-category edge)) ;; "tir na nog"
       (setq edge (edge-used-in edge)))
     (let ((record (get-edge-record edge))
-          (chain (get-chain edge)))
+          (chain (get-chain edge))
+          (*configuration-break* t))
+      (declare (special *configuration-break*))
       (identify-edge-configuration record edge chain))))
+
+
+(defvar *configuration-break* nil
+  "If not nil the config-break gate will fire")
+
+(defun config-break ()
+  "The breaks are seeded in the code. We really only want them
+   while we're working on these -not- while they're being computed,
+   which is when using edge-config"
+  (declare (special *configuration-break*))
+  *configuration-break*)
+  
+;; Long-term option -- tailor a macro
+(defparameter *debug-context-predicates* nil
+  "Incorporated into predicates to flag cases that go beyond what they
+ anticipated that we want to look into. If this flag is up we'll go into
+ a warn-or-error or a break, otherwise the predicate will just return nil")
+
