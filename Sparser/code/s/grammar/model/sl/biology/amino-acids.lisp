@@ -101,6 +101,12 @@ ones are gratuitously ambiguous with capitalized initials.
             (get-tag :one-letter-code i) one
             (get-tag :three-letter-code i) three)
       i)))
+
+;; copied from bio;rules.lisp and then turned off for Acumen
+(defun create-residue-from-amino-acid-position (amino-acid position)
+  (if *subcat-test*
+    (null *acumen*)
+    (create-residue-on-protein nil amino-acid position nil)))
  
 ;; List from http://www.cryst.bbk.ac.uk/education/AminoAcid/the_twenty.html
 (def-amino-acid "alanine" "ala" "A")
