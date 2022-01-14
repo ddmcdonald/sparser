@@ -397,7 +397,7 @@ and make that file easier to understand. |#
       (format stream  "~&No motif triggers in article~%"))
     (when group-instances
       (if *abbreviated*
-        (show-abbreviated-motif-edge-contexts group-instances stream)
+        (show-abbreviated-motif-edge-contexts article group-instances stream)
         (loop for group in group-instances
            do (show-motif-edge-contexts group stream))))))
 
@@ -409,10 +409,11 @@ and make that file easier to understand. |#
       (loop for note-entry in entries
          do (show-edge-records note-entry)))))
 
-(defgeneric show-abbreviated-motif-edge-contexts (group-instances &optional stream)
+(defgeneric show-abbreviated-motif-edge-contexts (article group-instances &optional stream)
   (:documentation "Gets data for the whole set of germaine groups
     and reports it compactly.")
-  (:method ((groups #|||# list) &optional stream)
+  (:method ((article article) (groups list) &optional stream)
+    (declare (special *motif-configurations-stream*))
     (unless stream (setq stream *standard-output*))
     (multiple-value-bind (configurations
                           record-count categorized-count
@@ -429,10 +430,18 @@ and make that file easier to understand. |#
              do (progn
                   (format stream "  ~a" config)
                   (when (= 4 (incf index)) (terpri stream) (setq index 0))))))
+
       (when uncategoried-records
-        (format stream "~&Uncategorized instances:")
-        (loop for record in uncategoried-records
-             do (report-edge-record record stream))))))
+        (if *motif-configurations-stream*
+          (let ((stream *motif-configurations-stream*))
+            (format stream "~&~%Article ~a~%Uncategorized instances:"
+                    (name article))
+            (loop for record in uncategoried-records
+               do (report-edge-record record stream)))
+          (else
+            (format stream "~&Uncategorized instances:")
+            (loop for record in uncategoried-records
+               do (report-edge-record record stream))))))))
 
 
 
