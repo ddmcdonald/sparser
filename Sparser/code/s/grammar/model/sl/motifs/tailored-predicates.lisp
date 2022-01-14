@@ -32,6 +32,13 @@
 ;;; invert functional entries on articles
 ;;;---------------------------------------
 
+#| First call (compute-notes-to-articles) to run through all the
+motif articles and tally their records. This populates the
+hash table note-entries-to-where-used*.
+   Then call (summarize-configuration-usage) to sort and print
+the table.
+|#
+
 ;;--- the table
 
 (defvar *note-entries-to-where-used* (make-hash-table)
