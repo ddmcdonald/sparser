@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1994,2017,2021  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2017,2021-2022  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "single letters"
 ;;;   Module:  "model;core:names:"
-;;;  version:  February 2021
+;;;  version:  January 2022
 
 ;; 2.0 (11/20/92 v2.3) Completely made over for new semantics
 ;;     (5/15/93) finished the makeover, 5/26 finished debugging it
@@ -28,6 +28,13 @@
 ;;; instantiator
 ;;;--------------
 
+#| 1/12/22 -- There's an undiagnosed problem in handle-period-as-initial
+whereby install-terminal-edges will not install the edge for the
+single-capitalized-letter for "a", even though the rule it there.
+  That makes the code assume its got a new one, so it calls this
+and uses its rule. This function used to only make the individual
+and the rule it the letter was new. Cutting that out redundantly
+computes the rule but it makes the initials handling happy. s|#
 (defun define-single-capitalized-letter (string)
   (let* ((word (define-word/expr string))
          new?  rule
@@ -38,12 +45,12 @@
                 (setq new? t)
                 (define-individual 'single-capitalized-letter
                     :letter word)))))
-    (when new?
-      (setq rule (define-cfr category::single-capitalized-letter
-                         `( ,word )
-                   :form category::proper-noun
-                   :referent individual))
-      (add-rule rule individual))
+    
+    (setq rule (define-cfr category::single-capitalized-letter
+                   `( ,word )
+                 :form category::proper-noun
+                 :referent individual))
+    (add-rule rule individual)
 
     (values individual rule)))
 

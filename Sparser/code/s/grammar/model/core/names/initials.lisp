@@ -84,7 +84,6 @@
                     (find category::greek-letter edges :key #'edge-category))))
           (unless single-caps-edge
             ;; Extend the set.
-            ;;(lsp-break "make sure positions are the right ones")
             (multiple-value-bind (letter rule)
                 (define-single-capitalized-letter (pname prior-word))
               (unless rule
