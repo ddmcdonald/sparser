@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1996,2013,2016-2021  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1996,2013,2016-2022  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "articles"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  December 2021
+;;;  Version:  January 2022
 
 ;; 1.1  (3/28/91 v1.8.1)  Added Clear-individuals, and improved the
 ;;      conditionalization according to the load-time switches
@@ -127,8 +127,6 @@ set in. This initialization manages them.|#
   ;; what to reap
   (reclaim-temporary-individuals)
   (zero-bound-in-fields)
-  (clear-note-tables)
-  (clear-spotting-tables)
   (initialize-discourse-history))
 
 
