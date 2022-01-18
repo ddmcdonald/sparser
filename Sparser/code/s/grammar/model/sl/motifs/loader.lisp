@@ -13,5 +13,5 @@
 (gload "motifs;base-categories")
 (gload "motifs;load-ac-files")
 (gload "motifs;tailored-predicates")
-;;(gload "motifs;export")
+(gload "motifs;export")
 
