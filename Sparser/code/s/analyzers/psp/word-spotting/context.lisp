@@ -6,7 +6,7 @@
 ;;;   Version:  January 2022
 
 ;; Initiated 8/2/21 to gather together routines for determining the linguistic
-;; context something occurs in. 
+;; context something occurs in.    
 
 (in-package :sparser)
 

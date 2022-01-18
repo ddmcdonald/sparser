@@ -127,6 +127,7 @@ set in. This initialization manages them.|#
   ;; what to reap
   (reclaim-temporary-individuals)
   (zero-bound-in-fields)
+  (clean-out-note-data)
   (initialize-discourse-history))
 
 

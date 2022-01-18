@@ -342,9 +342,23 @@
            (alists (loop for c in contents
                       when (items c) collect (items c))))       
       (when alists
+        ;;(push-debug `(,alists)) (break "alists: ~a" alists)
+        (add-chains-to-records alists)
         (let ((merged-alist (merge-items-alists alists)))
           (setf (items (contents p)) merged-alist)
           p)))))
+
+(defun add-chains-to-records (paragraph-alist)
+  "The alist is a list of (<symbol-naming-category <its-note-entry>).
+   We loop over the entries, go down to their edge records, and add
+   chain information to them."
+  (loop for sentence-alist in paragraph-alist
+     do (loop for pair in sentence-alist
+           as category-name = (first pair)
+           as note-entry = (second pair)
+           as edge-records = (text-strings note-entry)
+           do (loop for record in edge-records
+                 do (form-chain-and-add-to-record record)))))
 
 (defgeneric aggregate-noted-items (doc-element)
   (:documentation "Called as part the section level after-actions and

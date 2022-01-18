@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2021 David D. McDonald all rights reserved
+;;; Copyright (c) 2021-2022 David D. McDonald all rights reserved
 ;;;
 ;;;      File: "edge-classes"
 ;;;    Module: analyzers/sdmp/
-;;;   Version: November 2021
+;;;   Version: January 2022
 
 ;; Broken out of word-spotting classes 8/9/21
 
@@ -14,13 +14,14 @@
 ;;;---------------------------------------------------
 
 (defvar *current-edge-records* (make-hash-table :size 200)
-  "Set in store-edge-chain, accessed by get-edge-record")
+  "Set in store-edge-chain, accessed by get-edge-record. Key is an edge.")
 
 (defvar *current-edge-chains* (make-hash-table :size 200)
-  "Set in store-edge-chain, accessed by get-chain")
+  "Set in store-edge-chain, accessed by get-chain. Key is an edge.")
 
 (defun initialize-spotter-edge-records ()
-  ;; called from clear-spotting-tables
+  "These accessor tables are useless once their edges are recycled."
+  ;;//// called from clear-spotting-tables
   (clrhash *current-edge-records*)
   (clrhash *current-edge-chains*))
 
@@ -32,7 +33,7 @@
  the note-entry they go with.
    Accessors use the stuct's name, e.g. edge-record-chain.
 |#
-
+#+ignore ;; supplanted by the defclass that includes information needed for export
 (defstruct (edge-record
              (:print-function print-edge-record))
   number ; the edge-position-in-the-resource-array of the edge, see edge#
@@ -40,6 +41,25 @@
   chain  ; its edge-chain following up its used-in field
   configuration)
 
+(defclass edge-record ()
+  ((number :initarg :number :accessor edge-record-number
+           )
+   (spotted-string :initform "" :accessor spotted-string
+                   )
+   (chain :initform nil :accessor edge-record-chain
+          )
+   (configuration :initform nil :accessor edge-record-configuration
+                  )
+   ;;--- new slots below. Accessors above match the struct's
+   (indexes :initform nil :accessor motif-offsets)
+   (top-string :initform "" :accessor top-string)
+   (form-labels :initform nil :accessor form-labels))
+  (:documentation ""))
+
+(defmethod print-object ((r edge-record) stream)
+  (print-unreadable-object (r stream)
+    (format stream "~a" (edge-record-number r))))
+#+ignore
 (defun print-edge-record (obj stream depth)
   (declare (ignore depth))
   (write-string "#<e" stream)
@@ -53,9 +73,15 @@
   (let* ((string (string-for-edge edge))
          (number (edge-position-in-resource-array edge)))
     (unless (find number (text-strings entry) :key #'edge-record-number)
-      (let ((record (make-edge-record :number number
-                                      :string string)))
-        (push record (text-strings entry))))
+      (let* ((r (make-instance 'edge-record :number number))
+             (start (pos-edge-starts-at edge))
+             (start-char-index (pos-character-index start))
+             (end (pos-edge-ends-at edge))
+             (end-char-index (pos-character-index end)))
+        (setf (slot-value r 'spotted-string) string)
+        (setf (slot-value r 'indexes) (cons start-char-index end-char-index))
+        ;; other slots filled when we get the chain
+        (push r (text-strings entry))))
     entry))
 
 (defgeneric get-edge-record (edge)
@@ -103,7 +129,7 @@
         (records (text-strings group)))
     (loop for r in (reverse records) ; sequence order in the article
        as number = (edge-record-number r)
-       as string = (edge-record-string r)
+       as string = (spotted-string r) ;; (edge-record-string r)
        do (format stream "~& e~a ~s" number string))))
 
 
@@ -177,6 +203,39 @@
   (:method ((first-edge edge))
     (gethash first-edge *current-edge-chains*)))
 
+(defgeneric form-chain-and-add-to-record (record)
+  (:documentation "Run the used-in operation to get the
+    list of edge, then call store-edge-chain. Used in XXX")
+  (:method ((record edge-record))
+    (let* ((n (edge-record-number record))
+           (edge (edge# n))
+           (list-of-edges (upward-used-in-chain edge)))
+      (store-edge-chain record list-of-edges))))
+
+(defun store-edge-chain (record list-of-edges)
+  "Convert the list into an edge-chain and stash it on the
+   edge-record. Done in article-level postprocessing by
+   apply-context-predicates as part of its setup.
+   Also stores the edge-record since the 'find' part of adding an
+   edge seems to interfer somehow"
+  (let ((ec (make-instance 'edge-chain :list list-of-edges))
+        (first-edge (car list-of-edges))
+        (top-edge (car (last list-of-edges))))
+    ;; index for get-edge-chain
+    (setf (gethash first-edge *current-edge-chains*) ec)
+   ;; flesh out the fields
+    (setf (top-edge ec) top-edge)
+    (setf (form-labels ec) (mapcar #'form-cat-name list-of-edges))
+    ;; add to the edge record
+    (setf (edge-record-chain record) ec)
+    ;; stash the record
+    (setf (gethash first-edge *current-edge-records*) record)
+    ;; Fill the fields in the record that use the chain's information
+    (let ((top-string (string-for-edge top-edge)))
+      (setf (slot-value record 'top-string) top-string)
+      (setf (slot-value record 'form-labels) (form-labels ec)))    
+    ec))
+
 (defgeneric display-chain (key &optional stream)
   (:documentation "show all the usual properties of a chain.
     Used to get more detail a particular chain after seeing
@@ -196,25 +255,6 @@
               ec edge-numbers (form-labels ec) categories)
       (stree (top-edge ec)) 
       ec)))
-
-(defun store-edge-chain (record list-of-edges)
-  "Convert the list to an edge-chain and stash it on the
-   edge-record. Done in article-level postprocessing by
-   apply-context-predicates as part of its setup.
-   Also stores the edge-record since the 'find' part of adding an
-   edge seems to interfer somehow"
-  (let ((ec (make-instance 'edge-chain :list list-of-edges))
-        (first-edge (car list-of-edges)))
-    ;; index for get-edge-chain
-    (setf (gethash first-edge *current-edge-chains*) ec)
-   ;; flesh out the fields
-    (setf (top-edge ec) (car (last list-of-edges)))
-    (setf (form-labels ec) (mapcar #'form-cat-name list-of-edges))
-    ;; add to the edge record
-    (setf (edge-record-chain record) ec)
-    ;; stash the record
-    (setf (gethash first-edge *current-edge-records*) record)
-    ec))
 
 
 ;;--- edge walker

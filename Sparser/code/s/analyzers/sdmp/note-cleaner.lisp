@@ -35,45 +35,50 @@ Time to read an article is not saved. Would be another slot(?) on article?
 
 |#
 
+
+
+;;--- stripping
+
+(defun strip-unnecessary-article-parts (article)
+  (setf (children article) nil))
+
+(defun strip-parsed-articles ()
+  (loop for a in *acumen-motific-articles*
+     do (strip-unnecessary-article-parts (cdr a))))
+
+
 ;;;----------------------
 ;;; pre-article cleaning
 ;;;----------------------
 
-(defun preserve-long-term-records ()
-  "Called from analysis core after initializing the tokenizer state
-   and, crutially, before initializing the state of the chart which
-   cleans all the edges that had been used.
-   Presently just used for note and word-spotter data, but could be
-   used for making mentions long-term as well."
-  (let ((article (article)))
-    ;; this will be the just-analysed article or nil if this is
-    ;; the first analysis.
-    (when article
-      (clean-out-note-data article))))
-
-
-
-(defun clean-out-note-data (article)
+(defun clean-out-note-data ()
   "More a matter of making these valid as long-term information.
    This is called from per-article-initialization just before the
    article is reaped"
-  ;;(when article ; initially it's nil
-    (clear-spotting-tables article) ; no evidence we're getting here
-    #+ignore(clear-note-tables article)) ;)
+  (clear-spotting-tables)
+  (clear-note-tables))
 
-
-
-(defun clear-note-tables (article)
+(defun clear-note-tables ()
   "Called from clean-out-history-and-temp-objects just before
    the next text analysis is about to start. Since notables
    and note-groups persist across articles and are accessed by
    name, we have to clean out their per-article instance counterpart
    objects or else we would have misleading counts."
-  (declare (ignore article))
   (clear-note-entry)
   (clear-note-group-instance))
 
+(defun clear-spotting-tables ()
+    (clear-spot-entry)
+    (clear-word-spotting-group-instance)
+    (initialize-spotter-edge-records))
 
+
+;;----- abandoned scheme for long-term-ifying edge records
+;; of the previous article while doing initializations for the next
+;; Fails because edges are being reclaimed far earlier than expected
+;; so the bound are not available
+
+#+ignore
 (defun clear-spotting-tables (article)
   "Called from clean-out-history-and-temp-objects just before
    the next text analysis is about to start. 
@@ -84,9 +89,7 @@ Time to read an article is not saved. Would be another slot(?) on article?
    the fields of its content."
   (let* ((contents (contents article))
          (group-instances (germaine-items contents)))
-
     (break "~&~%Clearing article ~a~%" article)
-    
     ;; For each group instance in the list, we go down to its
     ;; edge-records. We replace these with their permanent
     ;; equivalents -- setf'ing the field to the new list.
@@ -99,32 +102,9 @@ Time to read an article is not saved. Would be another slot(?) on article?
                               collect (make-long-term-edge-record old-record article))))
                       (setf (text-strings note-entry) new-records)
                       (push-debug `(,note-entry ,new-records))
-                      (break "note-entry: ~a" note-entry) )))))
-    
+                      (break "note-entry: ~a" note-entry) )))))    ))
 
-    ;; emptry the hashtables
-    (clear-spot-entry)
-    (clear-word-spotting-group-instance)
-    (initialize-spotter-edge-records)
-    ))
-
-#| base case
-(defstruct (edge-record
-             (:print-function print-edge-record))
-  number ; the edge-position-in-the-resource-array of the edge, see edge#
-  string ; its string-for-edge
-  chain  ; its edge-chain following up its used-in field
-  configuration)
-
-(defclass edge-chain ()
-  ((list :initarg :list :accessor edges
-     :documentation "The list of edges as created by upward-used-in-chain")
-   (top :initform nil :accessor top-edge
-     :documentation "The edge at the high end of the chain")
-   (labels :initform nil :accessor form-labels
-           :documentation "list of the form labels for the edge"))
-  (:documentation
-   "Workhorse data structure for identifying position signatures.")) |#
+#|
 
 (defclass permanent-edge-record ()
   ((article :initform nil :accessor record-article) ; ptr to article object
@@ -146,7 +126,7 @@ Time to read an article is not saved. Would be another slot(?) on article?
    and its chain. Long term objects only."
   (let* ((edge-number (edge-record-number record))
          (spotted-edge (edge# edge-number))
-         (spotted-string (edge-record-string record))
+         (spotted-string (spotted-string record)) ;;((edge-record-string record))
          (config (edge-record-configuration record))
          (chain (edge-record-chain record))
          (top (top-edge chain))
@@ -164,15 +144,5 @@ Time to read an article is not saved. Would be another slot(?) on article?
       (setf (slot-value r 'form-labels) form-list)
       (setf (slot-value r 'configuration) config)
       r)))
-         
+   |#      
     
-
-
-;;==- stripping
-
-(defun strip-unnecessary-article-parts (article)
-  (setf (children article) nil))
-
-(defun strip-parsed-articles ()
-  (loop for a in *acumen-motific-articles*
-     do (strip-unnecessary-article-parts (cdr a))))
