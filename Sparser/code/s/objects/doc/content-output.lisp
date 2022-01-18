@@ -8,19 +8,22 @@
 ;; initiated 1/11/22 to organize printing content to files.
 ;; Modeled on scheme used in comlex output: model/sl/score/.
 
-;;---------------------------------------------
-
-;; First use it to preserve the uncategorized edge records without
-;; requiring reading through the output of a large run in the REPL
-;; to find them. Intended for by-eye consumption.
 
 (in-package :sparser)
+
+;;---------------------------------------------
+
+;; First use is to preserve the uncategorized edge records without
+;; requiring reading through the output of a large run in the REPL
+;; to find them. Intended for by-eye consumption. Coordinates with
+;; parameterization in show-abbreviated-motif-edge-contexts to
+;; appreciate the re-directed stream. 
 
 ;;;---------
 ;;; streams
 ;;;---------
 
-(defparameter *motif-configurations-stream* *standard-output*
+(defparameter *motif-configurations-stream* nil
   "Will be set to the open file stream we should write the data
    to")
 
@@ -50,7 +53,8 @@
     (setq *motif-configurations-stream* stream)))
 
 (defun close-uncategorized-records-stream ()
-  (close *motif-configurations-stream*))
+  (close *motif-configurations-stream*)
+  (setq *motif-configurations-stream* nil))
 
 
 (defun edge-record-outfile-preamble (stream)
