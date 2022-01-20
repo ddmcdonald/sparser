@@ -1,10 +1,10 @@
 ;;; -*- Mode:Lisp; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-2003,2010-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2003,2010-2022 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "master-loader"
 ;;;   module:  "init;loaders;"
-;;;  Version:   August 2021
+;;;  Version:   January 2022
 
 ;; 4/21  added loading of chart-drivers;new:loader
 ;; 4/25  split fsas into basics and model
@@ -296,7 +296,7 @@
   (lload "menus;loader"))
 
 (when (find-package :mumble)
-  (gate-grammar *tree-families* *reversable*
+  (gate-grammar *reversable*
      (gload "mumble-interface;loader")))
 
 (when *external-interface-files*
@@ -313,12 +313,16 @@
 (gate-grammar *miscellaneous* ;; a daughter of testing
   (lload "measuring;distance between brackets")
   (lload "measuring;line count")
-  (lload "gr-tests;analysis-quality"))
+  (lload "gr-tests;analysis-quality")
+
+  ;; logically it's a interface option
+  (lload "tools;jsonify"))
+
 
 (gate-grammar *citations*
   (lload "citation-code;loader"))
 
-(lload "workspace;abbreviations") ; helps debug issues in grammar loading
+(lload "workspace;abbreviations") ; load early to help debug issues in grammar loading
 (lload "workspace;traces")
 (lload "workspace;switch settings")
 
