@@ -130,6 +130,10 @@ like any other rule.
        (setq next-pos (if edge
                         (pos-edge-ends-at edge)
                         (chart-position-after start)))
+       (when (> (pos-token-index next-pos)
+                (pos-token-index region-end))
+         (return-from apply-debris-analysis-to-region t))
+
        (when (eq next-pos region-end)
          (return-from apply-debris-analysis-to-region t))
 
