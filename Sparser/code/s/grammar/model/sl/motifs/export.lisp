@@ -99,11 +99,15 @@ sp> (d (contents *))
     The returned sexp should be suitable for passing to sexp-to-json")
 
   (:method ((a article))
-    (with-slots (title date) a
-      `((:id . ,title)
-        (:name . ,(strip-number-from-name a))
-        (:file . ,(remove-base-from-file-location a))
-        (:analyzed . ,date))))
+    (let* ((edge-records (collect-edge-records a))
+           (record-json (loop for r in edge-records
+                           collect (json-format r))))
+      (with-slots (title date) a
+        `((:article-id . ,title)
+          (:name . ,(strip-number-from-name a))
+          (:file . ,(remove-base-from-file-location a))
+          (:analyzed . ,date)
+          (:mentions ,@record-json)))))
   
 #|sp> (d (car germaine-records))
 #<129>
