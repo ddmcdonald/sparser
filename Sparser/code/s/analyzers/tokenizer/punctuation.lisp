@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1993,2014-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1993,2014-2016,2022 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "punctuation"
 ;;;   Module:  analyzers/tokenizer/
-;;;  Version:  December 2016
+;;;  Version:  January 2022
 
 ;; initated 9/28/92 v2.3
 ;; 0.1 (11/2) changed the value of the capitalization global in the case
@@ -109,7 +109,8 @@
                (incf *index-of-next-character*)))))
     (when (or (null next-entry)
               (equal next-entry 0))
-      (announce-out-of-range-character))
+      (setq next-entry
+            (announce-out-of-range-character)))
 
     (if (eq (car next-entry) :punctuation)
       (if (eq (cdr next-entry) :space)
