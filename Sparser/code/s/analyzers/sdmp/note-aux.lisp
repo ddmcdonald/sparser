@@ -261,9 +261,10 @@ discourse history.
        ;; 
        )
 
-      (t (push-debug `(,edge ,cached-edge))
-         (break "What do we do?~%new: ~a~%cached: ~a"
-                edge cached-edge)))))
+      (t (when *debug-cached-new-adjudication*
+           (push-debug `(,edge ,cached-edge))
+           (break "What do we do?~%new: ~a~%cached: ~a"
+                  edge cached-edge))))))
 
 ;;--- possible cache actions
 
