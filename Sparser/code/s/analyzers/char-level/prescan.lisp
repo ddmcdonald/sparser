@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2019-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2019-2022 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "prescan"
 ;;;   Module:  "analyzers;char-level:"   ("character level processing")
-;;;  Version:   November 2021
+;;;  Version:  January 2022
 
 ;; Initiated 4/16/19 -- Before doing any analysis, sweep through the input
 ;; text at the character level to normalize newlines (paragraphs), convert
@@ -242,16 +242,39 @@ scan-name-position -> add-terminal-to-chart
 (defparameter *html-char-encodings*
   '(("mdash" #\-) ;; "--" would be better
     ("ndash" #\-) ;; ditto
+    ("ntilde" #\n) ; small n with tilde
     ("laquo" #\')
     ("rsquo" #\')
-    ("rdquo" #\')
+    ("lsquo" #\') ; &#145;  left single quotation mark
     ("ldquo" #\")
     ("rdquo" #\")
+    ("quot"  #\")
+    ("amp"   #\&)
+    ("hellip" #\-) ; actually horizontal elipsis: &#8230  U_02026
+    ("mp" #\+) ; actually &#8723;  MinusPlus
+    ("iexcl" #\!) ; inverted exclamation mark
+    ("uacute" #\`) ; &#180;  acute accent
+    ("oacute" #\o) ; small o with acute
+    ("iacute" #\i) ; small i with acute
+    ("uuml" #\u) ; &#220  'u' with a double-dot over it
     )
   "See, e.g., dev.w3.org/html5/html-author/charref for a bigger list
    or https://www.rapidtables.com/web/html/html-codes.html for the
    full list.")
 
+;; #3840 -- accidental capture
+;; "Rodolfo Rueda, director of Thompson &Knight;  and specialist in the energy sector"
+
+;; Symbol Name:	Right Single Quotation Mark
+;; Html Entity:	&rsquo;
+;; Hex Code:	&#x2019;
+;; Decimal Code: &#8217;
+
+;; "#x201C" -> #\LEFT_DOUBLE_QUOTATION_MARK
+;; "#x201D" -> #\RIGHT_DOUBLE_QUOTATION_MARK
+;; "#xA0" -> #\NO-BREAK_SPACE
+;; #x2013" -> #\EN_DASH
+;; "#x2026" -> #\HORIZONTAL_ELLIPSIS
 
 (defun replace-html-char-encoding (source index)
   "The index is right on the ampersand character. We search for 
@@ -266,26 +289,37 @@ scan-name-position -> add-terminal-to-chart
              (not (string= encoding "")) ;; it's not listed or it's bad syntax
              (< (length encoding) 7)) ;;/// lookup the spec
       (let ((replacement (cadr (assoc encoding *html-char-encodings* :test #'string=))))
-        (unless replacement
-          (if (eql (aref encoding 0) #\#)
-            (let* ((code-string (subseq encoding 1))
-                   (code (when code-string (read-from-string code-string))))
-              (setq replacement (code-char code)))
-            (else
-              (format t "~&~%~%==== No encoding recorded for ~s ====~%~%~%"
-                      encoding)
-              (setq replacement #\space))))
-        (values replacement
-                (1+ index-of-semicolon)))
+        (cond
+          (replacement
+           (values replacement
+                   (1+ index-of-semicolon)))
+          ((eql (aref encoding 0) #\space) ; " Spa" in "Coqui Coqui Residence & Spa"
+           (values #\&
+                   (1+ index)))
+          (t ;; compute the replacement
+           (cond
+             ((and (eql (aref encoding 0) #\#)
+                   (eql (aref encoding 1) #\x)) ; "#x2019"
+              (let ((decimal (read-from-string encoding)))
+                (setq replacement (code-char decimal)))) ; #\RIGHT_SINGLE_QUOTATION_MARK
+
+             ((eql (aref encoding 0) #\#)
+              (let* ((code-string (subseq encoding 1))
+                     (code (when code-string (read-from-string code-string))))
+                (setq replacement (code-char code))))
+             (t
+              (format t "~&~%~%==== No HTML encoding recorded for ~s ====~%~%~%" encoding)
+              (setq replacement #\space)))
+           (values replacement
+                   (1+ index-of-semicolon)))))
       (else
-        (values #\& (1+ index))))))
+        (values #\&
+                (1+ index))))))
+
 
 (defun embedded-html-newline (index source)
   "There is an angle bracket at the index. Search ahead to see whether
    it's the start of the html pattern for a newline"
-  ;; 
-  #+ignore(push-debug `(,index
-                  ,(subseq source 0 (position #\^B source))))
   (let* ((characters (loop for i from index to (+ 4 index) collect (aref source i)))
          (string (apply #'string-append characters)))
     (search "<nl/>" string)))
