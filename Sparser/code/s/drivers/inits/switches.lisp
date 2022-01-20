@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1997,2011-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1997,2011-20212 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  August 2021
+;;;  Version:  January 2022
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -584,16 +584,17 @@
   "Adapting ideas from R3 document parsing and C3"
   (declare (special *treat-single-capitalized-words-as-names*
                     *pnf-scan-respects-segment-boundaries*
-                    *arabic-names*))
+                    *arabic-names* *print-bio-terms*))
   (revert-to-error-break)
   (uncontroversial-settings)
   (top-edges-setting)
   (standard-extras)
   (include-comlex)
-  (setq *incrementally-save-comlex-categories* t)
   (experimental-settings)
 
+  (setq *incrementally-save-comlex-categories* t)
   (setq *make-fresh-articles* t)
+  (setq *print-bio-terms* nil)
   
   ;;(parsing-protocol-for-documents) which is ...
   (what-to-do-at-the-forest-level :new-forest-protocol)
