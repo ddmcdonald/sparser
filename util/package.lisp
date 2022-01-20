@@ -84,6 +84,7 @@
            #:push-indentation #:pop-indentation
            #:with-indentation
            #:initialize-indentation
+           #:set-indentation-delta
            #:get-indentation
            #:string-of-N-spaces
 

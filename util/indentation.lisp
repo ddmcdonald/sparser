@@ -1,7 +1,7 @@
 ;;; -*- Mode: Lisp; Syntax: COMMON-LISP; Base:10; -*-
 ;;; $Id$
 ;;; Copyright (c) 2006-2007 BBNT Solutions LLC. All Rights Reserved
-;;; Copyright (c) 2011 David D. McDonald  -- all rights reserved
+;;; Copyright (c) 2011,2022 David D. McDonald  -- all rights reserved
 
 ;; 3/9/11 Extended string set for Sparser. 4/9/11 fixed bug in string-
 ;; of-N-spaces.
@@ -70,6 +70,12 @@
 
 (defvar *indentation* 0)
 (defvar *indent-delta* 2)
+
+(defun set-indentation-delta (number)
+  "Set the global that determines how many spaces we move
+   when pushing or popping the indentation."
+  (check-type number integer)
+  (setq *indent-delta* number))
 
 (defun push-indentation (&optional (delta *indent-delta*))
   (incf *indentation* delta))
