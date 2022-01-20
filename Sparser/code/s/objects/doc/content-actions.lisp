@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2019-2021 David D. McDonald -- all rights reserved
+;;; copyright (c) 2019-2022 David D. McDonald -- all rights reserved
 ;;;
 ;;;     File:  "content-actions"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  August 2021
+;;;  Version:  January 2022
 
 #| Created 8/27/19 to move general action out of content-methods.lisp
 and make that file easier to understand. |#
@@ -332,7 +332,7 @@ and make that file easier to understand. |#
 ;;; printing document statistics
 ;;;------------------------------
 
-(defvar *print-bio-terms* t
+(defparameter *print-bio-terms* t
   "Rebind to nil to block including the bio-terms in the
    summary-document-stats")
 
@@ -346,7 +346,10 @@ and make that file easier to understand. |#
     (report-time-to-read-article a stream)
     (show-parse-performance a stream)
     (when *print-bio-terms*
-      (display-top-bio-terms a stream))))
+      (display-top-bio-terms a stream))
+    (when *acumen* ; bio-terms printing nil in neo-fire-setting
+      (show-noted-categories a)
+      (show-motif-term-context a))))
 
 
 (defun show-parse-performance (doc-element &optional (stream *standard-output*))
