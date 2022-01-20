@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1996,2014-2020  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1996,2014-2022  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "alphabet fns"
 ;;;   Module:  "analyzers;tokenizer:"
-;;;  Version:  March 2020
+;;;  Version:  January 2022
 
 ;; initiated 9/21/92 v2.3
 ;; (4/20/93) added Set-tokenizer-table-entry
@@ -47,6 +47,14 @@ add-punctuation-char over the list. |#
 ;; Reader macro #x goes from hex to ordinary decimal
 ;; #x2015 = 8213
 
+(defun hex-to-char (string)
+  (unless (and (stringp string)
+               (eql (aref string 0) #\#)
+               (eql (aref string 1) #\x))
+    (error "wrong format for hex-to-char"))
+  (let ((decimal (read-from-string xstring)))
+    (code-char decimal)))
+
 
 ;;;-----------
 ;;; the array
@@ -65,6 +73,21 @@ add-punctuation-char over the list. |#
 ;;;-------------------------------------------------
 
 (defparameter *cache-out-of-band-characters* t)
+
+(defun announce-out-of-range-character ()
+  "Called in run-token-fsa and other points in the tokenizer
+   if a character doesn't have an entry or its entry is 0.
+   Cache the character and return the entry for a space
+  so the process can continue"
+  (let* ((character (elt *character-buffer-in-use* *index-of-next-character*))
+         (code (char-code character)))
+    (push-debug `(,*index-of-next-character* ,*character-buffer-in-use*))      
+    (push-debug `(,character ,code))
+    (when (null (character-entry character))
+      (warn "Null entry for character ~a at position ~a in the character buffer"
+            character *index-of-next-character*))
+    (cache-out-of-band-character code)))
+
 
 (defun entry-for-out-of-band-character (char-code)
   "Called by character-entry and entry-given-char-code when reading
@@ -134,19 +157,6 @@ add-punctuation-char over the list. |#
 
 
 ;;---------------- extended (Mac) char set ------------
-
-(defun announce-out-of-range-character ()
-  "Called in run-token-fsa if a character doesn't have an entry
-   or its entry is 0. Cache the character and return the entry
-   for a space so the process can continue"
-  (let* ((character (elt *character-buffer-in-use* *index-of-next-character*))
-         (code (char-code character)))
-    (push-debug `(,*index-of-next-character* ,*character-buffer-in-use*))      
-    (push-debug `(,character ,code))
-    (when (null (character-entry character))
-      (warn "Null entry for character ~a at position ~a in the character buffer"
-            character *index-of-next-character*))
-    (cache-out-of-band-character code)))
 
 
 #+ignore   
