@@ -25,11 +25,12 @@
 
 (defun pp-json (sexpr &optional (stream t))
   (push sexpr *json-sexprs*)
-  (pp-sexpr-to-json sexpr t stream))
+  (pp-sexp-to-json sexpr t stream))
 
-(defparameter *indent* 2)
+;;(defparameter *indent* 2)
+;;  use set-indentation-delta to control amount of indentation
 
-(defun pp-sexpr-to-json (sexpr after-colon stream)
+(defun pp-sexp-to-json (sexpr after-colon stream)
   (cond
    ((not (consp sexpr))
     (emit-line stream "~a" (non-cons-to-json :unknown-tag sexpr)))
@@ -37,7 +38,7 @@
     (if after-colon
      (emit-line-continue stream "{")
      (emit-line stream "{"))
-    (push-indentation *indent*)
+    (push-indentation)
     (loop for i on sexpr
        do (let ((item (car i)))
            (cond
@@ -56,25 +57,25 @@
                  ;; this is a json collection
                  (pp-json-list (cdr item) stream))
                 (t
-                 (pp-sexpr-to-json (cdr item) t stream)))
+                 (pp-sexp-to-json (cdr item) t stream)))
               (when (cdr i) ;; still some pairs to go
                 (emit-line-continue stream  "," )))
              (t
               (warn "item is not a non-cons or a list starting with a keyword: ~s" item)
               nil))))
-    (pop-indentation *indent*)
+    (pop-indentation)
     (emit-line-continue stream "}"))))
 
 (defun pp-json-list (jlist stream &optional (newlines 0))
   (emit-line-continue stream (format nil "["))
   (loop for iil on jlist
      do (let ((ii (car iil)))
-          (when (not (consp ii)) (push-indentation *indent*))
-          (pp-sexpr-to-json ii nil stream)
+          (when (not (consp ii)) (push-indentation))
+          (pp-sexp-to-json ii nil stream)
           (when (cdr iil)
             (format stream ",")
             (loop for n from 1 to newlines by 1 do (terpri stream)))
-          (when (not (consp ii)) (pop-indentation *indent*))))
+          (when (not (consp ii)) (pop-indentation))))
   (emit-line-continue stream (format nil "]")))
 
 (defun non-cons-to-json (tag nc)
