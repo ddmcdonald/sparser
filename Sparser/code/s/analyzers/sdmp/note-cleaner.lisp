@@ -16,13 +16,13 @@
  with the next call to analysis-core.
 
 Requirements:
+
 1. No interference from earlier articles' notes on accumulation and
  tablulation for the article currently being analyzed.
 
 2. We can compare one article's noted properties to another ones. 
 
 3. We can still normalize (article length, comparative converage, ...)
-
 
 Containers are all instantiated, so no issue there.
 The time to read and noted categories use data already on the article.
@@ -36,13 +36,15 @@ Time to read an article is not saved. Would be another slot(?) on article?
 |#
 
 
-
-;;--- stripping
+;;;-------------------------------------------------
+;;; strip away unneeded parts of permanent articles
+;;;-------------------------------------------------
 
 (defun strip-unnecessary-article-parts (article)
-  (setf (children article) nil))
+  (when article
+    (setf (children article) nil)))
 
-(defun strip-parsed-articles ()
+(defun strip-parsed-acumen-articles ()
   (loop for a in *acumen-motific-articles*
      do (strip-unnecessary-article-parts (cdr a))))
 

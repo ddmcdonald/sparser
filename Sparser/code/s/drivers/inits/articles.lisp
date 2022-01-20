@@ -78,6 +78,8 @@
       (clear-special-text-display-window))
     
     (when *recognize-sections-within-articles*
+      (when *make-fresh-articles*
+        (strip-unnecessary-article-parts (article))) ; the previous one
       (initialize-document-element-resources)
       (begin-new-article))
     
