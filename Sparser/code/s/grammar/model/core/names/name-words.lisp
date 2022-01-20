@@ -377,10 +377,14 @@
            (word (or (resolve pw-string)
                      ;; Regular resolve/make would create a polyword
                      (define-word/expr pw-string)))) ;; "of Gwynedd"
-      (etypecase word
+      (typecase word
         (word
          (or (name-word-for-word word)
-             (make-name-word-for/silent word (pos-edge-starts-at edge))))))))
+             (make-name-word-for/silent word (pos-edge-starts-at edge))))
+        (otherwise
+         (when *debug-pnf*
+           (push-debug `(,edge ,pw-string))
+           (break "How do we make a name-word for a polyword?")))))))
 
 
 
