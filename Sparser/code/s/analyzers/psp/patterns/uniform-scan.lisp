@@ -170,7 +170,7 @@
         (tr :single-word-followed-by-colon (car edges))
         (return-from ns-pattern-dispatch t)))
 
-    (when (known-bogus-pattern pattern)
+    (when (known-bogus-pattern pattern start-pos end-pos)
       (throw :punt-on-nospace-without-resolution nil))
     
     #+ignore
@@ -233,13 +233,53 @@
            (throw :punt-on-nospace-without-resolution nil)
            (reify-ns-name-and-make-edge start-pos end-pos)))))))
 
+
+;;;-----------------------------------------
+;;; block bogus patterns from going further
+;;;-----------------------------------------
+
+(defparameter *known-bogus-patterns*
+  '((:period :hyphen) ; m736 "Mexico, 25 Nov (Notimex).-\"after Babel."
+    (:money :lower) ; "$57bn" m737
+    (:unit-of-measure :digits :lower) ; "PS435bn"  m737
+    (:period :period :lower) ; "..and" m58
+    (:lower :elipsis-dots) ; "with..." m738 -- only two periods!
+    (:digits :unit-of-measure) ; "1600s"
+    ))
+
+(defun known-bogus-pattern (pattern start-pos end-pos)
+  "Called at the start of ns-pattern-dispatch and forces a throw out of
+   there if the pattern is in the list. So far much of what's here looks
+   like cases that could be fixed by tuning the accumulation sweep or
+   adding rules."
+  (declare (special *known-bogus-patterns*))
+  (or (member pattern *known-bogus-patterns* :test #'equal)
+      (spurious-no-space pattern start-pos end-pos)))
+
+(defparameter *never-in-ns-pattern*
+  '(:period ; "Pluto."
+    :exclamation-point ; "coffee!"
+    :question-mark ; "2010?"
+    :comma ; "worried,"
+    :elipsis-dots ; "Or.."
+    :asterisk
+    :ampersand pattern ; "@anistonofficial"
+    ))
+
 (defun spurious-no-space (pattern start-pos end-pos)
   "Last minute catch of patterns that are not workable but more elaborate
    that in ones in the bogus list. Returns t if we should punt on this
-   pattern"
-  (declare (special *work-on-ns-patterns*))
+   pattern. Also called in known-bogus-pattern because a bad pattern
+   can include terms that would dispatch them to hyphen or colon processing."
+  (declare (special *never-in-ns-pattern*))
   (let ((string (trim-whitespace (extract-characters-between-positions start-pos end-pos)))
         (length (length pattern)))
+    (loop for symbol in pattern
+       when (memq symbol *never-in-ns-pattern*)
+       return t
+       finally (return nil))))
+
+#+ignore ;; old version of spurious-no-space
     (cond
       ((= 2 length)
        (cond
@@ -255,26 +295,10 @@
       ((memq :asterisk pattern) t)
       ((memq :ampersand pattern) t) ; "@anistonofficial"
       ((memq :period pattern) t)
+      ((memq :exclamation-point pattern) t) ; "and-whew!-goatcheese"
       (t (when *work-on-ns-patterns*
-           (break "length: ~a pattern: ~a~%string: ~s" length pattern string))))))
+           (break "length: ~a pattern: ~a~%string: ~s" length pattern string))))
 
-
-(defparameter *known-bogus-patterns*
-  '((:period :hyphen) ; m736 "Mexico, 25 Nov (Notimex).-\"after Babel."
-    (:money :lower) ; "$57bn" m737
-    (:unit-of-measure :digits :lower) ; "PS435bn"  m737
-    (:period :period :lower) ; "..and" m58
-    (:lower :elipsis-dots) ; "with..." m738 -- only two periods!
-    (:digits :unit-of-measure) ; "1600s"
-    ))
-
-(defun known-bogus-pattern (pattern)
-  "Called at the start of ns-pattern-dispatch and forces a throw out of
-   there if the pattern is in the list. So far much of what's here looks
-   like cases that could be fixed by tuning the accumulation sweep or
-   adding rules."
-  (declare (special *known-bogus-patterns*))
-  (member pattern *known-bogus-patterns* :test #'equal))
 
 
 ;; tally the odd punctuation noticed in the pattern dispatch
