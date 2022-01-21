@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990-1996,2012-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1996,2012-2022 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "capitalization"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:  June 2021
+;;;  Version:  January 2022
 
 ;; initiated 10/90
 ;; 0.1 (11/23/92 v2.3) Revised slightly to appreciate the case where the
@@ -176,7 +176,7 @@
   ;; Called from Make-name-word-for-unknown-word-in-name and the like.
   ;; They know that the instance of the word at this position is capitalized
   ;; and they need the word it corresponds to. If it doesn't already
-  ;; exist they want it made.   This is essentially the routine just
+  ;; exist they want it made. This is essentially the routine just
   ;; above except that the caller doesn't have to know how to look up
   ;; caps-type of the position.
   (declare (special *pnf-has-control*))
@@ -194,11 +194,10 @@
                   (get-word-string-from-position lc-word position))
                  (:lower-case
                   (if *pnf-has-control*
-                    (break "new lower-case word in PNF: ~a" lc-word)
-                    (break "lowercase in unknown situation: ~a" lc-word)))
+                    (warn-or-error "new lower-case word in PNF: ~a" lc-word)
+                    (warn-or-error "lowercase in unknown situation: ~a" lc-word)))
                  (:punctuation (word-pname lc-word))
                  (:digits (word-pname lc-word)))))
-
           (define-word new-string)))))
 
 (defun get-word-string-from-position (lc-word position)
