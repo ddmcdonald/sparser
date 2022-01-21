@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1994,2012,2016-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1994,2012,2016-2022 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "polywords"
 ;;;   Module:  "objects;chart:words:"
-;;;  Version:  September 2021
+;;;  Version:  January 2022
 
 ;; 1.1 (1/18/91 v1.8)  Added a proper Display-polyword that didn't use
 ;;      bracketing double quotes -- Princ-polyword does that.
@@ -234,6 +234,8 @@
 ;;; code for when the polywords are handled in the tokenizer
 ;;;----------------------------------------------------------
 
+;; no callers 1/21/22 -- superceded by find-or-make-initial-pw-state
+#+ignore
 (defun index-polyword-fsa-under-trigger (list-of-words
                                          polyword)
   (let* ((first-word (first list-of-words))
