@@ -220,8 +220,9 @@
                    (return-from examine-capitalized-sequence nil)))
                   
                 (otherwise
-                 (if (word-mentioned-in-rules? tt)
-                   ;; Two cases are decoded above as giving us ":word"
+                 ;; We've encountered a word that we didn't anticipate and
+                 ;; have to decide what to do with it.
+                 (if (known-word? tt) ; does it have a rule-set
                    ;; This case is the one where the word appears as the
                    ;; label on an edge
                    (cond
@@ -247,19 +248,18 @@
                      
                    ;; If we are running in any modern configuration (~ after 2017)
                    ;; there will never be an unknown word. Every word gets some
-                   ;; sort of interpretation even if it's just a default.
-
-                   ;; new word because it doesn't have a rules field.
+                   ;; sort of interpretation even if it's just a default.                   
                    (else
-                    (setq already-pushed? t)
-                    (kpush (make-name-word-for-unknown-word-in-name tt position)
-                           items)
-                    (if name-state
-                      (if (eq (first name-state) :word)
-                        (then (kpop name-state)
-                              (kpush :words name-state))
-                        (kpush :word name-state))
-                      (kpush :word name-state)))))))
+                     ;; new word because it doesn't have a rules field.
+                     (setq already-pushed? t)
+                     (kpush (make-name-word-for-unknown-word-in-name tt position)
+                            items)
+                     (if name-state
+                       (if (eq (first name-state) :word)
+                         (then (kpop name-state)
+                               (kpush :words name-state))
+                         (kpush :word name-state))
+                       (kpush :word name-state)))))))
 
               
              ;;---- That was the end of the word cases, now we look at
