@@ -101,17 +101,10 @@
                (push (coerce (nreverse characters) 'string)
                      strings))
 
-             ;;(unless (symbolp (cdr entry))
-             ;; the punctuation is whitespace or a reserved character
-               ;(format t "~&   punctuation is not whitespace~%")
-
-             ;;(if (symbolp (cdr entry))
-               ;;  (pushnew entry *symbolp-punct-list*)
-
              ;; with r3 load up, the only symbolp punctuation is space
              ;; and we want to preserve that information when defining
              ;; polywords
-               (push (coerce (list char) 'string) strings);)
+             (push (coerce (list char) 'string) strings)
 
              (setq pending-category nil
                        characters nil))
