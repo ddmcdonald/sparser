@@ -3,7 +3,7 @@
 ;;; copyright (c) 1991 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "polyword"
-;;;    Module:   "grammar;forms:"
+;;;    Module:   objects/forms/
 ;;;   Version:   1.2  December 1990
 
 (in-package :sparser)
