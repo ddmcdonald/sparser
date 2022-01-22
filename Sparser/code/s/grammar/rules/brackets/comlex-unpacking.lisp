@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; Copyright (c) 2010-2021 David D. McDonald
+;;; Copyright (c) 2010-2022 David D. McDonald
 ;;;
 ;;;     File: "comlex-unpacking"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  August 2021
+;;;  Version:  January 2022
 
 ;; Extracted from one-offs/comlex 12/3/12. Adding cases through 2/22/13
 ;; and put in the ambiguous flag. 3/14/13 moved edge flag to globals.
@@ -332,6 +332,11 @@ places. ]]
         (maybe-setup-common-noun lemma clauses :ambiguous)
         (maybe-setup-verb lemma clauses :ambiguous))
       (brackets-for-adverb-noun-verb lemma clauses))
+
+     ((equal combinations '(noun noun)) ; second one for saying no plural
+      (when *edge-for-unknown-words*
+        (maybe-setup-common-noun lemma clauses)))
+      
      
      ;; "firm" is four-ways ambiguous
 
@@ -450,7 +455,7 @@ places. ]]
         (setup-adverb lemma))))
 
 (defun maybe-setup-common-noun (lemma clauses ambiguous)
-  (unless (is-known-definition?  lemma (assoc 'noun clauses))
+  (unless (is-known-definition? lemma (assoc 'noun clauses))
     (setup-common-noun lemma clauses ambiguous)))
 
 (defun maybe-setup-verb (lemma clauses &optional ambiguous)
