@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;;  copyright (c) 2021 SIFT LLC, All rights reserved
+;;;  copyright (c) 2021-2022 SIFT LLC, All rights reserved
 ;;;
 ;;;       File: "motif-key-words:
 ;;;     Module: grammar/model/dossiers/
-;;;    Version: August 2021
+;;;    Version: January 2022
 
 ;; Copied from acumen/trunk/code/LuceneSearchTest/lm_rules.txt
 ;; and modified to drive word-spotting starting 6/9/21.
@@ -83,11 +83,11 @@
     ("salmon_PROP" . "salmon of knowledge")
     ("children-of-lir_EVENT" . "years as a swan")
     ("children-of-lir_EVENT" . "children of lir")
-    ("finn-mccool_CHAR" . "finn mccool")
-    ("finn-mccool_CHAR" . "fionn mac cumhaill")
-    ("finn-mccool_CHAR" . "finn mac cumhaill")
-    ("finn-mccool_CHAR" . "finn umaill")
-    ("finn-mccool_CHAR" . "finn maccool")
+    ("finn-mccool_CHAR" . "Finn McCool")
+    ("finn-mccool_CHAR" . "Fionn Mac Cumhaill")
+    ("finn-mccool_CHAR" . "Finn Mac Cumhaill")
+    ("finn-mccool_CHAR" . "Finn Umaill")
+    ("finn-mccool_CHAR" . "Finn MacCool")
     ("wren_PROP" . "wren-lore")
     ("wren_PROP" . "wren boys")
     ("magic-harp_PROP" . "magic harp")
@@ -128,8 +128,9 @@
     ("leviathan-behemoth_PROP" . "behemoths")
     ("milk-with-meat_EVENT" . "milk with meat")
     ("ark-of-the-covenant_EVENT" . "ark of the covenant")
-    ("kiddush_EVENT" . "kiddush")
-    ("kiddush_EVENT" . "kiddush hashem")
+    ("kiddush_EVENT" . "Kiddush")
+    ("kiddush_EVENT" . "Kiddush Hashem")
+    ("kiddush_EVENT" . "Kaddush Hashem")
     ("70-languages_PROP" . "seventy languages")
     ("70-languages_PROP" . "70 languages")
     

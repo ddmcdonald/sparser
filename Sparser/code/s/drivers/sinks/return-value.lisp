@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER) -*-
 ;;; Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
-;;; copyright (c) 2016-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2017,2022 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "return-value"
 ;;;   Module:  drivers;sinks:
-;;;  Version:  July 2017
+;;;  Version:  January 2022
 
 ;; Initiated 4/27/09 for checkpoint demo. Modified 9/26/09
 
@@ -55,6 +55,8 @@
            (format t "~&Multiple edges. No option to export~%")))
         (:object
          referent)
+        (:article-json
+         (emit-acumen-results :current))
         (:spire
          (let ((*sentence-results-stream* t))
            (declare (special *sentence-results-stream*))

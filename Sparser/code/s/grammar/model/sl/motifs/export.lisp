@@ -30,6 +30,45 @@ This entails
 |#
 
 
+(defparameter *article-results-stream* *standard-output*
+  "Compare to *sentence-results-stream* in objects/doc/save-doc-semantics.
+   Used by pp-json to emit the json expression that encodes an article's
+   motif results. Rebind as needed.")
+
+(defun acumen-output-on () ; give it a stream input?
+  (declare (special *return-a-value* *what-value-to-return*))
+  (setq *return-a-value* t
+        *what-value-to-return* :article-json))
+
+(defun acumen-output-off ()
+  (declare (special *return-a-value*))
+  (setq *return-a-value* nil))
+
+
+(defgeneric emit-acumen-results (article-designator)
+  (:documentation "Given the article object determined by
+   the article designator (either an actual article or a number
+   to retrieve it from list of processed articles, package its
+   results into an sexp then form its json equivalent and
+   send it thru the article results stream.")
+  (:method ((a article))
+    (declare (special *article-results-stream*))
+    (let ((sexp (json-format a)))
+      (format *article-results-stream* "~&~%")
+      (pp-sexp-to-json sexp t *article-results-stream*)))
+  
+  (:method ((designator symbol))
+    (unless (eq designator :current)
+      (error "Don't know how to interpret the article designator ~a"
+             designator))
+    (let ((a (article)))
+      (unless (typep a 'article)
+        (error "The article function didn't return an article.~
+              ~%It returned ~a" a))
+      (emit-acumen-results a))))
+                                 
+
+
 ;;----- collect edge records
 
 #|sp> (run-specific-acumen-file 783 :quiet t :motific t :skip t)
@@ -49,7 +88,7 @@ Functional categorizations for 6 out of 6 instances
 #<article 783 1/14/22 17:23:36>
 sp> (d (contents *))
 #<article-features unknown>
-  s-count      = 0
+  s-count      = 01
   total-words  = 0
   wps          = "3,966.1 words/second"
   items-alist  = (#<note-group-instance vague-names> #<note-group-instance places>..
