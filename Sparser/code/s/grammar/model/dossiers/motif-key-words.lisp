@@ -129,6 +129,7 @@
     ("milk-with-meat_EVENT" . "milk with meat")
     ("ark-of-the-covenant_EVENT" . "ark of the covenant")
     ("kiddush_EVENT" . "Kiddush")
+    ("kiddush_EVENT" . "kiddush")
     ("kiddush_EVENT" . "Kiddush Hashem")
     ("kiddush_EVENT" . "Kaddush Hashem")
     ("70-languages_PROP" . "seventy languages")
