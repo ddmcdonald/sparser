@@ -65,7 +65,12 @@ This entails
       (unless (typep a 'article)
         (error "The article function didn't return an article.~
               ~%It returned ~a" a))
-      (emit-acumen-results a))))
+      (emit-acumen-results a)))
+
+  (:method ((id integer))
+    (let ((a (acumen-article id)))
+      (when a
+        (emit-acumen-results a)))))
                                  
 
 
