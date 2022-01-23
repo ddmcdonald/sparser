@@ -336,20 +336,27 @@ and make that file easier to understand. |#
   "Rebind to nil to block including the bio-terms in the
    summary-document-stats")
 
+(defparameter *minimal-reporting* nil
+  "If this is up turn off all the reporting that's not needed
+   to populate the data in the article.")
+
+
 (defgeneric summary-document-stats (document-element &optional stream)
   (:documentation "Principally for information while exploring.
    This method is called when you specify :stats in a json article function
    such as run-json-article-from-handle")
   (:method ((a article) &optional stream)
+    (declare (special *minimal-reporting*))
     (unless stream (setq stream *standard-output*))
     (format stream "~&~%For ~a" a)
     (report-time-to-read-article a stream)
-    (show-parse-performance a stream)
-    (when *print-bio-terms*
-      (display-top-bio-terms a stream))
-    (when *acumen* ; bio-terms printing nil in neo-fire-setting
-      (show-noted-categories a)
-      (show-motif-term-context a))))
+    (unless *minimal-reporting*
+      (show-parse-performance a stream)
+      (when *print-bio-terms*
+        (display-top-bio-terms a stream))
+      (when *acumen* ; bio-terms printing nil in neo-fire-setting
+        (show-noted-categories a)
+        (show-motif-term-context a)))))
 
 
 (defun show-parse-performance (doc-element &optional (stream *standard-output*))

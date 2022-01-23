@@ -268,6 +268,7 @@ set up the sentences state (initialize-sentences)  |#
    in document-driven parsing -- ripple the after actions up the
    document structure to the article. 
    The document timer that we stop here was started in analyze-text-from-file"
+  (declare (special *minimal-reporting*))
   (let* ((article (article))
          (section (first-section article)))
     (unless section (error "threading bug: no section in ~a" article))
@@ -281,9 +282,10 @@ set up the sentences state (initialize-sentences)  |#
 
     (stop-timer '*time-to-read-document*)
     (report-time-to-read-article article)
-    (show-parse-performance article)
-    (show-noted-categories article)
-    (show-motif-term-context article)
+    (unless *minimal-reporting*
+      (show-parse-performance article)
+      (show-noted-categories article)
+      (show-motif-term-context article))
     article))
     
     
