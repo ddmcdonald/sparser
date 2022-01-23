@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2021 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2021-2022 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "tailored-predicates"
 ;;;  Module: "grammar/model/sl/motifs/
-;;; version: December 2021
+;;; version: January 2022
 
 ;; Started 12/2/21 to hold predicates, counters, etc of the sort
 ;; that would be in objects/doc/content-methods if they weren't
@@ -32,9 +32,10 @@
 ;;; invert functional entries on articles
 ;;;---------------------------------------
 
-#| First call (compute-notes-to-articles) to run through all the
-motif articles and tally their records. This populates the
-hash table note-entries-to-where-used*.
+#| First call (compute-notes-to-articles) to run through all the articles
+and tally their records. (Call with optional T argument to work over the
+*acumen-motific-articles*, with no argument works over *acumen-articles*.)
+This populates the hash table note-entries-to-where-used*.
    Then call (summarize-configuration-usage) to sort and print
 the table.
 |#
@@ -81,12 +82,14 @@ the table.
   
 ;;--- the computation
 
-(defun compute-notes-to-articles ()
+(defun compute-notes-to-articles (&key motif-set)
   "Walk through every presently parsed article and pass it on to
    the per-article note entry handler."
   (declare (special *acumen-motific-articles*))
   (clrhash *note-entries-to-where-used*)
-  (loop for article in *acumen-motific-articles*
+  (loop for article in (if motif-set
+                         *acumen-motific-articles*
+                         *acumen-articles*)
      do (compute-notes-to-article (cdr article))))
 
 (defun compute-notes-to-article (article)
