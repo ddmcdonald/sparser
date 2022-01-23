@@ -128,6 +128,7 @@
        (position-in-np head-edge covering-edge))
       ((equal form-categories '(proper-noun n-bar)) :isolated-proper)
       ((equal form-categories '(proper-noun vp)) :object)
+      ((equal form-categories '(proper-noun vg)) :object) ; "make Kiddush"
       ((or (equal form-categories '(common-noun n-bar))
            (equal form-categories '(common-noun np)))
        (position-in-np head-edge covering-edge))
@@ -191,7 +192,7 @@
         
         ((matches-prefix form-categories '(np pp)) :in-relation)
         ((matches-prefix form-categories '(np s)) :subject)
-        ((matches-prefix form-categories '(proper-noun possessive)) :posessive)
+        ((matches-prefix form-categories '(proper-noun possessive)) :posessive) ; "Finn McCool's"
         ((matches-prefix form-categories '(proper-noun np vp)) :object)
         ((matches-prefix form-categories '(proper-noun vp)) :object)
         ((matches-prefix form-categories '(proper-noun pp)) :in-relation)
@@ -224,6 +225,9 @@
     (cond
       ((memq 'pp remainder) :in-relation)
       ((memq 'vp remainder) :object)
+      ((memq 'to-comp remainder) :subject) ; "to make kiddush for Shabbat"
+      ((memq 'vp+past remainder) :subject) ; usually passive
+      ((memq 'vp+ing remainder) :subject) ;; ?? "making kiddush"
       (includes-s? :subject)
       (t (when (config-break)
            (break "another np-np case"))
@@ -254,6 +258,7 @@
 (defun context-above-proper-np (form-categories chain)
   "prefix is (proper-noun np)"
   (let* ((remainder (nthcdr 2 form-categories))
+         (highest (car (last form-categories)))
          (edges (edges chain))
          (next (car remainder))
          (includes-s? (memq 's remainder)))
@@ -295,9 +300,17 @@
   "The prefix is just (proper-noun)"
   (let* ((second (second form-categories))
          (third (third form-categories))
+         (highest (car (last form-categories)))
          (remainder (cdr form-categories))
          (includes-s? (memq 's remainder)))
     (case second
+      (proper-noun ; conjunction involved
+       (cond ((memq 'pp remainder) :in-relation)
+             ((memq 'n-bar remainder) :isolated-proper)
+             ((and (eq third 'np)
+                   (eq highest 'quotation)) :isolated-proper)
+             (t (when (config-break) (break "proper-noun"))
+                nil)))
       (np
        (case third
          (pp :in-relation)
@@ -309,14 +322,10 @@
                 ((memq 'pp remainder) :in-relation)
                 (t (when (config-break)
                      (break "another pn,np,n-bar case"))
-                   nil)))
+                   nil)))         
          (otherwise (when (config-break)
                       (break "second: ~a  third: ~a" second third))
                     nil)))
-      (proper-noun
-       (cond ((memq 'pp remainder) :in-relation)
-             (t (when (config-break) (break "proper-noun"))
-                nil)))
       (s :subject)
       ((vp vp+past vp+ing to-comp) :object)
       (pp :in-relation)
@@ -339,6 +348,9 @@
     (cond
       ((eq third 'than-np) :object) ;// call out the comparative?
       ((and (eq second 'possessive) (eq third 'possessive)) :subject) ; ??
+      ((and (eq second 'common-noun) ; conjunction
+            (eq third 'possessive)) ; dangling
+       :isolated-common)
       ((or (memq 'vp+past remainder)
            (memq 'to-comp remainder)
            (memq 'vp remainder))
