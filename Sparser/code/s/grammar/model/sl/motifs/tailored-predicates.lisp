@@ -122,3 +122,16 @@ the table.
     (loop for record in edge-records
        when (edge-record-configuration record)
        do (manage-entry (edge-record-configuration record)))))
+
+
+;;---- Given an inversion, go form a configuration label to examples of it
+
+(defun category-examples (keyword &optional count) )
+
+(defun articles-using-category (keyword)
+  "The first value is the count"
+  (cdr (gethash keyword  *note-entries-to-where-used*)))
+
+(defgeneric germaine-notes (article)
+  (:method ((a article))
+    (germaine-items (contents a))))
