@@ -1,15 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1990,1992,1993,1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1995,2022 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "setup/file"
 ;;;   Module:  "analyzers;char-level:"
-;;;  Version:  3.1 January 1995
+;;;  Version:  January 2022
 
 ;; first version 6/90
 ;; 3.0 (9/25/92 v2.3) redone for new tokenizer
 ;;     (12/14/94) added Establish-character-source/file/at-filepos. 
 ;; 3.1 (1/9/95) refined it.
-;;   
 
 (in-package :sparser)
 
@@ -21,24 +20,23 @@
 
 
 (defun establish-character-source/file (pathname &key (ext-format :utf-8))
+  "Invoked from analyze-text-from-file and other source drivers to
+   pour their souce into the character-buffer."
   (let ((file-stream
          (open-character-source/file pathname :ext-format ext-format)))
-
     (setq *filepos-at-beginning-of-source* 0)
     (establish-character-source/open-file file-stream)))
 
 
-
 (defun establish-character-source/file/at-filepos (pathname
                                                    integer)
+  "Called from analyze-text-from-file/at-filepos which hasn't
+   been used in decades -- probably not since the work for Apple"
   (let ((file-stream
          (open-character-source/file pathname)))
-
     (setq *filepos-at-beginning-of-source* integer)
     (file-position file-stream integer)
     (establish-character-source/open-file file-stream)))
-
-
 
 
 (defun establish-character-source/open-file (file-stream)

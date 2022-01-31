@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990,1991  Content Technologies Inc.
-;;; copyright (c) 1991,1992,1993 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990,1991 Content Technologies Inc.
+;;; copyright (c) 1991-1993,2022 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "state"
-;;;   Module:  "chars;"   ("character level processing")
-;;;  Version:  2.1 February 1993
+;;;   Module:  analyzers/char-level/
+;;;  Version:  January 2022
 
 ;; 1.1  (2/7  v1.8.1)  Added *embedded-strings-cib* for the use of
 ;;      Tokens-in-string/no-whitespace
@@ -14,7 +14,7 @@
 ;; 2.0 (9/25/92 v2.3) redone for new tokenizer
 ;; 2.1 (2/14/93) put in the change from 'string-character to character
 ;;      to move to MCL2.0
-;; 2.2 (5/12) commented out DCB because it was so far out of date
+;; 2.2 (5/12/93) commented out DCB because it was so far out of date
 
 (in-package :sparser)
 
@@ -82,6 +82,41 @@ character source, e.g. by establish-character-source/string which
 fills from position 1 onwards and then sets position 0 to
 the start character.  The #\^B for the end of the source is
 added at the same time. |#
+
+
+;;;-------------------------------------------------
+;;; propagate impact of having truncated the source
+;;;-------------------------------------------------
+
+(defvar *the-source-was-truncated* nil
+  "If set it means that the prescan operation has walked to
+ the end of its source character buffer and we have had to truncate the source.")
+
+(defun announce-truncated-source (source-index)
+  "Invoked from scan-and-swap-character-buffer when it scans the ^D.
+   The dual buffer setup that ^D was designed to manage was done in
+   decades ago when machine resources were expensive. In the modern day
+   we can make the length of the character buffer much larger and
+   suffer no ill effects. In particular starting in 2019 we put the
+   second buffer into use as the sink for prescanning the characters
+   in the array and doing things like expanding HTML escapes and
+   canonicalizing the number of newlines between paragraphs. Returning
+   to a rotating buffer design would require non-trivial refactoring
+   that needs a good motivation. Even with the buffers at their
+   present length (200k characters) we can encounter larger file
+   sources so we need to set a limit. 
+   At 200k characters we will probably have recycled the chart (presently
+   just 40k positions) and the edges (100k), which makes it problematic
+   to pull information out. This flag is to signal that some things
+   won't work as expected"
+  (declare (special *next-chart-position-to-scan*))
+  (let ((stream *open-stream-of-source-characters*))
+    (format t "~&--- Cannot process this file~
+               ~% ~a~
+               ~% because it is longer than our buffer size of ~a characters"
+              stream (insert-commas-into-number-string source-index))
+    (close-character-source-file)
+    (setq *the-source-was-truncated* t)))
 
 
 ;;;------------------------------

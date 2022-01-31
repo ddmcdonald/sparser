@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1994,2013,2018-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2013,2018-2022 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "file"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:   June 2021
+;;;  Version:   January 2022
 
 ;; initiated 2/91, added Analyze-text-from-file/at-filepos 12/14/94
 ;; 2/15/13 Folded in initializations from do-document-as-stream-of-files,
@@ -46,7 +46,7 @@
    handlers to be assigned to the article. Defaults to the file name."
   
   (declare (special *open-stream-of-source-characters* *paragraphs-from-orthography*
-                    *prescan-character-input-buffer*))
+                    *prescan-character-input-buffer* *the-source-was-truncated*))
   
   (when *open-stream-of-source-characters*
     (close-character-source-file))
@@ -73,10 +73,16 @@
 
       (when prescan-buffer?
         (scan-and-swap-character-buffer :echo echo))
-      
-      (if quiet
-        (with-total-quiet (analysis-core))
-        (analysis-core)))
+
+      (if *the-source-was-truncated*
+        (then ;; the chart will recycle and edges be deallocated
+          ;; so unless we really cut down on the size of the test
+          ;; it's not worth analyzing
+          (setq *the-source-was-truncated* nil)) ; reset
+        (else
+          (if quiet
+            (with-total-quiet (analysis-core))
+            (analysis-core)))))
 
     (when *open-stream-of-source-characters*
       (close-character-source-file))

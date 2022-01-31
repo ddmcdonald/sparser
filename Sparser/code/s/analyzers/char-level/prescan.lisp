@@ -42,6 +42,11 @@ scan-name-position -> add-terminal-to-chart
         -> next-token
            -> run-token-fsa 
                 (elt *character-buffer-in-use* (incf *index-of-next-character*))))
+
+establish-character-source/file
+  calls open-character-source/file to open the file to create a stream.
+     The stream is set to *open-stream-of-source-characters*
+  There's close-character-source-file that closes it.
 |#
 
 ;;--- flags
@@ -68,7 +73,7 @@ scan-name-position -> add-terminal-to-chart
 ;;--- driver
 
 (defvar *post-hyphen-chars* nil
-  "Collects characters that follow hyphen is that line is uncommented out")
+  "Collects characters that follow hyphen if that line is uncommented out")
 
 
 (defun scan-and-swap-character-buffer (&key (echo nil))
@@ -103,7 +108,19 @@ scan-name-position -> add-terminal-to-chart
                    (incf index-into-source)
                    (else (push-char c)
                          (when echo (write-char #\newline))
-                         (setq pending-newline? t)))))
+                         (setq pending-newline? t))))
+               (truncate-source ()
+                 "Back up to put in a newline, then insert
+                  as ^B for eof and raise the 'we're done' flag"
+                 (when *paragraphs-from-orthography*
+                   (setf (schar sink (1- index-into-sink)) #\newline))
+                 (setf (schar sink index-into-sink) #\^B)
+                 (announce-truncated-source index-into-source)
+                 (setq source-exhausted t))
+               (echo-previous-chars (from-index &optional (count 10))
+                 (let* ((start (- from-index count))
+                        (substring (subseq sink start from-index)))
+                   (print substring))))
 
         (until source-exhausted (swap-in-sink-buffer sink)
           ;; Loop until the 'source-exhausted' flag is non-nil,
@@ -114,8 +131,10 @@ scan-name-position -> add-terminal-to-chart
           
           (case char
             (#\^D ;; :end-of-buffer
-             (push-debug `(,source ,sink))
-             (error "Prescan walked off the end of the buffer"))
+             "If we hit this, the source is longer than the character
+              buffer and we need to truncate it"
+             (truncate-source))
+
             (#\^A ;; source start
              (unless (= index-into-source 0)
                (error "Encountered source-start character (\#^A) at ~
@@ -189,8 +208,9 @@ scan-name-position -> add-terminal-to-chart
                  ;; we have to ensure than the buffer ends with a newline character
                  (setf (schar sink index-into-sink) #\newline)
                  (incf index-into-sink)))
-             (setf (schar sink index-into-sink) char)
-             (setq source-exhausted t)) ;; :end-of-source
+             (setf (schar sink index-into-sink) char) ;; :end-of-source
+             ;;(echo-previous-chars index-into-sink)
+             (setq source-exhausted t))
 
             (otherwise
              (setq starting? nil
