@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1996,2012-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1996,2012-2013,2022  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "resource"
 ;;;   Module:  "objects;chart:edges:"
-;;;  Version:  4.0 January 2013
+;;;  Version:  January 2022
 
 ;; 3.0 (9/7/92 v2.3) updated the references to edge fields
 ;; 3.1 (4/7/93) changed name to Make-the-edge-resource for ease of documentation
@@ -164,7 +164,7 @@
   ;; by the chart recycling, from Long-term-ify/edge-referents/at, which
   ;; is itself called from Bump-&-store-word. In the case of those calls
   ;; we get the position passed in, otherwise we calculate it.
-  (declare (special *trace-edge-resource*))
+  (declare (special *trace-edge-resource* *some-edges-released*))
 
   (when *trace-edge-resource*
     (format t "~&Deactivating ~A~%" edge))
@@ -176,7 +176,7 @@
   ;; way to see where the valid edges start.  If the chart is recycling
   ;; faster than the edges then there will be a whole set of deactivated
   ;; edges in the middle of the resource. 
-
+  (setq *some-edges-released* t)
 
   (if leftmost-valid-position
     (update-leftmost-edge-valid-position leftmost-valid-position)

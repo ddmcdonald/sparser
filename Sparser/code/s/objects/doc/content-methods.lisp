@@ -337,13 +337,15 @@
     This is called during the paragraph after-action method
     to merge sentence-level notes to the paragraph level.")
   (:method ((p paragraph))
+    (declare (special *some-edges-released*))
     (let* ((sentences (sentences-in-paragraph p))
            (contents (loop for s in sentences collect (contents s)))
            (alists (loop for c in contents
                       when (items c) collect (items c))))       
       (when alists
         ;;(push-debug `(,alists)) (break "alists: ~a" alists)
-        (add-chains-to-records alists)
+        (unless *some-edges-released*
+          (add-chains-to-records alists))
         (let ((merged-alist (merge-items-alists alists)))
           (setf (items (contents p)) merged-alist)
           p)))))
