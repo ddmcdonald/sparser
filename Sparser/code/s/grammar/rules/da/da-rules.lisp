@@ -2417,6 +2417,7 @@ assumed. |#
    (da-rule-named 's-comma-np-comma-and-np)
    (da-rule-named 's-conjunction-np)
    (da-rule-named 'vp-or-np)
+   (da-rule-named 'vp-and-np)
    ))
 
 (defun DA-rule-not-reliable (da-rule)
