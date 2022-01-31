@@ -84,6 +84,7 @@
     ("children-of-lir_EVENT" . "years as a swan")
     ("children-of-lir_EVENT" . "children of lir")
     ("finn-mccool_CHAR" . "Finn McCool")
+    ("finn-mccool_CHAR" . "Finn mccool")
     ("finn-mccool_CHAR" . "Fionn Mac Cumhaill")
     ("finn-mccool_CHAR" . "Finn Mac Cumhaill")
     ("finn-mccool_CHAR" . "Finn Umaill")
