@@ -1,9 +1,9 @@
  ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2022 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "syntax-predicates"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  May 2021
+;;;  Version:  March 2022
 
 ;; Simple functions lifted from syntax-functions 8/30/16
 
@@ -57,6 +57,37 @@
                          (is-in-p category::which
                                   (semtree (edge-referent e)))))))))
 
+
+;;--- locative objects:  put <block> <location>
+
+(defgeneric verb-takes-locative? (verb)
+  (:documentation "Does this verb subcategorize for a location?
+    If fed a sentence argument will return nil if the main verb
+    isn't set yet.")
+  (:method ((s sentence))
+    (let ((mvb-edge (get-sentence-main-verb s)))
+      (when mvb-edge
+        (verb-takes-locative? mvb-edge))))
+  (:method ((mvb-edge edge))
+    (let ((i (edge-referent mvb-edge)))
+      (itypep i 'move-something-verb)))
+  (:method ((ignore null)) ; caller couldn't identify the sentence
+    nil))
+
+(defgeneric location-in-locative-context? (i)
+  (:documentation "Is this individual a location (or been construed as
+    one) and are we encountering it in a context that subcategorizes
+    for locatives.")
+  (:method ((e edge))
+    (location-in-locative-context? (edge-referent e)))
+  (:method ((i individual))
+    (when (itypep i 'location)
+      (verb-takes-locative? (sentence)))))
+
+
+
+
+;;//// general utility -- move
 (defun is-in-p (item tree &key test)
   (if (null test)
       (cond ((and (consp tree) (listp (cdr tree))) ;; not a dotted pair
