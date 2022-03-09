@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2022 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "methods"
 ;;;   Module:  "model;core:places:"
-;;;  version:  November 2020
+;;;  version:  March 2022
 
 ;; N.b. This file is loaded late after all categories have been defined.
 ;; It is for location-oriented compose methods
@@ -23,12 +23,16 @@
                        (pp category::location))
   "Binds the location variable of an object that is defined to
    have a location (any 'object'). Called by interpret-pp-adjunct-to-np
-   in the first clause of its 'or'."
+   in the first clause of its 'or'. As in that function, also have to check
+   that no other binding site wants the location"
   (declare (special *subcat-test*))
-  (when (eq (edge-form-name (right-edge-for-referent )) 'pp)
-    (tr :has-location+location np pp)
-    (let ((i (bind-variable 'location pp np)))
-      i)))
+  (if *subcat-test* ; use valid-method to have this checked
+    (and (not (location-in-locative-context? pp))
+         (eq (edge-form-name (right-edge-for-referent)) 'pp))
+    (else
+      (tr :has-location+location np pp)
+      (let ((i (bind-variable 'location pp np)))
+        i))))
 
 
 
@@ -37,10 +41,11 @@
 ;; "on the table"
 
 #+ignore
-;; but not "in the presence of RAS" or "on the other hand" -- this method is far too unselective
-;;  you can't locally determine that a PP should be interpreted as a relative location
-;;  the governing head (that takes the PP as a dependent) may have constraints on how it interprets
-;;  a particular preposition
+;; but not "in the presence of RAS" or "on the other hand" -- this
+;;  method is far too unselective you can't locally determine that a
+;;  PP should be interpreted as a relative location the governing head
+;;  (that takes the PP as a dependent) may have constraints on how it
+;;  interprets a particular preposition
 (def-k-method compose ((op category::relative-location)
                        (place category::has-location))
   "Spatio(-temoral) prepositions are specializations of relative-location.
@@ -108,7 +113,7 @@
       (tr :direction+multiple-dependent-location qualifier head)
       (let ((j (bind-variable 'qualifier qualifier head)))
         j))))
-
+2
 
 ;; "on the bottom"
 (def-k-method compose ((op category::relative-location)
@@ -133,7 +138,20 @@
         (tr :relative-location+location operator place)
         (make-relative-location/revise-parent operator place)))))
 
-
+;; "put another green block [on the block]" ...
+(def-k-method analyze-pp ((operator category::on)
+                          (thing category::object))
+  "Is it possible to 'reach back' from make-pp to the verb to see
+   whether is subcategorizes for location. The verb is there, but we'd
+   have to climb over things to get there w/o a pointer from the scan
+   that's done right after chunking."
+  (declare (special *subcat-test*))
+  (if *subcat-test*
+    t
+    (else
+      (tr :relative-location+object operator thing)
+      (make-relative-location/revise-parent operator thing))))
+                        
 
 
 ;;-----------------

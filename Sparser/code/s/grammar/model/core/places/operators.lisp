@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2022 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "operators"
 ;;;   Module:  "model;core:places:"
-;;;  version:  November 2019
+;;;  version:  March 2022
 
 ;; instantiates 11/2/16 to provide a semantic grounding to spatial
 ;; prepositions and such as functions. 
@@ -103,6 +103,8 @@ determined by the operator and the types of the two objects,
   "shared subroutine of location composition methods. 
    Construct and return the relative-location individual. 
    Re-label the parent edge as a 'location'."
-  (let ((i (bind-variable 'ground place operator)))
-    (revise-parent-edge :category (category-named 'location))
-    i))
+  (let* ((i (bind-variable 'ground place operator))
+         (j (specialize-object i 'location)))
+    (revise-parent-edge :category (category-named 'location)
+                        :referent j)
+    j))

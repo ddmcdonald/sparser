@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2017-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2017-2022 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "traces"
 ;;;   Module:  "model;core:places:"
-;;;  version:  June 2021
+;;;  version:  February 2022
 
 ;; For trace functions about location. Initially mostly the methods.
 ;; N.b. now holds other methods traces so they can be in the same file.
@@ -39,6 +39,11 @@
   (when *trace-methods*
     (trace-msg "Method: relative-location(~a) & location(~a)"
                operator place)))
+
+(deftrace :relative-location+object (operator thing)
+  (when *trace-methods*
+    (trace-msg "Method: relative-location(~a) & thing(~a)"
+               operator thing)))
 
 (deftrace :direction+multiple-dependent-location (qualifier head)
   (when *trace-methods*
