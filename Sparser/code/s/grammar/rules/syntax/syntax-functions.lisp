@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2021 David D. McDonald -- all rights reserved
+;;; copyright (c) 2014-2022 David D. McDonald -- all rights reserved
 ;;;
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  June 2021
+;;;  Version:  March 2022
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -1495,8 +1495,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
 ;;;---------
 
 (defparameter *pobj-edge* nil
-  "Used to generate useful error messages when the edge 
-   referent is NIL.")
+  "Used to generate useful error messages when the edge referent is NIL.")
 
 (defun adjoin-pp-to-vg (vg pp)
   ;; The VG is the head. We ask whether it subcategorizes for
@@ -1695,26 +1694,32 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                            *pobj-edge*)
          (variable-to-bind-pp-to-head (right-edge-for-referent) np)
        
+       ;; (push-debug `(,np ,pp))
+       ;; (break "interpret: ~a + ~a  test? ~a"
+       ;;        (string-for-edge (left-edge-for-referent))
+       ;;        (string-for-edge (right-edge-for-referent))
+       ;;        *subcat-test*)
+
        (let* ((of (word-named "of"))
               (*in-scope-of-np+pp* prep-word))
          (declare (special *in-scope-of-np+pp*))
-       
+
          (setq np (individual-for-ref np))
 
-         ;; (push-debug `(,np ,pp ,variable-to-bind ,pobj-referent ,prep-word))
-         ;; (when (eq prep-word of) (break "np: ~a" np))
-
          ;; important note
-         ;;  you can't locally determine that a PP should be interpreted as
-         ;;  a relative location. The governing head (that takes the PP as a dependent)
-         ;;  may have constraints on how it interprets a particular preposition.
+         ;; You can't locally determine that a PP should be interpreted as
+         ;; a relative location. The governing head (that takes the PP as a dependent)
+         ;; may have constraints on how it interprets a particular preposition.
          ;; In general, you can't give a non-trivial interpretation to a
-         ;; PP without consulting its context
+         ;; PP without consulting its context. But see location-in-locative-context?
+         ;; as an instance of such a check.
+
          (if *subcat-test*
            (or variable-to-bind
+               (not (location-in-locative-context? pp))
                (maybe-extend-premod-adjective-with-pp np pp)
                (and *force-modifiers* 'modifier)
-               (applicable-method compose np pp)
+               (valid-method compose np pp) ; apply the subcat test
                (applicable-method compose-of np pobj-referent)
                (is-domain-adjunctive-pp? np (right-edge-for-referent))
                (and (eq prep-word of)
@@ -2235,16 +2240,14 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
 ;;;---------
 
 (defun assimilate-object (vg obj)
-  (assimilate-np-to-v-as-object vg obj)
-  ;;(assimilate-subcat vg :object obj)
-  )
+  (assimilate-np-to-v-as-object vg obj))
 
 (defun assimilate-indirect-object (vg obj)
   (assimilate-subcat vg :indirect-object obj))
 
 (defun assimilate-object-comp (vp obj)
   (assimilate-subcat vp :oc obj))
-
+;;#################################################################3
 (defun assimilate-np-to-v-as-object (vg obj)
   "Sort out whether the 'obj' is a direct object, indirect object, or
    object complement, while ruling out spurious cases."
