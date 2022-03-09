@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "forest-gophers"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  January 2022
+;;;  Version:  February 2022
 
 ;; Initiated 8/30/14. To hold predicates and other little computations
 ;; done by the forest-level sweeping and island-driving. Also a good
@@ -77,6 +77,7 @@
 (defun set-main-verb (tt)
   (let ((pending-verbs (main-verb (layout))))
     (tr :setting-mvb-to tt)
+    (set-sentence-main-verb tt (bkptr (layout)))
     (setf (main-verb (layout))
           (cons tt pending-verbs))
     (tr :waiting-on-non-verb)
