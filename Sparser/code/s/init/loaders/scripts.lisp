@@ -1,8 +1,8 @@
-;;; Copyright (c) 2016-2021 SIFT LLC. All Rights Reserved.
+;;; Copyright (c) 2016-2022 SIFT LLC. All Rights Reserved.
 ;;;
 ;;;      File: "scripts"
 ;;;    Module: "init;loaders;"
-;;;   Version: September 2021
+;;;   Version: February 2022
 
 (in-package :sparser)
 
@@ -139,6 +139,8 @@ It is essentially GROK going forward."
   (:script-variable *fire*)
   (:parameters
    (*description-lattice* t)
+   (*ignore-literal-edges* nil)
+   (*index-under-permanent-instances* t)
    (*index-bindings-to-variables* t))
   (:grammar-configuration "fire-grammar")
   (:switches neo-fire-setting))
