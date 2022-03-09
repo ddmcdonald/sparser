@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2013-2021 David D. McDonald -- all rights reserved
+;;; copyright (c) 2013-2022 David D. McDonald -- all rights reserved
 ;;;
 ;;;     File:  "content-methods"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  November 2021
+;;;  Version:  February 2022
 
 ;; Created 5/12/15 to hold the container mixings and such that need
 ;; to have the document model elements already defined so they can
@@ -661,6 +661,18 @@ using data collected by identify-relations |#
 
 (defmethod get-sentence-subject ((ignore null))
   nil)
+
+(defgeneric set-sentence-main-verb (edge sentence)
+  (:documentation "record the presumed main verb. Records the
+    edge //change to its referent?")
+  (:method ((e edge) (s sentence))
+    (setf (sentence-main-verb (contents s)) e)))
+
+(defgeneric get-sentence-main-verb (sentence)
+  (:method ((s sentence))
+    (sentence-main-verb (contents s)))
+  (:method ((ignore null)) ; cann't identify the sentence
+    nil))
 
 
 ;;;--------------------------

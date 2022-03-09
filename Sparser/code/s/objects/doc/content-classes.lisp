@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2019-2020 David D. McDonald -- all rights reserved
+;;; copyright (c) 2019-2022 David D. McDonald -- all rights reserved
 ;;;
 ;;;     File:  "content-classes"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  December 2020
+;;;  Version:  February 2022
 
 #| Created 11/25/19 to separate out container component classes  |#
 
@@ -134,7 +134,10 @@
 (defclass sentence-text-structure ()
   ((subject :initform nil :accessor sentence-subject
     :documentation "The subject of the sentence if we
-     were able to identify it."))
+     were able to identify it.")
+   (mvb :initform nil :accessor sentence-main-verb
+     :documentation "The main verb of the sentence (main clause?) as
+       identified by sweep/form-dispatch"))
   (:documentation
    "Provides long-term representation of the contents of
     the sentence that will be relevant to later sentences.
