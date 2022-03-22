@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2020-2021 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2020-2022 SIFT LLC. All Rights Reserved
 ;;;
 ;;;      File:   "medical-taxonomy"
 ;;;    Module:   "sl;disease:"
-;;;   version:   February 2021
+;;;   version:   March 2022
 
 ;; Broken out of bio;taxonomy 11/10/20 so we can modify it freely
 ;; to loosen the original type restrictions to apply to
@@ -123,8 +123,7 @@
 
 
 (define-category dose-dependent :specializes :bio-predication
-  :realization
-  (:adj "dose-dependent"))
+  :realization (:adj "dose-dependent"))
 (def-synonym dose-dependent (:adj "dose dependent"))
 
 

@@ -93,7 +93,7 @@
   (:verb "analyze" :noun ("analysis" :plural "analyses")
          :etf (svo-passive)))
 
-(def-synonym analyze (:verb "analyse" :etf (svo-passive) ))
+(def-synonym analyze (:verb "analyse"))
 
 
 (define-category bio-apply :specializes bio-method
@@ -1305,7 +1305,7 @@
 "it did not seem to depend simply on the phosphorylation state"
 |# 
 
-(def-synonym seem (:verb "appear" :etf (svo)))
+(def-synonym seem (:verb "appear"))
 (make-copular-def "appear")
 #| "does not appear to alter the GTPase-activating function" -- process
 "mice appears normal"  "appears essentially normal"

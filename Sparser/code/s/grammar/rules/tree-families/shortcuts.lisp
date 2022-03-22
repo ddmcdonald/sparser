@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2011-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011-2022 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2009-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "shortcuts"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  April 2021
+;;;  version:  March 2022
 
 
 ;; Started 4/3/09. Modeled on [model;core:kinds:object] Modified
@@ -145,7 +145,7 @@ broadly speaking doing for you all the things you might do by hand.
 (defun stipulate-simple-mumble-resource (i s-word s-pos)
   "In define-individual-with-id, where there is a provision for synonyms, the base
    word and every synonym is processed by calling make-rules-for-head, which is
-   about as high a def function as we have to get the job done (e.g. write the
+   about as high a def function as we have to get the job done (i.e. write the
    needed unary rules). Make-rules-for-head is also the locus of the action that
    sets up the mapping to lexicalized phrases used to realized the individual.
    This mapping is a hash-table, last setf wins. This stipulate function is called
@@ -173,10 +173,9 @@ broadly speaking doing for you all the things you might do by hand.
   "Given a string, it checks if either the given string or the string
   with hyphens in place of spaces is a category, and then returns
   symbol that matches a category if it exists"
-  (let ((sym-name (intern (string-upcase name) 
-                                     (find-package :sparser)))
+  (let ((sym-name (intern (string-upcase name) (find-package :sparser)))
         (hyph-sym-name (intern (string-upcase (substitute #\- #\space name))
-                                          (find-package :sparser))))
+                               (find-package :sparser))))
     (cond ((category-named sym-name)
            sym-name)
           ((category-named hyph-sym-name)
@@ -193,10 +192,11 @@ see if there are issues"
   (let* ((plural-word (unless no-plural (plural-version word)))
          (defined-plural? (and (resolve plural-word)
                                (single-term-rewrite? plural-word :no-warn t)))
-         (defined-plural-sc (when defined-plural?
-                              (if (name-is-cat-p plural-word)
-                                  (cat-name (second (super-categories-of (name-is-cat-p plural-word))))
-                                  (cat-name (category-of (get-head-ref-from-rule (car (single-term-rewrite? plural-word  :no-warn t))))))))
+         (defined-plural-sc
+          (when defined-plural?
+            (if (name-is-cat-p plural-word)
+              (cat-name (second (super-categories-of (name-is-cat-p plural-word))))
+              (cat-name (category-of (get-head-ref-from-rule (car (single-term-rewrite? plural-word  :no-warn t))))))))
          (*inhibit-constructing-plural* 
           (or no-plural
               (when defined-plural?
@@ -420,7 +420,8 @@ see if there are issues"
                                (not (member :plural noun)))
                       (cdr noun)))
       (let ((rule-form
-             `(def-synonym ,(cat-name category) (:noun ,string))))
+             ;;`(def-synonym ,(cat-name category) (:noun ,string))
+             `(def-cfr/expr ',(cat-name category) '(,string))))
 	(eval rule-form)))
     category))
 

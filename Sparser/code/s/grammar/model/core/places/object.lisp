@@ -40,11 +40,11 @@
 ;;--- general words
 
 
-(def-synonym location (:common-noun "place"))
+(def-synonym location (:noun "place"))
 
 ;; This isn't right. 'space' is a generic/mass kind of stuff
 ;; so it's interpretation shouldn't be a location instance.
-(def-synonym location (:common-noun "space"))
+(def-synonym location (:noun "space"))
 (without-comparatives
   (def-synonym location (:adjective ("spatial" "spatio"))))
 

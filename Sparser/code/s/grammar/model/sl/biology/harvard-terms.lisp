@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2017-2019 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2017-2022 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "harvard-terms"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: May 2019
+;;; version: March 2022
 
 ;; Isolating terms, etc. that are specific to handling the texts
 ;; from HMS.
@@ -13,13 +13,6 @@
 ;;;---------------------
 ;;;   scalars, et al.
 ;;;---------------------
-
-
-
-
-
-
-
 
 (define-category scalar-variation
   :specializes bio-predication)
@@ -148,13 +141,10 @@ by which this occurs.") |#
      :optional-object t
      :relative\ to compared-to
            ))
-;; DAVID -- why can't I put this in the previous definition -- the NOUN form gets clobbered
+;; DAVID -- why can't I put this in the previous definition
+;;   -- the NOUN form gets clobbered
 (def-synonym increase
     (:noun "increase"))
-
-
-
-
 
 
 
@@ -164,9 +154,9 @@ by which this occurs.") |#
    :specializes scalar-variation
    :binds ((theme (:or process scalar-attribute ;; amount measurement
                        bio-chemical-entity)) ;; see note
-                                             (level (:or scalar-attribute ;;amount measurement
-                                                         bio-process))
-                                             (above-level (:or scalar-attribute ;;amount measurement
+           (level (:or scalar-attribute ;;amount measurement
+                       bio-process))
+           (above-level (:or scalar-attribute ;;amount measurement
                                                                )))
    :realization
       (:verb "sustain"

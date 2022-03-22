@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2021 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2021-2022 SIFT LLC. All Rights Reserved
 ;;;
 ;;;      File:   "organisms"
 ;;;    Module:   "model;mid-level"
-;;;   version:   September 2021
+;;;   version:   March 2022
 
 ;; Broken out of bio;taxonomy and others 11/10/20
 ;; supplemented with more definitions from bio;new-def:new-organisms 8/2021
@@ -35,24 +35,24 @@
    (:common-noun name))
 
 (define-category prokaryote
-    :specializes organism
-    :bindings (uid "NCIT:C14263") 
+  :specializes organism
+  :bindings (uid "NCIT:C14263") 
   :instantiates self 
   :lemma (:common-noun ("prokaryote" "prokaryota"))
   :realization (:common-noun name
-                             :adj "prokaryotic"))
+                :adj "prokaryotic"))
 
 (define-category eukaryote
-    :specializes organism
-    :bindings (uid "NCIT:C25796") 
+  :specializes organism
+  :bindings (uid "NCIT:C25796") 
   :instantiates self 
   :lemma (:common-noun ("eukaryote" "eukaryota"))
   :realization (:common-noun name
-                             :adj "eukaryotic"))
+                :adj "eukaryotic"))
 
 (define-category plant
-    :specializes eukaryote
-    :bindings (uid "NCIT:C14258") ;; "BTO:0001481"
+  :specializes eukaryote
+  :bindings (uid "NCIT:C14258") ;; "BTO:0001481"
   :instantiates self 
   :lemma (:common-noun "plant")
   :realization (:common-noun name))
@@ -62,12 +62,12 @@
   :instantiates self 
   :lemma (:common-noun "animal")
   :realization (:common-noun name))
-(def-synonym animal (:common-noun "fauna"))
+(def-synonym animal (:noun "fauna"))
 ;; "animal, vegitable, mineral" as they said in grade school
 
 (define-category vertebrate
-    :specializes animal
-    :bindings (uid "NCIT:C14282")
+  :specializes animal
+  :bindings (uid "NCIT:C14282")
   :realization (:noun "vertebrate"))
 
 (define-category fish
@@ -115,8 +115,8 @@
   :realization  (:noun "metazoa" :adj "metazoan"))
 
 (define-category fungus
-    :specializes eukaryote ;; fungi are not animals
-    :bindings (uid "NCIT:C14209") ;; "BTO:0001494"
+ :specializes eukaryote ;; fungi are not animals
+ :bindings (uid "NCIT:C14209") ;; "BTO:0001494"
  :realization (:common-noun ("fungus" :plural ("fungi" "funguses"))))
 
 (define-category microorganism
