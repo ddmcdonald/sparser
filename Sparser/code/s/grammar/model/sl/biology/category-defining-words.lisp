@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2020-2021 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2020-2022 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "category-defining-words"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: December 2021
+;;; version: March 2022
 
 
 ;;;;;;;; These are definitions for words that have the same spelling as defined categories, and which
@@ -51,4 +51,8 @@
 
 (def-synonym poor (:adj "poor")) 
 
-(def-synonym quotation (:noun "quotation"))
+;; This will blow up because the base category doesn't include 'top'.
+;; Corect treatment is to rewrite quotation as a conventional modern
+;; category. Present definition in grammar/rules/traversal/quotations.lisp
+;; follows an ancient pattern.
+;;(def-synonym quotation (:noun "quotation"))
