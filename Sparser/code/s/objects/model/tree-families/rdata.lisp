@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2014-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2014-2022 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "rdata"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  January 2021
+;;;  version:  March 2022
 
 ;; initiated 8/4/92 v2.3, fleshed out 8/10, added more cases 8/31
 ;; 0.1 (5/25/93) changed what got stored, keeping around a dereferenced
@@ -69,6 +69,8 @@
 ;;; Standalone def forms
 ;;;----------------------
 
+;;--- "marker" categories
+
 (defmacro define-marker-category (category-name &key realization)
   "This amounts to reversible syntactic sugar for the light, 'glue'
    categories that don't add any content (variables) but indicate
@@ -79,17 +81,89 @@
    full arguments with define-category."
   `(setup-rdata (find-or-make-category ',category-name) ',realization))
 
+
+;;--- other packaging
+
 (defmacro define-realization (category-name &body realization)
+  "Adds a realization to the category"
   `(setup-rdata (category-named ',category-name t) ',realization :delete nil))
 
 (defmacro define-additional-realization (category &body realization)
+  "Adds a realization to the category, taking care to signal this is on purpose"
   `(let ((*deliberate-duplication* t))
     (declare (special *deliberate-duplication*))
     (define-realization ,category ,@realization)))
 
-(defmacro def-synonym (category (&rest realization))
-  `(define-additional-realization ,category ,@realization))
 
+;;--- Defining 'synonyms'
+
+(defmacro def-synonym (category (&rest realization))
+  "The original definition of def-synonym was just adding an additional
+   realization on the category. However, that did not change the base rdata
+   on it, so when we want to generate from it we get the parent ('injection')
+   rather than the synonym we want ('shot').
+      This scheme sets up the synomym as a subcategory the parent. To avoid
+   potential collisions, we incorporate the name of the category in the
+   name of this new category."
+  (let* ((parent (category-named category t))
+         (parent-name (cat-name parent))
+         (daughter-names
+          (ensure-list (extract-daughter-name-from-synonym realization)))
+         (daughter-cat-names
+          (loop for name in daughter-names
+             collect (s-intern name "-QUA-" parent-name))))
+    
+    (labels ((make-syonym-category (daughter-name) ;; parent-name realization)
+             (let* ((form `(define-category ,daughter-name
+                      :specializes ,parent-name
+                      :realization ,realization))
+                    (daughter (eval form)))
+               (setf (get-tag :synonym-of daughter) parent)
+               daughter))
+             
+             (make-all-the-categories (daughter-cat-names)
+               (loop for cat-name in daughter-cat-names
+                  do (make-syonym-category cat-name))
+               :done))
+      ;; Would be nice to 'return' the names of the new categories, but my
+      ;; macro-foo fails to work out a 'return value' that survives the
+      ;; final eval in the listener without error
+      (make-all-the-categories daughter-cat-names))))
+
+
+(defun extract-daughter-name-from-synonym (rspec)
+  "Def-synonym means that some word means the same thing as the category.
+   Their realizations ('rspec') will always be a word (or list of words, polywords).
+   That word will be the base name of the 'daughter' category we are creating"
+  (labels ((clean-up-polyword (string)
+             "Replace spaces with hyphens"
+             (substitute  #\- #\space string))
+           (setup-category-name (string)
+             (when (not-all-same-character-type string)
+               (setq string (clean-up-polyword string)))
+             (s-intern (string-upcase string))))           
+    (let ((operator (car rspec))
+          (value (cadr rspec)))
+      (unless (memq operator '(:noun :common-noun
+                               :adj :adjective
+                               :verb))
+        (break "new def-synonym rspec operator: ~a" operator))
+      ;;/// need to check that additional parts these realizations carry over,
+      ;; such as additional subcat clauses on verbs.
+      (cond
+        ((stringp value) ;; one word
+         (setup-category-name value))
+        ((listp value)
+         ;; distinguish between multiple words and adding properties
+         (if (some #'keywordp value) ; (:noun ("decrease" :plural "ddddecrease"))
+           (setup-category-name (car value))
+           (else
+             (loop for v in value
+                collect (setup-category-name v)))))
+        (t (break "new type of value: ~a  ~a" (type-of value) value))))))
+
+
+;;--- Apply-mixin
 
 (defmacro apply-mixin-category (category-name mixins &body realization)
   "Extend the category with both an additional realization, but also
@@ -289,8 +363,7 @@ Should mirror the cases on the *single-words* ETF."
   "Called from decode-category-parameter-list as part of defining a category.
    This routine is responsible for decoding the realization data, and runs for
    side-effect on the category object.
-
-   The routines in objects;model;tree-families;driver.lisp create the rules
+      The routines in objects;model;tree-families;driver.lisp create the rules
    when individuals of the category are created. The function that actually
    makes the rules is make-rules-for-rdata."
   (declare (optimize debug) (special *build-mumble-equivalents*))
