@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994-1996,2013-2021  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2013-2022  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "cases"
 ;;;   Module:  "model;core:pronouns:"
-;;;  version:  June 2021
+;;;  version:  April 2022
 
 ;; 1.0 (7/11/94) completely redone from scratch.
 ;; 1.1 (6/27/96) made "i" into "I" so that it would be correctly recognized.
@@ -106,14 +106,21 @@
 (define-indefinite-pronoun "one")
 
 
+
 ;;--- adverbial indefinites
 
-;;//// in progress (6/21) to identify/create a reasonable
-;;  adverb for time and duration.
+;; deictic locatives
+(define-location-adverb "here")
+(define-location-adverb "there")
+
+;;/// merge these indefinites when it's clear what we want
 (define-adverb "anywhere")
 (define-adverb "everywhere")
 (define-adverb "somewhere")
 
+
+;;//// in progress (6/21) to identify/create a reasonable
+;;  adverb for time and duration.
 (define-adverb "anymore")
 
 (define-relative-time-adverb "sometimes")
