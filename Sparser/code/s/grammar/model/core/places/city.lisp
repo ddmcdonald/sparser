@@ -25,7 +25,7 @@
 
 (define-category  city
   :instantiates self
-  :specializes geographical-region
+  :specializes geo-political-region
   :lemma (:common-noun "city")
   :binds ((name :primitive word)
           (aliases  :primitive list)

@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "methods"
 ;;;   Module:  "model;core:places:"
-;;;  version:  March 2022
+;;;  version:  April 2022
 
 ;; N.b. This file is loaded late after all categories have been defined.
 ;; It is for location-oriented compose methods
@@ -113,7 +113,7 @@
       (tr :direction+multiple-dependent-location qualifier head)
       (let ((j (bind-variable 'qualifier qualifier head)))
         j))))
-2
+
 
 ;; "on the bottom"
 (def-k-method compose ((op category::relative-location)

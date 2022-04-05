@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1996,2011,2020  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2011,2020-2022  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "U.S. States"
 ;;;   Module:  "model;core:places:"
-;;;  version:  April 2020
+;;;  version:  April 2022
 
 ;; initiated 3/10/94 v2.3
 ;; 0.1 (4/23) added provision for name-words. 10/6 added string-for fn
@@ -18,7 +18,7 @@
 
 (define-category  US-state
   :instantiates self
-  :specializes geographical-region
+  :specializes geo-political-region
   :binds ((name :primitive word)
           (adjective-form :primitive word)
           (abbreviations  :primitive list)
