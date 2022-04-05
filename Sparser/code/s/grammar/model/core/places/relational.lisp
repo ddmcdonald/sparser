@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2011-2013,2016-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011-2013,2016-2017,2022 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "relational"
 ;;;   Module:  "model;core:places:"
-;;;  version:  July 2017
+;;;  version:  April 2022
 
 ;; Extracted from object file 7/21/11. Evicerated it 9/28 in lieu of
 ;; doing something more nuanced. Removed the category/individuals
@@ -18,7 +18,6 @@
 
 (in-package :sparser)
 
-;;/// Add "17 miles NW of Foo" and such
 
 ;;;------------------------------------
 ;;; relative (prepositional) locations
@@ -66,6 +65,21 @@
 
 
 ;;;-----------------------------------------------------------
+;;; locations defined by a frame determined by compass-points
+;;;-----------------------------------------------------------
+;;/// Add "17 miles NW of Foo" and such
+
+(define-category compass-point-relative-location
+  :specializes relative-location
+  :instantiates self
+  :restrict ((ground location))
+  :documentation "The direction ('south of Boston') is the fi:restrict ((ground gure
+ and the complement ('Boston', 'the border') is the ground, aka the
+ reference point.
+ Defines a region generally just beyond the reference
+")
+
+;;;-----------------------------------------------------------
 ;;; locations that depend on the perspective: 'left', 'front'
 ;;;-----------------------------------------------------------
 ;; for direction-based locations ("left side")
@@ -84,3 +98,24 @@
  observer to be properly understood. Used with words (spatial 
  functions) like 'left' or 'front'."
   :realization ((:mumble ((of-genitive :p ground)))))
+
+
+;; moved from places/object.lisp 4/1/22
+;;;------------------------------------------------
+;;; Deictics  -- needs a story about dereferencing
+;;;------------------------------------------------
+
+(define-category  deictic-location 
+  :instantiates  location 
+  :specializes   location
+  :binds ((name :primitive word))
+  :index (:permanent :key name)
+  :realization (:adverb name)
+  :documentation "Prototypical cases are 'here' and 'there', where
+ the words are presently defined as pronouns in rules/words/pronouns
+ and then should get their meaning by a call in core/pronouns/cases
+ like the other words that started out as function-words in pronouns.
+ Treatment is analogous to define-relative-time-adverb for 'sometimes")
+
+(defun define-location-adverb (string)
+  (define-adverb string :super-category 'deictic-location))
