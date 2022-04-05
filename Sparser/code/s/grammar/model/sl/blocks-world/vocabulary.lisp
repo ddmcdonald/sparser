@@ -1,9 +1,9 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; -*-
-;;; Copyright (c) 2015-2017,2021 David D. McDonald  All Rights Reserved
+;;; Copyright (c) 2015-2017,2021-2022 David D. McDonald  All Rights Reserved
 ;;;
 ;;;      File:  "vocabulary"
 ;;;    Module:  grammar/model/sl/blocks-world/
-;;;   version:  November 2021
+;;;   version:  April 2022
 
 ;; Initiated 12/3/15.
 
@@ -37,7 +37,7 @@
 (define-category box
   :specializes object ;; can we move a box?
   :instantiates :self
-  :mixins (container)
+  :mixins (container rectangular-solid)
   :index (:permanent :key name)
   :lemma (:common-noun "box")
   :realization (:proper-noun name))
