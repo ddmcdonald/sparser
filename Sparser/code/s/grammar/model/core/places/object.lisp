@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1999,2011-2020  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2022  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:places:"
-;;;  version:  January 2019
+;;;  version:  April 2022
 
 ;; initiated in 10/12/92 v2.3. Added 'kind of location' 1/17/94.  Added location-
 ;; phrase 11/16/95. Added relative-location 11/99. 11/25 Moved in spatial-
@@ -28,17 +28,7 @@
 
 (in-package :sparser)
 
-#| endurant > region > {location, bounded-region}  |#
-
-(define-category geographical-region
-  :specializes bounded-region
-  :mixins (location)
-  :documentation "Just a renaming of bounded-region that 
- lets us group the kinds of things we find in a geography
- book: cities, oceans, continents, etc.")
-
 ;;--- general words
-
 
 (def-synonym location (:noun "place"))
 
@@ -55,66 +45,29 @@
   :specializes attribute
   :mixins (nominal-attribute))
 
-;;;------------------------------------------------
-;;; Deictics  -- needs a story about dereferencing
-;;;------------------------------------------------
-;; These are here (rather than inside model/core/places/)
-;; so that they are accessible to a biology (R3) load
-;; of the system without requiring it to incorporate all
-;; the other parts of the location module. 
+;;--- kinds of geographical regions
+#| endurant > region > location, bounded-region  |#
 
-(define-category  deictic-location 
-  :instantiates  location ;;self
-  :specializes   location
-  :binds ((name :primitive word))
+(define-category geographical-region
+  :specializes bounded-region
+  :instantiates  location
+  :rule-label location
+  :binds ((name :primitive word) 
+          (aliases  :primitive list)
+          (type . region-type)
+          (containing-region . location))
   :index (:permanent :key name)
-  :realization (:adverb name))
+  :realization (:proper-noun name) ;; for the predefined ones
+  :documentation "Just a renaming of bounded-region that 
+ lets us group the kinds of things we find in a geography
+ book: cities, oceans, continents, etc. Can be used for
+ specific places ('New England') or done compositionally
+ from region types ('lake'). ")
 
-(define-individual 'deictic-location :name "over there")
-
-(define-individual 'deictic-location :name "over here")
-
-(define-individual 'deictic-location :name "here")
-
-(define-individual 'deictic-location :name "there")
-
-
-;;;--------------------------
-;;; labeled transparent pp's
-;;;--------------------------
-
-(dont-check-rule-form-for-etf-named 'transparent-pp)
-
-(define-marker-category to-location
-  :realization (:tree-family transparent-pp
-                :mapping ((pp . to-location)
-                          (preposition . "to")
-                          (complement . location))))
-
-(define-marker-category onto-location
-  :realization (:tree-family transparent-pp
-                :mapping ((pp . onto-location)
-                          (preposition . "onto")
-                          (complement . location))))
+(define-category geo-political-region
+  :specializes geographical-region
+  :documentation "To distinguish the geo regions what include
+ civic institutions and a whole specific set of properties")
 
 
-(define-marker-category past-location
-  :realization (:tree-family computed-pp
-                :mapping ((pp . past-location)
-                          (preposition . past) ;; "past" -> past
-                          (complement . location))))
-
-(define-marker-category at-location
-  :realization (:tree-family transparent-pp
-                :mapping ((pp . at-location)
-                          (preposition . "at")
-                          (complement . location))))
-
-
-
-;; This particular one makes sense only given a menu of
-;; more specific types of location
-(define-autodef-data 'location
-  :display-string "Locations"
-  :not-instantiable t)
 
