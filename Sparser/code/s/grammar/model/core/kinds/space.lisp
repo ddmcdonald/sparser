@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2022 David D. McDonald  -- all rights reserved
 ;;; This file is part of the SIFT-Brandeis C3 project
 ;;;
 ;;;     File:  "space"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  October 2021
+;;;  version:  April 2022
 
 ;; Broken out of container-and-suv 11/11/13. Moved to kinds 4/14/14 and
 ;; included container. 2/1/16 merging with the location in places.
@@ -24,7 +24,7 @@
  The pants pocket is the place. To express the relation of
       [ David's-cell-phone.location = pocket of his jeans ]
   we need to say 'is in', where the choice of preposition is
-  idiosyncratically dependent on the category of location
+  idiosyncratically dependent on the category of location.
     Note that this category is for location as a place where
   something is. From the perspective of that something,
   its location is one of its attributes and will be
@@ -35,11 +35,11 @@
 
 
 (define-category bounded-region
-  :specializes region
+  :specializes location
   :instantiates nil
   :documentation "This is an abstract class that just provides
  variables for the essence of any container-like thing without
- also committing to what kind of thing is caontained in the
+ also committing to what kind of thing is contained in the
  interior region and that there is a boundary.
      Boundary is the thing that separates the region from its melieu
  so as to distinguish  things that are inside the region from those that 
