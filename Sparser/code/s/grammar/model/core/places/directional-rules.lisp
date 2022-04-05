@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1995,2016-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2016-2022 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "directional rules"
 ;;;   Module:  "model;core:places:"
-;;;  version:  December 2020
+;;;  version:  April 2022
 
 ;; initiated in 1/9/95
 
@@ -44,3 +44,41 @@ of the category relative-location
              (base-np . direction) ;; compass-point
                 ;; some directions as well, but not all
              (result-type . relative-location))))  |#
+
+
+;; moved here from places/object to get them out of the way 4/1/22 
+;;;--------------------------
+;;; labeled transparent pp's
+;;;--------------------------
+#| These all need generalization, probably flush them in favor of
+ identifying a class of prepositions that we use to talk about
+ where we are as we move relative to some location.
+
+(dont-check-rule-form-for-etf-named 'transparent-pp)
+
+(define-marker-category to-location
+  :realization (:tree-family transparent-pp
+                :mapping ((pp . to-location)
+                          (preposition . "to")
+                          (complement . location))))
+
+(define-marker-category onto-location
+  :realization (:tree-family transparent-pp
+                :mapping ((pp . onto-location)
+                          (preposition . "onto")
+                          (complement . location))))
+
+
+(define-marker-category past-location
+  :realization (:tree-family computed-pp
+                :mapping ((pp . past-location)
+                          (preposition . past) ;; "past" -> past
+                          (complement . location))))
+
+(define-marker-category at-location
+  :realization (:tree-family transparent-pp
+                :mapping ((pp . at-location)
+                          (preposition . "at")
+                          (complement . location))))
+|#
+
