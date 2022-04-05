@@ -1719,8 +1719,8 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                (not (location-in-locative-context? pp))
                (maybe-extend-premod-adjective-with-pp np pp)
                (and *force-modifiers* 'modifier)
-               (valid-method compose np pp) ; apply the subcat test
-               (applicable-method compose-of np pobj-referent)
+               (valid-method compose-of np pobj-referent) ; apply the subcat test
+               (valid-method compose np pp)
                (is-domain-adjunctive-pp? np (right-edge-for-referent))
                (and (eq prep-word of)
                     (or (itypep np 'attribute)
