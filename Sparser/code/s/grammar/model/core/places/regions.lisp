@@ -29,93 +29,6 @@
 
 (in-package :sparser)
 
-;;;----------------------------
-;;; kinds of regions/locations
-;;;----------------------------
-
-;; They will be the heads of specific region names, 
-;; or of NPs describing them,
-
-(define-category  region-type    ;; e.g. "city", "village", kinds of places
-  :instantiates self
-  :specializes location
-  :binds ((name :primitive word))
-  :index (:permanent :key name)
-  :realization (:common-noun name))
-
-;; Dossier is [location-kinds]
-
-(defun define-region-type (string)
-  ;; Adapted from find-or-define-kind, where the analog of the
-  ;; kind category is region-type
-  ;; /// replace with define-type-category-constructor ?
-  (let* ((symbol (name-to-use-for-category string))
-         (word (resolve string)))
-        
-      (let ((expr `(define-category ,symbol ;; e.g. 'city
-                     :specializes region-type ;geographical-region
-                     :rule-label region-type
-                     :instantiates :self
-                     :bindings (name ,word)
-                     :realization (:common-noun ,string))))
-        (eval expr))))
-
-
-
-;;;--------------------------------------
-;;; name + type of region
-;;;--------------------------------------
-(dont-check-rule-form-for-etf-named 'kind-of-name)
-
-(define-category named-region-type ;; "the Kurdish city of Sulaimaniya"
-  :specializes location
-  :rule-label region
-  :binds ((type . region-type)
-          (region . region))
-  :realization (:tree-family kind-of-name ;; "strait of Hormous"
-                ;; This ETF has the transfer built into it, as give-kind-its-name,
-                ;; which is awfully specialized. 
-                :mapping ((np . region-type)
-                          (complement . name-word)
-                          (result-np . :self)))
-  :documentation "This is a category that fits the way the information
- is packaged. We're really identifying something about the region itself,
- but to get it we need to pull it from this relation.
-   ///We also have to sort out the semantic relationship between a kind
- of region ('lake') and an actual individual of that type which happens
- to have this name." )
-  
-
-(def-cfr named-region-type (region-type of-name)
-  :form np
-  :referent (:function give-kind-its-name left-edge right-edge))
-
-(def-cfr named-region-type (name-word region-type) ; "Lee exit"
-  :form n-bar
-  :referent (:function give-kind-its-name right-edge left-edge))
-
-
-(defun give-kind-its-name (region name)
-  "Takes phrases like 'the village of Dolwyddelan' or 'strait of Hormous'
-   and creates instances of named-location from them, recording both the
-   name and the type of region."
-  (declare (special *subcat-test*))
-  (if *subcat-test*
-    (itypep region 'region-type)
-    (let* ((region-name (convert-to-canonical-name-form name))
-           (sequence (extract-name-sequence-from-name region-name))
-           (region-type (itype-of region)))
-      (let ((loc-name (define-or-find-individual 'name-of-location
-                          :sequence sequence
-                          :type region-type)))
-        (let ((place
-               (define-or-find-individual 'named-location
-                   :type region-type
-                   :name loc-name)))
-          place)))))
-
-
-
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (when *countries*
@@ -134,8 +47,18 @@
           :country c :region r)
       r) ;; return the referent of the right edge
 
-)) ;; close eval-when
-
+    )) ;; close eval-when
+#|
+(base) ddm@MacBook-Pro-2 s % grep -r relationship-to-country **/*.lisp
+grammar/model/core/people/names-to-people.lisp:(def-k-method relationship-to-country ((c category::country) (p category::person))
+grammar/model/core/places/countries/relation.lisp:(def-k-function relationship-to-country (country object)
+grammar/model/core/places/countries/relation.lisp:                          (combo-method . relationship-to-country))))
+grammar/model/core/places/regions.lisp:;;  like 'city' inherit from 'location'? Copied the relationship-to-country
+grammar/model/core/places/regions.lisp:;; (7/30/13) Rewrote relationship-to-country to use revise-parent-edge
+grammar/model/core/places/regions.lisp:    (def-k-method relationship-to-country ((c category::country)
+init/workspaces/reference-points.lisp:relationship-to-country 
+init/workspaces/strider.lisp:   relationship-to-country  nationality
+init/workspaces/strider.lisp:  relationship-to-country  |#
 
 ;;;--------------------------
 ;;; kinds of edges / borders
@@ -219,6 +142,7 @@
   :documentation "Typing category to make the distinction
  from the other kinds of name geographical regions")
 
+
 (define-category ocean ;; "Pacific Ocean"
   :specializes body-of-water
   :rule-label location
@@ -231,7 +155,7 @@
 ;;--- seas
 
 (define-category sea ;; "Black Sea"
-  :specializes geographical-region
+  :specializes body-of-water
   :rule-label location
   :lemma (:common-noun "sea")
   :realization (:proper-noun name))
