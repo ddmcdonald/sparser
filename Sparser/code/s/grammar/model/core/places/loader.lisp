@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1997,2011-2020  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1997,2011-2022 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "model;core:places:"
-;;;  version:  April 2020
+;;;  version:  April 2022
 
 ;; initiated in December 1990, added flags 12/28/91 v2.1
   ;; 1.0 (10/12/92 v2.3) Shadowing to gradually introduce the new semantics
@@ -42,6 +42,7 @@
   (gate-grammar *countries*
     (gload "countries;relation"))
   (gload "places;regions") ;; geographical regions
+  (gload "places;grounded-places")
   (gload "places;location descriptions")
   (gload "places;moving"))
 
