@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1995,2010-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1995,2010-2018,2022 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "index"
 ;;;   Module:  "objects;model:variables:"
-;;;  version:  March 2018
+;;;  version:  April 2022
 
 ;; initiated 11/18/91 v2.1, typo 11/24
 ;; 1.1 (7/92 v2.3) shifted from gl entries to straight categories
@@ -46,7 +46,13 @@
  it on the supercategories of the category, and on its mixin 
  categories, the mixins of the supercategories, and their own
  supercategories.  This is the prefered way to access variables
- from their name.")
+ from their name.
+    Note that when you're editing the model, in particular when you
+ rearrange what categories bind what variables, find-variable-for-category
+ will fail to find the variable that you know is there. This happens
+ because the variable cache is stale. To refresh it run (cache-variable-lookup),
+ which makes a sweep over all the categories and resets the cache. ")
+  
   (:method ((variable lambda-variable) category)
     (find-variable-for-category (var-name variable) category))
   
@@ -56,40 +62,52 @@
   (:method ((variable-name symbol) (i individual))
     (find-variable-from-individual variable-name i))
 
+  (:method ((var anonymous-variable) (category category))
+    (find-variable-for-category (pname var) category))
+  
   (:method ((variable-name symbol) (category category))
     (when (eq (symbol-package variable-name) (find-package :keyword))
       ;; Happens when coming in from find-individual
       (setq variable-name (sparser-symbol variable-name)))
-    ;; First we look on the category itself. Then we look through
-    ;; of its superc's as determined by super-categories-of,
-    ;; Finally we consult the category's mixins.
+    
     (if (cached-variable-lookup?)
-        (hash-find-variable variable-name category)
-        (or (find-variable-in-category variable-name category) 
-            (super-category-has-variable-named variable-name category) 
-            (find-variable-in-mixins variable-name category))))
-  
-  (:method ((var anonymous-variable) (category category))
-    (find-variable-for-category (pname var) category)))
+      (hash-find-variable variable-name category)
+      
+      ;; First we look on the category itself. Then we look through
+      ;; of its superc's as determined by super-categories-of,
+      ;; Finally we consult the category's mixins.
+      (or (find-variable-in-category variable-name category) 
+          (super-category-has-variable-named variable-name category) 
+          (find-variable-in-mixins variable-name category)))))
 
-#| When you're editing the model, in particular when you rearrange
-what categories bing what variables, find-variable-for-category will
-fail to find the variable that you know is there.
-  That happens because the variable cache is stale. To refresh it
-run (cache-variable-lookup), which makes a sweep over all the categories
-and resets the cache.
+#| 
 |#
 
 ;;;---------------
 ;;; cached lookup
 ;;;---------------
 
-(defparameter *inherited-cat-variables* (make-hash-table :size 5000))
+(defun cache-variable-lookup ()
+  "Called by setup-session-globals/grammar once all the categories
+  have been defined. May be called by hand while developing when the
+  arrangement of the variables has changed too much. See the note in
+  the documentation of find-variable-for-category"
+  (loop for c in *categories-defined* do (fill-inherited-vars c)))
+
+(defparameter *inherited-cat-variables* (make-hash-table :size 5000)
+  "Holds the per-category hash tables of variable names (symbols)
+   to the variables of that category with that name. Populated by
+   fill-inherited-vars")
 
 (defun cached-variable-lookup? ()
+  "Used by find-variable-for-category that it's worth looking for
+   a cached version of the variable"
   (> (hash-table-count *inherited-cat-variables*) 0))
 
 (defun hash-find-variable (var-name cat)
+  "There will be a cache of variable objects in the hash table
+   that was created for this category. Lookup the variable name
+   in the table and return the variable object."
   (declare (special category::top)
            (optimize (speed 3)(safety 0)))
   (let ((var-table (gethash cat *inherited-cat-variables*)))
@@ -100,36 +118,29 @@ and resets the cache.
 
 
 (defun fill-inherited-vars (cat)
+  "populate the hashtable for this category with the varibles it
+   directly specifies and the ones it is known to inherit."
   (if (not (itypep cat 'top))
     (setf (gethash cat *inherited-cat-variables*)
           (make-hash-table :size 2))
-    (let* ((sups (super-categories-of cat))
-           vars ;; collects all the variables
-           rvars ;; collects variables that have been restricted
-           (var-ht (make-hash-table :size 40 :test #'eq)))
-      
-      ;; Walk up the list of super categories
-      (loop for s in sups
-         do
-           (loop for v in (cat-slots s)
-              do
-                (push v vars)
-                (when (get-tag :restricts v)
-                  (push (get-tag :restricts v) rvars))))
-      
+    (else
       ;; Walk through the accumulated variables to make the
       ;; updated value of the variables that are accessible from
       ;; this category. Omit any variable that has been marked
       ;; as having been restricted. The more specific variable
       ;; with that same name will be on the regular list
-      (loop for v in vars unless (member v rvars :test #'eq)
-         do (setf (gethash (var-name v) var-ht) v))
-      
-      (setf (gethash cat *inherited-cat-variables*) var-ht))))
-
-(defun cache-variable-lookup ()
-  "Called by setup-session-globals/grammar"
-  (loop for c in *categories-defined* do (fill-inherited-vars c)))
+      (let* ((sups (super-categories-of cat))
+             vars ;; collects all the variables
+             rvars ;; collects variables that have been restricted
+             (var-ht (make-hash-table :size 40 :test #'eq)))
+        (loop for s in sups ;; Walk up the list of super categories
+           do (loop for v in (cat-slots s)
+                do (push v vars)
+                   (when (get-tag :restricts v)
+                     (push (get-tag :restricts v) rvars))))
+        (loop for v in vars unless (member v rvars :test #'eq)
+           do (setf (gethash (var-name v) var-ht) v))
+        (setf (gethash cat *inherited-cat-variables*) var-ht)))))
 
 
 ;;;--------------------------------
