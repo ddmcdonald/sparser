@@ -66,8 +66,13 @@
 
 (define-category geo-political-region
   :specializes geographical-region
-  :documentation "To distinguish the geo regions what include
- civic institutions and a whole specific set of properties")
+  :documentation "To distinguish the geo regions that include
+ civic institutions and a whole specific set of properties
+ that are not part of the 'natural' ones like lakes or
+ mountains. geo-political regions are things like cities
+ or provinances. Legislatures and town meetings are the sort
+ of things we might know about, e.g., a 'town' but will
+ inherit from social-object or social-agent.")
 
 
 
