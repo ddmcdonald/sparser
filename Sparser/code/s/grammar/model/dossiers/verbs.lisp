@@ -669,7 +669,7 @@ dm #79 "a more precise answer" --> see answer/info in mid-level/things.lisp
                 :to goal
                 :into goal
                 :mumble ((svo1o2 :s agent :o1 patient :o2 goal)
-                        (svo :s patient :o goal))
+                         (svo :s patient :o goal))
                 ))
 
 
