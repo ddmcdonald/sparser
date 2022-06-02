@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2013-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2022 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "content"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  May 2021
+;;;  Version:  June 202
 
 ;; initiated 3/13/13. Elaborated through 3/29/13. 9/17/13 fan-out
 ;; from sections make-over. 10/2/19 Fleshed out general notion of
@@ -48,9 +48,6 @@
 ;; n.b. text-relation (singular) is for grok
 ;;   in analyzers/sdmp/text-relation-class.lisp
 
-
-(defun make-sentence-content-container (sentence)
-  (make-instance 'sentence-content :in sentence))
 
 (defmethod print-object ((c sentence-content) stream)
   (print-unreadable-object (c stream :type t)
