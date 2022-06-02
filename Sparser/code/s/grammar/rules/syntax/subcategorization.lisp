@@ -691,6 +691,10 @@
 ;;;------------------------------------------------
 
 (defgeneric register-variable (category grammatical-relation variable)
+  (:documentation "called by setup-rdata to do the special handling
+ needed by any subcat-relation-keyword cases in the rdata. Such as
+ :loc-pp-complement which lets you give several prepositions the same
+ relation.")
   (:argument-precedence-order grammatical-relation category variable)
   (:method ((category category) (grammatical-relation symbol) variable)
     (check-type grammatical-relation keyword "a valid grammatical relation")
@@ -855,6 +859,7 @@
    is not absorbed by a preceding NP or VP")
 
 (defun save-missing-subcats ()
+  "Called from post-analysis-operations"
   (declare (special category::pp))
   (when *missing-subcats*
     (let* ((ee (reverse (all-tts))) 
