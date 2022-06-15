@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2022 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "ontology"
-;;;   Module:  "model;core:relations:"
-;;;  version:  November 2020
+;;;   Module:  "model/core/mid-level:"
+;;;  version:  June 2022
 
 ;; Initiated 12/3/15.
 
@@ -172,48 +172,3 @@ files once an area looks big enough to warrant it.  |#
  nominal-taking predicates")
 ;;/// move?
 
-
-
-;;;----------------------
-;;; mental constructions
-;;;----------------------
-
-(define-category mental-construction
-  :specializes non-physical
-  :documentation "Something like a thought, or an opinion or a
- perception, i.e a non-physical 'object'.")
-
-(define-category emotion :specializes mental-construction)
-
-
-(define-category mental-construction-concerning
-  :specializes mental-construction
-  :binds ((concerning top)  ;; perhaps (:or endurant perdurant abstract)
-          (source top))
-  :realization
-  (:about concerning
-   :regarding concerning
-   :of concerning
-   :from source
-   :with-regard-to concerning)
-  :documentation "A mental-construction which is focused on some set
- of objects or events. Not clearly a sub-category of information or
- information-container, but some information containers may be of this
- type. A database may be about ships, but the information it contains
- is not a set of ships.")
-
-
-(define-category create-mental-construction-concerning
-  :specializes perdurant
-  :mixins (knowledge-verb)
-  :restrict ((experiencer top))
-  :binds ((mental-construction mental-construction-concerning)
-          ;; may only be the direct object of the verb?
-          (concerning top))
-  :realization (:about concerning
-                :of concerning
-                :regarding concerning
-                :with-regard-to concerning))
-;; Examples in things.lisp
-;;  frustrate, surprise, worry, forecast, publish, focus
-;;  show, demonstrate, endorse
