@@ -1,8 +1,9 @@
-;;; Copyright (c) 2021 SIFT LLC. All Rights Reserved
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
+;;; Copyright (c) 2021-2022 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "driver"
 ;;;  Module: "grammar/model/sl/score/
-;;; version: August 2021
+;;; version: June 2022
 
 ;; Created 8/24/21 to organize the process of comlex-derived words
 ;; to a file of categories defining them.
@@ -37,7 +38,9 @@ that we append to.
   (:documentation  "Given a word that need to have a comlex entry,
    use the dispatch in the comlex entry-unpacking function to call
    the setup routines for each of its POS alternatives, knowing that
-   they will lead to calls to make-category-form.")
+   they will lead to calls to make-category-form.
+   Called from create-word-definitions when we working from a list of
+   words.")
   (:method ((pname string))
     (comlex-lemma-to-category-forms (resolve/make pname)))
   (:method ((word word))
