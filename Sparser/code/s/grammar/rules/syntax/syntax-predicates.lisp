@@ -597,7 +597,7 @@
            (break "did not find the edge over the pronoun~
                  ~%'item' = ~a" item)))
 
-       (when pn-edge
+       (if pn-edge
          (cond
            (ignore?
             item)
@@ -636,8 +636,9 @@
                   (set-edge-referent pn-edge new-ref)
                   (setf (edge-rule pn-edge) 'condition-anaphor-edge))
                 new-ref)))
-           (t item)))))
-    (t item)))
+           (t item))
+         
+         item )))))
 
 
 (defun effective-pronoun-value-restriction (var)
