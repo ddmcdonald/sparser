@@ -42,7 +42,7 @@ from 'from ... to ..' and such
    How could we say that?")
 
 (define-category move
-  :specializes accomplishment
+  :specializes motion
   ;; realization -- "move" and "movement"
   :mixins (with-theme)
   :restrict ((theme endurant))  ;;can-change-location))
@@ -59,4 +59,15 @@ from 'from ... to ..' and such
           (in-direction . direction)
           (when-done . time)
           (landmark . location)))
+
+#| Deliberately ignoring transfer-location in favor of
+ local analysis. If they got some inferential content
+ that could warrent reanalysis
+ See ecipedia/ecis/transfer-event-ecis.lisp
+        + 4 transfer-location
+          + 5 move-self
+          + 5 move
+            + 6 give
+            + 6 put
+|#
 
