@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2011-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2022 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "anaphora"
 ;;;   Module:  "analyzers;CA:"
-;;;  Version:  April 2020
+;;;  Version:  June 2022
 
 ;; new design initiated 7/14/92 v2.3
 ;; 1.1 (6/17/93) bringing it into sync with Krisp
@@ -304,12 +304,6 @@
            (new-object-of-established-category
             category entry individual edge)))))
 
-(defun subsumes-interval (start# end# last-start# last-end#)
-  (cond
-    ((< start# last-start#)
-     (>= end# last-end#))
-    ((eql start# last-start#)
-     (> end# last-end#))))
 
 (defun new-object-of-established-category (category categories-entry
                                            individual edge)
@@ -341,7 +335,7 @@
 ; and organizing the search for their missing terms
 
 (defvar *lifo-instance-list* nil
-  "Holds individuals in right-to-left order.
+  "Holds pairs of individuals and their edges in right-to-left order.
    Has to be cleared regularly or else the new-mention operation
    will start looking at recycled edges.")
 
@@ -407,7 +401,16 @@
        (setf (car subsumed-item) i)
        (setf (second subsumed-item) edge))
       (t
-	 (push `(,i ,edge) *lifo-instance-list*)))))
+       (push `(,i ,edge) *lifo-instance-list*)))))
+
+;; only used in record-dl-instance-within-sequence
+(defun subsumes-interval (start# end# last-start# last-end#)
+  (cond
+    ((< start# last-start#)
+     (>= end# last-end#))
+    ((eql start# last-start#)
+     (> end# last-end#))))
+
 
 (defun cleanup-lifo-instance-list ()
   ;; called from end-of-sentence-processing-cleanup and
@@ -584,7 +587,7 @@ saturated? is a good entry point. |#
   ;; the instances
   (declare (special *description-lattice*))
   (when *description-lattice*
-    (break "The function instance-history has to be revised for "))
+    (break "The function instance-history has to be revised for description lattice"))
   (cdr (individuals-discourse-entry individual)))
 
 (defun category-for-individuals-discourse-history (i)
