@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2020-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2020-2022 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "fire-grammar"
 ;;;    Module:  "init/config/grammars/"
-;;;   version:  December 2021
+;;;   version:  June 2022
 
 ;; This configuration of grammar modules is tuned to the needs of
 ;; the 'fire' load script. Created 9/30/20 as a derivative of
@@ -210,6 +210,8 @@
 (include-grammar-module  *disease*)
 ;(include-grammar-module  *biology*)
 (include-grammar-module  *non-academic-biology*)
+(include-grammar-module  *score-stats*)
+(include-grammar-module  *score-verbs*)
 
 (include-grammar-module  *hurricanes*)
 (include-grammar-module  *musica*)
