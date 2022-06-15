@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2005,2013-2020  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2013-2022  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "abbreviations"
 ;;;   Module:  "init;workspace:"
-;;;  version:  July 2020
+;;;  version:  June 2022
 
 ;; broken out into this form 9/93.
 ;; 2/23/95 changed definition of P to look for whether *workshop-window* was up, and
@@ -303,9 +303,11 @@
 
 
 (defun multiply (n1 n2)
+  (trace-multiply)
   (let ((e1 (edge# n1))
         (e2 (edge# n2)))
-    (multiply-edges e1 e2)))
+    (multiply-edges e1 e2))
+  (untrace-multiply))
 
 (defmacro ml (label-name1 label-name2)
   `(lookup-rule/rhs '(,(resolve label-name1) ,(resolve label-name2))))
