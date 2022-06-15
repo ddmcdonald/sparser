@@ -1920,7 +1920,8 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
      
     ((itypep vp 'control-verb) ;; e.g. "want"
      (if *subcat-test* #+ignore(return-from assimilate-subject t)
-         (value-of 'theme vp) ;; don't allow intransitive reading
+         (or (value-of 'theme vp) ;; don't allow intransitive reading
+             (value-of 'patient vp))
          (assimilate-subject-for-control-verb subj vp vp-edge)))
 
     #+ignore ; blocks, e.g. "I am still the only one"), which starts with "I" + "am"
