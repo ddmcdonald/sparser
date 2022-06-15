@@ -197,6 +197,26 @@ dm #79 "a more precise answer" --> see answer/info in mid-level/things.lisp
                 :noun "contribution"))
 
 
+
+(define-category decide
+ :specializes cogitation
+ :realization (:noun "decision"
+               :verb "decide"))
+
+
+(define-category make-decision
+  :specializes decide
+  ;;/// The use of a light verb with the nominal form of a verb is so common
+  ;; that it should be abstracted into a synonym-generating operator
+  :realization (:verb ("make" :phrase decision)))
+
+
+(define-category disperse
+  :specializes disperse-generic
+  :mixins (action-verb) ; svo with an actor and a patient
+  :realization (:verb "dispense"))
+
+
 ;; expect -- to do, that P, John to 
 (define-category expect
   :specializes state
@@ -330,7 +350,7 @@ dm #79 "a more precise answer" --> see answer/info in mid-level/things.lisp
   :specializes state
   :mixins (control-verb)
   :realization (:verb "like"
-                :preposition "like"))
+                #|:preposition "like"|#))
 ;; the preposition reading will have run first.
 ;;/// really need to integrate them
 #| (comlex-entry  "like")
@@ -361,12 +381,6 @@ dm #79 "a more precise answer" --> see answer/info in mid-level/things.lisp
     (:verb ("make" :past-tense "made")
            :mumble ("make" svo :a agent :o patient)))
 
-
-(define-category make-decision
-  :specializes decide
-  ;;/// The use of a light verb with the nominal form of a verb is so common
-  ;; that it should be abstracted into a synonym-generating operator
-  :realization (:verb ("make" :phrase decision)))
 
 (define-category make-up
     ;; in the sense of "compose" "the residues make up the binding site"
