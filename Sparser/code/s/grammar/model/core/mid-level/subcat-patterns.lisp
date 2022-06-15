@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "subcat-patterns"
 ;;;   Module:  "model;core:mid-level::"
-;;;  version:  January 2022
+;;;  version:  June 2022
 
 (in-package :sparser)
 
@@ -63,25 +63,13 @@ a simplified realization for a verb are (5/17)
      :o object
      :mumble (svo :s subject :o object)))
 
-#+ignore ;; not at all sure that all comlex-nouns take genitives!
 (define-mixin-category comlex-noun
   :specializes subcategorization-pattern
   :instantiates nil
   :documentation "Designed for use by setup-common-noun which is
  used to provide a category for otherwise unknown nouns
- that are introduced by the Comlex machinery."
-  :mixins (with-theme)
-  :restrict ((theme (:or endurant perdurant)))
-  :realization
-  (:of theme))
+ that are introduced by the Comlex machinery." )
 
-(define-mixin-category comlex-noun
-  :specializes subcategorization-pattern
-  :instantiates nil
-  :documentation "Designed for use by setup-common-noun which is
- used to provide a category for otherwise unknown nouns
- that are introduced by the Comlex machinery."
-)
 
 (define-mixin-category action-verb
   :specializes subcategorization-pattern
@@ -109,6 +97,7 @@ a simplified realization for a verb are (5/17)
   :documentation "For 'fail', 'find' etc. where there can be a
  to-complement argument as in 'I failed to find a block'")
 
+
 (define-mixin-category simple-action
   :specializes subcategorization-pattern
   :instantiates nil
@@ -119,6 +108,7 @@ a simplified realization for a verb are (5/17)
     (:s agent
      :o theme
      :mumble (svo :s agent :o theme)))
+
 
 (define-mixin-category directed-action ;; give, sell, tell, send
   :specializes subcategorization-pattern
@@ -254,14 +244,15 @@ a simplified realization for a verb are (5/17)
   :mixins (with-theme with-experiencer with-expletive)
   :restrict ((expletive pronoun-inanimate)
              (experiencer (:or pronoun physical-agent)))
-  :realization (:s expletive
-  :to experiencer
-  :thatcomp theme
-  :s-comp theme
-  :mumble ((svscomp :s expletive :c theme)
-           (svpcomp :s expletive :c theme)
-           (svo1o2 :s expletive :o1 experiencer :o2 theme)
-           (svo1o2 :s expletive :o1 experiencer :o2 theme))))
+  :realization
+   (:s expletive
+    :to experiencer
+    :thatcomp theme
+    :s-comp theme
+    :mumble ((svscomp :s expletive :c theme)
+             (svpcomp :s expletive :c theme)
+             (svo1o2 :s expletive :o1 experiencer :o2 theme)
+             (svo1o2 :s expletive :o1 experiencer :o2 theme))))
 
 
 (define-mixin-category move-something-verb
