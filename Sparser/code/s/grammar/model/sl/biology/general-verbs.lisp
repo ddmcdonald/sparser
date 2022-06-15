@@ -117,7 +117,7 @@
   :realization (:verb "assume" :etf (svo-passive)))
 ;;/// split to accommodate flaw in NLG sorting out POS
 (define-category assumption :specializes bio-rhetorical
-  :mixins (bio-thatcomp mental-construction-concerning)
+  :mixins (bio-thatcomp )
   :realization (:noun "assumption"))
 
 
@@ -204,7 +204,7 @@
 
 
 (define-category bio-concern :specializes bio-rhetorical
-    :mixins (bio-thatcomp mental-construction-concerning)
+    :mixins (bio-thatcomp )
     :realization
   (:verb "concern" ;; keyword: ENDS-IN-ED
          :noun "concern"
@@ -286,7 +286,6 @@
                        ))
 
 (define-category convince :specializes bio-rhetorical
-  :mixins (create-mental-construction-concerning)
   :realization
   (:verb "convince"
          :noun "conviction" :etf (svo-passive)))
@@ -347,7 +346,7 @@
 
 
 (define-category demonstrate :specializes bio-rhetorical
-    :mixins (bio-thatcomp create-mental-construction-concerning)
+    :mixins (bio-thatcomp )
     :realization
     (:verb "demonstrate" ;; keyword: ENDS-IN-ED 
 	   :noun "demonstration"
@@ -604,7 +603,6 @@
 |#
 
 (define-category expect :specializes bio-rhetorical
-    :mixins (mental-construction-concerning)
     :realization
     (:verb "expect" 
            :noun "expectation" 
@@ -612,7 +610,6 @@
 
 
 (define-category explanation :specializes bio-rhetorical
-    :mixins (create-mental-construction-concerning)
     :realization
     (:verb "explain" 
            :noun "explanation" 
@@ -742,7 +739,6 @@
 |#
 
 (define-category inform :specializes bio-rhetorical
-    :mixins (create-mental-construction-concerning)
     :realization
     (:verb "inform" ;; keyword: ENDS-IN-ING 
 	   :etf (svo-passive)))
@@ -831,15 +827,6 @@
 	   :etf (svo-passive)
            :o theme))
 
-#+ignore  ;; moved to verb dossier
-(define-category know :specializes bio-rhetorical
-  :mixins (raising-to-object create-mental-construction-concerning)
-  :restrict ((theme (:or be biological)))
-  :binds ((topic biological))
-    :realization
-    (:verb ("know" :past-tense "known")	   :noun "knowledge" 
-	   :etf (svo-passive)
-           :about topic))
 
 (define-category lacking :specializes bio-relation
   :realization
@@ -1074,7 +1061,7 @@
 	   :etf (svo-passive)))
 
 (define-category predict :specializes bio-rhetorical
-    :mixins (bio-thatcomp create-mental-construction-concerning)
+    :mixins (bio-thatcomp)
   ;; agent can be a process, like "mutation"
     :realization
     (:verb "predict"
@@ -1107,10 +1094,10 @@
          :etf (svo-passive))) 
 
 
-(define-category prevent :specializes negative-bio-control
-  :realization
-  (:verb "prevent" :noun "prevention" 
-         :etf (svo-passive)))
+;; moved 'prevent' verb to synonym-grammar, then dossiers/verbs
+(define-category prevention :specializes negative-bio-control
+  :realization (:noun "prevention"))
+         
 
 (define-category prolong :specializes bio-control
   :realization
@@ -1178,8 +1165,6 @@
 
 (define-category bio-question :specializes bio-rhetorical
   :mixins (bio-thatcomp
-           create-mental-construction-concerning
-           mental-construction-concerning ;; "the question" is the construction
            question) ; adds 'statement'
    :realization
           (:verb "question" ;; keyword: ENDS-IN-ED
@@ -1347,7 +1332,7 @@
                       :etf (svo-passive)))  |#
 
 (define-category bio-make-statement :specializes bio-rhetorical
-  :mixins (bio-thatcomp mental-construction-concerning)
+  :mixins (bio-thatcomp)
   :realization
   (:verb "state" ;; keyword: ENDS-IN-ED 
          :noun "statement"
@@ -1411,7 +1396,7 @@
              (:noun "support"))
 
 (define-category suggest :specializes bio-rhetorical
-  :mixins (raising-to-object bio-thatcomp create-mental-construction-concerning)
+  :mixins (raising-to-object bio-thatcomp )
   :restrict ((theme top)) ;; could be "the effects..."
   :realization
   (:verb ("suggest" :present-participle "suggesting"
@@ -1461,7 +1446,6 @@
 
 
 (define-category think :specializes bio-rhetorical
-  :mixins (create-mental-construction-concerning)
   :realization
   (:verb ("think" :past-tense "thought") :etf (svo-passive)))
 

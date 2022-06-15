@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2017-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2017-2022 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "things"
 ;;;   Module:  "model;core:mid-level:"
-;;;  version:  January 2021
+;;;  version:  June 2022
 
 ;; Initiated 8/15/17 to hold general noun-like stuff, particularly the
 ;; vocabulary need for the fixed texts in generate.lisp
@@ -15,80 +15,88 @@
 ;;;----------------------
 
 (define-category appeal
-  :specializes create-mental-construction-concerning
-   :mixins (emotion)
-  :binds ((on) (for) (to))
-  :realization (:noun "appeal" :adj "appealing" :verb "appeal"
-                      :on on :for for :to to))
+  :specializes emotion
+  :documentation "something is appealing / pleasing to the eye, or for
+   a need where you have to pick something -- fruit, candidates for office, ..."
+  :realization (:noun "appeal"
+                :adj "appealing" ))
+
+;; :verb "appeal" -- this is a request < direction < illocution < communication
+;; "Abrams appealed to Browne to hire Change" -- from TRIPS
+;;    :binds ((on) (for) (to))
+;;    :on on :for for :to to
 
 (define-category anxiety
   :specializes emotion
-  :mixins (mental-construction-concerning)
   :realization (:noun "anxiety" :adj "anxious"))
 
 (define-category concern
   :specializes emotion
-  :mixins (mental-construction-concerning)
-  :realization (:noun "concern" :with concerning))
+  :realization (:noun "concern" :with theme))
 
-(define-category are-concerned
+(define-category be-concerned
   :specializes emotion
-  :mixins (create-mental-construction-concerning)
-  :realization (:adj "concerned" :with concerning))
+  :realization (:adj "concerned" :with theme))
 
 (define-category confusion
- :specializes create-mental-construction-concerning
- :mixins (emotion)
- :realization (:noun "confusion" :adj "confused" :verb "confuse"))
+ :specializes emotion
+ :realization (:adj "confused"))
+;; :noun "confusion" 
+
+(define-category confuse
+  :specializes agent-interaction ; look for more specific - in communicate
+  :realization (:verb "confuse"))
 
 (define-category distress
  :specializes emotion
- :mixins (mental-construction-concerning)
  :realization (:noun "distress"))
 
 (define-category fear
  :specializes emotion
- :mixins (mental-construction-concerning)
  :binds ((fear-for top))
- :realization (:verb  "fear" :s subject :o object :for fear-for
+ :realization (:verb  "fear" :s agent :o theme :for fear-for
                :noun "fear"
                :adj "afraid"))
 
-(define-category frustrate
-  :specializes create-mental-construction-concerning
-  :realization (:verb  "frustrate"
-                :noun "frustration"
-                :s subject
-                :o object))
+(define-category feeling
+  :specializes emotion
+  :realization (:noun "feeling"
+                :of theme))
 
+(define-category frustrate
+  :specializes emotion
+  :realization (:noun "frustration"
+                :adj "frustrated"))
+;; active version
+;;   :verb  "frustrate"
+             
 (define-category pessimism
  :specializes emotion
- :mixins (mental-construction-concerning)
- :realization (:noun "pessimism" :adj "pessimistic"))
+ :realization (:adj "pessimistic"))
+;; :noun "pessimism" -- what is it?
 
 (define-category preoccupation
   :specializes emotion
-  :mixins (mental-construction-concerning)
   :realization (:noun "preoccupation"))
 
 (define-category surprise
-  :specializes create-mental-construction-concerning
-  :realization (:verb  "surprise" :noun "surprise"))
+  :specializes emotion
+  :realization (:noun "surprise"))
+;; active: :verb  "surprise" 
 
 (define-category stress
  :specializes emotion
- :mixins (mental-construction-concerning)
  :realization (:noun "stress"))
 
 (define-category worry
- :specializes create-mental-construction-concerning
- :mixins (emotion)
+ :specializes emotion
  :realization (:noun ("worry" :plural "worries") :verb "worry"))
 
 (define-category loneliness
  :specializes emotion                 
- :realization (:noun "loneliness"))
+ :realization (:adv "lonely" :noun "loneliness"))
 
+#|
 (define-category abuse
  :specializes create-mental-construction-concerning
  :realization (:noun "abuse" :verb "abuse"))
@@ -122,11 +130,6 @@
  :specializes mental-construction-concerning ;;???? citation?
  :realization (:noun "coverage"))
 
-(define-category decide
- :specializes create-mental-construction-concerning
- :realization (:noun "decision"
-               :verb "decide"))
-
 (define-category disagree
  :specializes create-mental-construction-concerning
  :realization (:noun "disagreement"
@@ -140,11 +143,7 @@
  :specializes mental-construction-concerning
  :realization (:noun "fact"))
 
-(define-category feeling
-  :specializes mental-construction-concerning
-  :realization (:noun "feeling"
-                ;; :of is not quite 'concerning' but for the moment? DAVID
-               :of concerning))
+
 
 (define-category forecast
   :specializes create-mental-construction-concerning
@@ -171,13 +170,14 @@
   :specializes create-mental-construction-concerning
   :realization (:noun "interpretation" :verb "interpret"))
 
-(define-category intuition
- :specializes mental-construction-concerning
- :realization (:noun "intuition"))
-
 (define-category item
  :specializes mental-construction-concerning
  :realization (:noun "item"))
+
+
+(define-category intuition
+ :specializes mental-construction-concerning
+ :realization (:noun "intuition"))
 
 (define-category judgement
  :specializes mental-construction-concerning
@@ -186,6 +186,7 @@
 (define-category learn
  :specializes  mental-construction-concerning
  :realization (:verb ("learn" :present-participle "learning")))
+
 
 (define-category news
  :specializes mental-construction-concerning
@@ -210,6 +211,7 @@
 (define-category questionnaire
   :specializes mental-construction-concerning
   :realization (:noun "questionnaire"))
+
 
 (define-category reason
   :specializes create-mental-construction-concerning
@@ -346,7 +348,7 @@
           (throughout top))
   :realization (:noun  "survey" :across across :about about
                 :for for :throughout throughout :of concerning))
-
+|#
 
 ;;;--------------------------------
 ;;; information and its containers
@@ -369,7 +371,7 @@ invites this reply: "What (else) do you need to know?"
 
 (define-category information
   :specializes non-physical
-  :mixins (scalar mental-construction-concerning)
+  :mixins (scalar)
   :instantiates self
   :lemma (:common-noun "information")
   :documentation
@@ -393,7 +395,12 @@ invites this reply: "What (else) do you need to know?"
 
 (define-category evidence
   :specializes information
-  :realization (:noun "evidence":for concerning))
+  :binds ((fact))  
+  :documentation "Evidence provides support for a proposition
+    or conjecture. Calling it just 'information' is to miss
+    some potentially quite interesting intermediate categories.
+    But we can come back to it"
+  :realization (:noun "evidence" :for fact :of fact))
 
 (define-category observation
   :specializes evidence
@@ -445,11 +452,11 @@ TRIPS: "enough" qua 'adequate' is a quantity-related-property-val
 
 (define-category publication
   :specializes information-container
-  :mixins (create-mental-construction-concerning)
+  ;;:mixins (create-mental-construction-concerning)
   :realization (:noun "publication" :verb "publish"))
 
 (define-category book
-  :specializes mental-construction-concerning
+  :specializes information-container
   :mixins (publication)
   :realization (:noun ("book" "handbook")))
 ;;/// has verb reading as in 'to book tickets to the concert'
@@ -476,7 +483,7 @@ TRIPS: "enough" qua 'adequate' is a quantity-related-property-val
   ;; from biocuration questions e.g.,
   ;; "What factors from the literature regulate IL15 and IL2?"
   :specializes information-container
-  :mixins (mental-construction-concerning)
+ ;; :mixins (mental-construction-concerning)
   :instantiates self
   :realization (:noun "literature"))
 
@@ -485,7 +492,7 @@ TRIPS: "enough" qua 'adequate' is a quantity-related-property-val
   ;; from biocuration questions e.g.,
   ;; "What regulates GLUL from the GEO RNAi database?"
   :specializes information-container
-  :mixins (mental-construction-concerning has-uid)
+  :mixins (#|mental-construction-concerning|# has-uid)
   :mixins (has-UID ) ;; because of how we're defining the individuals
   :instantiates self
   :realization (:noun "database"))
@@ -659,7 +666,8 @@ Show sents:
   |#
 (define-category model
   :specializes information-container
-  :mixins (predication mental-construction-concerning) ;; not really always an 'artifact'
+  :mixins (predication #|mental-construction-concerning|#)
+  ;; not really always an 'artifact'
   :binds ((modeled-process perdurant)
           (modeled-object endurant))
   :realization (:noun "model"
@@ -676,7 +684,7 @@ Show sents:
        (FOR top)
        (ON top))
      :realization (:noun  "model" :into INTO :in IN :for FOR :on ON))
-
+#+ignore
 (define-category model-cl-verb
   :specializes mental-construction-concerning
   :binds ((into top)

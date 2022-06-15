@@ -216,7 +216,7 @@
 
 
 (define-category fact :specializes bio-rhetorical
-      :mixins (bio-thatcomp mental-construction-concerning)
+      :mixins (bio-thatcomp)
       :binds ((info-context (:or model database)))
       :realization
             (:noun "fact"
