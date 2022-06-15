@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "organisms"
 ;;;    Module:   "model;mid-level"
-;;;   version:   March 2022
+;;;   version:   June 2022
 
 ;; Broken out of bio;taxonomy and others 11/10/20
 ;; supplemented with more definitions from bio;new-def:new-organisms 8/2021
@@ -25,7 +25,7 @@
   :realization (:common-noun name))
 
 (define-category organism
- :specializes endurant
+ :specializes physical
  :mixins (has-uid #|biological|#)
  :bindings (uid "NCIT:C14250")
  :binds ((species species))
@@ -33,6 +33,8 @@
  :lemma (:common-noun ("organism" "taxon"))
  :realization
    (:common-noun name))
+
+;;--- base level
 
 (define-category prokaryote
   :specializes organism
@@ -83,6 +85,8 @@
  :specializes vertebrate
  :realization (:common-noun "amphibian"))
 
+
+
 ;; relevant for coqui motif -- not sure whether adding coqui would interfere with 
 (define-category frog
     :specializes amphibian 
@@ -124,10 +128,12 @@
   :instantiates self
   :bindings (uid "NCIT:C14329")
   :realization (:noun "microorganism"))
-(def-synonym mammal (:noun "microbe")) 
+(def-synonym microorganism (:noun "microbe"))
 
-  (define-category infectious-agent :specializes organism
-                   :bindings (uid "NCIT:C14316")
+;;-- infectious thing
+
+(define-category infectious-agent :specializes organism
+  :bindings (uid "NCIT:C14316")
   :documentation "Groups small things that could inherit directly
     from organism but this provides an inferential hook
     for 'they are bad for you'")
@@ -153,20 +159,7 @@
                        :adjective "bacterial")
   :realization (:common-noun name))
 
-(define-category primate
- :specializes mammal
- :bindings (uid "NCIT:C14262")
- :realization (:noun ("primate")))
-
-(noun homo-sapiens :noun "homo sapiens" :super species)
-
-(define-category human
- :specializes primate
- :bindings (uid "NCIT:C14225"
-            species category::homo-sapiens)
- :documentation "Extensively elaborated in model/core/people/ 
-    and its associated dossiers"
- :realization (:noun ("human")))
+;;--- gender
 
 (define-category gender
  :specializes attribute
@@ -183,7 +176,9 @@
 ;; dam is the female parent, generally for rodents
 ;; -- this is to replace an erroneous protein definition of "dams"
 
-;; life stages
+
+
+;;--- life stages
 (define-category juvenile :specializes animal
                  :bindings (uid "BTO:0002168")
                  :realization (:noun "juvenile"))
@@ -197,7 +192,7 @@
                  :bindings (uid "BTO:0000707")
                  :realization (:noun ("larva" :plural ("larvae" "larvas"))
                                       :adj "larval"))
-;; maybe add baby, infant, toddler, adolescent/teenager, and maybe
+;; /// maybe add baby, infant, toddler, adolescent/teenager, and maybe
 ;; mixin things like juvenile for boy/girl in core/people/kinds
 ;; also maybe tadpole, fledgling, puppy, kitten
 
@@ -218,6 +213,8 @@
 (def-indiv-with-id amphibian "xenopus" "NCIT:C14285") 
 (def-indiv-with-id fish "zebrafish" "NCIT:C14287")
 
+
+
 (def-indiv-with-id mammal "armadillo" "NCIT:C14185" :name "armadillo") 
 (def-indiv-with-id mammal "bat" "TI:9397" :name "chiroptera")
 (def-indiv-with-id mammal "goat" "NCIT:C14210" :adj "caprine")
@@ -228,6 +225,21 @@
 (def-indiv-with-id mammal "ovine" "NCIT:C14273" :name "sheep")
 ;; several breeds are in bio;new-defs:new-organisms
 
+
+(define-category primate
+ :specializes mammal
+ :bindings (uid "NCIT:C14262")
+ :realization (:noun ("primate")))
+
+(noun homo-sapiens :noun "homo sapiens" :super species)
+
+(define-category human
+ :specializes primate
+ :bindings (uid "NCIT:C14225"
+            species category::homo-sapiens)
+ :documentation "Extensively elaborated in model/core/people/ 
+    and its associated dossiers"
+ :realization (:noun ("human")))
 
 (define-category rodent
  :specializes mammal
@@ -262,12 +274,14 @@
 (def-indiv-with-id rodent "chinchilla" "NCIT:C91815" :name "chinchilla") 
 
 (def-indiv-with-id mammal "feline" "NCIT:C14191" :name "cat")
+
 (define-category dog
  :specializes mammal
  :instantiates self
  :bindings (uid "NCIT:C14201")
  :realization (:noun "dog"))
 (def-synonym dog (:noun "canine"))
+
 (def-indiv-with-id dog "Yorkie" "NCIT:C53946" :name "yorkshire terrier") 
 (def-indiv-with-id dog "Doberman" "NCIT:C53767" :name "doberman pinscher") 
 (def-indiv-with-id dog "Pekingese" "NCIT:C53940" :name "pekingese") 
