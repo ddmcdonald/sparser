@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2021 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2021-2022 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "output"
 ;;;  Module: "grammar/model/sl/score/
-;;; version: September 2021
+;;; version: June 2022
 
 ;; Broken out of comlex-verb-explorations 8/23/21
 
@@ -72,7 +72,11 @@
 ;;; cache when not sending to an open file
 ;;;----------------------------------------
 
-(defvar *comlex-forms-encountered* nil)
+(defvar *comlex-forms-encountered* nil
+  "Accumulates a simple list of category forms. N.b this includes
+   forms for words that are created by rule when Sparser is loading
+   so this list will often be populated before we parse anything
+   deliberated. The note with make-category-form explains further.")
 
 (defun clear-comlex-form-cache ()
   (setq *comlex-forms-encountered* nil))
