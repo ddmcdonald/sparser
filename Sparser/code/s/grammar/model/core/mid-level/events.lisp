@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2020-2022 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "events"
 ;;;   Module:  "model;core:mid-level:"
-;;;  version:  November 2020
+;;;  version:  June 2022
 
 ;; Initiated 11/30/20 to hold extensions of the types of processes
 ;; defined in kinds/processes.lisp with more refined kinds of events,
@@ -11,19 +11,120 @@
 
 (in-package :sparser)
 
-#| In processes.lisp we have the mixins
-    takes-tense-aspect-modal and
-    temporally-localized
+;; This is loaded after eci-categories, so it can use them freely.
 
- Perdurant also mixes in takes-adverb and has-location
- 
- Its specialization are
-   state
-   process
-     transition
-     accomplishment
+;;;----------------------
+;;; mental constructions
+;;;----------------------
 
-|# 
+#| From kinds/things
+(define-category non-physical 
+  :specializes endurant
+  :documentation
+  "Non-physical objects have no location. They often depend in some way
+ on physical objects")
+
+(define-category mental-object 
+  :specializes non-physical
+  :documentation
+  "Ideas, sensations, dreams, maybe unicorns. Mental objects are dependent
+ on something with a mind, Perhaps the conclusions drawn by a program
+ fall into this category, while the program itself is a process.") 
+
+Someone or something is 'thinking'/'has' the mental object -- the experiencer.
+The thought is often directed towards something ('desire for', 'disgust at',
+'disgusted by', ...) exactly what this attitude is varies with the concept,
+but we still need a place to record it, so we'll use theme. There are mixed in
+to
+
+ mental-construction, which otherwise is just a mental-object. The relat
+
+|#
+
+(define-category concerning-adjuncts
+  :specializes adds-relation
+  :mixins (with-experiencer with-theme with-actor)
+  :documentation "This wants to be a rationalization (with a shorter name)
+ for the previous version where we had mental-construction-concerning and
+ create-mental-construction-concerning (which was for frustrate, surprise,
+ worry, forecast, publish, focus, show, demonstrate, endorse. This class
+ provides adjuncts, the same sort of this as takes-tense-aspect-modal or
+ temporally-localized for perdurant.
+ It also supplies slots:
+    for the 'experiencer' who has the thought (v/r physical-agent),
+    'theme' for what the thought is directed towards,
+    'actor' as an alternative to the experiencer when action is involved"
+  :realization
+    (:about theme
+     :regarding theme
+     :of theme            
+     :with-regard-to theme
+     :from experiencer))
+
+
+(define-category mental-construction ; mental-construction-concerning
+  :specializes mental-object
+  :mixins (concerning-adjuncts)
+  :documentation "Something like a thought, or an opinion or a
+ perception, i.e a non-physical 'object'. TRIPS uses the same
+ name, with supercs: tangible-abstract-object < abstract-object")
+
+(define-category directed-cognitive-event
+  :specializes cognitive-event
+  :mixins (with-patient)
+  :documentation "the experience of one person leads to on effect
+ on someone (something) else, the 'patient'")
+
+(define-category emotion
+  :specializes mental-construction
+  :documentation "You 'have' or 'are' an emotion. It is a 'feeling'    
+    such 'happy' or 'mad'. Taken abstractly we have phrases like
+    'he learned to control his emotions', suggesting a connotation
+    of 'strong' emotions"
+  :realization (:noun "emotion"
+                :adj "emotional"))
+
+
+
+
+#| Previous scheme retain for reference
+
+(define-mixin-category mental-construction-concerning
+  :specializes perdurant
+  :binds ((concerning top)  ;; perhaps (:or endurant perdurant abstract)
+          (source top))
+  :realization
+  (:about concerning
+   :regarding concerning
+   :of concerning
+   :from source
+   :with-regard-to concerning)
+  :documentation "A mental-construction which is focused on some set
+ of objects or events. Not clearly a sub-category of information or
+ information-container, but some information containers may be of this
+ type. A database may be about ships, but the information it contains
+ is not a set of ships.
+   Provides a set of bindings for the adjuncts this sort of event
+ can take.")
+
+(define-category create-mental-construction-concerning
+  :specializes perdurant
+  :mixins (knowledge-verb)
+  :restrict ((experiencer top))
+  :binds ((mental-construction mental-construction-concerning)
+          ;; may only be the direct object of the verb?
+          (concerning top))
+  :realization (:about concerning
+                :of concerning
+                :regarding concerning
+                :with-regard-to concerning))
+;; Examples in things.lisp
+;;  frustrate, surprise, worry, forecast, publish, focus
+;;  show, demonstrate, endorse
+|#
+
+
+
 
 ;; It is possible that this class carries the essential wwight of "method"
 
@@ -58,7 +159,8 @@
   :realization (:with instrument))
 
 
-;;;;;;;; EVENT RELATIONS -- sequential and otherwise... NEEDS a bunch more work
+
+;;;;;;;; EVENT-EVENT RELATIONS -- sequential and otherwise... NEEDS a bunch more work
 
 (define-category event-relation
   :specializes perdurant
