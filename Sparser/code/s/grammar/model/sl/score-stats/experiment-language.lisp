@@ -1,13 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2020 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2020-2022 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "experiment-language"
 ;;;  Module: "grammar/model/sl/score-stats
-;;; version: October 2020
+;;; version: June 2022
 
 ;; Started 10/29/20 to collect vocabulary and relations
 ;; that are used in writing about conducting and evaluating
 ;; experiments
+
+(in-package :sparser)
 
 
 #|
@@ -102,11 +104,10 @@ was exceptional or ordinary.")
 
 (define-category experiment
   :specializes activity-with-a-purpose
-  :mixins (mental-construction-concerning)
   :realization (:noun "experiment"))
 
 (define-category study :specializes directed-activity-with-a-purpose
-  :mixins (purposive-activity-with-instrument mental-construction-concerning)
+  :mixins (purposive-activity-with-instrument )
   :binds ((participant top))
   :realization
   (:noun ("study" :plural "studies")
