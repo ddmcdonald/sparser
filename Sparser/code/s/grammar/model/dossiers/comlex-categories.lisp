@@ -2,6 +2,7 @@
 
 ;;; Generated file of category definitions for from word-lists
 ;;; Written 9/13/21 16:0:47
+;; Hand edited 6/13/22
 
 (in-package :sparser)
 
@@ -5781,7 +5782,6 @@
   :realization (:verb "dismiss"))
 
 
-
 (define-category dispense
   :specializes perdurant
   :instantiates :self
@@ -5789,12 +5789,12 @@
   :realization (:verb "dispense"))
 
 
-
+#| --> dossiers/verbs
 (define-category disperse
   :specializes perdurant
   :instantiates :self
   :mixins (comlex-verb )
-  :realization (:verb "disperse"))
+  :realization (:verb "disperse")) |#
 
 
 
@@ -19344,7 +19344,7 @@
   :realization (:verb "stone"))
 
 
-
+#|
 (define-category stop-endurant
   :specializes endurant
   :instantiates :self
@@ -19394,7 +19394,7 @@
   :mixins (comlex-verb )
   :realization (:verb ("stop" :prep "up" 
                )))
-
+|#
 
 
 (define-category storage
