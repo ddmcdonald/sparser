@@ -128,7 +128,7 @@
   (and ;; had strange case with "some cases this" -- head was "this"
    ;; so rule out these cases
    (not (and (individual-p head) (itypep head category::determiner)))
-   (not (itypep head  category::determiner))
+   (not (itypep head category::determiner))
 
    ;; Positive reasons to assume we can compose
    (when
@@ -258,10 +258,11 @@
 ;; check to see if a verb is defined as intransitive
 (defun intransitive? (cat)
   (when (individual-p cat) (setq cat (itype-of cat)))
-  (loop for realization in (cat-realization cat)
-     thereis
-       (when (rdata-etf realization)
-         (eq (etf-name (rdata-etf realization)) 'intransitive))))
+  (or (itypep cat 'basic-intransitive)      
+      (loop for realization in (cat-realization cat)
+         thereis
+           (when (rdata-etf realization)
+             (eq (etf-name (rdata-etf realization)) 'intransitive)))))
 
 (defun transitive-vp-missing-object? (vp &optional (right-edge (right-edge-for-referent)))
   ;; this is a case like "that MEK phosphorylates" which has
