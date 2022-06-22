@@ -126,6 +126,27 @@ a simplified realization for a verb are (5/17)
      	      (S-V-DO-ToIO  :s agent :do theme :io beneficiary))))
 
 
+(define-mixin-category double-object ; ditransitive
+  :specializes subcategorization-pattern
+  :instantiates nil
+  :documentation "summarizing class for run-time checking")
+
+(define-mixin-category double-np-ing
+  :specializes double-object
+  :instantiates nil
+  :mixins (with-agent with-actor with-theme)
+  :restrict ((agent (:or physical-agent social-agent))
+             (actor)
+             (theme perdurant))
+  :realization
+    (:s agent
+     :i actor
+     :o theme) ;;/// find mumble equiv
+  :documentation "Quirk et al. Blue book 16.42 where takes
+ an object ('them' - actor) followed by an ing-phrase ('simming in the dark'
+ - theme ).")
+
+
 (define-mixin-category say-verb ;; "remarked to Mark that ..."
   :specializes subcategorization-pattern
   :instantiates nil
