@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-2000,2010-2021  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2000,2010-2022  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:  "grammar"
 ;;;    Module:  "init;loaders;"
-;;;   version:  December 2021
+;;;   version:  June 2022
 
 ;; broken out from loaders;master-loader 4/19/94. Added Whos-news-post-dossiers-loader
 ;;  4/29 added [words;whitespace assignments].  5/25 consolidated the
@@ -347,6 +347,9 @@ omitted and then run (perhaps) after the image has been launched."
      #+ignore(gload "bio;score-nouns.lisp"))
 
   (setup-vocabulary-suppression)
+
+  (gate-grammar *score-stats* ;; will be disbursed later on
+    (gload "score-stats;synonym-grammar"))
 
   (gate-grammar *testing*
     (gate-grammar *miscellaneous*
