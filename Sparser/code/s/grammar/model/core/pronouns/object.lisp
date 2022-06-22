@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994,2011-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2011-2017,2022 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:pronouns:"
-;;;  version:  May 2017
+;;;  version:  June 2022
 
 ;; 1.0 (7/11/94) completely redone from scratch. (7/22) made 'pronoun' a referential
 ;;      category so it would pass the filter in the discourse history.
@@ -105,6 +105,15 @@
   :index (:permanent :key word)
   :realization ( :word word ))
 
+
+;;;-------------------
+;;; decoding the name 
+;;;-------------------
+
+(defgeneric pn-plural? (item)
+  (:method ((e edge))
+    (when (eq (form-cat-name e) 'pronoun) ; vs. reflexive, etc
+      (eq (edge-cat-name e) 'pronoun/plural))))
 
 
 ;;;-----------------------------------------
