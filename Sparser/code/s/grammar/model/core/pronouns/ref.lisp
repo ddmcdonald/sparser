@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994-2005,2013-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2005,2013-2022 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "ref"
 ;;;   Module:  "model;core:pronouns:"
-;;;  version:  September 2021
+;;;  version:  June 2022
 
 ;; 3.0 (7/11/94) completely redone from scratch
 ;; 4.0 (5/8/95) in progress ..5/22
@@ -83,10 +83,28 @@ we decide what to do with any sort of np.
        (let ((previous-subject (subject-of-previous-sentence sentence)))
          (when previous-subject
            (transfer-edge-data-to-edge previous-subject edge))))
+      (current-subject
+       (transfer-data-if-compatible current-subject edge))
       (t (when *work-on-pronouns*
            (break "Need next case. Pronoun = ~a" edge))
          nil))))
          
+
+(defun transfer-data-if-compatible (antecedent-edge pn-edge)
+  "The antecedant has to be compatible in number and gender"
+  (let* ((i (edge-referent antecedent-edge))
+         (compatible?
+          (cond ;/// he, she
+            ((pn-plural? pn-edge)
+             (itypep i 'plural)))))
+    ;;/// traces
+    (when compatible?
+      ;; how much do we transfer?
+      (unless (edge-used-in pn-edge)
+        ;; needs form transfered to guide parsing
+        (setf (edge-form pn-edge) (edge-form antecedent-edge)))
+      (setf (edge-referent pn-edge) (edge-referent antecedent-edge))
+      pn-edge)))
 
 
 ;;;--------------------------------
