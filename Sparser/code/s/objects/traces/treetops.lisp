@@ -704,7 +704,9 @@
 (deftrace :triples-competing-over (l-triple r-triple shared-edge)
   ;; called from losing-competition?
   (when (or *trace-island-driving* *trace-whack-a-rule*)
-    (trace-msg "[whack] competing for ~a between ~a and ~a"
+    (trace-msg "[whack] competing for ~a~ between~
+              ~%   ~a ~
+              ~%  and ~a"
                shared-edge
                (format-triple l-triple)
                (format-triple r-triple))))
