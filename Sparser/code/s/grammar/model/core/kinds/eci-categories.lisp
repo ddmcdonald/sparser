@@ -165,7 +165,17 @@ here from processes.lisp
           + 5 die
           + 5 live
           + 5 be-born 
-     + 3 event-of-action |#
+   |#
+
+(define-category transformation
+  :specializes event-of-change
+  :documentation "change to type or view of entity
+    :properties (:trips ont::transformation) ")
+
+(define-category life-process
+  :specializes transformation
+  :documentation "The stages and normal events from birth to death")
+
 
 
 (define-category event-of-action
@@ -174,7 +184,9 @@ here from processes.lisp
    " 'agent does process of performing an action
     :args ((@agent :isa animate)) ")
 
-#|    + 3 event-of-action
+#|
+    + 2 event-of-change
+      + 3 event-of-action
         + 4 change
           + 5 destroy
             + 6 kill
@@ -197,6 +209,11 @@ here from processes.lisp
             + 6 create-entity
 
 |#
+
+(define-category acting
+  :specializes event-of-action
+  :documentation "From TRIPS, with synonyms 'act', 'behave', 'do', 'perform'")
+
 
 (define-category event-of-causation
   :specializes event-of-action
