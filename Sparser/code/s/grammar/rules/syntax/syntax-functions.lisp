@@ -2256,7 +2256,8 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                     category::vp+ed category::to-comp category::n-bar))
   (when *subcat-test*
     (unless (and vg obj
-                 ;; block attaching NP to VP as object when we have evidence for aux inversion
+                 ;; block attaching NP to VP as object when we have evidence
+                 ;;for aux inversion
                  ;;(not (itypep vg 'be))
                  (not (and (itypep obj 'that)
                            (takes-thatcomp? vg)))
@@ -2316,6 +2317,57 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                          category::n-bar)))
             :referent result)))
        result))))
+
+
+
+
+(defun sort-out-np+vp-ing (np vp)
+  "Have to contextually distinguish between the taking the vp as a reduced
+ relative clause, and a sentential complement. The relative clause is the
+ default, but with governing verbs that subcategorize for these complements
+ we assemble an s analogous to a 'for np to vp' complement and we change the
+ form of the parent-edge to be S."
+
+  (let ((left-edge (left-edge-for-referent))
+        (right-edge (right-edge-for-referent)))
+    (when *subcat-test*
+      ;; one of the composition alternatives will go through
+      ;; and we want to operate on full verb groups ///edge cases ??
+      (return-from sort-out-np+vp-ing (vp-category? right-edge)))
+
+    ;; Decide whether this is the complement case
+    (let* ((prior-edges (edges-ending-at (pos-edge-starts-at left-edge)))
+           (prior-edge (when prior-edges (first prior-edges)))
+           (prior-ref (when prior-edge (edge-referent prior-edge))))
+      ;;/// could be multiple prior-edges - have to check
+      (cond
+        ((null prior-edge) (apply-subject-relative-clause np vp))
+        ((itypep prior-ref 'double-np-ing)
+         (make-participial-complement np vp))
+        (t (break "bad")(apply-subject-relative-clause np vp))))))
+
+(defun make-participial-complement (np vp)
+  "Bind the np to whatever is the equivalent of subject in the vp.
+   Return an edge based on the vp."
+  (let ((subj-var (subject-variable vp)))
+    (unless subj-var (break "No subject subcategorization on ~a" vp))
+    (if *subcat-test*
+      subj-var
+      (let ((j (bind-variable subj-var np vp)))
+        (let* ((vp-edge (right-edge-for-referent))
+               (vp-cat (edge-category vp-edge)))
+          (revise-parent-edge :category vp-cat
+                              :form (category-named 'participial-complement))
+          j)))))
+
+(defun assimilate-participial-complement (vg comp)
+  (let ((obj-var (object-variable vg)))
+    (unless obj-var (break "expected an object variable on ~a" vg))
+    (if *subcat-test*
+      obj-var
+      (let ((j (bind-variable obj-var comp vg)))
+        j))))
+      
 
 
 ;;;--------------------------

@@ -1,10 +1,10 @@
-;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER) -*-
-;;; copyright (c) 1992-1999,2011-2021 David D. McDonald  -- all rights reserved
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
+;;; copyright (c) 1992-1999,2011-2022 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "categories"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  November 2021
+;;;  Version:  June 2022
 
 ;; 0.1 (9/392 v2.3)) Redid them as "form categories", with an indicator on their plists
 ;; 0.2 (10/12) flushed "mvb" for "verb", 10/24 added common-noun/plural
@@ -180,6 +180,7 @@
 (def-form-category v-bar )
 
 (def-form-category participle)
+(def-form-category participial-complement) ; includes a subject-like term
 
 (def-form-category adjunct)
 (def-form-category adjunct-to-np)

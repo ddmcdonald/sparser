@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "syntactic rules"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  January 2022
+;;;  Version:  June 2022
 
 ;; Initiated 9/7/14 to collect the rules into one place. 10/25 flushed
 ;; the temporary vp+prep rules. 10/26/14 put in one for vg+pp
@@ -338,9 +338,6 @@ s           :form np
 ;;; NP postmodifiers
 ;;;------------------
 
-
-    
-
 (loop for nb in `(np ,@*n-bar-categories*)
       do
         (unless (eq nb 'music-note))
@@ -562,18 +559,13 @@ s           :form np
            :head :right-edge
            :referent (:function apply-copular-pp left-edge right-edge)))
      
-     (loop for src in '(subject-relative-clause  vp+ing vg+ing)
+     (loop for nb in `(np pronoun vp+ing vg+ing ,@*n-bar-categories*)
         do
           (eval 
-           `(def-syntax-rule (,nb ,src)
+           `(def-syntax-rule (,nb subject-relative-clause)
                 :head :left-edge
                 :form np
                 :referent (:function apply-subject-relative-clause left-edge right-edge))))
-     ;; (eval
-     ;;  `(def-syntax-rule (,nb when-relative-clause)
-     ;;       :head :left-edge
-     ;;       :form np
-     ;;       :referent (:function apply-where-when-relative-clause left-edge right-edge)))
 
      (eval
       `(def-syntax-rule (,nb when-relative-clause)
@@ -614,6 +606,18 @@ s           :form np
            :head :left-edge
            :form np
            :referent (:function apply-object-relative-clause left-edge right-edge))))
+
+
+(loop for nb in `(np pronoun #|vp+ing vg+ing ,@*n-bar-categories*|#)
+   do
+     (loop for src in '(vp+ing vg+ing)
+        do
+          (eval 
+           `(def-syntax-rule (,nb ,src)
+                :head :left-edge
+                :form np
+                :referent (:function sort-out-np+vp-ing left-edge right-edge)))))
+
 
 
 (loop for n in `(np wh-pronoun demonstrative pronoun demonstrative ,@*n-bar-categories*
@@ -782,6 +786,15 @@ s           :form np
   :form vp
   :referent (:function passive-is-covert-tocomp left-edge right-edge))
 
+
+;; what else takes one of these? -- Blue Quirk 16.42 & vicinity
+(loop for v in '(vg infinitive) ; infinitive is "to verb"
+   do
+     (eval
+      `(def-syntax-rule (,v participial-complement)
+           :head :left-edge
+           :form vp 
+           :referent (:function assimilate-participial-complement left-edge right-edge))))
 
 
 ;; add in S because it can happen that the "THATCOMP" and
