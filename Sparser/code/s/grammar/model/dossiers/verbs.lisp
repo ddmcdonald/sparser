@@ -364,6 +364,27 @@ dm #79 "a more precise answer" --> see answer/info in mid-level/things.lisp
  (adjective (:features ((gradable)))))  |#
 
 
+(define-category locate-something
+  :specializes acquire-something
+  :mixins (simple-action) ; agent, theme
+  :realization (:verb "locate")
+  :documentation "Readings: to find something, or to situate
+ something at some place. Takes locative prepositional phrases")
+#|sp> (comlex-entry "locate")
+((verb
+  (:subc
+   ((np-advp)
+    (pp :pval
+        ("beneath" "behind" "at" "around" "amongst" "among" "along" "across"
+         "near" "in" "down" "beyond" "between" "beside" "over" "outside" "on"
+         "next to" "under" "to"))
+    (np-pp :pval
+     ("amid" "throughout" "beneath" "below" "behind" "at" "around" "amongst"
+      "among" "across" "above" "beyond" "near" "inside" "in" "down" "between"
+      "beside" "over" "outside" "on" "next to" "to" "within" "upon" "under"))
+    (np))))) |#
+
+
 (define-category look-up
   :specializes process
   :mixins (action-verb)
@@ -388,8 +409,19 @@ dm #79 "a more precise answer" --> see answer/info in mid-level/things.lisp
   :mixins (resultative)
   :restrict ((patient endurant))
   :documentation "Handles both transitive and svo-adj. Should it?"
-  :realization
-    (:verb ("make" :prep "up") ))
+  :realization (:verb ("make" :prep "up") ))
+
+(define-category park-something-somewhere
+  :specializes place-in-position
+  :mixins (move-something-verb)
+  :restrict ((theme generalized-transport))
+  :realization (:verb "park")
+  :documentation "This is for the 'park your car in Harvard Yard' reading.
+ The concept of 'park' as a large enclosed area with greenery and trees
+ and playgrounds will be a noun with a different superc that is some
+ flavor of region.
+ TRIPS synonms: center, lay, lean, sit, tilt.")
+
 
 (define-category play
   :specializes process
@@ -410,8 +442,7 @@ dm #79 "a more precise answer" --> see answer/info in mid-level/things.lisp
   :restrict ((patient role))
   :realization (:verb "play"
                 :o patient
-                :in activity
-))
+                :in activity))
 
 
 #|
