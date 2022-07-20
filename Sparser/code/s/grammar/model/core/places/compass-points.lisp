@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1995-1999,2011,2016-2020  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-1999,2011,2016-2022  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "compass points"
 ;;;   Module:  "model;core:places:"
-;;;  version:  December 2020
+;;;  version:  July 2022
 
 ;; initiated in 1/9/95, 2/24 added string printer. 
 ;; 0.1 (11/27/99) reworked them using realizations and implicit indexing. 
@@ -28,45 +28,37 @@
 ;; These words compose with "the" and take complements that make the
 ;; direction more precise ("of the corn field").
 
-;;///// Should consider rationalizing this def-form since if you look at
-;; the category you expect a different labeling.
-
 (defun define-compass-point (string abbrev &optional ward)
-  (let* ((brackets (if ward
-                     '( .[np np]. )
-                     '( .[np )))
-         (word (or (word-named string) ;; take whatever the original brackets are
-                   (define-function-word string 
-                       :form 'noun
-                       :brackets brackets)))
-         (i (define-individual 'compass-point :name word))
-         (noun-rule (define-cfr category::direction `(,word)
-                      :form category::common-noun
-                      :referent i))
-         (abbrev-word (unless ward
-                        (define-function-word abbrev 
-                          :form category::common-noun
-                          :brackets brackets)))
-         (abbrev-rule (unless ward
-                        (define-cfr category::direction `(,abbrev-word)
-                         :form category::common-noun
-                         :referent i)))
-         ;; /////////// is this combination worth a tree family?
-         ;; // or at least a schema to associate with it?
-         (adj (unless ward
-                (let ((word (resolve/make (string-append string "ern"))))
-                  (assign-brackets-to-adjective word)
-                  word)))
-         (adj-rule
-          (unless ward
-            (define-cfr category::direction `(,adj)
-              :form category::adjective
-              :referent i))))
-    (add-rule noun-rule i)
-    (when adj-rule (add-rule adj-rule i))
-    (when abbrev-rule (add-rule abbrev-rule i))
-    (when adj-rule (add-rule adj-rule i))
-    i))
+  "Make a modern word-denotes-category definition, which embellishments
+   for the abbreviation and the '-ern', '-ward' options. Previously these
+   were all individuals rather than categories."
+  (declare (special *common-noun-brackets*))
+  (multiple-value-bind (category i cfr)
+      (define-function-term string 'common-noun
+        :super-category 'compass-point
+        :rule-label 'direction)
+
+    (let* ((abbrev-word (unless ward
+                          (define-function-word abbrev 
+                              :form category::common-noun
+                              :brackets *common-noun-brackets*)))
+           (abbrev-rule (unless ward
+                          (define-cfr category::direction `(,abbrev-word)
+                            :form category::common-noun
+                            :referent i)))
+           (adj (unless ward
+                  (let ((word (resolve/make (string-append string "ern"))))
+                    (assign-brackets-to-adjective word)
+                    word)))
+           (adj-rule
+            (when adj
+              (define-cfr category::direction `(,adj)
+                :form category::adjective
+                :referent i))))
+
+      (when adj-rule (add-rule adj-rule i))
+      (when abbrev-rule (add-rule abbrev-rule i))
+      i)))
 
 ;;--- printer
 
@@ -75,4 +67,12 @@
     (if name
       (word-pname name)
       "[compass point w/o name]" )))
+
+;;--- interpretation
+
+(defun make-direction-relative-location (compass-point reference-point)
+  "Called from interpret-pp-adjunct-to-np for <compass-point> of <...>.
+   
+"  (format t "make direction: ~a ~a" compass-point reference-point)
+   compass-point)
 

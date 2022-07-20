@@ -590,7 +590,7 @@ val-pred-var (pred vs modifier - left or right?)
         qualifier)
        ;;/// There are a lot of knockout patterns. Enumerating them
        ;; like this is going to get old. Feels like motivation for
-       ;; from-rule generated methods, all using a standard schema to
+       ;; form-rule generated methods, all using a standard schema to
        ;; indicate what variable to use, head & form, etc
        ((and (category-named 'knockout-pattern)
              (itypep qualifier 'knockout-pattern)
@@ -1725,6 +1725,7 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                (and (eq prep-word of)
                     (or (itypep np 'attribute)
                         (itypep np 'of-prototype-description)
+                        (itypep np 'compass-point) ; compass-point < direction
                         (or (itypep np 'measurement) ; "42% of all new cases"
                             (itypep np 'number) ; "two of them"
                             (itypep np 'quantifier) ; "all of them" "the majority of them"
@@ -1764,6 +1765,10 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                    (itypep pobj-referent 'partonomic)) ;; "bottom of the stack"
               (tr :np+pp/np-is-partonomic np pobj-referent)
               (make-object-dependent-location np pobj-referent))
+
+             ((and (eq prep-word of)
+                   (itypep np 'compass-point)) ; "north of the airport"
+              (make-direction-relative-location np pobj-referent))
 
              ((and (eq prep-word of)
                    (itypep np 'partonomic) ;; "a row of two blocks"
