@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2022 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "chunker"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  August 2021
+;;;  version:  July 2022
 
 ;; Initiated 10/8/14
 ;; ddm: 10/16/14 Rewrote identify-chunks. Commented out lines anticipating 
@@ -1077,6 +1077,7 @@ than a bare "to".  |#
          (not (and (boundp '*chunk*)
                    (or (proper-noun-plural-modifier? e *chunk*)
                        (proper-noun-unlikely-verb-premodifier? e *chunk*))))
+         
          (not (and (boundp '*chunk*)
                    (member (edge-cat-name e)
                            '(upstream-segment downstream-segment))
@@ -1097,6 +1098,8 @@ than a bare "to".  |#
                          never (member (form-cat-name ee) '(number)))))
 
          (not (eq (form-cat-name e) 'np))
+
+         (not (itypep (edge-referent e) 'compass-point)) ; "north"
      
          (not (and plural-det?
                    (member (form-cat-name e) '(common-noun proper-noun))))
@@ -1176,6 +1179,7 @@ than a bare "to".  |#
                        (memq 
                         (word-symbol (pos-terminal (pos-edge-ends-at e)))
                         '(word::|that| word::|which| word::|whose|))))))
+
               ((eq (edge-form-name e) 'wh-pronoun) t)
               ((ng-head? (edge-form e)) t)
           
