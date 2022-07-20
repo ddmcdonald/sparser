@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "ontology"
 ;;;   Module:  "model/core/mid-level:"
-;;;  version:  June 2022
+;;;  version:  July 2022
 
 ;; Initiated 12/3/15.
 
@@ -140,6 +140,7 @@ files once an area looks big enough to warrant it.  |#
   :binds ((made-by . maker-of-artifacts)))
   ;; also time-created or is it a specialization from the lifetime of Endurant?
 
+
 (define-category structure
   :specializes artifact
   :realization (:common-noun "structure")
@@ -147,6 +148,26 @@ files once an area looks big enough to warrant it.  |#
  of even whether it actually exists or is only imagined (though 'object'
  does imply existence/location. /// so worth recasting when looking at
  inferences/consequences and envisionment vs. construction.")
+
+
+;;;-----------
+;;; transport
+;;;-----------
+
+(define-category generalized-transport
+  :specializes artifact
+  :mixins (object
+           named-type ;; "Honda"
+           container ;; inherits from spatial-region
+           can-change-location )
+  :documentation "The is anything that moves and carries the things
+ that it contains along with it: from a childs little red wagon to
+ an F35 -- cars, boats, submarines, people carring laundry upstairs,
+ etc.  ///a very fruitful place for implicatures.
+    Given the inheritance here, these are all physical objects that
+ can act as containers. The 'named-type' may have to be changed
+ to handle the complexities of real stuff -- see top of mid-level/cars.")
+
 
 
 ;;;-------------------------
