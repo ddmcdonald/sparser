@@ -69,15 +69,14 @@
 ;;;-----------------------------------------------------------
 ;;/// Add "17 miles NW of Foo" and such
 
-(define-category compass-point-relative-location
+(define-category direction-relative-location
   :specializes relative-location
   :instantiates self
   :restrict ((ground location))
-  :documentation "The direction ('south of Boston') is the fi:restrict ((ground gure
+  :documentation "The direction ('south of Boston') is the figure
  and the complement ('Boston', 'the border') is the ground, aka the
- reference point.
- Defines a region generally just beyond the reference
-")
+ reference point. Implicitly defines a region generally just beyond
+ the reference in the indicated direction.")
 
 ;;;-----------------------------------------------------------
 ;;; locations that depend on the perspective: 'left', 'front'
