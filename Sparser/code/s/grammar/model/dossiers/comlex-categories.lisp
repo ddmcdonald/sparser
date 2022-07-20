@@ -11530,7 +11530,7 @@
                )))
 
 
-
+#+ignore ;; Want "located" to be an adjective saying where something is
 (define-category locate
   :specializes perdurant
   :instantiates :self
