@@ -1,14 +1,17 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 2022 David D. McDonald  -- all rights reserved
 ;;;
-;;;     File:  "eci-categorie"
+;;;     File:  "eci-categories"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  June 2022
+;;;  version:  July 2022
 
 ;; Initiated 6/10/22 to fold in useful conceptualizations from
 ;; when we developed the ECIs. Closely parallels TRIPS taxonomy.
 
 (in-package :sparser)
+
+(defun eci-categories () t) ; for meta-dot
+
 
 #| In processes.lisp we have the mixins
     takes-tense-aspect-modal and
@@ -74,6 +77,21 @@ here from processes.lisp
    ":args  ((@theme :isa entity)  ;; trips neutral role
            (@state :isa state-description) ;; trips formal role
            (@pivot :isa entity)) ;; trips also has norole (optional) ")
+
+;; TRIPS: event-of-state > position > be-at -- "located"
+(define-category positioned ; 'position' is already very overloaded, and in PCT
+  :specializes event-of-state
+  :documentation "From TRIPS: These are stative predicates indicating
+ the position of an object with respect to another. They also typically
+ allow a causal variant where an agent causes this position (see ont::cause-position),n
+ with examples 'mirror', 'settle'")
+
+(define-category be-at
+  :specializes positioned
+  :documentation "tailored copula for locations. ///should unify this
+ notion semantically with the earlier treatments of 'there' (in syntax/be)
+ and make-copular-predication (in syntax/copulars).")
+  
 
 #|  + 2 event-of-state
       + 3 cognitive-state
@@ -172,11 +190,24 @@ here from processes.lisp
   :documentation "change to type or view of entity
     :properties (:trips ont::transformation) ")
 
-(define-category life-process
+(define-category successive-changes
   :specializes transformation
-  :documentation "The stages and normal events from birth to death")
+  :documentation "The canonical transformation is the different stages
+ (steps, roles) in life. But there are many more kinds of things
+ that undergo named changes: tadpole to frog, freshman to sophomore.
+ This is usually a progression that we could explicitly order and
+ model, and it can be interrupted, resumed, etc.")  
+
+(define-category life-process
+  :specializes successive-changes
+  :documentation "The stages and normal events from birth to death.
+ Their names will have different form depending on the perspective
+ being taken. Roles: 'teenager', attributes: 'teenage (years)'.
+ /// It would be nice to be explicit about these.")
 
 
+
+;;; events of action
 
 (define-category event-of-action
   :specializes event-of-change
@@ -188,7 +219,7 @@ here from processes.lisp
     + 2 event-of-change
       + 3 event-of-action
         + 4 change
-          + 5 destroy
+          + 5 destroy                                                                                                                                                                                                                                                                                                                                                                                                                                                                        + 5 destroy
             + 6 kill
           + 5 degrade
             + 6 damage
@@ -219,6 +250,14 @@ here from processes.lisp
   :specializes event-of-action
   :documentation "agent performs an action that causes a result")
 
+(define-category acquire-something
+  :specializes event-of-causation
+  :documentation "to come into possession or awareness of something.
+ In TRIPS +intentional and +tangible. Synonyms: pick_up, access, acquire,
+ acquisition, cadge, download, fetch, gain, get, grab, obtain, procure,
+ recover, regain, score, take, trap, win .")  
+
+
 (define-category inhibit-effect
   :specializes event-of-causation
   :documentation "agent's action inhibits or prevents a result
@@ -236,8 +275,8 @@ here from processes.lisp
   :specializes event-of-causation
   :documentation "This is TRIPS placement of motion. Our ECIs put under
  event-of-action. Like it here -- 'cause to move'. This coordinates with
- the definition of 'move' in kinds/movement and the movement verb
- generator in places/moving.
+ the definition of 'move' in kinds/movement.lisp and the movement verb
+ generator in places/moving.lisp
    (def-eci motion (event-of-action)
     :comment 'event of moving through some space (physical or abstract).'
     :properties (:trips ont::motion :vn motion-51*))  ")
@@ -245,6 +284,11 @@ here from processes.lisp
 (define-category disperse-generic
   :specializes motion
   :documentation "For disceminate, disperse, proliferate(?), scatter, spread, strew")
+
+(define-category place-in-position
+  :specializes motion
+  :documentation "This is the source for 'put', 'place'. Move something to
+ a new position")
 
 (define-category co-occuring-events
   :specializes event-of-action
