@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "model;core:places:"
-;;;  version:  April 2022
+;;;  version:  July 2022
 
 ;; initiated in December 1990, added flags 12/28/91 v2.1
   ;; 1.0 (10/12/92 v2.3) Shadowing to gradually introduce the new semantics
@@ -43,6 +43,7 @@
     (gload "countries;relation"))
   (gload "places;regions") ;; geographical regions
   (gload "places;grounded-places")
+  (gload "places;buildings")
   (gload "places;location descriptions")
   (gload "places;moving"))
 

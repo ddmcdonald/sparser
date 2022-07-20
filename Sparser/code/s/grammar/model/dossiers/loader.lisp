@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2005,2011-2021  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2011-2022 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  December 2021
+;;;  version:  July 2022
 
 ;; initiated in January 1991 v1.8
 ;; 0.1 (10/17/93 v2.3) started revampin to hold all the individuals
@@ -227,7 +227,8 @@
 (gate-grammar *generic-military*
   (gload "dossiers;military-units")
   (gload "dossiers;military-ranks")
-  (gload "dossiers;military-authorities"))
+  (gload "dossiers;military-authorities")
+  (gload "dossiers;military-aircraft"))
 
 (gate-grammar *acumen-motifs*
   (gload "dossiers;motif-key-words"))
