@@ -3,33 +3,47 @@
 ;;;
 ;;;    File: "synonym-grammar"
 ;;;  Module: "grammar/model/sl/score-stats
-;;; version: June 2022
+;;; version: July 2022
 
 ;; Started 6/7/22. Intended to hold all the definitions, etc needed
 ;; for the synonym project in one place. When we like them they
 ;; should be disbursed. N.b. this is one of the last files loaded.
 
+#| If there is another definition earlier in the grammar we deleted
+its rules so there's no interference. This punts the standing issue
+of how to have our cake (general readings) and eat it too (provide
+support to biological relations).
+|#
+
 (in-package :sparser)
 
 (defun explore-synonyms ()) ;; for meta-dot
+
+;;----------------
+;; "chickens genetically modified to prevent them spreading bird flu"
+;;                                to keep them from
+;; "chickens genetically modified to stop bird flu"
 
 ;;-- "chickens" -- mid-level/organisms
 
 (def-indiv-with-id bird "chicken" "NCIT:C14193" :name "chicken")
 ;; Gallus gallus - common domestic fowl
-;; https://ncithesaurus.nci.nih.gov/ncitbrowser/  ConceptReport.jsp?dictionary=NCI_Thesaurus&version=22.05e&ns=ncit&code=C14193&key=n1216615523&b=1&n=null
-
+;; https://ncithesaurus.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&version=22.05e&ns=ncit&code=C14193&key=n1216615523&b=1&n=null
 
 (delete-rules-of-category 'modify)
 ;; in general-verbs, applies to molecular-location as bio-control.
-;; Need to switch/expose it in any bio-heavy domain
+;;   Need to switch/expose it in any bio-heavy domain
 
+;; ---> middle level somewhere
 (define-category simple-modify
-  :specializes perdurant ;/// modify < transformation < event-of-change
+  :specializes transformation ;; < event-of-change
   :mixins (action-verb)
   :realization (:verb "modify"
                 :to-comp purpose) ; generalize?
-  :documentation "Unmarked change to the :patient, very broad v/r")
+  :documentation "Unmarked change to the :patient, very broad v/r,
+ Would be nice to have a finer articulation of 'transformation'. In the example
+ we're talking about changing the genetics of the chickens. Lots of uses
+ of 'modify', question is which ones are worth promoting.")
 
 ;;-- "stop"  --> standard verbs dossier
 (define-category stop
@@ -43,7 +57,7 @@
  before we can support all of them.")
 #| The definition of "stop" in comlex-categories which has prepositional
 variations "stop by", "stop off", "stop over", and "stop up". Except perhaps for
-the last one, these expose a sense of "stop" as the equivalent of "get together" socially. |#
+the last one, these expose a sense of "stop" as the equivalent of "get together" socially.|#
 
 ;;--- "spread" --> sl/disease/spread
 (delete-rules-of-category 'spread) ; in bio;attributes
@@ -56,17 +70,16 @@ the last one, these expose a sense of "stop" as the equivalent of "get together"
                 :noun "spread"
                 :of patient  ) ;/// needs subcat pattern
   :documentation "///Levin: 11.2 spray/load verbs: 'Someone spread something' and
- 'somthing spreads (rapidly)'
-  In another reading it is a large array/expanse of something: food laid out for
-  a banquet, a ranch in the west.
-  Has a movement reading with most of its prepositions 'out', 'through', etc. ")
+ 'somthing spreads (rapidly)'. In another reading it is a large array/expanse
+  of something: food laid out for a banquet, a ranch in the west. It also has
+  a movement reading with most of its prepositions 'out', 'through', etc. ")
 
 ;;-- "stop"  --> standard verbs dossier
 (define-category prevent
   :specializes inhibit-effect
-  :mixins (double-np-ing)
-  :realization
-    (:verb "prevent"))
+  :mixins (double-np-ing) ; agent <prevents> actor (from) theme-ing
+  :realization (:verb "prevent"))
+
 
 
 ;;----------------
@@ -74,6 +87,7 @@ the last one, these expose a sense of "stop" as the equivalent of "get together"
 ;; maternal secondhand smoke exposure during pregnancy
 
 (delete-rules-of-category 'experimental-condition) ; in bio;taxonomy
+;;
 (define-category condition ;; ----> mid-level/things ??
   :specializes state ;/// look up more specific eci
   :realization (:noun "condition")
@@ -92,8 +106,27 @@ the last one, these expose a sense of "stop" as the equivalent of "get together"
  the point is that we breath it in.")
 
 
+;; (def-indiv-with-id bio-process "gestation" "NCIT:C25742" :name "pregnancy")
+;;  in bio;bio-processes
+
+
+
+
 ;;------------------
 ;; Breast-fed babies turn into better behaved children
 ;; Breastfeeding for four months or more is associated with fewer behavioural problems in children
 
+
+;; "breast" is defined as a individual 'bio-organ' in bio;non-cellular-locations
+;; (def-indiv-with-id bio-organ "breast" "BTO:0000149" :adj "mammary")
+
+;; "fed" is already in dossiers/verbs
+
+;; "better" is a degree of 'goodness' in dossiers/qualities
+
+(define-category turn-into
+  :specializes transformation
+  :realization (:verb ("turn" :prep "into"))
+  :documentation "The base reading for 'turn' is as a movement verb. This phrasal
+ realization (with the preposition), gives a completely different reading.")
 
