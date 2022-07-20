@@ -65,8 +65,9 @@
    and use it to determine how to interpret the variable's value.
    Decode-value-for-variable does the heaving lifting. Here we're just
    concerned with identifying the value and some syntax checking.
-   This function is 
-"
+   This function is called by all of the routines that build individual,
+   such as define-individual, where it checks all of the restrictions on
+   the variables being bound and determines whether they are satisfied."
   (let ( instructions variable value )
 
     (do ((var-name  (car binding-plist) (car rest))
