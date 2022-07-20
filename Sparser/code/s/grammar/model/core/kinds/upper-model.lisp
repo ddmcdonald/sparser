@@ -87,7 +87,7 @@
 (define-category adds-relation
   :instantiates nil
   :specializes notational-extension
-  :documentation "Specifically designed to be the super catagory
+  :documentation "Specifically designed to be the super category
  of mixins that simply add another variable to the category
  they're mixed into.")
 
