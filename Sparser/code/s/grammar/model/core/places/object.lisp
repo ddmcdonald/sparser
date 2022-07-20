@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:places:"
-;;;  version:  April 2022
+;;;  version:  July 2022
 
 ;; initiated in 10/12/92 v2.3. Added 'kind of location' 1/17/94.  Added location-
 ;; phrase 11/16/95. Added relative-location 11/99. 11/25 Moved in spatial-
@@ -44,6 +44,30 @@
 (define-category location-of
   :specializes attribute
   :mixins (nominal-attribute))
+
+(adj "located" :specializes be-at
+     :mixins (with-patient with-specified-location) ; patient
+     :realization (:s patient)
+     :documentation "Explicit wording to say where something is.
+ If we want more prepositions for the location they can go here
+ in the realization or add to the subcat category. If the nature
+ of the location should be tailored, make a subcategory that
+ identifies the preposition in its realization.")
+
+#| Comlex prepositions associated with 'locate'
+(:subc
+   ((np-advp)
+    (pp :pval
+        ("at" "around" "amongst" "among" "along" "across"
+         "beneath" "behind" "beyond" "between" "beside"
+         "near" "in" "down" "over" "outside" "on"
+         "next to" "under" "to"))
+    (np-pp :pval
+     ("amid" "throughout" "beneath" "below" "behind" "at" "around" "amongst"
+      "among" "across" "above" "beyond" "near" "inside" "in" "down" "between"
+      "beside" "over" "outside" "on" "next to" "to" "within" "upon" "under"))
+    (np)))|#
+
 
 ;;--- kinds of geographical regions
 #| endurant > region > location, bounded-region  |#
