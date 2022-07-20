@@ -45,7 +45,7 @@ a simplified realization for a verb are (5/17)
   :instantiates nil
   :mixins (with-patient)
   :realization (:s patient :mumble (sv :s patient)))
-+
+
 
 (define-category comlex-verb
   :specializes subcategorization-pattern
@@ -496,13 +496,13 @@ a simplified realization for a verb are (5/17)
   :specializes subcategorization-pattern
   :binds ((supported-by physical)
           (next-to physical)
-          (at-relative-location (:or location physical)) ;;relative-position)
+          (location (:or location physical)) ;;relative-position)
           (goal (:or location physical)))
   :realization (;; :next\ to next-to ;;moved to regular prep's
                 :on supported-by
                 ;; :on\ top\ of supported-by
-                :at at-relative-location ;; at the end
-                :on at-relative-location ;; on the left
+                :at location ;; at the end
+                :on location ;; on the left
                 :into at-relative-location
                 :to goal))
 
