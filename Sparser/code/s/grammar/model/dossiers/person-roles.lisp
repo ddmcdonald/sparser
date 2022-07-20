@@ -1,9 +1,9 @@
 ;;; -*- Mode: LISP; Syntax: Common-Lisp; Package: (SPARSER LISP) -*-
-;;; Copyright (c) 2021 Smart Information Flow Technologies
+;;; Copyright (c) 2021-2022 Smart Information Flow Technologies
 ;;;
 ;;;     File:  "person-roles"
 ;;;   Module:  grammar/model/dossiers/
-;;;  Version:  February 2021
+;;;  Version:  July 2022
 
 (in-package :sparser)
 
@@ -43,6 +43,12 @@
     "rehabilitation therapist"
     "social worker"
     "staff"
+
+    ;; transportation
+    "passenger"
+    "pilot"
+
+    "conductor"
 
     ))
 
