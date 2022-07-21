@@ -2349,7 +2349,9 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
         ((null prior-edge) (apply-subject-relative-clause np vp))
         ((itypep prior-ref 'double-np-ing)
          (make-participial-complement np vp))
-        (t (break "bad")(apply-subject-relative-clause np vp))))))
+        (t ;;(break "bad")
+         ;; Hits in overnight #10 for "Ras"+"resulting in greater fluorescence complementation for Ras17N (and Ras17N/69N)"
+         (apply-subject-relative-clause np vp))))))
 
 (defun make-participial-complement (np vp)
   "Bind the np to whatever is the equivalent of subject in the vp.
