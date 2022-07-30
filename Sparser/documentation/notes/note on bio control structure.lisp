@@ -82,7 +82,29 @@ It then makes a pass over the treetops of the portion of the chart spanned by th
 
 @--- apply-debris-analysis
 
-This is a standard application of debris analysis, which you can think of as a way define n-ary rules. The patterns that are run at this level are defined by a special form -- define-early-pattern-rule -- that takes care of setting up the dynamic bindings that let us use the regular DA machinery on a different set of rules. The entry point is apply-debris-analysis in drivers/chart/psp/embedded-da.lisp, and it does the same treetop walk, except that is is bounded by the bounds of the sentence, see apply-debris-analysis in embedded-da.
+This is a standard application of debris analysis, which you can think of as a way to define n-ary rules. The patterns that are run at this level are defined by a special form -- define-early-pattern-rule -- that takes care of setting up the dynamic bindings that let us use the regular DA machinery on a different set of rules. The entry point is apply-debris-analysis in drivers/chart/psp/embedded-da.lisp, and it does the same treetop walk, except that is is bounded by the bounds of the sentence, see apply-debris-analysis in embedded-da.
+
+This is an example of one of these early debris analysis rules. It solves a problem in the parsing of "six or more months", where the chunker would strand the leading number if this rule was not in place. It is defined in grammar/model/core/adjuncts/approx.lisp. 
+
+(define-early-pattern-rule number+approximator
+    :pattern ( number approximator )
+    :action (:function make-approx-number first second))
+
+(defun make-approx-number (number-edge approx-edge)
+  (let* ((number (edge-referent number-edge))
+         (approx (edge-referent approx-edge))
+         (i (specialize-object number (category-named 'approximate)))
+         (j (bind-variable 'qualifier approx i)))
+    (make-chart-edge
+     :category (edge-category number-edge)
+     :form (edge-form number-edge)
+     :referent j
+     :rule 'make-approx-number
+     :starting-position (pos-edge-starts-at number-edge)
+     :ending-position (pos-edge-ends-at approx-edge)
+     :constituents (list number-edge approx-edge))))
+
+Note that the matching edges are passed in. These rules can make edges themselves, like this one does, or they can return a edge-spec object (make-edge-spec). For examples of those see model/sl/score-stats/statistical-measurments.lisp.
 
 
 @--- pattern-sweep
