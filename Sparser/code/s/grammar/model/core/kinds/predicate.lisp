@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2022 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "predicate"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  October 2021
+;;;  version:  July 2022
 
 ;; Broken out of upper-model 8/23/16
 
@@ -13,6 +13,15 @@
 ;;;------------------------------------------------
 ;;;--------- subcategories of relation -------------
 ;;;------------------------------------------------
+
+(define-category related-to
+  :specializes relation
+  :binds ((related :primitive category))
+  :documentation "Says that a category, usually realized as
+ some sort of modifier, is linked with, associated with,
+ has the properties/behavior of, some more concrete category.
+ Motivated by 'maternal'-->'mother'.")
+
 
 (define-category dependent-substrate
    :specializes relation
