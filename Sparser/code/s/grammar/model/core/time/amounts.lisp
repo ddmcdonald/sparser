@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994-1996,2018-2021  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2018-2022  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "amounts"
 ;;;   Module:  "model;core:time:"
-;;;  version:  March 2021
+;;;  version:  July 2022
 
 ;; initiated 4/27/94 v2.3. 1/1/96 Added fractions and a few explicit rules.
 ;; 2/10/10 Something has changed such that the period => "period" rule is
@@ -43,6 +43,33 @@
   (define-or-find-individual 'amount-of-time
       :units unit
       :quantity amount))
+
+
+;;;-----------------------------
+;;; approximate amounts of time
+;;;-----------------------------
+;; "four months or more"
+
+(defun make-approximate-time (time-edge approx-edge)
+  (let* ((time (edge-referent time-edge))
+         (approx (edge-referent approx-edge))
+         (i (specialize-object time (category-named 'approximate)))
+         (j (bind-variable 'qualifier approx i)))
+    (make-chart-edge
+     :category (category-named 'time)
+     :form (category-named 'np)
+     :referent j
+     :rule 'make-approximate-time
+     :left-daughter time-edge
+     :right-daughter approx-edge
+     :starting-position (pos-edge-starts-at time-edge)
+     :ending-position (pos-edge-ends-at approx-edge)
+     :constituents (list time-edge approx-edge))))
+    
+;; 'or more' is an adverb, so we have to get it before the chunker does
+(define-early-pattern-rule time+approximator
+    :pattern ( amount-of-time approximator )
+    :action (:function make-approximate-time first second))
 
 
 ;;;----------------------

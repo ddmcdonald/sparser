@@ -40,9 +40,16 @@
                            
 
 (def-form-rule (approximator weekday)
-    :form np
-    :head :right-edge
-    :referent (:daughter right-edge))
+  :form np
+  :head :right-edge
+  :referent (:daughter right-edge))
+
+(def-cfr amount-of-time (amount-of-time approximator)
+  :form np
+  :referent (:function make-approximate-time left-edge right-edge))
+
+
+
 
 ;;;-----------------------------
 ;;; stray case to think through
