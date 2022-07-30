@@ -358,13 +358,12 @@ We only occasionally need make a call to find-individual, and when we do what we
 (define-category  month
   :specializes time
   :instantiates self
-  ;; :rule-label time
   :mixins (cyclic)
+  :index (:permanent :key name :get)
   :binds ((name :primitive word)
           (abbreviation :primitive word)
           (position-in-year . ordinal)
           (number-of-days . number))
-  :index (:permanent :key name :get)
   :realization (:proper-noun name ))
 
 The immediate effect of detecting this keyword (during decode-index-field-aux) is to pass the category to register-category-for-indexing with puts in on a table. The hash table is populated as part of make-simple-individual. It supports a generic function, get-by-name, and lets us set up calls like this.
