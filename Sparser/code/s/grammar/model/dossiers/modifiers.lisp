@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "modifiers"
 ;;;    Module:   "model;dossiers:"
-;;;   Version:   December 2021
+;;;   Version:   July 2022
 
 ;; Created 1/4/13 to group together comparatives, approximators, etc in
 ;; one place so they're easier to keep track of. (1/9/13) Moved in all
@@ -62,10 +62,12 @@
 
 ;; what to do about stacks e.g. "just barely"
 
-;; not sure if this is appropriate, but we are getting bad parses for "one or more proteins"
-(define-approximator/determiner "or more")
-(define-approximator/determiner "or fewer")
-(define-approximator/determiner "or less")
+;; not sure if this is appropriate, but we are getting bad parses
+;; for "one or more proteins"
+;; 7/26/22 Fire: "one or more months" doesn't parse. Switching these from det to adverb
+(define-approximator/adverbial "or more")
+(define-approximator/adverbial "or fewer")
+(define-approximator/adverbial "or less")
 
 (define-approximator/determiner "almost")
 
