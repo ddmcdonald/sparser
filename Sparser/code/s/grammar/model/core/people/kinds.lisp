@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; copyright (c) 2013,2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013,2019-2022  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "kinds"
 ;;;    Module:   "model;core:people:"
-;;;   version:   September 2021
+;;;   version:   July 2022
 
 ;; initiated 12/27/07. Relabeled 'person' for parsing 3/6/13.
 ;; 3/25/13 converted it all to inherit from person-type.
@@ -84,6 +84,14 @@
   :specializes family-member
   :rule-label person
   :realization (:common-noun ("child" :plural "children")))
+
+(define-category baby
+  :specializes family-member
+  :rule-label person
+  :realization (:common-noun "baby")
+  :documentation "May be wrong to just stipultate that babies are
+ human people, but we can cross that bridge when we come to it.
+ There's also a verb reading we're ignoring.")
 
 (define-category  father
   :instantiates person
