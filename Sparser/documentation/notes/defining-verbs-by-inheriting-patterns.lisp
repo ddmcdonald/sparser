@@ -33,7 +33,7 @@ The thematic roles, which are intended to track the roles we settled
 on for the ECIpedia, are all defined in model/core/kinds/roles.lisp.
 Functionally, they supply a variable to bind.
 
-(define-mixin-category actor
+(define-mixin-category with-actor
   :binds ((actor))
   :documentation "The entity that performs the action.
     No implied agency. No obvious specified type.")
