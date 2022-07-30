@@ -183,13 +183,3 @@ files once an area looks big enough to warrant it.  |#
  category as the :rule-label of a variant-on will trigger a tailored
  rule in syntactic rules which invokes the create-prototype-of-np
  syntax-function to blend the variant and its prototype together.")
-
-
-(define-mixin-category takes-wh-nominals
-  :specializes linguistic  
-  :documentation "Provides an indicator that a predicate
- should be understood as taking wh-nominal arguments.
- Useful for cases that don't fall into a family of
- nominal-taking predicates")
-;;/// move?
-

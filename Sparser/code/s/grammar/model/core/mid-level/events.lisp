@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "events"
 ;;;   Module:  "model;core:mid-level:"
-;;;  version:  June 2022
+;;;  version:  July 2022
 
 ;; Initiated 11/30/20 to hold extensions of the types of processes
 ;; defined in kinds/processes.lisp with more refined kinds of events,
@@ -18,6 +18,7 @@
 ;;;----------------------
 
 #| From kinds/things
+
 (define-category non-physical 
   :specializes endurant
   :documentation
@@ -30,18 +31,10 @@
   "Ideas, sensations, dreams, maybe unicorns. Mental objects are dependent
  on something with a mind, Perhaps the conclusions drawn by a program
  fall into this category, while the program itself is a process.") 
-
-Someone or something is 'thinking'/'has' the mental object -- the experiencer.
-The thought is often directed towards something ('desire for', 'disgust at',
-'disgusted by', ...) exactly what this attitude is varies with the concept,
-but we still need a place to record it, so we'll use theme. There are mixed in
-to
-
- mental-construction, which otherwise is just a mental-object. The relat
-
 |#
 
-(define-category concerning-adjuncts
+
+(define-mixin-category concerning-adjuncts
   :specializes adds-relation
   :mixins (with-experiencer with-theme with-actor)
   :documentation "This wants to be a rationalization (with a shorter name)
@@ -69,22 +62,12 @@ to
  perception, i.e a non-physical 'object'. TRIPS uses the same
  name, with supercs: tangible-abstract-object < abstract-object")
 
-(define-category directed-cognitive-event
+(define-category directed-cognitive-event ; create-mental-construction-concerning
   :specializes cognitive-event
-  :mixins (with-patient)
+  :mixins (with-patient concerning-adjuncts)
+  :binds ((concerning)) ; for backwards compatibility
   :documentation "the experience of one person leads to on effect
  on someone (something) else, the 'patient'")
-
-(define-category emotion
-  :specializes mental-construction
-  :documentation "You 'have' or 'are' an emotion. It is a 'feeling'    
-    such 'happy' or 'mad'. Taken abstractly we have phrases like
-    'he learned to control his emotions', suggesting a connotation
-    of 'strong' emotions"
-  :realization (:noun "emotion"
-                :adj "emotional"))
-
-
 
 
 #| Previous scheme retain for reference
@@ -126,7 +109,7 @@ to
 
 
 
-;; It is possible that this class carries the essential wwight of "method"
+;; It is possible that this class carries the essential weight of "method"
 
 (define-category activity-with-a-purpose ;; aka 'purposive activity'
   :specializes process 

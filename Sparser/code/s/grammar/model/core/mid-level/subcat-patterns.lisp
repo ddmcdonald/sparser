@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "subcat-patterns"
 ;;;   Module:  "model;core:mid-level::"
-;;;  version:  June 2022
+;;;  version:  July 2022
 
 (in-package :sparser)
 
@@ -36,6 +36,25 @@ a simplified realization for a verb are (5/17)
 
 |#
 
+;;;-------------------------------
+;;; patterns for sets of adjuncts
+;;;-------------------------------
+
+(define-mixin-category with-specified-location
+  :specializes subcategorization-pattern
+  :binds ((supported-by physical)
+          (next-to physical)
+          (location (:or location physical)) ;;relative-position)
+          (goal (:or location physical)))
+  :realization (;; :next\ to next-to ;;moved to regular prep's
+                :on supported-by
+                ;; :on\ top\ of supported-by
+                :at location ;; at the end
+                :on location ;; on the left
+                :into at-relative-location
+                :to goal))
+
+
 ;;;---------------
 ;;; Verb patterns
 ;;;---------------
@@ -47,7 +66,7 @@ a simplified realization for a verb are (5/17)
   :realization (:s patient :mumble (sv :s patient)))
 
 
-(define-category comlex-verb
+(define-mixin-category comlex-verb
   :specializes subcategorization-pattern
   :instantiates nil
   :documentation "Designed for use by setup-verb which is
@@ -70,6 +89,14 @@ a simplified realization for a verb are (5/17)
  used to provide a category for otherwise unknown nouns
  that are introduced by the Comlex machinery." )
 
+(define-mixin-category takes-wh-nominals
+  :specializes linguistic  
+  :documentation "Provides an indicator that a predicate
+ should be understood as taking wh-nominal arguments.
+ Useful for cases that don't fall into a family of
+ nominal-taking predicates")
+
+
 
 (define-mixin-category action-verb
   :specializes subcategorization-pattern
@@ -81,6 +108,17 @@ a simplified realization for a verb are (5/17)
     (:s actor
      :o patient
      :mumble (svo :s actor :o patient)))
+
+(define-mixin-category simple-action
+  :specializes subcategorization-pattern
+  :instantiates nil
+  :mixins (with-agent with-theme)
+  :restrict ((agent physical-agent)
+             (theme endurant))
+  :realization
+    (:s agent
+     :o theme
+     :mumble (svo :s agent :o theme)))
 
 
 (define-mixin-category action-on-eventuality
@@ -98,17 +136,6 @@ a simplified realization for a verb are (5/17)
  to-complement argument as in 'I failed to find a block'")
 
 
-(define-mixin-category simple-action
-  :specializes subcategorization-pattern
-  :instantiates nil
-  :mixins (with-agent with-theme)
-  :restrict ((agent physical-agent)
-             (theme endurant))
-  :realization
-    (:s agent
-     :o theme
-     :mumble (svo :s agent :o theme)))
-
 
 (define-mixin-category directed-action ;; give, sell, tell, send
   :specializes subcategorization-pattern
@@ -125,6 +152,13 @@ a simplified realization for a verb are (5/17)
      :mumble ((s-v-io-do :s agent :do theme :io beneficiary)
      	      (S-V-DO-ToIO  :s agent :do theme :io beneficiary))))
 
+(define-mixin-category directed-action-with-source ;; feed
+  :specializes directed-action
+  :instantiates nil
+  :mixins (with-source)
+  :realization
+    (:from source
+     :m source ))
 
 (define-mixin-category double-object ; ditransitive
   :specializes subcategorization-pattern
@@ -164,8 +198,7 @@ a simplified realization for a verb are (5/17)
      :o theme ; 'said a few things to her sister'
      :thatcomp theme
      :whethercomp theme
-     :whycomp theme
-        ))
+     :whycomp theme ))
 
 (define-mixin-category attributing-verb
   :specializes subcategorization-pattern
@@ -223,6 +256,7 @@ a simplified realization for a verb are (5/17)
 ;; "I want a block" -- agent v patient
 ;; "I want to go home" -- agent v theme
 ;; "I want you to go home" -- agent v patient theme
+
 
 (define-mixin-category control-verb-intrans
   ;; need reference
@@ -293,7 +327,7 @@ a simplified realization for a verb are (5/17)
  The ETF for this set of arguments is 'svol'.
  In TRIPS 'put' is  agent, affected, result.")
 
-;;;;;;;;;;;;;;;
+
 
 (define-mixin-category with-complement
   :specializes abstract
@@ -302,7 +336,8 @@ a simplified realization for a verb are (5/17)
     complements to share the same standard set of bindings.")
 
 ;; closely related to prop-attitude and we should revise to take that into account
-(define-mixin-category thatcomp :specializes with-complement
+(define-mixin-category thatcomp
+  :specializes with-complement
   :realization (:thatcomp statement)
   :documentation "Actions that take a that complement -- verbs of
      communication, demonstration, observation. Would like to have a
@@ -399,6 +434,13 @@ a simplified realization for a verb are (5/17)
                          (svoscomp :s agent  :o beneficiary :c theme))))
 
 
+(define-mixin-category show-pattern
+  :specializes subcategorization-pattern
+  :instantiates nil
+  :mixins (thatcomp raising-to-object directed-action
+            with-specified-location takes-wh-nominals)
+  :documentation "Another one to maybe break into parts")
+
 
 ;; VerbNet additions
 
@@ -448,15 +490,6 @@ a simplified realization for a verb are (5/17)
 ;;; noun patterns
 ;;;---------------
 
-(define-mixin-category takes-of
-  :specializes subcategorization-pattern
-  :mixins (with-theme)
-  :documentation "There is a very wide array of of-construction
- patterns (Quirk et al. 17.38), from partives ('a cup of water')
- to gentives ('the population of a city', 'the city's population'),
- to this is weak choice of variables"
-  :realization (:of theme))
-
 (define-mixin-category takes-as
   :specializes subcategorization-pattern
   :mixins (with-role-or-purpose)
@@ -474,6 +507,17 @@ a simplified realization for a verb are (5/17)
      :thatcomp theme
      :mumble (adj-that-comp :c theme)))
 
+(define-mixin-category takes-of
+  :specializes subcategorization-pattern
+  :mixins (with-theme)
+  :documentation "There is a very wide array of of-construction
+ patterns (Quirk et al. 17.38), from partives ('a cup of water')
+ to gentives ('the population of a city', 'the city's population'),
+ to this is weak choice of variables"
+  :realization (:of theme))
+
+
+
 ;;;-------------------------
 ;;; patterns for adjectives
 ;;;-------------------------
@@ -486,28 +530,3 @@ a simplified realization for a verb are (5/17)
   :documentation "Can be added to the definition of adjectives
     to spell out what class of things they apply to,
     typically what category of subjects they can be predicated of.")
-
-
-;;;-------------------------------
-;;; patterns for sets of adjuncts
-;;;-------------------------------
-
-(define-mixin-category with-specified-location
-  :specializes subcategorization-pattern
-  :binds ((supported-by physical)
-          (next-to physical)
-          (location (:or location physical)) ;;relative-position)
-          (goal (:or location physical)))
-  :realization (;; :next\ to next-to ;;moved to regular prep's
-                :on supported-by
-                ;; :on\ top\ of supported-by
-                :at location ;; at the end
-                :on location ;; on the left
-                :into at-relative-location
-                :to goal))
-
-
-
-
-
-
