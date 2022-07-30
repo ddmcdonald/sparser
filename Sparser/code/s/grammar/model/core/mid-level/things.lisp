@@ -1,9 +1,9 @@
-;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
+;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 2017-2022 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "things"
 ;;;   Module:  "model;core:mid-level:"
-;;;  version:  June 2022
+;;;  version:  July 2022
 
 ;; Initiated 8/15/17 to hold general noun-like stuff, particularly the
 ;; vocabulary need for the fixed texts in generate.lisp
@@ -13,6 +13,16 @@
 ;;;----------------------
 ;;; emotion
 ;;;----------------------
+
+(define-category emotion
+  :specializes mental-construction
+  :documentation "You 'have' or 'are' an emotion. It is a 'feeling'    
+    such 'happy' or 'mad'. Taken abstractly we have phrases like
+    'he learned to control his emotions', suggesting a connotation
+    of 'strong' emotions"
+  :realization (:noun "emotion"
+                :adj "emotional"))
+
 
 (define-category appeal
   :specializes emotion
@@ -96,57 +106,62 @@
  :specializes emotion                 
  :realization (:adv "lonely" :noun "loneliness"))
 
-#|
 (define-category abuse
- :specializes create-mental-construction-concerning
- :realization (:noun "abuse" :verb "abuse"))
+ :specializes agent-interaction
+ :realization (:noun "abuse" :verb "abuse")
+ :documentation "TRIPS has ont::abuse, the verb, with superc's
+ judgement > agent-interaction. This is enough until we have to
+ model social work.")
 
 (define-category attention
- :specializes mental-construction-concerning
+ :specializes directed-cognitive-event
  :realization (:noun "attention"
                :to concerning))
 
 (define-category attitude
- :specializes mental-construction-concerning
+ :specializes directed-cognitive-event
  :realization (:noun "attitude"
                :toward concerning
                :towards concerning
                :to concerning))
 
 (define-category awareness
- :specializes mental-construction-concerning
+ :specializes directed-cognitive-event
  ;;/// second reading of "anxious" !
  :realization (:noun "awareness"
                :adj "anxious"
                :of concerning))
 
 (define-category belief
-  :specializes create-mental-construction-concerning
+  :specializes directed-cognitive-event
   :realization (:noun "belief"
                 :verb "believe" 
                 :in concerning))
 
-(define-category coverage
- :specializes mental-construction-concerning ;;???? citation?
- :realization (:noun "coverage"))
-
 (define-category disagree
- :specializes create-mental-construction-concerning
+ :specializes directed-cognitive-event
  :realization (:noun "disagreement"
                :verb "disagree"))
 
+
+(define-category coverage
+ :specializes directed-cognitive-event ;;???? citation?
+ :realization (:noun "coverage"))
+
+
+
 (define-category disinformation
- :specializes mental-construction-concerning
+ :specializes directed-cognitive-event
  :realization (:noun "disinformation"))
 
 (define-category fact
- :specializes mental-construction-concerning
+ :specializes directed-cognitive-event
  :realization (:noun "fact"))
 
 
 
 (define-category forecast
-  :specializes create-mental-construction-concerning
+  :specializes directed-cognitive-event
   :binds ((at) (to))
   :realization (:verb  "forecast"
                 :s subject :o object
@@ -154,79 +169,81 @@
                 :to to
                 :to-comp concerning))
 
+
 (define-category headline
-  :specializes mental-construction-concerning
+  :specializes directed-cognitive-event
   :realization (:noun "headline"))
 
+
 (define-category implication
- :specializes mental-construction-concerning
+ :specializes directed-cognitive-event
  :realization (:noun "implication" :of concerning))
 
 (define-category insight
-  :specializes mental-construction-concerning
+  :specializes directed-cognitive-event
   :realization (:noun "insight"))
 
 (define-category interpretation
-  :specializes create-mental-construction-concerning
+  :specializes directed-cognitive-event
   :realization (:noun "interpretation" :verb "interpret"))
 
+
 (define-category item
- :specializes mental-construction-concerning
+ :specializes mental-construction
  :realization (:noun "item"))
 
 
 (define-category intuition
- :specializes mental-construction-concerning
+ :specializes mental-construction
  :realization (:noun "intuition"))
 
 (define-category judgement
- :specializes mental-construction-concerning
+ :specializes mental-construction
  :realization (:noun ("judgement" "judgment")))
 
 (define-category learn
- :specializes  mental-construction-concerning
+ :specializes  mental-construction
  :realization (:verb ("learn" :present-participle "learning")))
 
 
 (define-category news
- :specializes mental-construction-concerning
+ :specializes mental-construction
  :realization (:noun "news"))
 
 (define-category opinion
- :specializes mental-construction-concerning
+ :specializes mental-construction
  :realization (:noun "opinion"))
 
 (define-category perception
-  :specializes mental-construction-concerning
+  :specializes mental-construction
   :realization (:noun "perception" :of concerning))
 
 (define-category misperception
- :specializes mental-construction-concerning
+ :specializes mental-construction
  :realization (:noun "misperception"))
 
 (define-category misinformation
- :specializes mental-construction-concerning
+ :specializes mental-construction
  :realization (:noun "misinformation"))
 
 (define-category questionnaire
-  :specializes mental-construction-concerning
+  :specializes mental-construction
   :realization (:noun "questionnaire"))
 
 
 (define-category reason
-  :specializes create-mental-construction-concerning
+  :specializes mental-construction
   :mixins (knowledge-verb)
   :binds ((WITH top))
   :realization (:verb "reason" :noun  "reason" :with with))
 ;;TO-DO -- fix this one
 (define-category represent
- :specializes create-mental-construction-concerning
+ :specializes directed-cognitive-event
   :binds ((visual-presentation visual-presentation))
   :realization
   (:verb "represent"
    :noun "representation"
    :adj "representative"
-   :etf (svo-passive)
    :of :object
    :o theme
    :in visual-presentation))
@@ -234,140 +251,94 @@
 
 
 (define-category focus-noun
-  :specializes mental-construction-concerning
-  :binds ((|out of| top)
-          (in top)
-          (into top))
-  :realization (:noun  "focus" :out\ of |out of| :in in :into into))
+  :specializes mental-construction
+  :binds ((|out of|) (in) (into))
+  :realization (:noun "focus" :out\ of |out of| :in in :into into))
 
 (define-category focus-verb
-  :specializes create-mental-construction-concerning
-  :binds ((among top)
-          (in top)
-          (upon top)
-          (on top))
-   :realization (:verb  ("focus"  :past-tense "focused" :past-participle "focused")
+  :specializes directed-cognitive-event
+  :mixins (comlex-verb)
+  :binds ((among) (in) (upon) (on))
+  :realization (:verb  ("focus"  :past-tense "focused" :past-participle "focused")
                 :s subject :o object :among among :in in :upon upon :on on))
 
 
-(define-category show
-  :specializes create-mental-construction-concerning
-  :mixins (thatcomp raising-to-object directed-action
-            with-specified-location takes-wh-nominals)           
-  :restrict ((beneficiary interlocutor))
-  :realization
-        (:verb ("show" :past-tense "showed" :past-participle "shown")
-         :etf (svo-passive)))
 
-
-;; two verbs similar to "show" -- used in papers
 (define-category demonstrate
-  :specializes create-mental-construction-concerning
-  :mixins (thatcomp raising-to-object directed-action
-            with-specified-location takes-wh-nominals)           
-  :restrict ((beneficiary interlocutor))
+  :specializes communicate-information
+  :mixins (show-pattern)
   :realization
         (:verb "demonstrate"
-         :noun "demonstration"
-         :etf (svo-passive)))
+         :noun "demonstration"))
 
 (define-category exhibit
-  :specializes create-mental-construction-concerning
-  :mixins (thatcomp raising-to-object directed-action
-           with-specified-location takes-wh-nominals)           
+  :specializes communicate-information
+  :mixins (show-pattern)
   :restrict ((beneficiary interlocutor))
-  ;; it was shown that
   :realization
      (:verb ("exhibit" :past-tense "exhibited" :past-participle "exhibited")
-      :noun "exhibit"
-      :etf (svo-passive)))
+      :noun "exhibit"))
+
 
 
 
 (define-category endorsement
-  :specializes create-mental-construction-concerning
+  :specializes directed-cognitive-event
   :mixins (thatcomp)           
   :realization
         (:verb "endorse"
-         :noun "endorsement"
-         :etf (svo-passive)))
+         :noun "endorsement"))
 
 (define-category estimation
-  :specializes create-mental-construction-concerning
+  :specializes directed-cognitive-event
   :mixins (thatcomp)           
   :realization
         (:verb "estimate"
-         :noun "estimation"
-         :etf (svo-passive)))
+         :noun "estimation"))
 
 (define-category evaluation
-  :specializes create-mental-construction-concerning
+  :specializes directed-cognitive-event
   :mixins (thatcomp)           
   :realization
         (:verb "evaluate"
-         :noun "evaluation"
-         :etf (svo-passive)))
+         :noun "evaluation"))
 
 
 (define-category reminder
- :specializes mental-construction-concerning
+ :specializes mental-construction
  :realization (:noun "reminder"))
 
 (define-category report ;;/// merge with model/sl/reports version
-  :specializes create-mental-construction-concerning
+  :specializes directed-cognitive-event
   :realization (:noun "report" :verb "report"))
 
 (define-category reveal
- :specializes create-mental-construction-concerning
+ :specializes directed-cognitive-event
  :realization (:noun "reveal" :verb "reveal"))
 
 (define-category scare
- :specializes create-mental-construction-concerning
+ :specializes directed-cognitive-event
  :realization (:verb ("scare" :past-tense "scared" :past-participle "scared")))
 
+
+
 (define-category speculation
- :specializes create-mental-construction-concerning
+ :specializes directed-cognitive-event
  :realization (:noun "speculation" :verb "speculate"))
 
-(define-category story
- :specializes mental-construction-concerning
- :realization (:noun "story"))
-
-(define-category theory
- :specializes mental-construction-concerning
- :realization (:noun "theory"))
-
-(define-category view :specializes mental-construction-concerning
+(define-category view :specializes mental-construction
  :realization (:noun ("view" :plural "views")))
 
 (define-category survey
-  :specializes mental-construction-concerning
-  :binds ((across top)
-          (about top)
-          (for top)
-          (throughout top))
+  :specializes mental-construction
+  :binds ((across) (about) (for) (throughout))
   :realization (:noun  "survey" :across across :about about
                 :for for :throughout throughout :of concerning))
-|#
+
 
 ;;;--------------------------------
 ;;; information and its containers
 ;;;--------------------------------
-
-#| "information" is an 'information-functional-objects' in Trips
-  < functional-object < abstract-object-nontemporal
-
-JDP: information appears to be a primitive notion
-
-Information and goals are both things one can 'have' or 'get'
-They both can be put to use for some purpose
-  and their suitability for that purpose can be judged: 'relevant'
-Information carries a notion of scalar quantity: 'more', 'enough'
-
-Fixed text: "I don't have enough information to do that."
-invites this reply: "What (else) do you need to know?"
-|#
-
 
 (define-category information
   :specializes non-physical
@@ -392,6 +363,21 @@ invites this reply: "What (else) do you need to know?"
   We can talk about the fidelity of a copy (compare different people
   singing the Star Spangled Banner at ball games) but poor copies are
   still copies of the same information.")
+
+#| "information" is an 'information-functional-objects' in Trips
+  < functional-object < abstract-object-nontemporal
+
+JDP: information appears to be a primitive notion
+
+Information and goals are both things one can 'have' or 'get'
+They both can be put to use for some purpose
+  and their suitability for that purpose can be judged: 'relevant'
+Information carries a notion of scalar quantity: 'more', 'enough'
+
+Fixed text: "I don't have enough information to do that."
+invites this reply: "What (else) do you need to know?"
+|#
+
 
 (define-category evidence
   :specializes information
@@ -452,7 +438,6 @@ TRIPS: "enough" qua 'adequate' is a quantity-related-property-val
 
 (define-category publication
   :specializes information-container
-  ;;:mixins (create-mental-construction-concerning)
   :realization (:noun "publication" :verb "publish"))
 
 (define-category book
@@ -470,32 +455,37 @@ TRIPS: "enough" qua 'adequate' is a quantity-related-property-val
   :specializes publication
   :realization (:noun "journal" :verb "journal"))
 
+(define-category story
+ :specializes information-container
+ :realization (:noun "story"))
+
+(define-category theory
+ :specializes information-container
+ :realization (:noun "theory"))
+
+
 
 (define-category answer/info ;; needs a better name
   :binds ((question))
   :specializes information
-  :instantiates self
   :realization (:noun "answer"
                 :to question))
 ;; "question" (as noun & verb) is in bio;general-verbs
 
 (define-category literature
+  :specializes information-container
+  :realization (:noun "literature"))
   ;; from biocuration questions e.g.,
   ;; "What factors from the literature regulate IL15 and IL2?"
-  :specializes information-container
- ;; :mixins (mental-construction-concerning)
-  :instantiates self
-  :realization (:noun "literature"))
 
 
 (define-category database
+  :specializes information-container
+  :mixins (has-UID ) ;; because of how we're defining the individuals
+  :realization (:noun "database"))
   ;; from biocuration questions e.g.,
   ;; "What regulates GLUL from the GEO RNAi database?"
-  :specializes information-container
-  :mixins (#|mental-construction-concerning|# has-uid)
-  :mixins (has-UID ) ;; because of how we're defining the individuals
-  :instantiates self
-  :realization (:noun "database"))
+
 
 (define-category list-container
   :specializes information-container
@@ -504,26 +494,31 @@ TRIPS: "enough" qua 'adequate' is a quantity-related-property-val
                 :of contents))
 
 
-;;--- 'label'
+;;;-------------------
+;;; natural phenomena
+;;;-------------------
 
-(define-category label
-  :specializes designator
-  :lemma (:common-noun "label")
-  :documentation "A label is a way to specify one instance of stuff
- versus another. 'doi's label publications, as do PMC ids. This notion
- of 'label' is the result of the process of 'labeling' (defined in
- bio;bio-methods. The name tag a person might wear is a physical
- embodiment of the 'label', and probably should be analyzed as
- as sort of information container. Labels aren't expected to be
- unique (as a 'UID' would be), just to provide a possibly ideosyncrating
- basis for distinguishing things. If the label incorporates numbers
- or letters could be used to sort things, e.g. the components in
- a Dewey Decimal system identifier.")
-#|
-Cf. the category two-part-label (in rules/DA/nospace-categories.lisp)
- that provides an account for ""in Figure S1", where 'figure', 'Fig.'
- are in bio;terms.lisp and the label assembled by nospace.
-|#
+#| TRIPS has more layers before we get to ont::air-current for "wind".
+atmospheric-phenomenon < natural-phenomenon < natural-object.
+ For 'mountain' its geo-formation < geo-object < phys-object
+which perhaps misses the commonality.
+
+We're starting with just natural-object. Add finer categories
+when we see the need for them.  |#
+
+(define-category wind
+  :specializes natural-object
+  :realization (:noun "wind"))
+
+(define-category dust
+  :specializes natural-object
+  :realization (:noun "dust"))
+
+(define-category smoke
+  :specializes natural-object
+  :realization (:noun "smoke")
+  :documentation "// should add the verb for the activity of 'smoking'
+ and associated notions of 'smoker', 'cigar', 'cigarette', 'joint', etc")
 
 
 ;;;---------------
@@ -559,7 +554,8 @@ name fills the third variable of that (inherited) has-attribute
 category. 
 
 Note that names ('proper names') are individuals that instantiate
-some subcategory of the category 'name'
+one of the subcategories of the category 'name'. 
+See grammar/model/core/names.lisp
 
 |#
 (define-category has-name
@@ -619,7 +615,7 @@ that's ubiquitous in biology examples (show-sents), e.g.
      
 (define-category known-as
   :specializes has-attribute
-  :binds ((alternate-name)) ;; v/r of 'name' will  probably fail too much
+  :binds ((alternate-name)) ; making the v/r 'name' would likely fail a lot
   :realization (:adj "known as")
   :documentation "Super category of all the variations on this pattern,
 e.g. 'aka', 'formerly know as (Prince)'. Not clear where to stage the
@@ -633,7 +629,32 @@ rule since all these behave the same")
 (adj "also known as" :super known-as)
 
 (adj "formerly known as" :super known-as)
-     
+
+
+
+
+;;--- 'label'
+
+(define-category label
+  :specializes designator
+  :lemma (:common-noun "label")
+  :documentation "A label is a way to specify one instance of stuff
+ versus another. 'doi's label publications, as do PMC ids. This notion
+ of 'label' is the result of the process of 'labeling' (defined in
+ bio;bio-methods. The name tag a person might wear is a physical
+ embodiment of the 'label', and probably should be analyzed as
+ as sort of information container. Labels aren't expected to be
+ unique (as a 'UID' would be), just to provide a possibly ideosyncrating
+ basis for distinguishing things. If the label incorporates numbers
+ or letters could be used to sort things, e.g. the components in
+ a Dewey Decimal system identifier.")
+#|
+Cf. the category two-part-label (in rules/DA/nospace-categories.lisp)
+ that provides an account for ""in Figure S1", where 'figure', 'Fig.'
+ are in bio;terms.lisp and the label assembled by nospace.
+|#
+
+
 
 ;; The verb "term" is a bio-rhetorical in bio;verbs
 ;;   There's also got to be a verion for 'period of time' as in
@@ -641,14 +662,14 @@ rule since all these behave the same")
 ;;
 (define-category term-name
   :specializes label ;;/// maybe 'name' -- same thing as 'word' (no yet defined)
-  :realization (:noun "term"
-                      ))
+  :realization (:noun "term"))
 "what GO terms are most frequent in these genes"
 "the most frequent GO terms for these genes"
 "for these genes"
 "are enriched for AKT1"
 "What GO terms are those genes enriched in?"
 "the most frequent GO terms among these genes"
+
 
 
 
@@ -666,7 +687,7 @@ Show sents:
   |#
 (define-category model
   :specializes information-container
-  :mixins (predication #|mental-construction-concerning|#)
+  :mixins (predication)
   ;; not really always an 'artifact'
   :binds ((modeled-process perdurant)
           (modeled-object endurant))
@@ -684,17 +705,10 @@ Show sents:
        (FOR top)
        (ON top))
      :realization (:noun  "model" :into INTO :in IN :for FOR :on ON))
-#+ignore
-(define-category model-cl-verb
-  :specializes mental-construction-concerning
-  :binds ((into top)
-          (in top)
-          (for top)
-          (on top))
-  :realization (:verb ( "model" :tensed/singular "models"
-                          :present-participle ("modelling"  "modeling")
-                          :past-tense ("modelled" "modeled"))
-                :s subject :o object :into into :in in :for for :on on))
+
+
+
+
 
 ;;--- "contain" is also in general-verbs as a bio-relation
 #|
@@ -713,6 +727,9 @@ e7    CONTAIN       1 "the model contains MEK" 5
 ;;--- "construct" is also in general-verbs as a bio-method
 probably to get the noun reading
 |#
+
+
+;;/// move to be with birds of a feature -- or rethink
 
 (define-category relationship
   :specializes state ;;?? maybe relation
