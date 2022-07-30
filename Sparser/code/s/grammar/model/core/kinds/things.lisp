@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2022 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "things"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  October 2021
+;;;  version:  July 2022
 
 ;; Broken out from upper-model and added long definitions 3/31/14.
 ;; 7/20/14 Added lemmas and realizations as needed to hold the
@@ -65,6 +65,14 @@
  N.b. see the category 'object' in mid-level/ontology. Need 
  to figure out a what to merge them if that's technical possible
  given when properties are defined.")
+
+
+(define-category natural-object
+  :specializes physical
+  :documentation "Natural as opposed to man-made: mountains
+ breaths of air, smoke. Some of these will have an extent and
+ location like physical-object. Others will be difuse and amorphous
+ like wind or a cold front.")
 
 
 (define-category physical-agent
