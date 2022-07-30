@@ -17,6 +17,15 @@
 
 (in-package :sparser)
 
+;;--- these are defined as sequencers in modifiers.lisp
+;;  We need to sort it out (ddmm 7/29/22)
+(when (current-script :biology)
+  (define-preposition "after" :form 'spatio-temporal-preposition))
+
+(when (current-script :biology)
+  (define-preposition "before" :form 'spatio-temporal-preposition))
+
+
 
 (define-preposition "abaft" :form 'spatial-preposition)
 (define-preposition "abeam" :form 'spatial-preposition)
@@ -27,9 +36,6 @@
 (define-preposition "across from" :form 'spatial-preposition)
 (define-preposition "afore" :form 'spatio-temporal-preposition)
 
-(when nil ;;current-script :biology)
-  ;; => sequencer in modifiers
-  (define-preposition "after" :form 'spatio-temporal-preposition))
 
 (define-preposition "against" :form 'spatial-preposition) ;;what about non-spatial sense
 (define-preposition "ahead" :form 'spatial-preposition)
@@ -43,10 +49,6 @@
 (define-preposition "at or below")
 
 (define-preposition "atop" :form 'spatial-preposition)
-
-(when nil ;;(current-script :biology)
-  ;; => sequencer in modifiers
-  (define-preposition "before" :form 'spatio-temporal-preposition))
 
 (define-preposition "behind" :form 'spatial-preposition)
 (define-preposition "below" :form 'spatial-preposition)
