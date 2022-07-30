@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2022 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "multi-scan"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  September 2021
+;;;  version:  July 2022
 
 ;; Broken out of no-brackets-protocol 11/17/14 as part of turning the
 ;; original single-pass sweep into a succession of passes. Drafts of
@@ -795,8 +795,9 @@
                   (eq :new-edge
                       (do-early-rules-sweep-between
                           (starts-at-pos sent)
-                        (ends-at-pos sent))))))
+                          (ends-at-pos sent))))))
     (when *trace-early-rules-sweep*
+      (terpri) (tts)
       (break "finished early sweep"))))
 
 (defun do-early-rules-sweep-between (start end &aux left-edge mid-pos right-edge)
@@ -811,7 +812,7 @@
      (cond ((eq start end) (return-from do-early-rules-sweep-between nil))
            ((null start)
             (error "do-early-rules-sweep-between start is nil in ~s" (current-string)))
-           ((not (position-p start)) (lsp-break "Early-sweep: (position-p start-pos)")))
+           ((not (position-p start)) (error "Early-sweep: (position-p start-pos)")))
      
      (setq left-edge (right-treetop-edge-at start))
      (setq mid-pos  (when (edge-p left-edge) (pos-edge-ends-at left-edge)))
@@ -880,10 +881,11 @@
          (eq (edge-referent left-edge) *the-punctuation-plus-minus*)                   
          (eq (edge-category right-edge) category::number))
 
-        #| remove these -- bad form (probably should have been an (and ...), also probably not needed as early rules
-        (itypep (edge-referent left-edge) 'approximator) ; "only 35%"
+        ;; remove these -- bad form (probably should have been an (and ...), 
+        ;;  also probably not needed as early rules
+        ;;(itypep (edge-referent left-edge) 'approximator) ; "only 35%"
         (itypep (edge-referent right-edge) 'time-unit) ; 'a month'
-        |#
+        ;; 7/29/22 brought the time unit back: "four months or more"
 
         (not (pos-preceding-whitespace mid-pos))
         (and (eq script :biology)
