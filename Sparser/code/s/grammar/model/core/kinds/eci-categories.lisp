@@ -25,27 +25,6 @@
      transition
      accomplishment
 
- ECI categories -- from the top of the set
-  + 1 event 
-    + 2 event-of-state
-      + 3 cognitive-state
-        + 4 awareness
-          + 5 believe
-            + 6 know
-          + 5 understand
-        + 4 perceive
-          + 5 perceive-taste
-          + 5 perceive-smell
-          + 5 perceive-sound
-          + 5 perceive-by-touch
-          + 5 perceive-sight
-      + 3 emit
-        + 4 emit-substance
-        + 4 emit-smell
-        + 4 emit-light
-        + 4 emit-sound  
-
-
 Instead of 'event' we'll start with either state or process, copied
 here from processes.lisp
 
@@ -69,29 +48,8 @@ here from processes.lisp
 
 |#
 
-;;--- in ecis/top-event-ecies 
 
-(define-category event-of-state
-  :specializes state
-  :documentation 
-   ":args  ((@theme :isa entity)  ;; trips neutral role
-           (@state :isa state-description) ;; trips formal role
-           (@pivot :isa entity)) ;; trips also has norole (optional) ")
-
-;; TRIPS: event-of-state > position > be-at -- "located"
-(define-category positioned ; 'position' is already very overloaded, and in PCT
-  :specializes event-of-state
-  :documentation "From TRIPS: These are stative predicates indicating
- the position of an object with respect to another. They also typically
- allow a causal variant where an agent causes this position (see ont::cause-position),n
- with examples 'mirror', 'settle'")
-
-(define-category be-at
-  :specializes positioned
-  :documentation "tailored copula for locations. ///should unify this
- notion semantically with the earlier treatments of 'there' (in syntax/be)
- and make-copular-predication (in syntax/copulars).")
-  
+;;--- event-of-state
 
 #|  + 2 event-of-state
       + 3 cognitive-state
@@ -111,6 +69,64 @@ here from processes.lisp
         + 4 emit-light
         + 4 emit-sound  |#
 
+(define-category event-of-state
+  :specializes state
+  :documentation 
+   ":args  ((@theme :isa entity)  ;; trips neutral role
+           (@state :isa state-description) ;; trips formal role
+           (@pivot :isa entity)) ;; trips also has norole (optional) ")
+
+
+(define-category event-of-association
+  :specializes event-of-state
+  :documentation "Called 'relate' in TRIPS, with words like 'relate',
+ 'pertain' and 'associate'.")
+
+
+(define-category event-of-experience
+  :specializes event-of-state
+  :documentation "From TRIPS for 'experience' -- cross-cuts what's
+ in our ecis, but adds options that capture passive, done-to cases.")
+
+(define-category have-experience
+  :specializes event-of-experience
+  :documentation "When you're exposed to something. Music, aromas,
+ new kinds of sensations or activities, but alway as an experiencer
+ not as an agent.")
+
+
+;; TRIPS: event-of-state > position > be-at -- "located"
+(define-category positioned ; 'position' is already very overloaded, and in PCT
+  :specializes event-of-state
+  :documentation "From TRIPS: These are stative predicates indicating
+ the position of an object with respect to another. They also typically
+ allow a causal variant where an agent causes this position (see ont::cause-position),n
+ with examples 'mirror', 'settle'")
+
+(define-category be-at
+  :specializes positioned
+  :documentation "tailored copula for locations. ///should unify this
+ notion semantically with the earlier treatments of 'there' (in syntax/be)
+ and make-copular-predication (in syntax/copulars).")
+
+
+(define-category event-as-situation
+  :specializes event-of-state
+  :documentation "Tries to make sense of TRIPS event-type, which is a
+ peer of event-of-state there. Given the sorts of things it dominates
+ (order-tranquility, trouble, lack) I'm inclined to think of it as a very
+ expansive state. The sort you'd assign to a large social thing like NYC
+ as use to make pronouncements about haw things are going.")
+
+(define-category troubled-situation
+  :specializes event-as-situation
+  :documentation "In the TRIPS synset for ont::trouble: concern, damage,
+ danger, difficulty, distress, mess, problem, risk, shame, tragedy, trouble,
+ turmoil. This is 'there's trouble in River City' (Music Man) sort of trouble.")
+
+
+
+;;---------- event of change
 
 (define-category event-of-change
   :specializes process
@@ -119,6 +135,7 @@ here from processes.lisp
           (@patient :isa entity)  ;; trips affected
           (@beneficiary :isa entity)
          (@result-state :isa state-description)) ;; trips result ")
+
 #|  + 2 event-of-change
       + 3 transfer
         + 4 transfer-possession
@@ -206,8 +223,41 @@ here from processes.lisp
  /// It would be nice to be explicit about these.")
 
 
+;;-------- communicate
+#|
+    + 2 event-of-change
+      + 3 transfer
+        + 4 transfer-possession
+        + 4 transfer-information
+          + 5 communicate
+            + 6 identify
+            + 6 answer
+              + 7 counter-propose
+              + 7 reject
+              + 7 accept
+              + 7 disconfirm
+              + 7 confirm
+            + 6 ask
+            + 6 tell
+              + 7 action-discussion
+                + 8 propose
+                  + 9 suggest
+                  + 9 instruct
+|#
 
-;;; events of action
+(define-category transfer-something ; 'transfer'
+    :specializes event-of-change)
+
+(define-category transfer-information
+    :specializes transfer-something)
+
+(define-category communicate-information ; avoid the verb
+    :specializes transfer-information )
+
+
+
+
+;;---- events of action
 
 (define-category event-of-action
   :specializes event-of-change
@@ -270,6 +320,7 @@ here from processes.lisp
 ;; create -- verb in bio;general-verbs
 ;; augment
 
+;;--- event-of-causation --> motion
 
 (define-category motion
   :specializes event-of-causation
@@ -290,6 +341,19 @@ here from processes.lisp
   :documentation "This is the source for 'put', 'place'. Move something to
  a new position")
 
+
+
+;;--- agent-interaction-ecis
+
+  #|  + 3 event-of-action
+        + 4 co-occuring-events
+          + 5 agent-interaction
+            + 6 associate
+            + 6 disengagement
+            + 6 engagement
+            + 6 judgement
+            + 6 collaborate  |#
+         
 (define-category co-occuring-events
   :specializes event-of-action
   :documentation "events involving multiple agents acting at approximately
@@ -304,17 +368,12 @@ here from processes.lisp
   :args ((@theme :isa description) ;; formal
          (@agent1 :isa animate)) ;; agent1 ")
 
-;;--- agent-interaction-ecis
 
-  #|  + 3 event-of-action
-        + 4 co-occuring-events
-          + 5 agent-interaction
-            + 6 associate
-            + 6 disengagement
-            + 6 engagement
-            + 6 judgement
-            + 6 collaborate  |#
-         
+
+
+
+
+
 
 ;;--- cognitive-event-ecis
 
@@ -333,10 +392,4 @@ here from processes.lisp
     :properties (:trips ont::cogitation :vn consider-29.9)
     :args ((@theme :isa description))) ;; trips formal role ")
 
-;; (def-eci evaluate (cogitation)
 
-;; (def-eci evaluate (cogitation)
-
-;; (def-eci compare (evaluate)
-
-;; (def-eci deduce (cogitation)
