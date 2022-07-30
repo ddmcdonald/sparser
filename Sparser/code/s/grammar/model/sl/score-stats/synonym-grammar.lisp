@@ -109,20 +109,68 @@ the last one, these expose a sense of "stop" as the equivalent of "get together"
 ;; (def-indiv-with-id bio-process "gestation" "NCIT:C25742" :name "pregnancy")
 ;;  in bio;bio-processes
 
+;;// could expand to related-to (kinds/predicate) via related-to macro
+;; in shortcuts
+(define-category maternal ;---> people/kinds
+  :specializes mother
+  :realization (:adj "maternal"))
 
+;;/// generalize the subcategorization - add Mumble equiv.
+(define-category expose
+  :specializes have-experience
+  :mixins (with-experiencer with-theme) ; find bird of a feather and make this a category
+  :realization (:verb "expose"
+                :s experiencer
+                :o experiencer
+                :to theme))
 
+(define-category exposure ;---> mid-level/things ??
+  :specializes have-experience
+  :mixins (with-experiencer with-theme)
+  :realization (:noun "exposure"
+                :s experiencer
+                :to theme
+                :m theme))
 
 ;;------------------
 ;; Breast-fed babies turn into better behaved children
 ;; Breastfeeding for four months or more is associated with fewer behavioural problems in children
 
+;; "babies" is in core/people/kinds
 
 ;; "breast" is defined as a individual 'bio-organ' in bio;non-cellular-locations
 ;; (def-indiv-with-id bio-organ "breast" "BTO:0000149" :adj "mammary")
+(define-category breast
+  :specializes bio-organ
+  :mixins (has-uid container)
+  :bindings (uid "BTO:0000149")
+  :realization (:noun "breast"))
 
 ;; "fed" is already in dossiers/verbs
+(define-category breast-feed
+  :specializes feed
+  :bindings (source 'breast)
+  :realization (:verb ("breastfeed" :present-participle "breastfeeding"
+                                    :past-tense ("breast-fed" "breastfed"))))
 
-;; "better" is a degree of 'goodness' in dossiers/qualities
+;; "better" is a degree of 'goodness' in dossiers/qualities - 6/21/22
+
+(define-category behave
+  :specializes acting
+  :mixins (basic-intransitive)
+  :realization (:verb "behave"
+                :noun ("behavior" :plural :none)
+                :adj "behavioural"))
+
+(define-category problem
+  :specializes troubled-situation
+  :binds ((locus))
+  :realization (:noun "problem"
+                :in locus
+                :with locus)
+  :documentation "This takes complements: __ for A to B, It is a ___ that P,
+ and you can have a problem with <>.")
+
 
 (define-category turn-into
   :specializes transformation
@@ -130,3 +178,13 @@ the last one, these expose a sense of "stop" as the equivalent of "get together"
   :documentation "The base reading for 'turn' is as a movement verb. This phrasal
  realization (with the preposition), gives a completely different reading.")
 
+(delete-rules-of-category 'bio-associate) ; in bio;verbs
+;; Very rich definition. Could be good exemplar for specialization
+(define-category associate
+  :specializes event-of-association
+  :mixins (basic-intransitive) ; just a patient
+  :binds ((associate))
+  :realization (:verb "associate"
+                :s patient
+                :with associate)
+  :documentation "In Score domain this read like 'correlates with'")
