@@ -1208,7 +1208,7 @@
   :realization (:common-noun "babel"))
 
 
-
+#|  infant reading now in core/people/kinds
 (define-category baby-endurant
   :specializes endurant
   :instantiates :self
@@ -1219,7 +1219,7 @@
   :specializes perdurant
   :instantiates :self
   :mixins (comlex-verb )
-  :realization (:verb "baby"))
+  :realization (:verb "baby"))  |#
 
 
 
@@ -1470,7 +1470,7 @@
   :realization (:common-noun "behalf"))
 
 
-
+#+ignore ;; in synonym-grammar
 (define-category behave
   :specializes perdurant
   :instantiates :self
@@ -7316,7 +7316,7 @@
   :realization (:verb "explore"))
 
 
-
+#+ignore ;; in synonym-grammar
 (define-category expose
   :specializes perdurant
   :instantiates :self
