@@ -232,10 +232,10 @@ dm #79 "a more precise answer" --> see answer/info in mid-level/things.lisp
 
 (define-category feed
   :specializes process
-  :mixins (simple-action) ; agent & theme
-  :realization (:verb ("feed" :present-participle "feeding" :past-tense "fed")
-                ) ;; noun -- what it is we supply: 'chicken feed'
-  :documentation "Should try to capture the relationship to the noun")
+  :mixins (directed-action-with-source)
+  :realization (:verb ("feed" :present-participle "feeding" :past-tense "fed"))
+  :documentation "The agent feeds theme to the beneficiary who ingests it:
+ eats, drinks, or suckles depending on the values of the other variables.")
 
 
 (define-category find ;; see bio;harvard-terms: bio-find
@@ -483,6 +483,16 @@ dm #79 "a more precise answer" --> see answer/info in mid-level/things.lisp
     (pp :pval ("in" "to" "at" "for")) (np-pp :pval ("at" "for" "on")) (advp)
     (adjp) (np-adjp) (np-as-np-sc) (np-as-np) (np-to-np) (np))))
  (noun (:plural *none*) (:features ((countable))))) |#
+
+
+(define-category show
+  :specializes communicate-information ;;// be more specific?
+  :mixins (show-pattern)   
+  :restrict ((beneficiary interlocutor))
+  ;; it was shown that
+  :realization
+        (:verb ("show" :past-tense "showed" :past-participle "shown")
+         :etf (svo-passive)))
 
 #|
 (define-category show
