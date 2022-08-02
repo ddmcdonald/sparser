@@ -765,7 +765,7 @@
   (or (vg-compatible? (edge-form e))
       (member (edge-cat-name e) '(not apostrophe-t comparative))
       (verb-premod-sequence? e)
-      (and (eq category::time (edge-category e))
+      (and (temporal-adverb? e) ;; having the category 'time' gets thing it shouldn't
            (not (loop for ee in (all-edges-at e)
                    thereis (eq category::subordinate-conjunction (edge-form ee)))))))
 
