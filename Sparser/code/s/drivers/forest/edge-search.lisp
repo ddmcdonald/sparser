@@ -520,8 +520,7 @@
              (not (high-priority-postmod? r-triple)))
 
     (let* ((l-triple-rhs (cfr-rhs (triple-rule l-triple)))
-           (l-triple-left (and (category-p l-triple-rhs)
-                               (cat-symbol (car l-triple-rhs))))
+           (l-triple-left (cat-symbol (car l-triple-rhs)))
            (r-triple-3 (right-edge-of-triple r-triple)))
       ;;(declare (special l-triple-rhs l-triple-left triple-1-rhs r-triple-3))
       (tr :triples-competing-over l-triple r-triple (right-edge-of-triple l-triple))
