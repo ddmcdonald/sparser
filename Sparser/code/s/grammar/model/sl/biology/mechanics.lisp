@@ -1119,6 +1119,10 @@ the process.
 ;;; Useful accessors
 ;;;------------------
 
+(defun use-all-proteins? ()
+  (and (boundp 'cl-user::*use-all-proteins*)
+       cl-user::*use-all-proteins*))
+
 (defmethod get-protein ((pname string))
   ;; conventient syntactic sugar. Motivated by explicitly
   ;; constructed pathways.
@@ -1127,17 +1131,19 @@ the process.
                (get-family word))))
     (let ((word (resolve pname))
           protein )
-      (unless word
-        (error "The word ~a isn't defined, so it can't ~
-                name a protein." pname))
-      ;; iterate spelling variations
-      (setq protein (lookup word))
-      (unless protein
-        (let* ((capitalized (string-capitalize pname))
-               (cap-word (resolve capitalized)))
-          (when cap-word
-            (setq protein (lookup cap-word)))))
-      protein)))
+      (cond ((null word)
+             (if (use-all-proteins?)
+                 (error "The word ~a isn't defined, so it can't ~
+                name a protein." pname)))
+            (t
+             ;; iterate spelling variations
+             (setq protein (lookup word))
+             (unless protein
+               (let* ((capitalized (string-capitalize pname))
+                      (cap-word (resolve capitalized)))
+                 (when cap-word
+                   (setq protein (lookup cap-word)))))
+             protein)))))
 
 (defmethod get-protein ((name label))
   (declare (special *uniprot-name-ht*))
@@ -1534,9 +1540,12 @@ for this species"
   (let ( proteins )
     (dolist (name members)
       (let ((protein (get-protein name)))
-        (unless protein
-          (break "Can't retrieve protein from the name ~s" name))
-        (push protein proteins)))
+        (if protein
+            (push protein proteins)
+            (if (use-all-proteins?)
+                (break "Can't retrieve protein from the name ~s" name)
+                (warn "The word ~a isn't defined, so it can't ~
+                name a protein and is thus not included in family definition of ~s" name i)))))
     (let ((set-of-proteins (create-collection proteins 'protein))
           (count (length members)));(find-number (length members))))
       (setq i (bind-dli-variable 'family-members set-of-proteins i))
