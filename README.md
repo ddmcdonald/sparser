@@ -18,19 +18,19 @@ what operations are permitted, what data structures are used, what
 sets of rules will be loaded, the protocol for rule application, the
 checks that are performed as words are scanned, and so on. There are
 configurations that turn Sparser into a multi-document word-frequency
-and TF/IDF tabulator, a highly efficient information extraction engine
-driven from a semantic model of the target content, a shallow meaning,
-ontology induction engine, or a large-lexicon, syntax-driven system
-for reading technical literature
+and TF/IDF tabulator; a highly efficient information extraction engine
+driven from a semantic model of the target content; a shallow-meaning,
+ontology induction engine; or a large-lexicon, syntax-driven system
+for partially reading technical literature
 
 Sparser is designed for continuous operation over sets of documents of
-arbitrary number and length, though grammar and model development is
+arbitrary number and length, although grammar and model development is
 usually done over small texts. As a consequence, Sparser is run for
 side-effects. It does not 'return' anything, though it has machinery
 for periodically reading out its chart or the objects it has
 recognized or instantiated (i.e. categories and instances of
 categories). Sparser uses its native KRISP KR language to define its
-domain models and represent the information that it identifies as it
+domain models and represent the information that that it identifies as it
 reads. KRISP can be easily converted to OWL triples or JSON.
 
 Sparser is an open-source project under the Eclipse Public License
@@ -46,57 +46,122 @@ In the past we have also used Clozure (www.clozure.com) and
 Allegro (www.franz.com). We do not presently run our regression tests on
 those platforms, so caveat emptor.
 
-## OS
-We develop on Intel-based Macs under OS X and Unix.
-Sparser has been used with Windows in the past though that
-has not been tested recently. Since we use ASDF for toplevel loading
-and Lisp pathnames for handling file compilation and module loading,
-we don't expect that working in Windows would be problem, but as of
-this writing we have not actually tested it.
+## OS We develop on Intel-based Macs under OS X and Unix.
+Sparser has been used with Windows in the past though that has not
+been tested recently.
+Since we use ASDF for toplevel loading and Lisp pathnames
+for handling file compilation and module loading, we don't expect that
+working in Windows would be problem, but as of this writing we have
+not actually tested it.
 
 # Installation, Setup, and Loading
 
-After cloning Sparser, the toplevel of the sparser directory
-tree will have four immediate subdirectories: "Mumble",
-"Sparser", "util", and "test", as well as this README file,
-the LICENSE file, a MakeFile for simple command-line operations like
-grep or removing all of the fasl compiled files, and finally
-the "sparser.asd" file which contains the Sparser ASDF system
-definitions for different configurations of the grammar, semantics,
-and runtime behavior.
+After cloning Sparser, the toplevel of the sparser directory tree will
+have four immediate subdirectories: "Mumble", "Sparser", "util", and
+"test", as well as this README file, the LICENSE file, a MakeFile for
+simple command-line operations like grep or removing all of the fasl
+compiled files, and the "sparser.asd" file which contains the Sparser
+ASDF system definitions for different configurations of the grammar,
+semantics, and runtime behavior.
 
-## Setup ASDF
+## Setup ASDF in your init file
 At the toplevel, Sparser's loader is based on ASDF. To use it you
-have to enter Sparser's location in your file system into the ASDF
-registry so that ASDF can find Sparser's .asd file.  We recommend that
-you include something like this in your Lisp init file. This example
-assumes that your local copy of Sparser is at toplevel in your home
-directory (i.e. ~/sparser/).
+have to provide Sparser's location in your file system into the ASDF
+registry so that ASDF can find Sparser's .asd file.
+In addition several of Sparser's subsystems make use of a couple of
+standard Lisp packages: CL-JSON, and CL-PPCRE, so you  need to
+include a path to them as part of your source-registry. (they
+are named in the depends-on specification in the :sparser defsystem
+definition in the asd file.)
+
+It is simplest to specify this information in your init file
+(e.g. ~/.sbclrc).  This example assumes that your local copy
+of Sparser is at toplevel in your home directory (i.e. ~/sparser/).
 ```
+(in-package :COMMON-LISP-USER)
+
 (require :asdf)
+
+(defun sparser-minimal-config ()
+  (setf asdf:*central-registry* nil)
+  (asdf:initialize-source-registry 
+   '(:source-registry
+     (:tree (:home "sparser"))
+     (:tree (:home "projects/cwc-integ/lisp-utils"))
+     :ignore-inherited-configuration)))
+
+(defmacro load-sparser ()
+  (sparser-minimal-config) ; note A
+  (defparameter cl-user::*use-all-proteins* nil) ; note B
+  (handler-bind
+      ((warning #'muffle-warning)) ; note C
+    (asdf:load-system :sparser/fire)
+    (asdf:load-system :mumble/sparser))
+  (in-package :sparser)
+  :sparser-loaded)
 ```
-(asdf:initialize-source-registry
- '(:source-registry
-    (:tree (:home "sparser"))
-    :inherit-configuration))
-    ```
-Several of Sparser's subsystems make use of a couple of standard Lisp
-packages: CL-JSON, and CL-PPCRE. You need to include a path to them
-as part of your source-registry because they are named in the
-depends-on specification in the :sparser defsystem definition in
-the asd file.
+
+A. Typically you will have the configurations for several systems
+in your init file, with their own library requirements.
+That is why we have broken out the asdf requirements for Sparser
+into a local function (sparser-minimal-config) and call it
+in the function you invoke to do the loading.
+
+B. In its biology configuration Sparser defines a very large number
+of proteins. The cl-user parameter setting tells Sparser to ignore them.
+
+C. Muffling warnings makes for a much quieter load. We periodically
+turn this off to check whether we have to address something, but
+these really are just warnings.
 
 ## Configurations and Loading
-In a running Lisp, with the ASDF registry configured, you load Sparser
-by executing this in your REPL.
+
+In a running Lisp, with the ASDF registry configured as just
+described, you load Sparser by calling the function you defined.
+This is the result. (1/5/23 on a 2018 MacBook Pro running 12.6.2
+with sbcl's --dynamic-space-size" set to "15000")
+
 ```
-  (asdf:load-system :sparser)
+cl-user> (load-sparser)
+
+-------------------------------------------
+ 6,758  Referential categories
+ 138  Syntactic form categories
+ 99   Mixin categories
+ 330  Non-terminal categories
+ 11,464   Individuals
+               
+-------------------------------------------
+ 26,283   Words
+ 8,240  Polywords
+ 23,631   Lexical rules
+ 9,266  Semantic rules
+ 25   Context sensitive rules
+ 333  Form rules
+ 912  Syntactic rules
+ 287  Debris analysis rules
+ 94   ETF tree schema
+ 381  Grammar modules loaded
+-------------------------------------------
+                
+System loaded in 17.0 seconds
+
+Welcome to the Sparser natural language analysis system.
+Copyright (c) David D. McDonald 1991-2005,2010-2022.
+Distributed under the Eclipse Public License.
+
+Type (in-package :sparser) to use Sparser symbols directly.
+
+:sparser-loaded
+sp> 
 ```
-That will load the default configuration of Sparser. At the moment
-there are eight different Sparser asdf systems defined.  Each one has
-an associated script that sets up its own configuration of grammar
-modules to load and its own choice of parameter ("switch") settings
-for configuring the analysis protocol. Most of these only interesting
+
+That loaded the default configuration of Sparser. At the moment
+there are ten different Sparser asdf systems defined in
+~/Sparser/sparser.asdf. Each one has an associated script that
+sets up its own configuration of grammar modules to load
+and its own choice of parameter ("switch") settings for
+configuring the analysis protocol. Most of these only interesting
 to illustrate the range of configurations we have used.  We are
 actively doing development in just two configurations: 'biology' for
 our project work for DARPA, and 'fire' for wider-ranging
@@ -104,7 +169,7 @@ explorations. The default configuration is the same as the one for
 fire ("Free-text Information and Relation Extraction").
 
 
-# Capabilities
+# Capabilities, documentation
 
 Sparser can use context-free and context-sensitive semantic
 grammar phrase-structure rules, along with syntactic rules
@@ -126,7 +191,7 @@ and numbers, location, or person-company-title. Beyond semantically
 controlled sublanguages, we use an extensive syntactic grammar where
 composition is constrained by more heuristic type-checking. We also
 draw on the Complex lexicon to provide part of speech and simple
-subcategorization information about words that haven't given an
+subcategorization information about words that haven't been given an
 explicit semantic definition.
 
 
@@ -174,43 +239,50 @@ function 'stree' for "syntactic tree". Constituency is shown by
 indentation. Each edge show its index, its category and syntactic
 labels, the chart positions at which it begins and ends, and the
 number (or name) of the rule that created it.
+
 ```
-sp> (stree 7)
- e7 be/s                      p1 - p5   rule 1390
-  e2 pronoun/inanimate/pronoun    p1 - p2   rule 2796
+p> (stree 7)
+ e7 be/s                      p1 - p5   rule 1679
+  e2 pronoun/inanimate/pronoun    p1 - p2   rule 3159
     "it"
-  e6 be/vp                    p2 - p5   rule 1490
-    e3 be/vg                  p2 - p3   rule 2006
+  e6 be/vp                    p2 - p5   rule 1781
+    e3 be/vg                  p2 - p3   rule 2305
       "is"
-    e5 time/np                p3 - p5   rule 2555
-      e4 approximator/det     p3 - p4   rule 4697
+    e5 time/np                p3 - p5   rule 2908
+      e4 approximator/det     p3 - p4   rule 5510
         "almost"
-      e0 weekday/proper-noun    p4 - p5   rule 3149
+      e0 weekday/proper-noun    p4 - p5   rule 3824
         "Wednesday"
+#<edge7 1 be 5>
+sp>
 ```
+
 The top edge is syntactically an 'S'. It is the result of applying a
 syntactic rule that took the subject np (e2) and assimilated
-it into the verb phrase predicate (e6).
+it into the verb phrase predicate (e6). Note that the indexes
+of the rules (e.g. 1679) are assigned while the grammar is being
+loaded. You should not expect them to stay the same across sessions
+or particularly in different configurations
 ```
-sp> (irr 1390)
+sp> (irr 1679)
 referent: (funcall assimilate-subject left-referent right-referent)
-#<PSR-689 s → {pronoun vp}>
+#<PSR-1679 s → {pronoun vp}>
 ```
 Semantically the result is a dependency tree. These are displayed as a
 set of nested expressions.
 ```
 ssp> (semtree 7)
-(#<be 105673>
- (subject (#<pronoun/inanimate "it" 1003> (word "it")))
+(#<be 11473>
+ (subject (#<pronoun/inanimate "it" 1208> (word "it")))
  (predicate
-  (#<relative-time 105670>
-   (relativizer (#<almost "almost" 2550> (name "almost")))
-   (reference-time (#<weekday "Wednesday" 1244>))))
+   (#<relative-time 11471>
+     (has-determiner (#<indefinite 11470>))
+     (relativizer (#<almost "almost" 3155> (name "almost")))
+     (reference-time (#<weekday "Wednesday" 1826>))))
  (present #<ref-category PRESENT>))
-
 ```
 This shows an instance of the category representing 'be', whose index
-is 105673. This category has two local variables, 'subject' and
+is 11473. This category has two local variables, 'subject' and
 'predicate', and also binds a variable it inherited, 'present'.
 An expression for values of the variables follows them. The predicate,
 for example, is an instance of the category 'relative-time', which
@@ -224,7 +296,7 @@ what 'almost' means. (And an appreciation that the pronoun "it"
 should be understood as an empty grammatical marker, though that
 would be a reasonable extension to Sparser's own time model.)
 
-There is much more that could be illustrated, but getting into much
+There is much more that could be illustrated, but getting into 
 more depth is usually best done by taking a guided tour in conjunction
 with exploring the grammar directly.
 
