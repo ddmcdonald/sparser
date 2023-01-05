@@ -30,7 +30,7 @@ Include this in your emacs init
   (action1)
   (action2))
 
-In your emacs init file this can be enfoced by something like this
+In your emacs init file this can be enforced by something like this
 (defun ddm-indentation-quirks ()
   (interactive)
   (set-indent-hook 'if 1))
@@ -49,7 +49,7 @@ good: (when test
 The expression for the condition being tested in if, when, unless,
 etc. should be on the same line as the operator.
 
-(when (and (or for bar)
+(when (and (or foo bar)
            baz)
   (do-stuff))
 
