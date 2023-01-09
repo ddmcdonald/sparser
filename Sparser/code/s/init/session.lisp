@@ -3,7 +3,7 @@
 ;;;
 ;;;      File: "session"
 ;;;    Module: "init;"
-;;;   Version: January 2022
+;;;   Version: January 2023
 
 (in-package :sparser)
 
@@ -34,7 +34,7 @@
 
 ;; Finally, print a salutation to the REPL.
 (format t "~%Welcome to the Sparser natural language analysis system.~
-           ~%Copyright (c) David D. McDonald 1991-2005,2010-2022.~
+           ~%Copyright (c) David D. McDonald 1991-2005,2010-2023.~
            ~%Distributed under the Eclipse Public License.~
            ~%~
            ~%Type (in-package :sparser) to use Sparser symbols directly.~
