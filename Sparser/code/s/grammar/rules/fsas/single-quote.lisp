@@ -86,6 +86,7 @@ along with definitions as function words for "s", "t", "re", etc. |#
    (aka single-quote) here."
   (declare (ignore single-quote)
            (special category::verb category::modal category::verb+present
+                    category::quantifier
                     word::|s| word::|t| word::|re| word::|d|
                     word::|ve| word::|ll| word::|m|
                     *pending-single-quote*))

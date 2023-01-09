@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "comparatives"
 ;;;    Module:   "grammar;rules:syntax:"
-;;;   Version:   November 2020
+;;;   Version:   November 2021
 
 ;; initiated 7/29/94. 10/24/94 added defdata
 ;; 7/20/14 Added a lemma for "comparative"
@@ -131,6 +131,7 @@ abstract > abstract-region >
       category)))
 
 (defun er-test-entry (pname)
+  (declare (special *primed-words*))
   (let* ((word (resolve/make pname))
          (entry (gethash pname *primed-words*)))
     (values word entry)))

@@ -504,7 +504,7 @@
    a 'phrase' statement in the definition of the verb. As with bound prepositions,
    we store the phrase in the subcat data of main verb and we make a rule
    composing the verb with the phrase that will be looked early in pass1."
-  (push-debug `(,verb ,phrase ,target-category))
+  (declare (special category::vg))
   
   (let ((known? (has-rules? phrase)))
     (unless known?

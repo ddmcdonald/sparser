@@ -1120,6 +1120,7 @@ the process.
 ;;;------------------
 
 (defun use-all-proteins? ()
+  (declare (special cl-user::*use-all-proteins*))
   (and (boundp 'cl-user::*use-all-proteins*)
        cl-user::*use-all-proteins*))
 
