@@ -75,7 +75,7 @@
   ;; of how covered (with edges) the segment is and dispatches
   ;; to the the parser if there's something to parse or else to the
   ;; the common end-of-segment adjudicator to dispatch again.
-  (declare (special *chunk-sentence-into-phrases*
+  (declare (special *chunk-sentence-into-phrases* *current-chunk*
                     *segment-ended-because-of-boundary-from-form-label*
                     *left-segment-boundary* *right-segment-boundary*
                     *readout-segments-inline-with-text* *display-word-stream*

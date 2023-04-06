@@ -298,6 +298,7 @@ inrainrain
 rainrain"
 |# 
 (defun fold (string0 n)
+  (declare (special *newline-str*)) ;; n.b. go back to Peter's code and look this up
   (let ((string (trim-whitespace string0)))
     (cond 
      ((<= (length string) n) string)  

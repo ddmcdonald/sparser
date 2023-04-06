@@ -109,7 +109,8 @@ added at the same time. |#
    just 40k positions) and the edges (100k), which makes it problematic
    to pull information out. This flag is to signal that some things
    won't work as expected"
-  (declare (special *next-chart-position-to-scan*))
+  (declare (special *next-chart-position-to-scan*
+                    *open-stream-of-source-characters*))
   (let ((stream *open-stream-of-source-characters*))
     (format t "~&--- Cannot process this file~
                ~% ~a~

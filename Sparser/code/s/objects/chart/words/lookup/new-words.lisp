@@ -38,7 +38,8 @@
    and handle-prep-if-necessary where we need to expand the vocabulary
    on the fly."
   (declare (special *introduce-brackets-for-unknown-words-from-their-suffixes*
-                    *edge-for-unknown-words* *source-of-unknown-words-definition*))
+                    *edge-for-unknown-words* *source-of-unknown-words-definition*
+                    *comlex-words-primed*))
   (unless (and *introduce-brackets-for-unknown-words-from-their-suffixes*
                *edge-for-unknown-words*)
     (error "Category-creating machinery is deliberately turned off"))
@@ -193,7 +194,7 @@
   "Stronger than make-word/all-properties because it looks for an entry
    in Comlex before doing the 'all-properties' default."
   (declare (special *capitalization-of-current-token* 
-                    *primed-words* *show-word-defs*))
+                    *primed-words* *show-word-defs* *pnf-routine*))
   
   (let* ((symbol (make-word-symbol))  ;;reads out the lookup buffer
          (word (or existing-word ;; see find-word

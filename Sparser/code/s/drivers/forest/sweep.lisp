@@ -136,7 +136,8 @@
   (declare (special word::|of| category::that word::comma
                     sentence-initial?  subject-seen?  main-verb-seen?
                     *try-incrementally-resolving-pronouns*
-                    waiting-for-non-verb  count-past-verb))
+                    waiting-for-non-verb  count-past-verb
+                    *debug-pronouns*))
 
   (when (eq (form-cat-name tt) 'possessive)
     ;; That's a property, not a concrete term. Find the actual

@@ -55,7 +55,8 @@
    that the *initialize-with-each-unit-of-analysis* flag is up.
    This will clear/reinitialize every article-specific property,
    except as overridden by other parameters consulted here."
-  (declare (special *saved-toplevel-parsing-protocol*))
+  (declare (special *saved-toplevel-parsing-protocol*
+                    *make-fresh-articles*))
 
   (when *saved-toplevel-parsing-protocol*
     ;; we could have error'd out before this was reset

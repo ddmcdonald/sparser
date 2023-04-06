@@ -39,6 +39,7 @@
   Creates the object, computes its properties (capitalization and basic
   morphology), creates its canonical form (if it is capitalized),
   and catalogs it."
+  (declare (special *force-case-shift*))
 
   (when *force-case-shift*
     (setq string (force-case-of-word-string string)))
@@ -74,6 +75,7 @@
 ;;;-------------------------------------------------
 
 (defun force-case-of-word-string (string)
+  (declare (special *force-case-shift*))
   (if *force-case-shift*
     (case *force-case-shift*
       (:lowercase

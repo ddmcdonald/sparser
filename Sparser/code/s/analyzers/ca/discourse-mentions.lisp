@@ -1052,7 +1052,7 @@ so we return the edge for the POBJ"
       (basic-add-new-dependencies top-edge old-dependencies edges i ii)))
 
 (defun fill-in-mention (m i source)
-  (declare (special *scanning-terminals*))
+  (declare (special *scanning-terminals* *current-paragraph*))
   (let* ((location
           (encode-mention-location
            (if (consp source) (second source) source)))

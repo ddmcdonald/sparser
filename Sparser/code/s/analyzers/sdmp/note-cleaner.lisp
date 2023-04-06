@@ -45,6 +45,7 @@ Time to read an article is not saved. Would be another slot(?) on article?
     (setf (children article) nil)))
 
 (defun strip-parsed-acumen-articles ()
+  (declare (special *acumen-motific-articles*))
   (loop for a in *acumen-motific-articles*
      do (strip-unnecessary-article-parts (cdr a))))
 

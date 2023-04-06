@@ -89,6 +89,7 @@
   (:method ((edge-number integer))
     (short-chain-configurations (get-chain edge-number)))
   (:method ((chain edge-chain))
+    (declare (special *n-bar-category-names*))
     (let ((form-categories (form-labels chain)))
       (when (= 1 (length form-categories)) ; otherwise immediate move to next
         (let ((form-category (car form-categories)))

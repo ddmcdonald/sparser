@@ -205,6 +205,7 @@
      *authors-and-bibs*)))
 
 (defun record-author-name (name-entry)
+  (declare (special *first-names* *last-names*))
   (when (assq :first name-entry)
     (when (> (length (cdr (assq :first name-entry))) 1)
       (setf (gethash  (cdr (assq :first name-entry)) *first-names*) t)))
