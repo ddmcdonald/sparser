@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  March 2022
+;;;  Version:  April 2023
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -1721,6 +1721,8 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                (and *force-modifiers* 'modifier)
                (valid-method compose-of np pobj-referent) ; apply the subcat test
                (valid-method compose np pp)
+               (valid-method compose np pobj-referent)
+
                (is-domain-adjunctive-pp? np (right-edge-for-referent))
                (and (eq prep-word of)
                     (or (itypep np 'attribute)
@@ -1803,6 +1805,13 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
              ((when (valid-method compose np pp)
                 ;; e.g. has-location + location : "the block at the left end of the row"
                 (let ((result (compose np pp)))
+                  (when result
+                    (tr :np-pp-composition np pp)
+                    result))))
+
+             ((when (valid-method compose np pobj-referent)
+                ;; '(to the) left of the block'
+                (let ((result (compose np pobj-referent)))
                   (when result
                     (tr :np-pp-composition np pp)
                     result))))
