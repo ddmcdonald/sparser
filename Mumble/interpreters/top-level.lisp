@@ -65,6 +65,7 @@ that doesn't already have one.")
   (:documentation "Parameterized entry point for one call to mumble.
 Specific variations on this method can include whatever preprocessing
 is appropriate to that object class.")
+  ;; n.b. there are versions of 'say' in sparser/../interface/mumble/interface.lisp
   (:method :before (object)
     (initialize-output-stream)
     (initialize-mumble-state))
