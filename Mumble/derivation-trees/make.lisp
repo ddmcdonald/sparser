@@ -71,7 +71,7 @@
     (let ((entry (gethash word *words-to-lexicalized-phrases*)))
       (when entry
         (if (cdr entry) ;; word is on several parts of speech
-          (error "stub")
+          (error "stub: multiple lexicalized phrases for ~a" word)
           (setf (gethash word *words-to-lexicalized-phrases*) nil))))))
             
 
