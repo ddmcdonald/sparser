@@ -1,9 +1,9 @@
 ;;; -*- Mode: LISP; Syntax: Common-Lisp; Package: MUMBLE -*-
-;;; copyright (c) 2017-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2017-2023 David D. McDonald  -- all rights reserved
 
 ;;;    File: "binding-helpers"
 ;;;  Module: "Mumble/interface/sparser/"
-;;; Version: November 2019
+;;; Version: April 2023
 
 (in-package :mumble)
 
@@ -274,6 +274,29 @@
     (make-complement-node 's subject dtn)
     (verb-aux-handler dtn i)
     dtn))
+
+(sp::def-k-method realize-individual ((i category::has-attribute) &key)
+  (tr "Realizing has-attribute ~a" i)
+  ;; We have a three part relation here, what we produce depends on
+  ;; our grammatical function (statement, predication, modifier)
+  ;; which is largely determined by the slot we're filling.
+
+  ;; first just assume we're a modifier
+  (let* ((value (sp::value-of 'sp::value i)) ;; e.g. #<green "green" 2993>
+         ;; Using a word for the resource isn't defined because the dtn
+         ;; will get handled by general-dtn-bundle-driver which calls
+         ;; set-backpointer-of-root which insists on a node.
+         ;; /// could change that, but there is a lexicalized phrase
+         ;; available, albeit for a noun
+         ;;(word (word-for value 'adjective)) ;; an m-word
+         ;;(dtn (make-dtn :referent value
+         ;;               :resource word)
+         )
+    ;; But if we just return the individual for the value, then the
+    ;; realize method for an individual will identify its LP and use that.
+    ;; It is extremely 'bulky' to put a whole adjp phrase in the slot
+    ;; but not clear where the simplification should be.
+    value))
 
 
 ;;;-------------------------------------------------------------
