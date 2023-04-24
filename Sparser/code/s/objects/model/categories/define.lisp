@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2010-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2010-2023 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "define"
 ;;;   Module:  "objects;model:categories:"
-;;;  version:  March 2021
+;;;  version:  April 2023
 
 ;; initiated 7/16/92 v2.3
 ;; 8/5 added call to process rdata, 8/31 gated it by the field having
@@ -215,6 +215,9 @@
     
     (when restrictions
       (handle-variable-restrictions category restrictions))
+
+    (when lemma ;; just add the lemma to the plist
+      (note-lemma-property category lemma))
 
     (if rdata
       (setup-rdata category rdata)

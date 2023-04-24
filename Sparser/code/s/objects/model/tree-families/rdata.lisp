@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2014-2022 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2014-2023 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "rdata"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  March 2022
+;;;  version:  April 2023
 
 ;; initiated 8/4/92 v2.3, fleshed out 8/10, added more cases 8/31
 ;; 0.1 (5/25/93) changed what got stored, keeping around a dereferenced
@@ -568,6 +568,17 @@ Should mirror the cases on the *single-words* ETF."
   (:method (word (c category) pos)
     (setf (getf (get-tag :lemma c) pos) word)))
 
+(defun note-lemma-property (category lemma)
+  "Called from decode-category-parameter-list when there's a lemma.
+ It is logically part of setup-category-lemma: adding the lemma to
+ the category's plist. But by having it executed before we run
+ setup-rdata we will get the desired choice of word (i.e. the lemma)
+ when we make its lexical-resource for NLG."
+  (let ((pos (car lemma))
+        (word (cadr lemma)))
+    (when (stringp lemma) (setq lemma (resolve lemma)))
+    (setf (getf (get-tag :lemma category) pos) word)))
+
 (defun setup-category-lemma (category lemmata)
   "Lemmas are used when the name of a category is the same as some word,
    e.g. 'comparative', and the realization field is used to provide
@@ -583,6 +594,8 @@ Should mirror the cases on the *single-words* ETF."
        (let ((head (deref-rdata-word lemma category)))
          (when (stringp lemma) (setq lemma (resolve lemma)))
          (integrate-lemma-rdata category key lemma)
+         (when (slashed-category-name? category)
+           (replace-lexicalized-phrase category key lemma))
          (let ((rules
                 (without-comparatives
                   ;; adjective lemmas make for weird generated comparatives
@@ -590,6 +603,8 @@ Should mirror the cases on the *single-words* ETF."
            ;; n.b. call invokes make-corresponding-mumble-resource
            (setf (lemma category key) head) ;; store lemma on category
            (add-rules rules category)))))
+    
+  
 
 (defun integrate-lemma-rdata (category key lemma)
   "Copy the lemma data into the category's realization data.
