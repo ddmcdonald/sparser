@@ -76,11 +76,10 @@
 ;;; cataloging
 ;;;------------
 
-(or (boundp '*polyword-package*)
-    (defconstant *polyword-package*
-      (or (find-package :word)
-          (break "The :word package should have been defined ~
-                  by this point in the load"))))
+(defconstant *polyword-package*
+  (or (find-package :word)
+      (break "The :word package should have been defined ~
+                  by this point in the load")))
 
 
 (defvar *polywords-defined* nil

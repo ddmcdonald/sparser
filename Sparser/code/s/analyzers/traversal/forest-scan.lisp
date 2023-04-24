@@ -106,7 +106,7 @@
 
 (defun parse-all-options-in-region (start-pos end-pos &optional used-triples)
   "Rewritten as a loop following whack-a-rule-cycle pattern as in drivers/forest/edge-search"
-  (declare (special *executed-triples*))
+  (declare (special *rules-for-pairs* *executed-triples*))
   ;; trace goes here
   (clrhash *rules-for-pairs*)
   (clrhash *executed-triples*)

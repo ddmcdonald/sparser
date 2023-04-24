@@ -183,6 +183,7 @@
 (defun clear-traversal-state ()
   "Run by sentence-level-initializations which itself is run by
    scan-terminals-loop before it starts scanning."
+  (declare (special *quantifier-in-vg*))
   (setq *pending-conjunction* nil
         *pending-single-quote* nil
         *position-of-pending-open-paren* nil
