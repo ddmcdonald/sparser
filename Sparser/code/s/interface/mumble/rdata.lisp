@@ -1,9 +1,9 @@
 ;;; -*- Mode: Lisp; Syntax: Common-Lisp; Package: SPARSER; -*-
-;;; Copyright (c) 2016-2019 David D. McDonald. All Rights Reserved.
+;;; Copyright (c) 2016-2023 David D. McDonald. All Rights Reserved.
 ;;;
 ;;;     File: "rdata"
 ;;;   Module: "interface;mumble;"
-;;;  Version: November 2019
+;;;  Version: April 2023
 
 (in-package :sparser)
 
@@ -180,8 +180,7 @@ know how to realize the entire relation (category) that the individual
 instantiates. 
    If there is more than one possible realization we have to select
 among them on some basis. Presently (7/17) we can do this by part of speech
-and/or by which subcategorized arguments the individual binds. 
-|#
+and/or by which subcategorized arguments the individual binds. |#
 
 #+:mumble
 (defgeneric has-mumble-rdata (category &key pos)
@@ -690,6 +689,38 @@ have been filled in if the rdata includes an etf and a word.
       (when word
         (make-corresponding-mumble-resource word pos-tag category)))))
 
+(defgeneric slashed-category-name? (category)
+  (:documentation "We tend to use a slash to indicate instances of
+ a lexical category with multiple readings, e.g. 'block/object'.
+ These create a problem for make-corresponding-lexical-resource if
+ the category's lemma hasn't been defined yet.")
+  (:method ((c category))
+    (slashed-category-name? (symbol-name (cat-symbol c))))
+  (:method ((pname string))
+    (position #\/ pname)))
+
+(defun replace-lexicalized-phrase (category pos lemma)
+  "The 'word' used for the lp has a slash in it. If we have already run
+ make-corresponding-lexical-resource for it, it will have make a word
+ with the slash in it and created a lexicalized phrase. ///With a better
+ sense of the actual timing we could avoid a lots of steps here,
+ but in the interim we'll check for the incorrect LP and if it is there
+ delete it. And make the correct LP using the word supplied by the lemma."
+  ;;(break "replace-lp for ~a" category)
+  (let* ((s-pname (symbol-name (cat-symbol category))) ; "BLOCK/OBJECT"
+         (s-word (word-named s-pname))
+         (m-pos (mumble-pos pos)))
+    (unless s-word ;; replicates clause in make-corresponding... above
+      (setq s-word (make-word :symbol (cat-name category)
+                              :pname (string-downcase
+                                      (symbol-name (cat-name category))))))
+    (push-debug `(,s-word ,m-pos))
+    (let ((m-word (get-mumble-word-for-sparser-word s-word m-pos)))
+      (push-debug `(,m-word))
+      (when (m::get-lexicalized-phrase m-word m-pos)
+        (m::delete-lexicalized-phrase m-word m-pos))
+      (make-corresponding-mumble-resource lemma pos category))))
+
 
 ;;--- general entry point
 
@@ -849,4 +880,6 @@ have been filled in if the rdata includes an etf and a word.
     ((:conjunction :subordinate-conjunction) 'm::conjunction)
     (:number 'm::number)
     (:word nil)))
+
+
 
