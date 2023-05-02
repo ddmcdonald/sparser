@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2011-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2011-2023 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "fn word routine"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   November 2021
+;;;   Version:   May 2023
 
 ;; 0.1 (12/17/92 v2.3) redid the routine so it was caps insensitive and handled
 ;;      bracketing.
@@ -38,11 +38,9 @@
 
 (defun define-function-word (string
                              &key ((:brackets bracket-symbols))
-                               ((:form name-of-form-category)))
+                                  ((:form name-of-form-category)))
   "Defines the word, notes its grammatical form, and assigns
    its brackets. Does not create any rules for it."
-
-
   (let ((word (etypecase string
                 ((or word polyword)
                  (update-file-location string)
@@ -63,13 +61,13 @@
   (unless form
     (setq form 'subordinate-conjunction))
   (define-function-word string
-    ;; Keep brackets here and in assign-brackets-to-standalone-word
+    ;; Keep the brackets here and in assign-brackets-to-standalone-word
     ;; in sync.
     :brackets '( ].phrase  phrase.[ )
     :form form))
 
 
-;;--- auxiliaries
+;;--- auxiliary
 
 (defun resolve-form-category (form-label)
   (let ((category
@@ -215,22 +213,31 @@
              category-name existing loc))))
 
       (let* ((effective-rule-label (or rule-label category-name))
+             (effective-bindings (if bindings
+                                   (append `(,word-variable ,word) bindings)
+                                   `(,word-variable ,word)))
              (category ;; for the function word
-              ;;(or (category-named category-name)
-                  (define-category/expr category-name  ;; e.g. 'only'
-                      `(:specializes ,super-category
-                        :instantiates nil
-                        :mixins ,mixins
-                        :binds ,binds
-                        :rule-label ,effective-rule-label
-                        :bindings (,word-variable ,word)
-                        :realization ,realization
-                        :documentation ,documentation)))) ;;)
+               (define-category/expr category-name  ;; e.g. 'only'
+                   `(:specializes ,super-category
+                     :instantiates nil
+                     :mixins ,mixins
+                     :binds ,binds
+                     :rule-label ,effective-rule-label
+                     :bindings ,effective-bindings
+                     :realization ,realization
+                     :documentation ,documentation))))
         
         (let* ((word-key (intern (symbol-name word-variable)
                                  (find-package :keyword)))
-               (instance-form `(define-individual ',category-name
-                                   ,word-key ,word))
+               (instance-form
+                 (if bindings ;;/// expand to general 
+                   (let ((attr-name (car bindings))
+                         (attr-value (cadr bindings)))
+                     `(define-individual ',category-name
+                        ,word-key ,word
+                        ',attr-name ,attr-value))
+                   `(define-individual ',category-name
+                      ,word-key ,word)))
                i)
           (setq i (eval instance-form))
           
