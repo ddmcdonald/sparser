@@ -2,7 +2,7 @@
 
 ;;; Generated file of category definitions for from word-lists
 ;;; Written 9/13/21 16:0:47
-;; Hand edited 6/13/22
+;; Hand edited 6/13/22, 4/24/23
 
 (in-package :sparser)
 
@@ -16915,7 +16915,7 @@
   :super-category (quote modifier ))
 
 
-
+#+ignore ;; don't shadow the row that's made out of blocks
 (define-category row-endurant
   :specializes endurant
   :instantiates :self
