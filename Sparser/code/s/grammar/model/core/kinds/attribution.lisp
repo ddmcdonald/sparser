@@ -1,9 +1,9 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; Package: sparser; -*-
-;;; Copyright (c) 2010-2021 David D. McDonald 
+;;; Copyright (c) 2010-2023 David D. McDonald 
 ;;;
 ;;;            "attribution"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  October 2021
+;;;  version:  May 2023
 
 (in-package :sparser)
 
@@ -331,7 +331,7 @@ be added to attribute so it knows how to handle the individuals.
   ;; of the individual.
   (let* ((type-category (itype-of attribute-value))
          (attribute ;; then we look up the attribute
-          (value-of 'attribute type-category)))
+           (value-of 'attribute type-category))) ;; e.g. #<ref-category COLOR>
 
     ;; If the attribute-value is a collection then we've no
     ;; way (yet) to reach into the collection and determine
@@ -340,9 +340,9 @@ be added to attribute so it knows how to handle the individuals.
     ;; we'd have a bigger issue: "the tall and red block"
     (if attribute
       (let* ((variable ;; retrieve the lambda variable
-              (value-of 'var attribute))
-             (type-restriction-on-head (var-category variable))
-             (v/r-on-value (var-value-restriction variable)))
+              (value-of 'var attribute)) ;; #<variable color>
+             (type-restriction-on-head (var-category variable)) ;; #<ref-category HAS-COLOR>
+             (v/r-on-value (var-value-restriction variable))) ;; #<ref-category COLOR>
         ;;/// If we are going to worry about those two restrictions
         ;; as a condition on the applicablity of the rule, then
         ;; we need to package up the checks as functions we can
