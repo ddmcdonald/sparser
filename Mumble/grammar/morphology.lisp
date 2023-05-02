@@ -58,6 +58,7 @@
             ;; which isn't integrated into the governing case machinery.
             ;; Situation is pathalogical (pronominalizing an adjective),
             ;; so punting to a default
+            ;; Fixed 4/26/23 by adding adjp-head to the never-proz. list
             'nominative)))))
 
 (defun case-governing-labels (slot-labels)
