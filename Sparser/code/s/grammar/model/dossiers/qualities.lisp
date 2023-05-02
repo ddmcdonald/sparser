@@ -1,7 +1,7 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 2017-2019 David D. McDonald  -- all rights reserved
 ;;;
-;;;      File:   "modifiers"
+;;;      File:   "qualities"
 ;;;    Module:   "model;dossiers:"
 ;;;   Version:   September 2019
 
