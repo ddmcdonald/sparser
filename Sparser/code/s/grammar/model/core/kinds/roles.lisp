@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2017-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2017-2019,2023 David D. McDonald  -- all rights reserved
 ;;;
-;;;     File:  "predicate"
+;;;     File:  "roles"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  November 2019
+;;;  version:  June 2023
 
 ;; To move all the standard thematic roles up to a place that
 ;; loads early so they're available for restriction as lower levels
@@ -29,6 +29,13 @@
 (define-mixin-category takes-adverb
   :specializes thematic-role
   :binds ((adverb)))
+
+(define-mixin-category with-frequency
+  :specializes thematic-role
+  :binds ((frequency))
+  :documentation "More akin to adds-relation than thematic
+    role since the frequency with which something happens
+    is usually done by an adjunct.")
 
 (define-mixin-category with-attribute
   :specializes thematic-role

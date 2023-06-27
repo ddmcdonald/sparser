@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2019,2023 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "processes"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  February 2019
+;;;  version:  June 2023
 
 ;; Broken out from upper-model and added long definitions 3/31/14.
 ;; 9/24/14 Moved event above perdurant as a hack to ensure that
@@ -72,6 +72,7 @@
   :mixins (takes-tense-aspect-modal
            temporally-localized
            takes-adverb
+           with-frequency
            has-location)
   :binds ((participant) ;; is this one still useful given mixed-in roles?
           (time)
