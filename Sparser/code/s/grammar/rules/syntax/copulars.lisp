@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2023 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "copulars"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  December 2020
+;;;  Version:  May 2023
 
 (in-package :sparser)
 
@@ -97,6 +97,11 @@
   "For accumulating the unique set of sentences where the rule
    applies. For the snapshots as of 8/28/16 there were 80.")
 
+;; 5/16/23 Grep does not find any instances of this symbol
+;;   anywhere other than here, which is puzzling since the
+;;  consumer of the VP this constructs (assimilate-subject)
+;;  is looking for this label on the edge, and the rules that
+;;  follow are looking for that type.
 (defparameter *construct-copular-scafold* nil
   "If non-nil, make-copular-adjective will assemble and return
    a copular-predication individual. Otherwise we are relying on
@@ -128,31 +133,32 @@
        ;; "to be dominant" is not a VP, but is a to-comp
        (revise-parent-edge :form category::to-comp)
        (revise-parent-edge :form category::vp))
-     
-     (if *construct-copular-scafold*
-       (let ((i (find-or-make-individual
-                 'copular-predication :predicate copula :value adjective)))
-         ;; Note that edge label deliberately is different.
-         ;; The idea is have edge category labels that distinguish
-         ;; between the vp and the eventual full clause.
-         ;;/// this reads oddly in an analysis, so consider just
-         ;; going with the edge label of the adjp instead
-         (revise-parent-edge :category category::copular-predicate)        
-         i)
-     
-       (else
-         ;; The adjective should subcategorize via :s for the
-         ;; sensible subjects it can compose with.
-         (let* ((i (specialize-object adjective 'state))
-                (j (add-tense/aspect-info-to-head copula i))
-                ;; DAVID -- please note
-                ;; we NEED to maintain the copula -- as in
-                ;; "ASPP2 protein levels remained high after CHX treatment"
-                ;; where the "copula" is "remained"
-                (k (bind-dli-variable 'copula copula j)))
-           (revise-parent-edge :category (itype-of k)
-                               :referent k)
-             k ))))))
+
+     (let ((attribute? (value-of 'attribute adjective)))
+       (cond
+         (;; *construct-copular-scafold* 5/16/23 retaining this for reference
+          attribute? ;; "should be red"
+          (let ((i (find-or-make-individual
+                    'copular-predication :predicate copula :value adjective)))
+            ;; Note that edge label deliberately is different.
+            ;; The idea is have edge category labels that distinguish
+            ;; between the vp and the eventual full clause.
+            ;;/// this reads oddly in an analysis, so consider just
+            ;; going with the edge label of the adjp instead
+            (revise-parent-edge :category category::copular-predicate)        
+            i))
+         (t
+          ;; The adjective should subcategorize via :s for the
+          ;; sensible subjects it can compose with.
+          ;; Note that we should never drop the copula portion
+          ;; since it carries tense and can be richer verb like 'remain'
+          ;; "ASPP2 protein levels remained high after CHX treatment"
+          (let* ((i (specialize-object adjective 'state))
+                 (j (add-tense/aspect-info-to-head copula i))
+                 (k (bind-variable 'copula copula j)))           
+            (revise-parent-edge :category (itype-of k)
+                                :referent k)
+            k )))))))
 
 #| "... being high ..."
   The edge over "being" is an instance of 'be' with its progressive
