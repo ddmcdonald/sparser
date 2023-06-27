@@ -1,5 +1,10 @@
 ;;; -*- Mode: Lisp; Syntax: COMMON-LISP; Package: MUMBLE -*-
+;;; Copyright (c) 2023 David D. McDonald. All Rights Reserved.
 ;;; Copyright (c) 2016-2017 SIFT LLC. All Rights Reserved.
+;;;
+;;;     File: "mumble"
+;;;   Module: "~/sparser/test/"
+;;;  Version: April 2023
 
 (in-package :mumble)
 
