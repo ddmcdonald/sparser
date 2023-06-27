@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1994,2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1994,2011-2013,2023 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "grammar;model:core:adjuncts:frequency:"
-;;;  Version:  0.3 May 2013
+;;;  Version:  May 2023
 
 ;; initiated 5/16/93 v2.3
 ;; 0.1 (6/4) drastically reconceptualized how it works, 9/21 moved to [adjuncts]
@@ -43,7 +43,9 @@
 ;;;----------
 
 (defun define-event-frequency (string)
-  (define-adverb string :super-category 'frequency-of-event))
+  (define-adverb string
+    :super-category 'frequency-of-event
+    :rule-label 'frequency-of-event))
 
 
 
