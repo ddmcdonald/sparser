@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2015-2021 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2015-2023 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "examples"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: January 2021
+;;; version: May 2023
 
 ;; Broken out from Biology-workspace 10/8/15
 
@@ -12,6 +12,14 @@
 ;;;---------------
 ;;; Example texts
 ;;;---------------
+
+;; Anonymous email from 10/28/13
+"Apple Reports Fourth Quarter Results; iPhone Sales Grow 26 Percent to Set New September Quarter Record"
+"Apple today announced financial results for its fiscal 2013 fourth quarter ended September 28, 2013. The Company posted quarterly revenue of $37.5 billion and quarterly net profit of $7.5 billion, or $8.26 per diluted share. These results compare to revenue of $36 billion and net profit of $8.2 billion, or $8.67 per diluted share, in the year-ago quarter. Gross margin was 37 percent compared to 40 percent in the year-ago quarter. International sales accounted for 60 percent of the quarter’s revenue. The Company sold 33.8 million iPhones, a record for the September quarter, compared to 26.9 million in the year-ago quarter. Apple also sold 14.1 million iPads during the quarter, compared to 14 million in the year-ago quarter. The Company sold 4.6 million Macs, compared to 4.9 million in the year-ago quarter."
+
+;; The Guardian morning newsletter 5/4/23
+"Shell makes record first-quarter profits of nearly $10bn"
+"Royal Dutch Shell made record first-quarter profits of more than $9.6bn in the first three months of this year, even as oil and gas prices tumbled from last year’s highs. The better-than-expected adjusted earnings topped its previous first-quarter profit record set last year at $9.1bn for the same period, and were well above the $7.96bn predicted by industry analysts. Europe’s biggest oil and gas company will now offer shareholders $4bn in share buybacks over the next three months. The Anglo-Dutch energy company said profits rose thanks to its trading teams which were able to mitigate against the falling market price for oil and gas. Global oil prices averaged $81.7 a barrel in the first quarter of this year, according to Shell, down from $102.2 a barrel in the same period a year earlier, when Russia’s invasion of Ukraine ignited a surge in oil and gas markets."
 
 ;; NYT CoV newsletter 3/19/21
 "Kyiv, the Ukrainian capital, is about to become the latest European city to go into lockdown. Just 0.2 percent of Ukraine’s population has been inoculated."
