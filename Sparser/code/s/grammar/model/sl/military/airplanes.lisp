@@ -1,13 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2022 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2022-2023 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "airplanes"
 ;;;   Module:  "model/sl/military
-;;;  version:  July 2022
+;;;  version:  June 2023
 
 ;; initiated 7/10/22 for NGA prototyping
 
 (in-package :sparser)
+
+;; Specific aircraft designators, kinds, and attributes are in
+;; grammar/model/dossiers/military-aircraft.lisp
 
 ;;--- component types
 
@@ -41,9 +44,16 @@
  which presumably have technical interpretations for aircraft but
  this is enough to make the semantic grammar work")
 
+(define-category aircraft-property-value
+  :specializes attribute-value
+  :binds ((attribute))
+  :documentation "Formal category to make attribution happy by
+ representing particular aircraft properties")
+
 (defun define-aircraft-property (string)
-  (define-function-term string 'adjective
-    :super-category 'aircraft-property
+  (define-adjective string
+    :super-category 'aircraft-property-value
+    :bindings '(attribute 'aircraft-property)
     :rule-label 'aircraft-property))
 
 
