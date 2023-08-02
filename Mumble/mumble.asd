@@ -1,6 +1,16 @@
 ;;; -*- Mode: Lisp; Syntax: Common-Lisp; -*-
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved.
 ;;; Copyright (c) 2016-2017 SIFT LLC. All Rights Reserved.
+;;; Copyright (c) 2023 David D. McDonald  -- all rights reserved
+;;;
+;;;     File: mumble.asd
+;;;   Module: /sparser/Mumble/
+;;;  Version: August 2023
+
+;; This is invoked as one of the modules that the Sparser system
+;; depends on. The aspects of Mumble that depend on Sparser being
+;; loaded are packaged in the defsystem :mumble/sparser -- see the
+;; description at the end of mumble/documentation/overview.lisp.
 
 (defsystem :mumble
   :description "The Mumble-86 natural language generation system."
@@ -92,16 +102,7 @@
   :perform (load-op :after (o c) (pushnew :mumble *features*))
   :in-order-to ((test-op (test-op :mumble/tests))))
 
-(defun do-mumble-tests (&aux (*package* (find-package :mumble)))
-  "Run the Mumble regression tests in the MUMBLE package."
-  (uiop:symbol-call :rt :do-tests))
-
-(defsystem :mumble/tests
-  :serial t
-  :depends-on (:mumble)
-  :components ((:file "../test/rt")
-               (:file "../test/mumble"))
-  :perform (test-op (o c) (do-mumble-tests)))
+;;--- Sparser-dependent operations
 
 (defsystem :mumble/sparser
   :description "Mumble components that depend on Sparser."
@@ -114,8 +115,25 @@
                (:file "interface/sparser/binding-helpers")
                (:file "interface/sparser/binding-centric")))
 
+;;--- tests
+
+(defun do-mumble-tests (&aux (*package* (find-package :mumble)))
+  "Run the Mumble regression tests in the MUMBLE package."
+  (uiop:symbol-call :rt :do-tests))
+
+(defsystem :mumble/tests
+  :description "Tests Mumble's base level mechanics. Creating different
+    types of objects to make sure they are still functioning. Also exercises
+    the basic aspects of the grammar using only the basic machinery."
+  :depends-on (:mumble)
+  :serial t
+  :components ((:file "../test/rt")
+               (:file "../test/mumble"))
+  :perform (test-op (o c) (do-mumble-tests)))
+
+
 (defsystem :mumble/biology
-  :description "Generation for the biological domain."
+  :description "Tests standard reference sentences for the biological domain."
   :depends-on (:sparser/biology :mumble/sparser)
   :components ((:file "interface/sparser/binding-bio-helpers"))
   :in-order-to ((test-op (test-op :mumble/biology-tests))))
@@ -125,12 +143,13 @@
   :components ((:file "../test/mumble-biology"))
   :perform (test-op (o c) (do-mumble-tests)))
 
+
 (defsystem :mumble/blocks-world
-  :description "Generation for the blocks world."
+  :description "Tests sentences and relationships for the blocks world."
   :depends-on (:sparser/blocks-world :mumble/sparser)
   :in-order-to ((test-op (test-op :mumble/blocks-world-tests))))
 
 (defsystem :mumble/blocks-world-tests
-  :depends-on (:mumble/blocks-world :mumble/tests)
+  :depends-on (:mumble/tests)
   :components ((:file "../test/mumble-blocks-world"))
   :perform (test-op (o c) (do-mumble-tests)))

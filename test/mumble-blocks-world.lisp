@@ -1,9 +1,9 @@
 ;;; -*- Mode: Lisp; Syntax: Common-Lisp; Package: MUMBLE -*-
-;;; Copyright (c) 2016-2019 SIFT LLC. All Rights Reserved.
+;;; Copyright (c) 2016-2019,2023 SIFT LLC. All Rights Reserved.
 ;;;
 ;;;     File:  "mumble-blocks-world"
 ;;;   Module:  /sparser/test/
-;;;  Version:  November 2019
+;;;  Version:  August 2023
 
 (in-package :mumble)
 
@@ -73,6 +73,7 @@
   "we don't have enough green blocks")
 
 ;; 11/11/19 Actual value: "make the the steps tops red".
+;; 8/1/23 Actual value: "make the tops red"
 ;;  music sense of "steps".
 ;; Funny parse, [the steps] is in two places
 ;; Predicate is the whole the tops of the steps red
@@ -88,16 +89,21 @@
   (mumble-says "Put a green block on the table.")
   "put a green block on the table")
 
+;; 8/1/23 No analysis for "another block" + "next to it"
+;; Actual value: "put another block"
 (deftest (say put another block next to it)
   (mumble-says "Put another block next to it.")
   "put another block next to it")
 
+;; 8/1/23 Actual value: "now".
+;; No analysis for "a red block" + "next to that"
 (deftest (say add red block next to that block)
   (mumble-says "Now add a red block next to that block.")
   "now add a red block next to that block")
 
 ;; 11/11/19 Actual value: "now put a green block on top of the block".
 ;;  The ordinal ("first") is there but Archie rules are ignoring it
+;; 8/1/23 Actual value: "now".
 (deftest (say put green block on first block)
   (mumble-says "Now put a green block on top of the first block.")
                "now put a green block on top of the first block")
@@ -106,6 +112,7 @@
   (mumble-says "Put a red block on the bottom middle green block.")
   "put a red block on the bottom middle green block")
 
+;; 8/1/23 Actual value: "make a row"
 (deftest (say make row of two green blocks)
   (mumble-says "Make a row of two green blocks.")
   "make a row of two green blocks")
@@ -129,6 +136,7 @@
 ;;  It's pronominalizing the second instance of 'green'
 ;;  which gets through because of ugly patch in m::case-from-labels
 ;;  Need to block the pronoun choice further upstream
+;; Fixed 4/26/23 now blocked in should-be-pronominalized-in-present-context?
 (deftest (say put another at end)
   (mumble-says "Put another green block on the green block at the end of the row.")
   "put another green block on the green block at the end of the row")
@@ -150,14 +158,20 @@
   (mumble-says "The top block should be red.")
   "the top block should be red")
 
+;; 8/1/23  No analysis for "a row" + "of three blue blocks"
+;; Actual value: "put a row on the table"
 (deftest (say put row on table)
   (mumble-says "Put a row of three blue blocks on the table.")
   "put a row of three blue blocks on the table")
 
+;; 8/1/23 No analysis for "a row" + "of two blocks"
+;; Actual value: "put a row on top"
 (deftest (say put row on top)
   (mumble-says "Put a row of two blocks on top.")
   "put a row of two blocks on top")
 
+;; 8/1/23 No analysis for "a row" + "of two green blocks"
+;; Actual value: "put a row on top of the bottom row"
 (deftest (say put row on bottom row)
   (mumble-says "Put a row of two green blocks on top of the bottom row.")
                "put a row of two green blocks on top of the bottom row")
@@ -177,6 +191,9 @@
   (mumble-says "Put a row of two blocks on top of the left end of the bottom row.")
   "put a row of two blocks on top of the left end of the bottom row")
 
+;; 8/1/23 No analysis for "a stack" + "of two red blocks"
+;; No analysis for "a stack" + "of two red blocks on the table"
+;; Actual value: "put a stack".
 (deftest (say put stack on table)
   (mumble-says "Put a stack of two red blocks on the table.")
   "put a stack of two red blocks on the table")

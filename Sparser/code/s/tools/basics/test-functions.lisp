@@ -53,8 +53,8 @@
     (declare (special *suppress-indiv-uids*))
     (setq *sentences* sentences)
     (reset-test)
-    (if (null numbers)
-	(setq numbers (loop for i from 1 to (length sentences) collect i)))
+    (when (null numbers)
+      (setq numbers (loop for i from 1 to (length sentences) collect i)))
     (loop for i in numbers
        do
 	 (sem-test i))))
@@ -128,7 +128,8 @@
                       *end-of-sentence-display-operation*))
     (cond
       (quiet
-       (if no-syn-tree (format stream "~%~%____________________________~%~s~%~%" sent))
+       (when no-syn-tree
+         (format stream "~%~%____________________________~%~s~%~%" sent))
        (pp sent)
        (unless multi-sent
          (display-sent-results sent corpus n :stream stream)))
@@ -186,7 +187,7 @@
 
 (defun get-sentence (corpus n)
   (declare (special *pathway-comments* *erk-abstract* *gyori* *load-test-sents*
-                       *overnight-sentences* *comments* *dynamic-model-sents*))
+                    *overnight-sentences* *comments* *dynamic-model-sents*))
   (let ((sentences
 	 (ecase corpus
 	   ((:overnight overnight) *overnight-sentences*)
