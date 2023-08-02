@@ -72,7 +72,7 @@
   :mixins (takes-tense-aspect-modal
            temporally-localized
            takes-adverb
-           with-frequency
+           with-frequency ;; answers "how often"
            has-location)
   :binds ((participant) ;; is this one still useful given mixed-in roles?
           (time)
