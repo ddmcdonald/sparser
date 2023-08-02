@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2022 David D. McDonald -- all rights reserved
+;;; copyright (c) 2014-2023 David D. McDonald -- all rights reserved
 ;;;
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  April 2023
+;;;  Version:  July 2023
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -1323,7 +1323,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
               (subcategorized-variable vg :adv adverb)))
 
         #| Really should diagnose among
-        (time) (location) (purpose) (circumstance) (manner) |#
+        (time) (location) (purpose) (circumstance) (manner) and bind the
+         corresponding variable in perdurant. |#
         (cond
           ((or (and (itypep vg 'be);; block "THERE IS"
                     (itypep adverb 'deictic-location))
@@ -1333,6 +1334,9 @@ there was an edge for the qualifier (e.g., there is no edge for the
            (cond
              (variable-to-bind t)
              ((has-adverb-variable? vg vg-phrase adverb) t)
+             ((and (itypep adverb 'frequency-of-event)
+                   (itypep vg 'with-frequency))
+              t)
              ((and (itypep adverb 'approximator)
                    (itypep vg 'takes-adverb)) ; any perdurant
               t)
@@ -1355,7 +1359,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
                       (current-string)))
               nil)))
           (variable-to-bind
-           (bind-dli-variable variable-to-bind adverb vg))
+           (bind-variable variable-to-bind adverb vg))
           ((member (cat-name adverb) *subordinating-adverbs*) ;; "consequently"
            (bind-dli-variable 'subordinate-conjunction adverb vg))
           ((is-basic-collection? vg)
@@ -1365,6 +1369,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
                 'adverb)
             adverb
             vg))
+          ((itypep adverb 'frequency-of-event)
+           (bind-variable 'frequency adverb vg))
           ((itypep adverb 'approximator)
            (bind-variable 'adverb adverb vg))
           ((has-adverb-variable? vg vg-phrase adverb)
@@ -1427,6 +1433,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
          ((and (itypep adverb 'intensifier) ;; compose will apply
                (itypep adj-phrase 'qualifiable))
           t)
+         ((itypep adverb 'frequency-of-event) t) ;; modified method will apply
          ((has-adverb-variable? adj adj-phrase adverb) t)
          ((and (is-basic-collection? adj)
                (value-of 'items adj) ;; is null for hyphenated-triple
@@ -1450,18 +1457,20 @@ there was an edge for the qualifier (e.g., there is no edge for the
        (apply-valid-method compose adverb adj)) ;; "very unlikely"
 
       (variable-to-bind
-       (bind-dli-variable variable-to-bind adverb adj))
+       (bind-variable variable-to-bind adverb adj))
       ((member (cat-name adverb) *subordinating-adverbs*)
-       (bind-dli-variable 'subordinate-conjunction adverb adj))
+       (bind-variable 'subordinate-conjunction adverb adj))
       ((is-basic-collection? adj)
-       (bind-dli-variable
+       (bind-variable
         (or (subcategorized-variable 
              (car (value-of 'items adj)) :adv adverb)
             'adverb)
         adverb
         adj))
+      ((itypep adverb 'frequency-of-event)
+       (apply-valid-method modified adverb adj-phrase))
       ((has-adverb-variable? adj adj-phrase adverb)
-       (setq adj (bind-dli-variable 'adverb adverb adj)))
+       (setq adj (bind-variable 'adverb adverb adj)))
       (t ;; ignore the adverb
        adj))))
 
