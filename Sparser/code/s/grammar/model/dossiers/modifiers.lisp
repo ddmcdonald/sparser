@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2023 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "modifiers"
 ;;;    Module:   "model;dossiers:"
-;;;   Version:   July 2022
+;;;   Version:   June 2023
 
 ;; Created 1/4/13 to group together comparatives, approximators, etc in
 ;; one place so they're easier to keep track of. (1/9/13) Moved in all
@@ -17,9 +17,9 @@
 ;; Commenting out some word for collision with stronger forms in bio
 ;; through 4/20/15 and beyond.
 
-
 (in-package :sparser)
 
+(defun define-modifiers ()) ;; just for meta-dot retrieval
 
 ;;;----------------------
 ;;; Discourse adverbials
