@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; copyright (c) 2013-2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2023  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File: "create-categories"
 ;;;    Module: "grammar;rules:SDM&P:
-;;;   Version: July 2019
+;;;   Version: July 2023
 
 ;; Initiated 2/9/07. Elaborated through 8/6. Refactored the head form
 ;; elevator 2/4/08. Added cases through 4/24, then through 6/16.
@@ -130,6 +130,8 @@
           category::demonstrative) ;; "that"
 	 (setf (edge-form edge) category::np))
 
+        ((category::adjg)
+         (setf (edge-form edge) category::adjp))
         
 	((category::verb 
           category::verb+s 
