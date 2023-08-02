@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993,1994 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1994,2023 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "aux rules"
 ;;;   Module:  "grammar;model:core:adjuncts:frequency:"
-;;;  Version:  0.1 July 1994
+;;;  Version:  July 2023
 
 ;; initiated 5/16/93 v2.3
 ;; 0.1 (6/4) drastically reconceptualized how it works, 9/21 moved to [adjuncts]
@@ -12,60 +12,75 @@
 
 (in-package :sparser)
 
-
 ;;;------------
 ;;; form rules
 ;;;------------
 
-;;---- modal + adv
-
-(def-form-rule (modal frequency-of-event)
-  :referent (:head left-edge
-             :bind (frequency right-edge)))
-
-
 ;;---- adv + verb
 
-(def-form-rule (frequency-of-event verb)
-  :referent (:head right-edge
-             :bind (frequency left-edge)))
-
-(def-form-rule (frequency-of-event verb+present)
-  :referent (:head right-edge
-             :bind (frequency left-edge)))
-
-(def-form-rule (frequency-of-event verb+s)
-  :referent (:head right-edge
-             :bind (frequency left-edge)))
-
-(def-form-rule (frequency-of-event verb+ed)
-  :referent (:head right-edge
-             :bind (frequency left-edge)))
-
-(def-form-rule (frequency-of-event verb+ing)
-  :referent (:head right-edge
-             :bind (frequency left-edge)))
+(loop for vv in '((verb+ed vg+ed)
+                  (verb+ing vg+ing)
+                  (verb+present vg)
+                  (verb+s vg)
+                  (verb vg))
+    do
+     (eval
+      `(def-form-rule (frequency-of-event ,(first vv))
+        :head :right-edge
+        :form ,(second vv)
+        :referent (:function interpret-adverb+verb left-edge right-edge))))
 
 
 ;;---- verb + adv
 
-(def-form-rule (verb frequency-of-event)
-  :referent (:head left-edge
-             :bind (frequency right-edge)))
+(loop for vv in '((verb+ed vg+ed)
+                  (verb+ing vg+ing)
+                  (verb+present vg)
+                  (verb+s vg)
+                  (verb vg)
+                  (modal modal))
+    do
+     (eval
+      `(def-form-rule (,(first vv) frequency-of-event)
+        :head :right-edge
+        :form ,(second vv)
+        :referent (:function interpret-adverb+verb right-edge left-edge))))
 
-(def-form-rule (verb+present frequency-of-event)
-  :referent (:head left-edge
-             :bind (frequency right-edge)))
 
-(def-form-rule (verb+s frequency-of-event)
-  :referent (:head left-edge
-             :bind (frequency right-edge)))
+;;----adv + adjective   "never tall"
 
-(def-form-rule (verb+ed frequency-of-event)
-  :referent (:head left-edge
-             :bind (frequency right-edge)))
+(deftrace :freq+attr (adv attr)
+  (when *trace-methods*
+    (trace-message "Method: freq(~a) + attr(~a)"
+                   adv attr)))
 
-(def-form-rule (verb+ing frequency-of-event)
-  :referent (:head left-edge
-             :bind (frequency right-edge)))
+(def-k-method modified ((adv category::frequency-of-event)
+                        (head category::attribute-value)) ; vs. individual
+  "Look at the edge to the immediate left (vs initiating a sesarch).
+ If it takes a frequency then bind that slot to the event-frequency
+ individual and don't worry about moving edges around or any such.
+ Otherwise drop the modifier with a warning or maybe bind the modifier
+ variable on top and collect the sentences"
+  (tr :freq+attr adv head)
+  (if *subcat-test*
+    t
+    (let* ((parent (parent-edge-for-referent))
+           (start-pos (pos-edge-starts-at parent)))
+      (multiple-value-bind (left-edge pos-after multiple?)
+          (next-treetop/leftward start-pos)
+        (let ((i (edge-referent left-edge)))
+          (if (itypep i 'with-frequency)
+            (let ((j (bind-variable 'frequency adv i)))
+              j)
+            (else 
+              (warn-or-error
+               "Edge to left of event-frequency adjp is not perdurant.~
+              ~%adjp-edge: ~a  leftward-edge ~a~%in ~a"
+               parent left-edge (full-current-string))
+              head)))))))
+
+(def-form-rule (frequency-of-event adjective)
+  :head :right-edge
+  :form adjp
+  :referent (:function interpret-adverb+adjective left-edge right-edge))
 
