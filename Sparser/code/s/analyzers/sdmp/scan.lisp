@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; copyright (c) 2013-2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2023  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File: "scan"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: November 2019
+;;;   Version: June 2023
 
 ;; Initiated 2/9/07. Completely redone starting 1/21/13. Adding a 
 ;; simpler variation 4/1/13. Which uses make-individual-for-dm&p 4/4
@@ -164,7 +164,7 @@ to make any semantic or form edges that the grammar dictates.
                      ((member 'vg (chunk-forms *current-chunk*))
                       category::vg)
                      ((member 'adjg (chunk-forms *current-chunk*))
-                      category::adjective)
+                      category::adjg)
                      (t (error "strange call to sdm-span-segment"))))
                   ((eq start-pos *left-segment-boundary*)
                    category::np)
