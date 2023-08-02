@@ -23,3 +23,33 @@ general-np-bundle-driver (in Mumble/interface/bundles/bundle-drivers.lisp)
   -> should-be-pronominalized-in-present-context(dtn)
      ;; If it makes a non-nil return the value will be
      ;; a symbol that names the rationale for using a pronoun
+
+* Debugging
+
+m> (current-position)
+#<slot adjp-head>
+m> *current-phrasal-root*
+#<phrasal-context adjp>
+m> (d *)
+#<phrasal-context adjp>
+  [structure-object]
+
+Slots with :instance allocation:
+  postprocessed?                 = t
+  name                           = adjp
+  storage-type                   = nil
+  minimal-construction-function  = nil
+  construction-macro             = nil
+  type-predicate                 = nil
+  setters                        = nil
+  mcatalog                       = nil
+  properties                     = nil
+  postprocessing-fn              = nil
+  re-definition-fn               = nil
+  node                           = #<phrasal-root adjp>
+  position-table                 = ((adjp-head . #<slot adjp-head>) (adjp . #<phrasal-root adjp>))
+  available-aps                  = ((#<splicing-attachment-point adjp-prep-complement>..
+  state                          = nil
+  original-rspec                 = #<dtn for #<has-attribute 11487>>
+  objects-referenced             = nil
+#<phrasal-context adjp>
