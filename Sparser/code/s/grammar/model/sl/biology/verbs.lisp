@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2014-2017 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2014-2023 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "verbs1"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: January 2017
+;;; version: July 2023
 
 ;; verbs initiated 7/23/14 by lifting verbs from NFkappaB experiment. Continued
 ;; through 12/3/14.
@@ -1412,9 +1412,12 @@
 (define-category undergo :specializes other-bio-process
   :binds ((process (:or bio-process  activity-with-a-purpose)))
   :realization 
-  (:verb "undergo" 
-         :etf (svo)
-         :o process))
+     (:verb ("undergo" :past "underwent")
+      :etf (svo)
+      :o process))
+;; From article "PMID22252115"
+;; "From Aug. 2009 to Jun. 2010, 65 patients with carcinoma of
+;;  esophagogastric junction underwent surgical resection.
 
 
 ;; base form is "underlie" though...
