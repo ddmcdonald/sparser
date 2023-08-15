@@ -3,7 +3,7 @@
 
 ;;;    File: "binding-centric"
 ;;;  Module: "Mumble/interface/sparser/"
-;;; Version: November 2019
+;;; Version: August 2023
 
 (in-package :mumble)
 
@@ -20,7 +20,8 @@
 
 (sp::def-k-function realize-individual (i &key)
   (:documentation "Realize a Sparser individual. Specific categories 
-    get specialized k-methods. (See examples in binding-helpers.lisp)")
+    get specialized k-methods which will take priority over this path.
+    See examples in binding-helpers.lisp" )
   (:method (i &key)
     "Punt to realize-via-bindings, unless there are no relevant bindings."
     (cond ((notevery #'ignorable-variable?
@@ -152,6 +153,7 @@
                                      (length (sp::pname label)))))))
              (prep (or (find-if #'sp::word-p subcats) ; prefer single words
                        (find-if #'sp::polyword-p subcats))))
+        ;; There isn't a specific method for this variable
         (tr "unmarked binding: ~a~
          ~%  i = ~a var = ~a pos = ~a" binding individual variable pos)
         (cond ((eql value sp::**lambda-var**)) ;; effectively a trace
@@ -321,7 +323,23 @@
     (make-adjunction-node
      (make-lexicalized-attachment 'adverbial-preceding (sp::binding-value binding))
      dtn))
-  
+
+  (:method (binding (var-name (eql 'sp::adjunctive-modifier)) dtn pos)
+    "On the parsing side, this variable allows unmarked adjunctions such as
+ 'make [a row] [of two green blocks]' compose but dropped the preposition.
+ Now (8/7/23) we stash that preposition in an instance of adjunctive-pp."
+    (let ((value (sp::binding-value binding)))
+      (tr "adjunctive-modifier binding: ~a" value
+      (let ((s-prep (sp::value-of 'sp::prep value)) ; e.g. #<ref-category OF>
+            (pobj (sp::value-of 'sp::pobj value)))
+        (let ((lp (get-lexicalized-phrase s-prep 'preposition)))
+          (if lp
+            (attach-pp lp pobj dtn pos)
+            (let ((m-word
+                    (sp::word-string-for-sparser-word s-prep)))
+              (attach-pp m-word pobj dtn pos)))
+          dtn)))))
+
   (:method (binding (var-name (eql 'sp::location)) dtn pos)
     "Look at how the location will be realized and selected an attachment
      point that fits."
@@ -331,7 +349,7 @@
                   ((heavy-predicate-p i) 'np-prep-complement)
                   ((sp::itypep i 'sp::multi-dependent-location)
                    'qualifier) ;; e.g. "top"
-                  (t 'nominal-premodifier))))
+                  (t 'nominal-premodifier)))) 
         (make-adjunction-node
          (make-lexicalized-attachment ap i)
          dtn)))))
