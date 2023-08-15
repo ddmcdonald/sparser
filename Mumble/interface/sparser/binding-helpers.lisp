@@ -3,7 +3,7 @@
 
 ;;;    File: "binding-helpers"
 ;;;  Module: "Mumble/interface/sparser/"
-;;; Version: April 2023
+;;; Version: August 2023
 
 (in-package :mumble)
 
@@ -428,16 +428,31 @@
       dtn)))
 
 
-
 (defun attach-pp (prep object dtn pos)
-  (let ((pp (make-dtn :resource (prep prep)))
-        (ap (ecase pos
-              (adjective 'adjp-prep-complement)
-              (noun 'np-prep-adjunct)
-              (verb 'vp-prep-complement))))
-    (tr "Attaching a pp: ~a ~a via ~a" prep object ap)
-    (make-complement-node 'prep-object object pp)
-    (make-adjunction-node (make-lexicalized-attachment ap pp) dtn)))
+  "Combine prep and object to form a dtn for a pp, then attach
+ this pp-dtn to the incoming dtn using an attachment-point that
+ relects the part-of-speech of the parent.
+   Note that the resource to the pp-dtn is a partially-saturated-
+ lexicalised-phrase with the preposition burned in. There are
+ more prepositions defined for Sparser than for natively for
+ Mumble. If we're coming from Sparser, e.g. via the method in
+ attach-via-binding, then we may have this in our hand already
+ rather than needing to create a new one with the call to prep."
+  (let ((pslp (typecase prep
+                (partially-saturated-lexicalized-phrase prep)
+                (word (prep prep))
+                (otherwise
+                 (error "Unexpected type for 'prep' argument~
+                       ~%~a  ~a"
+                        (type-of prep) prep)))))
+    (let ((pp (make-dtn :resource pslp))
+          (ap (ecase pos
+                (adjective 'adjp-prep-complement)
+                (noun 'np-prep-adjunct)
+                (verb 'vp-prep-complement))))
+      (tr "Attaching a pp: ~a ~a via ~a" prep object ap)
+      (make-complement-node 'prep-object object pp)
+      (make-adjunction-node (make-lexicalized-attachment ap pp) dtn))))
 
 
 (defun attach-verb (verb dtn)
