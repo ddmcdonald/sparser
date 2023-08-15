@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2019-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2019-2023 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "da-rules-aux"
 ;;;   Module:  "grammar;rules:DA:"
-;;;  Version:  January 2021
+;;;  Version:  August 2023
 
 ;; Initiated 1/15/19 to break out the predicates and work functions
 ;; from da-rules to make them both easier to read
@@ -117,6 +117,8 @@
             :form (edge-form sub-event-edge)
             :referent event-relation)
            event-relation))))
+
+
 ;;--- Common subroutines
 
 (defun fix-da-ending-pos (da-end-pos)
@@ -421,17 +423,22 @@
                           (cat-name (itype-of (edge-referent edge-taking-adjunct)))
                           (cat-name (itype-of pobj-referent))
                           (cat-name (edge-form edge-taking-adjunct)))
-                         (format nil "~a ~a in sentence ~s"
+                         (format nil "'~a' '~a' in sentence ~s"
                                  (retrieve-surface-string (edge-referent head-edge))
                                  (retrieve-surface-string (edge-referent pp-edge))
                                  (sentence-string (sentence)))
                          (edge-referent head-edge)
                          pobj-referent)
                    *adjunctive-attachments*)
-             (let ((form (adjust-group-level-head head-edge pp-edge))
-                   (referent (bind-variable
-                              'adjunctive-modifier pobj-referent
-                              (edge-referent edge-taking-adjunct))))
+             (let* ((form (adjust-group-level-head head-edge pp-edge))
+                    (i (define-or-find-individual 'adjunctive-pp
+                         :prep prep-word
+                         :pobj pobj-referent))
+                    (referent (bind-variable
+                               'adjunctive-modifier
+                               i
+                               (edge-referent edge-taking-adjunct))))
+               ;;(push-debug `(,referent)) (break "referent: ~a" referent)
                (make-edge-spec
                 :category (edge-category edge-taking-adjunct)
                 :form form
