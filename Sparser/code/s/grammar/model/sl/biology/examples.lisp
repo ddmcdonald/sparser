@@ -9,6 +9,8 @@
 
 (in-package :sparser)
 
+(defun examples-in-biology ()) ; for meta-.
+
 ;;;---------------
 ;;; Example texts
 ;;;---------------
@@ -553,7 +555,7 @@ Phospho-Elk then upregulates the gene expression of target genes
 such as the proto-oncogene c-fos.
 The entire signaling cascade is terminated by
 the intrinsic GTPase activity of Ras
-which hydrolyzes the bound GTP into GTP,
+which hydrolyzes the bound GTP into GDP,
 thus returning Ras to the GDP bound state
 where it releases bound Raf.
 The GTPase activity of Ras is accelerated
@@ -617,7 +619,6 @@ e119  ABILITY       66 "the ability to associate with β - trcp ( fig . 1 a and 
   (p "The most frequently mutated oncogenes in the deadliest cancers responsible for human mortality are KRAS, PIK3CA and BRAF."))
 #|
 [the most frequently mutated oncogenes] in [ the deadliest cancers]
-
 [ responsible] for [ human mortality][ are][ kras, pik3ca and braf]
 e35   BE   1 "the most frequently mutated oncogenes in the deadliest cancers responsible for human mortality are kras , pik 3 ca and braf" 22
            period
