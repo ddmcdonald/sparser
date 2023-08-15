@@ -1,9 +1,9 @@
 ;;; -*- Mode: Lisp; Syntax: Common-Lisp; Package: SPARSER; -*-
-;;; Copyright (c) 2013-2017 David D. McDonald. All Rights Reserved.
+;;; Copyright (c) 2013-2017,2023 David D. McDonald. All Rights Reserved.
 ;;;
 ;;;     File: "gofers"
 ;;;   Module: "interface;mumble;"
-;;;  Version: July 2017
+;;;  Version: August 2023
 
 ;; Initated 1/7/16 to consolidate usable gofer-type code from files
 ;; that for various reasons (OBE mostly) are not being loaded.
@@ -53,7 +53,7 @@
       (get-mumble-word-for-sparser-word word nil irregulars)))
 
   (:method ((s-word word) (pos null)  &optional irregulars)
-    "Get the part of speach from the rules on the word"
+    "Get the part of speech from the rules on the word"
     (setq pos (part-of-speech-given-word s-word))
     (get-mumble-word-for-sparser-word (pname s-word) pos irregulars))
 
@@ -136,3 +136,13 @@
 (defgeneric sparser-symbol (symbol)
   (:method ((s symbol)) (sparser-symbol (symbol-name s)))
   (:method ((name string)) (intern name :sparser)))
+
+(defgeneric word-string-for-sparser-word (term)
+  (:documentation "May be overly specific and want refactoring.
+ written to handle Sparer words that are implemented as categories,
+ such as its prepositions and quantifiers. Return a string we can
+ feed into get-lexicalize-phrase")
+  (:method ((cat category))
+    (let* ((name (cat-symbol cat))
+           (string (symbol-name name)))
+      (string-downcase string))))
