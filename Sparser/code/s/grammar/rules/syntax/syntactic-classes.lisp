@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2023 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "syntactic-classes"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  January 2021
+;;;  Version:  August 2023
 
 ;; Extracted from syntax-functions 12/5/16
 
@@ -68,7 +68,7 @@
     :specializes subordinate-clause)
 (mark-as-form-category category::subordinate-s)
 
-#| Used to mark the subordinatated np when we are making 
+#| Used to mark the subordinated np when we are making 
 a subordinate np like 'such as this book' or 'with the exception of this book'
 Added to the interpretation of the subordinate conjunction (similar to the way
 an np is added to a PP) that indicates the subordinating relation.
@@ -129,3 +129,15 @@ like prepositional-phase (see syntax/syntactic-classes.lisp) |#
      ;; should be a contingency or 'when' or some such
   :binds ((condition))
   :index (:key condition))
+
+(define-category adjunctive-pp
+  :specializes phrase-interpretation
+  :binds ((prep :primitive category)
+          (pobj))
+  :index (:temporary :sequential-keys prep pobj)
+  :documentation "Adjunct constructions created when we decide to
+ ignore whether a preposition is subcategorized by its head were
+ deliberately not recording the prepositions. We can't do that
+ when we want to generate from the resulting Krisp. This preserves
+ the prepositoin while appreciating its origin. Created by add-adjunctive-pp,
+ read by the attach-via-binding method for the variable adjunctive-modifier.")
