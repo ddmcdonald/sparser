@@ -1522,8 +1522,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
            (let ((*right-edge-into-reference* pp-edge))
              (declare (special *right-edge-into-reference*))
              (unless (itypep 'conjunction (edge-referent pp-edge))
-               (adjoin-pp-to-vg vg (edge-referent pp-edge)))))
-      
+               (adjoin-pp-to-vg vg (edge-referent pp-edge)))))      
       (loop for pp-edge in (edge-constituents (right-edge-for-referent))
          do (let ((*right-edge-into-reference* pp-edge))
               (declare (special *right-edge-into-reference*))
@@ -1534,9 +1533,14 @@ there was an edge for the qualifier (e.g., there is no edge for the
     ;; It's not a collection. Compare handlers in interpret-pp-adjunct-to-np
     (or (when (valid-method compose vg pp)
           (compose vg pp))
+        
+        (when (location-in-locative-context? pp) ; "put another block next to it"
+          ;; now we know the vg subcategorizes for move-something-verb
+          (setq vg (bind-variable 'location pp vg))
+          vg)
+
         (multiple-value-bind (variable-to-bind pobj-referent prep-word *pobj-edge*)
             (variable-to-bind-pp-to-head (right-edge-for-referent) vg)
-          (declare (special *pobj-edge*))
           (cond
             (*subcat-test* (or variable-to-bind
                                (is-domain-adjunctive-pp? vg (right-edge-for-referent))))
@@ -1546,9 +1550,9 @@ there was an edge for the qualifier (e.g., there is no edge for the
                      *subcat-info*))
              (setq vg (individual-for-ref vg))
              (setq pobj-referent (individual-for-ref pobj-referent))
-             (setq vg (bind-dli-variable variable-to-bind pobj-referent vg))
+             (setq vg (bind-variable variable-to-bind pobj-referent vg))
              vg)
-            ((maybe-add-domain-adjunctive-predicate-to-phrase
+            ((maybe-add-domain-adjunctive-predicate-to-phrase ; 'in the literature'
               vg (right-edge-for-referent))))))))
 #| Good challenge case:
  (p "Over the past decade, new strategies have been developed 
