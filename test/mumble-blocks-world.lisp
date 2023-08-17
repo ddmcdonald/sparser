@@ -77,6 +77,7 @@
 ;;  music sense of "steps".
 ;; Funny parse, [the steps] is in two places
 ;; Predicate is the whole the tops of the steps red
+;; Works 8/16/23 -- was the adjunctive-modifier problem
 (deftest (say make tops of steps red)
   (mumble-says "Make the tops of the steps red.")
   "make the tops of the steps red")
@@ -91,9 +92,11 @@
 
 ;; 8/1/23 No analysis for "another block" + "next to it"
 ;; Actual value: "put another block"
+;; 8/17/23 fixed -- repaired earlier efforts to notice legal location arguments
 (deftest (say put another block next to it)
   (mumble-says "Put another block next to it.")
   "put another block next to it")
+
 
 ;; 8/1/23 Actual value: "now".
 ;; No analysis for "a red block" + "next to that"
@@ -113,6 +116,7 @@
   "put a red block on the bottom middle green block")
 
 ;; 8/1/23 Actual value: "make a row"
+;; Works 8/16/23 -- was the adjunctive-modifier problem
 (deftest (say make row of two green blocks)
   (mumble-says "Make a row of two green blocks.")
   "make a row of two green blocks")
