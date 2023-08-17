@@ -1,9 +1,9 @@
  ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016-2022 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2023 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "syntax-predicates"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  March 2022
+;;;  Version:  August 2023
 
 ;; Simple functions lifted from syntax-functions 8/30/16
 
@@ -81,8 +81,15 @@
   (:method ((e edge))
     (location-in-locative-context? (edge-referent e)))
   (:method ((i individual))
-    (when (itypep i 'location)
-      (verb-takes-locative? (sentence)))))
+    ;; as called from interpret-pp-adjunct-to-n
+    (when (verb-takes-locative? (sentence))
+      (cond ((itypep i 'prepositional-phrase)
+             ;; the type information will be on the preposition
+             (let ((prep (value-of 'prep i)))
+               (itypep prep 'location)))
+            (t
+             (itypep i 'location))))))
+      
 
 
 
