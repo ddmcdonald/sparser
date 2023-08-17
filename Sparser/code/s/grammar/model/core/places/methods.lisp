@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016-2022 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2023 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "methods"
 ;;;   Module:  "model;core:places:"
-;;;  version:  April 2022
+;;;  version:  August 20223
 
 ;; N.b. This file is loaded late after all categories have been defined.
 ;; It is for location-oriented compose methods
@@ -67,8 +67,8 @@
              (error "Unanticipated form on parent edge: ~a" form))))))))
 
 ;; "next to it"
-(def-k-method compose ((op category::relative-location)
-                       (place category::pronoun/inanimate))
+(def-k-method analyze-pp ((op category::relative-location)
+                          (place category::pronoun/inanimate))
   (declare (special *subcat-test*))
   (if *subcat-test*
     t
