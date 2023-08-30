@@ -3,13 +3,13 @@
 ;;;
 ;;;    File: "examples"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: May 2023
+;;; version: August 2023
 
 ;; Broken out from Biology-workspace 10/8/15
 
 (in-package :sparser)
 
-(defun examples-in-biology ()) ; for meta-.
+(defun examples-in-biology () t) ; for meta-.
 
 ;;;---------------
 ;;; Example texts
@@ -30,10 +30,11 @@
 "A leading infectious diseases scientist said yesterday that a British strain of coronavirus, thought to be more contagious and more deadly, could hit the US like a “hurricane” in spring. Epidemiologist Michael Osterholm, a member of Joe Biden’s transition coronavirus advisory board, predicted that the variant could become the dominant strain of coronavirus in the US. It came as the US confirmed more than 26 million cases of coronavirus, and the death toll neared half a million."
 
 ;; NYT CoV newsletter 1/29/21
-"Johnson & Johnson, the only major drugmaker developing a single-dose Covid vaccine, announced on Friday that its shot had provided strong protection in clinical trials.
+(defparameter *J&J-jan-21*
+  "Johnson & Johnson, the only major drugmaker developing a single-dose Covid vaccine, announced on Friday that its shot had provided strong protection in clinical trials.
 If the Food and Drug Administration grants the company an emergency authorization, it would expand the vaccine supply in the United States as the Biden administration seeks to immunize many more Americans.
 The results came with a significant cautionary note: In the U.S., the vaccine had an efficacy rate of 72 percent in clinical trials. But in South Africa, a country gripped by a new and more contagious variant, the efficacy rate dropped to just 57 percent.
-The variant, which has spread to at least 31 countries, including the United States, may also blunt the effectiveness of Covid vaccines made by Pfizer-BioNTech, Moderna and Novavax."
+The variant, which has spread to at least 31 countries, including the United States, may also blunt the effectiveness of Covid vaccines made by Pfizer-BioNTech, Moderna and Novavax.")
 
 
 ;; NYT Evening Briefing 1/20/21
