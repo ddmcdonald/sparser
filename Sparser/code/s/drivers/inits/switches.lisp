@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1997,2011-20212 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1997,2011-2023 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  January 2022
+;;;  Version:  August 2023
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -646,8 +646,6 @@
   
   (setq *use-subtypes* t) ;; e.g. plurals, refining types of individuals
 
-  (setq *compute-items-contexts* t) ;; enable context analysis over motifs
-
   ;; variation on segment-analysis-settings
   (setq *after-action-on-segments* 'sdm/analyze-segment)
   (setq *do-strong-domain-modeling* t)
@@ -665,6 +663,13 @@
   (setq *recognize-sections-within-articles* t) ;; otherwise won't be sentences
  
   (setq *switch-setting* :neo-fire))
+
+
+(defun acumen-setting ()
+  (neo-fire-setting)
+  ;; except we have to do some more things
+  (setq *compute-items-contexts* t) ;; enable context analysis over motifs
+  (setq *switch-setting* :acumen-setting))
 
 
 

@@ -1,8 +1,8 @@
-;;; Copyright (c) 2016-2022 SIFT LLC. All Rights Reserved.
+;;; Copyright (c) 2016-2023 SIFT LLC. All Rights Reserved.
 ;;;
 ;;;      File: "scripts"
 ;;;    Module: "init;loaders;"
-;;;   Version: February 2022
+;;;   Version: August 2023
 
 (in-package :sparser)
 
@@ -131,7 +131,7 @@ in conjunction with an early version of Hark. Notable for using the
    (*index-bindings-to-variables* t)
    (*filter-vocabulary* :acumen))
   (:grammar-configuration "acumen-grammar")
-  (:switches neo-fire-setting))
+  (:switches acumen-setting))
 
 (defscript fire ()
   "FIRE stands for 'Free-text Information and Relation Extraction'.
