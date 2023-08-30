@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2018,2023 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "quiet"
 ;;;   Module:  "drivers;timing:"
-;;;  Version:  April 2018
+;;;  Version:  August 2023
 
 ;; file created 4/23/18 to consolidate functions that turn-off output.
 
@@ -12,12 +12,13 @@
 ;;--- Written for suppressing all printing when running large test sets
 
 (defmacro with-total-quiet (&body body)
-  `(let (;;(*readout-relations* nil)
+  `(let ((*readout-relations* nil)
          (*readout-segments* nil)
          (*readout-segments-inline-with-text* nil) ;; quiet
          (*show-article-progress* nil) ;; document handling
          ;; (*show-section-printouts* nil)
          (*display-word-stream* nil)
+         (*show-handled-sentence-errors* nil)
          (*trace-lexicon-unpacking* nil)
          (*trace-morphology* nil)
          (*workshop-window* t)) ;; block tts in p
@@ -25,6 +26,7 @@
                        *show-article-progress* #|*show-section-printouts*|# 
                        *readout-segments-inline-with-text*
                        *display-word-stream*
+                       *show-handled-sentence-errors*
                        *trace-lexicon-unpacking* *trace-morphology*
                        *workshop-window*))
      ,@body))
