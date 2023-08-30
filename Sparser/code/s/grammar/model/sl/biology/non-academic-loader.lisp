@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2013-2020 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2013-2023 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "non-academic-loader"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: October 2021
+;;; version: August 2023
 
 ;; This holds a subset of biology files have definitions useful
 ;; outside of biology contexts, such as in acumen, without loading the
@@ -67,5 +67,7 @@
 (gload "bio;verbs") ;; needs work to make less specific definitions
 
 (gload "bio;non-academic-molecules")
+
+(gload "bio;examples.lisp") ;; no definitions in here
 
 ;;(gload "bio;visualization.lisp") need non-bio versions
