@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1997-2005,2011-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1997-2005,2011-2023 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "specialize"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  November 2019
+;;;  version:  August 2023
 
 ;; initiated 11/29/97. Given some content 1/2/01 though punting on the issue of
 ;; cross-indexing all the different paths down to a subtype that is a specialization
@@ -44,6 +44,10 @@
 
   (:method ((i individual) (cat-name symbol))
     (specialize-object i (category-named cat-name :error-if-nil)))
+
+  (:method ((i individual) (mixin individual))
+    (let ((mix-cat (itype-of mixin)))
+      (specialize-object i mix-cat)))
 
   (:method ((i individual) (mixin category))
     (if *description-lattice*

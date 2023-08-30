@@ -231,8 +231,8 @@
          (compound-type (tail-cons additional-category type-field-copy)))
     (let ((k (find-or-make-compound-type compound-type)))
       (when (indiv-binds i)
-        ;; copy these bindings to j, producing more derived j' along the way
-        (loop for b in (filter-bindings (indiv-binds i)) 
+        ;; copy these bindings to k, producing more derived k' along the way
+        (loop for b in (indiv-binds i) ; filter-bindings is a no-op
            do (setq k (find-or-make-lattice-subordinate
                        k (binding-variable b) (binding-value b)))))
       k)))
@@ -255,7 +255,7 @@
           ;;  as in, e.g. find-or-make-lattice-subordinate ??
           (set-compound-dli list j)
           j))))
-
+;; compare deep-copy-individual objects/model/individuals/object.lisp
 
 ;; older treatment of compounds -- presently not called
 (defun make-dli-for-join (category-list)
