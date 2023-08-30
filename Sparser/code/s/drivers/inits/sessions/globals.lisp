@@ -229,7 +229,7 @@
 (defparameter *sweep-for-terminal-edges* t
   "Flag read within scan-terminals-loop that determines
    whether or not we introduce edges over the individual
-   words in the scaop of the terminals loop that
+   words in the scope of the terminals loop that
    aren't already covered by an edge.")
 
 (defparameter *sweep-for-da-patterns* t
@@ -240,9 +240,10 @@
 
 (defparameter *smart-frequency-count* nil
   "Flag checked in scan-terminals-and-do-core that controls whether
-   we stop the analysis at that point and just update the frequency
-   of various words (terminal under edges). Lets us appreciate
-   polywords and such rather than just orthographic words")
+   we stop the analysis at that point to just update the frequency
+   of the words (terminal under edges). Going that far through
+   the core sweeps lets us appreciate polywords and such rather than
+   just orthographic words")
 
 (defparameter *grammar-and-model-based-parsing* nil
   "Wrapped around all of the parsing calls in sentence-processing-core
@@ -339,7 +340,7 @@
    of the text is some range of sentences and populate the
    corresponding sentence objects.")
 
-(defparameter *readout-relations* t
+(defparameter *readout-relations* nil
   "Gates whether to export or display the relations that were
    found in the sentence.")
 
