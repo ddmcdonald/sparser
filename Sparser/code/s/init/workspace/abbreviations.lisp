@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "abbreviations"
 ;;;   Module:  "init;workspace:"
-;;;  version:  June 2023
+;;;  version:  August 2023
 
 ;; broken out into this form 9/93.
 ;; 2/23/95 changed definition of P to look for whether *workshop-window* was up, and
@@ -206,8 +206,6 @@
     (cond
       ((itypep c 'comlex-derived) :comlex)
       (t (file-location c)))))
-        
-
 
 (defgeneric r-of (category)
   (:documentation "Look up the realization (or realizations) of
@@ -234,14 +232,15 @@
     (let ((m::*trace-archie* t))
       (declare (special m::*trace-archie*))
       (m::pp-dtn (m::realize i)))))
+
 #+:mumble
 (defgeneric say (item)
-  (:documentation "Another standard idiom for Mumble test")
+  (:documentation "Another standard idiom for Mumble tests")
   (:method ((n number))
     (say (individual-object# n)))
   (:method ((i individual))
     (m::say i))
-  (:method ((text string))
+  (:method ((text string)) ; this version traps errors
     (m::say text)))
 
 #+:mumble
@@ -273,12 +272,12 @@
            (rdata (mumble-map-data c)))
       (values lp rdata))))
 
+
 ;;--- accessors
 
 (defun psr# (n)
   (let ((symbol (make-cfr-symbol n)))
     (eval symbol)))
-
 
 (defun p# (n)
   (position# n))
@@ -297,7 +296,6 @@
     (if etf
       (d etf)
       (format nil "No exploded tree family is named ~a" name))))
-
 ;; categories-using-etf <name>
 
 (defun multiply (n1 n2)
@@ -315,8 +313,6 @@
 (defmacro fsr (label-name1 label-name2) ;; find syntax rule
   `(lookup-rule/rhs
     (list (resolve ',label-name1) (resolve ',label-name2))))
-
-
 
 (defun ssbr () ;; "Snapshot Sentence Being Run"
   "Compare-to-snapshots runs in 'quiet' mode where we don't know what
@@ -364,7 +360,6 @@
   (with-total-quiet
     (analyze-text-from-string string)))
 
-
 (defun p (string)
   "Parse the string then print out the treetops"
   (pp string)
@@ -388,6 +383,11 @@
   (let ((edges (all-tts)))
     (when (null (cdr edges)) ;; single span
       (semtree (car edges)))))
+
+(defun p/a (string &key name (quiet t) skip)
+  "Parse the string, which is usually fairly long, treating it like
+   an article, i.e. run all the after-actions a display its basic stats."
+  (analyze-string-as-article string))
 
 (defun p/s-all (string &optional no-print)
   "Parse string then print out the treetops followed by a list of
