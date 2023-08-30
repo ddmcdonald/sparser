@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994-1996,2018-2022  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2018-2023  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "amounts"
 ;;;   Module:  "model;core:time:"
-;;;  version:  July 2022
+;;;  version:  August 2023
 
 ;; initiated 4/27/94 v2.3. 1/1/96 Added fractions and a few explicit rules.
 ;; 2/10/10 Something has changed such that the period => "period" rule is
@@ -36,7 +36,6 @@
         :units time-unit
         :quantity range)))
 
-
 (defun make-amount-of-time (amount unit)
   "Called from the of-handler in interpret-pp-adjunct-to-np,
    could have been done by a method invoked from there"
@@ -50,10 +49,36 @@
 ;;;-----------------------------
 ;; "four months or more"
 
-(defun make-approximate-time (time-edge approx-edge)
-  (let* ((time (edge-referent time-edge))
-         (approx (edge-referent approx-edge))
-         (i (specialize-object time (category-named 'approximate)))
+(def-cfr amount-of-time (amount-of-time approximator)
+  :form np
+  :referent (:function make-approximate-time left-edge right-edge))
+
+(define-early-pattern-rule amt-time+approximator
+  :pattern (amount-of-time approximator)
+  :action (:function make-approximate-time first second))
+;; early rule insufficient to solve "Breastfeeding for four months or more
+;;  is associated with fewer behavioural problems in children")
+
+;; n.b. called from referent-from-rule
+(defun make-approximate-time (time approx)
+  (let ((time-edge (left-edge-for-referent))
+        (approx-edge (right-edge-for-referent)))
+    (let ((i (specialize-object time (category-named 'approximate))))
+      (let ((j (bind-variable 'qualifier approx i)))
+        ;;(push-debug `(,time ,i ,j)) (break "j = ~a" j)
+        j))))
+
+
+#| ;; 'or more' is an adverb, so we have to get it before the chunker does
+ --- this has a different edge/referent assembly signature
+(define-early-pattern-rule time+approximator
+    :pattern ( amount-of-time approximator )
+    :action (:function make-approximate-time first second)) |#
+
+;; in ws/late-July-2022_worknotes, on 7/29 -- this signature
+;; did the right thing with "four months or more"
+#+ignore(defun make-approximate-time/refs (time approx &optional time-edge approx-edge)
+  (let* ((i (specialize-object time (category-named 'approximate)))
          (j (bind-variable 'qualifier approx i)))
     (make-chart-edge
      :category (category-named 'time)
@@ -65,11 +90,6 @@
      :starting-position (pos-edge-starts-at time-edge)
      :ending-position (pos-edge-ends-at approx-edge)
      :constituents (list time-edge approx-edge))))
-    
-;; 'or more' is an adverb, so we have to get it before the chunker does
-(define-early-pattern-rule time+approximator
-    :pattern ( amount-of-time approximator )
-    :action (:function make-approximate-time first second))
 
 
 ;;;----------------------
@@ -110,14 +130,11 @@
       :stuff stuff))
 
 
-
-
 #| Is this really an NP?  Given "the six months ended Oct. 31, 1995"
  you have to worry about what the justification of that determiner is.
  If it is dependent on the participle (which defines a set that makes
  the amount specific), then how would we represent the intermediate
  state of that parse while waiting for the qualifier to show up? |#
-
 
 
 ;;///  these are too weak a representation

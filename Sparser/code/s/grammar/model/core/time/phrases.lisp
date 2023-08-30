@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1998,2011-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1998,2011-2023 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "phrases"
 ;;;   Module:  "model;core:time:"
-;;;  version:  December 2020
+;;;  version:  August 2023
 
 ;; initiated 4/9 v1.8.2
 ;; 1.0 (12/15/92 v2.3) bumped version to prepare for new semantics
@@ -38,17 +38,10 @@
                                           year time date
                                           day-of-the-month month-of-the-year))))))
                            
-
 (def-form-rule (approximator weekday)
   :form np
   :head :right-edge
   :referent (:daughter right-edge))
-
-(def-cfr amount-of-time (amount-of-time approximator)
-  :form np
-  :referent (:function make-approximate-time left-edge right-edge))
-
-
 
 
 ;;;-----------------------------

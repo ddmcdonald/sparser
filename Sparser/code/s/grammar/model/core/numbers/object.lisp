@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1999,2014-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2014-2023 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  May 2020
+;;;  Version:  August 2023
 
 ;; 1.2 (7/19/92 v2.3) made over as "real" category. 8/4/94 finished princ routine
 ;;     (10/3) improved the printer.  11/15/95 added a sort routine.
@@ -125,12 +125,17 @@
     (cond
      (word (princ-word word stream))
      ((itypep n 'collection)
-      (format stream "{collection: ~(~s ~)} ~s" 
-              (value-of 'items n)
-              (indiv-uid n)))
+      (format stream "{collection: ~(~s ~)}" 
+              (value-of 'items n)))
      (t (let ((value (value-of 'value n)))  ;; the integer
           (princ value stream))))
-    (write-string ">" stream)))
+    (when (cdr (indiv-type n))
+      (do* ((categories (indiv-type n)) ;; from pretty-print-individual
+            (c (pop categories) (pop categories)))
+           ((null c))
+        (write-string " " stream)
+        (princ-category c stream)))
+    (format stream " ~s>" (indiv-uid n))))
 
 
 

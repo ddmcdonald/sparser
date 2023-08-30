@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-1995,2011-2022 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1995,2011-2023 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:adjuncts:approx:"
-;;;  version:  July 2022
+;;;  version:  August 2023
 
 ;; initiated 4/9/91 v1.8.2
 ;; 0.1 (12/7/92 v2.3) redone in the new semantics. 9/21/93 moved to [adjuncts]
@@ -72,6 +72,10 @@
   :form number
   :referent (:function determiner-noun left-edge right-edge))
 
+(def-cfr number (approximator percent) ; "only 35% (of the ISGs)"
+  :form number
+  :referent (:function determiner-noun left-edge right-edge))
+
 (def-k-method apply-determiner ((approx category::approximator)
                                 (amount category::number))
   ;; Invoked from determiner-noun -- subcat test uses the
@@ -83,28 +87,28 @@
            (j (bind-variable 'qualifier approx i)))
       j)))
 
-(def-cfr number (approximator percent) ; "only 35% (of the ISGs)"
-  :form number
-  :referent (:function determiner-noun left-edge right-edge))
 
-;; "six or more months"
+;; "six or more (months)"
 (define-early-pattern-rule number+approximator
     :pattern ( number approximator )
-    :action (:function make-approx-number first second))
+  :action (:function make-approx-number first second))
 
 (defun make-approx-number (number-edge approx-edge)
-  (let* ((number (edge-referent number-edge))
-         (approx (edge-referent approx-edge))
-         (i (specialize-object number (category-named 'approximate)))
-         (j (bind-variable 'qualifier approx i)))
-    (make-chart-edge
-     :category (edge-category number-edge)
-     :form (edge-form number-edge)
-     :referent j
-     :rule 'make-approx-number
-     :starting-position (pos-edge-starts-at number-edge)
-     :ending-position (pos-edge-ends-at approx-edge)
-     :constituents (list number-edge approx-edge))))
+  (declare (special *subcat-test*))
+  (if *subcat-test*
+    t
+    (let* ((number (edge-referent number-edge))
+           (approx (edge-referent approx-edge))
+           (i (specialize-object number (category-named 'approximate)))
+           (j (bind-variable 'qualifier approx i)))
+      (make-chart-edge
+       :category (edge-category number-edge)
+       :form (edge-form number-edge)
+       :referent j
+       :rule 'make-approx-number
+       :starting-position (pos-edge-starts-at number-edge)
+       :ending-position (pos-edge-ends-at approx-edge)
+       :constituents (list number-edge approx-edge)))))
 
 
 
