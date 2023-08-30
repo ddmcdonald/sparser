@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1995,2012-2022  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2012-2023  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  January 2022
+;;;  Version:  August 2023
 
 ;; initiated 10/91
 ;; 0.1  (10/21 v2.0) Bumped [section] to "1".  Added [SGML tags]
@@ -30,6 +30,7 @@
 (in-package :sparser)
 
 (lload "doc;classes")
+(lload "doc;analysis-parameters")
 (lload "doc;word-freq")
 (lload "doc;globals")
 (lload "doc;rhetoric")

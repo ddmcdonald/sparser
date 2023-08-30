@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2019-2022 David D. McDonald -- all rights reserved
+;;; copyright (c) 2019-2023 David D. McDonald -- all rights reserved
 ;;;
 ;;;     File:  "content-actions"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  January 2022
+;;;  Version:  August 2023
 
 #| Created 8/27/19 to move general action out of content-methods.lisp
 and make that file easier to understand. |#
@@ -77,7 +77,7 @@ and make that file easier to understand. |#
 (defmethod after-actions ((a article))
   (when *apply-document-after-actions*
     (let ((*current-article* a))
-      (declare (special *current-article*))
+      (declare (special *current-article* *compute-items-contexts*))
       (summarize-parse-performance a)
       (aggregate-text-characteristics a)
       (when (typep (contents a) 'aggregated-bio-terms)
@@ -85,7 +85,8 @@ and make that file easier to understand. |#
       (when (typep (contents a) 'accumulate-items)
         (aggregate-noted-items a)
         (consolidate-notes a)
-        (apply-context-predicates a))
+        (when *compute-items-contexts*
+          (apply-context-predicates a)))
       a)))
 
 
@@ -332,30 +333,26 @@ and make that file easier to understand. |#
 ;;; printing document statistics
 ;;;------------------------------
 
-(defparameter *print-bio-terms* t
-  "Rebind to nil to block including the bio-terms in the
-   summary-document-stats")
-
-(defparameter *minimal-reporting* nil
-  "If this is up turn off all the reporting that's not needed
-   to populate the data in the article.")
-
-
 (defgeneric summary-document-stats (document-element &optional stream)
   (:documentation "Principally for information while exploring.
    This method is called when you specify :stats in a json article function
    such as run-json-article-from-handle")
   (:method ((a article) &optional stream)
-    (declare (special *minimal-reporting*))
+    (declare (special *minimal-reporting* *show-parser-performance*
+                      *show-noted-categories* *show-motif-terms*
+                      *show-runtime-stats*))
     (unless stream (setq stream *standard-output*))
     (format stream "~&~%For ~a" a)
-    (report-time-to-read-article a stream)
+    (when *show-runtime-stats*
+      (report-time-to-read-article a stream))
     (unless *minimal-reporting*
-      (show-parse-performance a stream)
+      (when *show-parser-performance*
+        (show-parse-performance a stream))
       (when *print-bio-terms*
         (display-top-bio-terms a stream))
-      (when *acumen* ; bio-terms printing nil in neo-fire-setting
-        (show-noted-categories a)
+      (when *show-noted-categories*
+        (show-noted-categories a))
+      (when *show-motif-terms*
         (show-motif-term-context a)))))
 
 

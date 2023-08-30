@@ -283,9 +283,12 @@ set up the sentences state (initialize-sentences)  |#
     (stop-timer '*time-to-read-document*)
     (report-time-to-read-article article)
     (unless *minimal-reporting*
-      (show-parse-performance article)
-      (show-noted-categories article)
-      (show-motif-term-context article))
+      (when *show-parser-performance*
+        (show-parse-performance article))
+      (when *show-noted-categories*
+        (show-noted-categories article))
+      (when *show-motif-terms*
+        (show-motif-term-context article)))
     article))
     
     
