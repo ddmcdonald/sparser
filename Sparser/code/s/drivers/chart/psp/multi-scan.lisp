@@ -884,7 +884,7 @@
         ;; remove these -- bad form (probably should have been an (and ...), 
         ;;  also probably not needed as early rules
         ;;(itypep (edge-referent left-edge) 'approximator) ; "only 35%"
-        (itypep (edge-referent right-edge) 'time-unit) ; 'a month'
+        ;;(itypep (edge-referent right-edge) 'time-unit) ; 'a month'
         ;; 7/29/22 brought the time unit back: "four months or more"
 
         (not (pos-preceding-whitespace mid-pos))
