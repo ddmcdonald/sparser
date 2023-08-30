@@ -99,7 +99,7 @@
 (defun all-individuals-in-tts ()
   ;; This used to both walk the treetops to identify
   ;; all of the individuals that they reference
-  ;; and also recurd their surface strings.
+  ;; and also record their surface strings.
   ;; Now it just does the walk and the strings
   ;; are recorded by the call to note-surface-string in complete/hugin.
   (let ((individuals nil))
