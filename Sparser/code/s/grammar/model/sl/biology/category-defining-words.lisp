@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2020-2022 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2020-2023 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "category-defining-words"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: March 2022
+;;; version: September 2023
 
 
 ;;;;;;;; These are definitions for words that have the same spelling as defined categories, and which
@@ -39,17 +39,16 @@
 (when (current-script :biology)
   (def-synonym great (:adj ("great" :comparative "greater" :superlative "greatest"))))
 
-(when (current-script :biology) (def-synonym ion (:noun "ion")))
-
-(def-synonym modality (:noun ("modality" :plural "modalities"))) 
-(def-synonym new (:adj "new")) 
+(when (current-script :biology)
+  (def-synonym ion (:noun "ion"))
+  (def-synonym modality (:noun ("modality" :plural "modalities"))) 
+  (def-synonym new (:adj "new")))
 
 (when (current-script :biology)
   (def-synonym nucleus (:noun "nucleus" :adj "nuclear")))
 (when (current-script :biology)
-  (def-synonym pathogen (:noun "pathogen")))
-
-(def-synonym poor (:adj "poor")) 
+  (def-synonym pathogen (:noun "pathogen"))
+  (def-synonym poor (:adj "poor")) )
 
 ;; This will blow up because the base category doesn't include 'top'.
 ;; Corect treatment is to rewrite quotation as a conventional modern
