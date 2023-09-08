@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1999,2019-2021  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1999,2019-2023  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "spatial prepositions"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  September 2021
+;;;  version:  September 2023
 
 ;; n.b. remember that we also have standalone-directions ("left") and adjectival
 ;; directions ("lefward"). All of these 'spatial prepositions' create locations
@@ -97,6 +97,5 @@
 
 (define-preposition "up" )
 (define-preposition "up against") ;; do it compositionally?
-(define-preposition "up to")
 
 (define-preposition "within" :form 'spatial-preposition)
