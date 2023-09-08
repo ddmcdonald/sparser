@@ -3,7 +3,7 @@
 ;;; copyright (c) 1992,2017  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "state"
-;;;   Module:  "tokenizer;"
+;;;   Module:   analyzers/tokenizer/
 ;;;  Version:   August 2017
 
 ;; initial version 6/90
