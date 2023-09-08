@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "modifiers"
 ;;;    Module:   "model;dossiers:"
-;;;   Version:   June 2023
+;;;   Version:   August 2023
 
 ;; Created 1/4/13 to group together comparatives, approximators, etc in
 ;; one place so they're easier to keep track of. (1/9/13) Moved in all
@@ -72,7 +72,7 @@
 (define-approximator/determiner "almost")
 
 ;; (define-approximator/determiner "about") ;; this is subtle
-(define-preposition "about") ;; but not point in having two edges here
+(define-preposition "about") ;; but no point in having two edges here
 
 (define-approximator/determiner "around")
 
@@ -80,6 +80,7 @@
 (define-approximator/determiner "a little bit")
 
 (define-approximator/determiner "approximately")
+(define-approximator/determiner "as much as")
 (define-approximator/determiner "at least")
 (define-approximator/determiner "at most")
 (define-approximator/determiner "barely")
@@ -90,6 +91,7 @@
 (define-approximator/determiner "precisely") ;;
 (define-approximator/determiner "roughly")
 (define-approximator/determiner "somewhat") ;; also an intensifier?
+(define-approximator/determiner "up to") ; maybe also with spatial preposition feel?
 
 (define-approximator/adverbial "fairly")
 (define-approximator/adverbial "hardly")
