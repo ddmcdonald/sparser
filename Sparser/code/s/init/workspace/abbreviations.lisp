@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "abbreviations"
 ;;;   Module:  "init;workspace:"
-;;;  version:  August 2023
+;;;  version:  September 2023
 
 ;; broken out into this form 9/93.
 ;; 2/23/95 changed definition of P to look for whether *workshop-window* was up, and
@@ -384,10 +384,13 @@
     (when (null (cdr edges)) ;; single span
       (semtree (car edges)))))
 
-(defun p/a (string &key name (quiet t) skip)
+(defun p/a (string &key name quiet skip)
   "Parse the string, which is usually fairly long, treating it like
    an article, i.e. run all the after-actions a display its basic stats."
-  (analyze-string-as-article string))
+  (analyze-string-as-article string
+                             :name name
+                             :quiet quiet
+                             :skip skip))
 
 (defun p/s-all (string &optional no-print)
   "Parse string then print out the treetops followed by a list of
