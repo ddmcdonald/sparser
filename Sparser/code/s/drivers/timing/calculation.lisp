@@ -9,9 +9,9 @@
 
 ;; Provides a simple basis for managing diverse timers based on
 ;; symbols that record the internal real time when they are
-;; started and subtract that from the current eal time when
-;; they are stoped. Pairs of start and stop calls are places
-;; around the process you wan to time.
+;; started and subtract that from the current real time when
+;; they are stoped. Pairs of start and stop calls are the places
+;; around the process you want to time.
 
 (in-package :sparser)
 
