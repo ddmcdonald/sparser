@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2014-2020-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2014-2023 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "presentation"
 ;;;   Module:  "drivers;timing:"
-;;;  Version:  December 2021
+;;;  Version:  September 2023
 
 ;; file created 2/91. Given content 1/6/95
 ;; Added Time decoded 1/23. 10/2/07 Extended and added Allegro variation.
@@ -36,7 +36,7 @@ Evaluation took:
   "Returns the value of the timer symbol as a string"
   (let* ((raw-elapsed-time (eval symbol))
          (per-unit (/ raw-elapsed-time internal-time-units-per-second)))
-    (format nil "~4,1F" (float per-unit))))
+    (format nil "~4,3F" (float per-unit))))
 
 (defun report-time-to-load-system (&optional (stream *standard-output*))
   (let ((number-string (report-timer-value '*time-to-load-everything*)))
@@ -57,20 +57,20 @@ Evaluation took:
                   (1000 :msec)
                   (1000000 :microsec)))
          (word-count (token-count article))
-         (known-speed (words-per-second (contents article)))
-         (wps-string (or known-speed
+         ;;(known-speed (words-per-second (contents article)))
+         ;;  The speed varies considerably dependent on paging so caching
+         ;; like this will just show the results of the first run
+         (wps-string (or ;;known-speed
                          (compute-words-per-second
                           word-count *time-to-read-document* units)))
-         (total-time *time-to-read-document*))
+         (total-time (units-time-as-seconds *time-to-read-document* units)))
     (setf (words-per-second (contents article)) wps-string)
-    (format stream "~&~a words.  Time to parse: ~a msec  ~a~%"
+    (format stream "~&~a words parsed in ~a seconds  ~a~%"
             ;; (name article) "Parsing article: ~s,"
             (insert-commas-into-number-string word-count)
             (insert-commas-into-number-string total-time)
             wps-string)
     (force-output stream)))
-
-
 
 (defun compute-words-per-second (word-count number units)
   "Common subroutine that appreciates the different units that the
@@ -90,11 +90,19 @@ Evaluation took:
                (otherwise
                 (break "New time unit: ~a" units)))))
         (let* ((speed-as-string 
-                (format nil "~4,1F" (float tokens-per-second)))
+                 (format nil "~4F" ;;"~4,1F"
+                         (float tokens-per-second)))
                (speed-with-commas
                 (insert-commas-into-number-string speed-as-string)))
           (format nil "~a words/second" speed-with-commas))))))
 
+(defun units-time-as-seconds (number units)
+  "Convert the number returned from a timer into a quantity of seconds"
+  (let* ((denominator (ecase units
+                        (:msec 1000)
+                        (:microsec 1000000)))
+         (value (/ number denominator)))
+    (float value)))
 
 
 ;;;--------------------------------------------
