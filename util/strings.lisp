@@ -1,9 +1,9 @@
 ;;; -*- Mode:Lisp; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1989,1993,2011-2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1989,1993,2011-2017,2023  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "strings"
 ;;;    module:  "util:"
-;;;   Version:  May 2017
+;;;   Version:  September 2023
 
 ;; (3/9/11) Reworked to fit in ddm-util. 7/5 fixed old case in
 ;; string-append. 2/1/16 added strings-to-hyphenated-string.
@@ -105,7 +105,9 @@
 
 (defgeneric insert-commas-into-number-string (number)
   (:documentation "Returns a string for the number with commas
- in the usual places every three digits.")
+ in the usual places every three digits. If the number string
+ has a decimal point it will only be printed if there are digits
+ following it")
   (:method ((n number)) ;;/// too broad?
     (insert-commas-into-number-string (format nil "~a" n)))
   (:method ((s string)  &aux ac)
@@ -121,7 +123,8 @@
         (push digit-seq ac)
         (push "," ac))
       (when decimal-point-pos
-        (push decimal-and-after ac))
+        (unless (= 1 (length decimal-and-after))
+          (push decimal-and-after ac)))
       (apply #'string-append (nreverse ac)))))
              
 (defun subdivide-into-length-3-strings (string)
