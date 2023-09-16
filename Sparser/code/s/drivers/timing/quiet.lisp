@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "quiet"
 ;;;   Module:  "drivers;timing:"
-;;;  Version:  August 2023
+;;;  Version:  September 2023
 
 ;; file created 4/23/18 to consolidate functions that turn-off output.
 
@@ -20,8 +20,10 @@
          (*display-word-stream* nil)
          (*show-handled-sentence-errors* nil)
          (*trace-lexicon-unpacking* nil)
-         (*trace-morphology* nil)
-         (*workshop-window* t)) ;; block tts in p
+         (*trace-morphology* nil)         
+         (*workshop-window* t) ;; block tts in p
+         (w-or-e-value *warn-or-error-choice*)
+         (w-or-e-cache? *cache-warnings-for-later-review*))
      (declare (special *readout-relations* *readout-segments*
                        *show-article-progress* #|*show-section-printouts*|# 
                        *readout-segments-inline-with-text*
@@ -29,7 +31,12 @@
                        *show-handled-sentence-errors*
                        *trace-lexicon-unpacking* *trace-morphology*
                        *workshop-window*))
-     ,@body))
+     (setq *warn-or-error-choice* :warn
+           w-or-e-cache? t)
+     ,@body
+     (setq *warn-or-error-choice* w-or-e-value
+           w-or-e-cache? w-or-e-cache?)           
+     ))
 
 
 
