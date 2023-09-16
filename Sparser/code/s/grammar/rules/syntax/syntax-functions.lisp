@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  July 2023
+;;;  Version:  September 2023
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -1689,6 +1689,7 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
 (defparameter *in-scope-of-np+pp* nil
   "Flag to provide context for relative-location methods and others")
 
+#+ignore ;; delete once warn-or-error alternative is settled
 (defparameter *suppress-pp-adjunct-to-np-gaps* t
   "The error is ubiquitous in a long run. This converts it a format statement")
 
@@ -1847,9 +1848,9 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                 (let ((pattern (format nil "No analysis for ~s + ~s"
                                        (string-for-edge (left-edge-for-referent))
                                        (string-for-edge (right-edge-for-referent)))))
-                  (if *suppress-pp-adjunct-to-np-gaps*
-                    (format t "~&~a~%" pattern)
-                    (break "~a" pattern))))
+                  (warn-or-error "~&~a~%" pattern)))
+              ;; if we continue out of the break option in the warn-or-error
+              ;; the effect will be to drop the pp
               np ))))))))
 
 
