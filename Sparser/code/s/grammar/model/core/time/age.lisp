@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1994,2016-2021  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2016-2023  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "age"
 ;;;   Module:  "model;core:time:"
-;;;  version:  September 2021
+;;;  version:  September 2023
 
 ;; 0.1 (7/18 v1.8.6) Flushed the CA routines as redundant w/ the CS rules
 ;; 0.2 (4/16/92 v2.2) added two more rules to handle "60-year-old"
@@ -37,6 +37,18 @@
  of time as the value of an age per se, without having to simultaneously
  attribute it to something that has that age." )
 
+#|/// "ten years of age"  Examples from dictionary
+   "ten years old"
+   "at the age of 16 he ..."
+ 
+ Alternatively: "the Bronze Age", "Ice Age"
+|#
+
+;;;---------------------------------
+;;; qualitative descriptions of age
+;;;---------------------------------
+;; /// "midddle/old age", teenage?
+;; "older" "younger
 
 (define-category qualitative-age
   :specializes attribute-value
@@ -67,11 +79,12 @@
         (make-corresponding-mumble-resource est-word :adjective i)))
     i))
 
-
 ;; We really could use antonym relations, but need use case.
 (define-qualitative-age "young" :er "younger" :est "youngest")
 (define-qualitative-age "old" :er "older" :est "oldest")
 
+
+;;---- helper
 
 (defun plausible-age-in-years (number)
   "Syntax function to vet the comma-number rule as a feeder into
@@ -98,6 +111,7 @@
         age ))))
 
 
+;; "10 years old"
 (define-category amount-old
   :specializes amount ; // or age? and inherit the variable?
   :rule-label age
@@ -111,33 +125,3 @@
                           (quantity . amount)
                           (base . perspective))))
 
-
-
-
-;;--------- original rules for "N years old" and variations
-#|
-
-;; "10 years old"
-;; n.b. this rule is only seen if *ignore-literal-edges* is nil
-;;
-(def-cfr age (amount-of-time "old")
-  :form np
-  :referent (:instantiate-individual age
-             :bind (age left-edge)))
-
-(def-cfr unit-of-time-old (time-unit "old")
-  :referent (:daughter right-edge))
-
-(def-cfr age ( number unit-of-time-old ))
-
-
-;;--- soak up the optional hyphens
-
-(def-cfr "old" ("-" "old")
-  :referent (:daughter right-edge))
-
-(def-cfr time-unit ("-" time-unit)
-  :referent (:daughter right-edge))
-
-(def-cfr unit-of-time-old ("-" unit-of-time-old)
-  :referent (:daughter right-edge))  |#
