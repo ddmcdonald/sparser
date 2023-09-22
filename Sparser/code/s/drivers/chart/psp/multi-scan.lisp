@@ -1048,7 +1048,7 @@
 
 (defun sweep-for-no-space-patterns (sentence)
   "Identify successive positions as which a no-space region could
-   start, and if it's valid (i.e. not already covered by an
+   start, and if it's available (i.e. not already covered by an
    edge) then find where the region ends and call the ns pattern suite."
   (tr :sweep-for-no-space-patterns)
   (let ((pos (starts-at-pos sentence))
@@ -1060,10 +1060,12 @@
        while (and pos (setq pos (start-of-ns-region pos sent-end-pos)))
        ;; While there is a position, 'pos', that starts a no-space
        ;; sequence, find the end of that region ('ns-end-pos')
+       ;; and call collect-no-space-segment-into-word to invoke
+       ;; the no-space pattern rules/heuristics.
        do
          (setq ns-end-pos (end-of-ns-region pos sent-end-pos))
          (unless (edge-between pos ns-end-pos)
-           ;; some other process has covered the regoin
+           ;; some other process has covered the region
            (setq ns-end-pos (end-of-ns-region pos sent-end-pos))
            (tr :ns-identify-ns-pattern-between pos ns-end-pos)
            (unless (= 1 (length (words-between pos ns-end-pos))) ; "gneiss,"
