@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2023 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  February 2021
+;;;  version:  September 2023
 
 ;; Broken out from driver 2/5/13. This code was developed with some
 ;; difficulty and confusion for the JTC/TRS project. Throwing out most
@@ -30,7 +30,7 @@
 ;; 1/3/16 Tweaked final-colon handling to deal with fencepost.
 
 (in-package :sparser)
-(defvar category::protein)
+
 ;;;----------------
 ;;; gating globals
 ;;;----------------
@@ -45,6 +45,16 @@
     "Controls whether we try to parse the edges of the words
      inside the span."))
 
+;;;--------------
+;;; state global
+;;;--------------
+
+(defvar *in-collect-no-space-segment-into-word* nil
+  "Bound to T at top of collect-no-space-sequence-into-word, with
+ dynamic scope over the entire process. Used to block one anaphora,
+ when numbers appear in an NS pattern.")
+
+
 ;;;-------------------
 ;;; collection global
 ;;;-------------------
@@ -56,11 +66,9 @@
 
 
 
-
-
-;;;------------
-;;; new driver
-;;;------------
+;;;---------
+;;; Drivers
+;;;---------
 
 (defun collect-no-space-sequence-into-word (position-before) 
   ;; scan3's call
@@ -71,28 +79,22 @@
 ;; (trace-ns-sequences)  for ns patterns
 ;; (trace-scan-patterns)  for large scale
 
-(defparameter *in-collect-no-space-segment-into-word* nil)
-
 (defun collect-no-space-segment-into-word (start-pos end-pos)
-  "As called from do-no-space-collection At this point all of the
-   words in the sentence have been spanned with unary edges, and there
-   are multi-word edges over polywords or created by an FSA (e.g. numbers).
-   This 'position-after' is the position that has no-space recorded
-   on it, indicating that it and the previous word (or multi-word edge)
-   are not separated."
-  (declare (special start-pos end-pos))
-  (let* ((*in-collect-no-space-segment-into-word* t)) ;; used to block one anaphora, when numbers appear in an NS pattern)
-    (declare (special *in-collect-no-space-segment-into-word* leftmost-edge long-edge))
-        
+  "Called from sweep-for-no-space-patterns, which loops over the positions
+ in the current sentence getting successive start and end positions by calling
+ start-of-ns-region and end-of-ns-region which are looking at successive
+ treetops to attending to whether there is any space between them.
+   At this point all of the words in the sentence have been spanned with
+ unary edges, and there are multi-word edges over polywords or edges created
+ by an FSA (e.g. numbers). If we recognize a pattern we span it with
+ an edge. We always return the end position of the ns span, regardless
+ of whether we recognized its pattern."
+  (let* ((*in-collect-no-space-segment-into-word* t))
+         
+    (declare (special *in-collect-no-space-segment-into-word*
+                      leftmost-edge long-edge))
     (tr :no-space-sequence-started-at start-pos)
-      
-    ;; Redundant for the modern caller, but relevant for earlier ones
-    #+ignore
-    (when (or (word-is-bracket-punct (pos-terminal end-pos))
-              (word-never-in-ns-sequence (pos-terminal end-pos)))
-      (return-from collect-no-space-segment-into-word nil))
-      
-
+ 
     ;; If the sweep encountered any more edges we have to fold 
     ;; them in or else we'll get the wrong pattern
     (when (is-phosphorylated-protein? start-pos end-pos)
@@ -105,15 +107,13 @@
         (parse-between-nospace-scan-boundaries start-pos end-pos)
       (multiple-value-bind (ns-pattern)
           (sweep-ns-region start-pos end-pos)
-        (tr :ns-segment-layout layout)
-        ;;(lsp-break "layout = ~a edge = ~a" layout edge)
+        (tr :ns-segment-layout ns-pattern)
+
         (cond
           ((or (eq layout :single-span) ;; Do nothing. It's already known
                (eq layout :one-edge-over-entire-segment))
            (tr :ns-spanned-by-edge edge)
            (revise-form-of-nospace-edge-if-necessary edge :find-it)
-           #+ignore(when *collect-ns-examples*
-                     (update-ns-examples start-pos))
            (when *collect-ns-examples* 
              (save-ns-example start-pos end-pos)))
           (t
@@ -138,7 +138,7 @@
                 (when (memq (car (last ns-pattern))
                             '(:protein :protein-family
                               :small-molecule :ion :nucleotide))
-                  (ns-protein-pattern-resolve  ns-pattern start-pos end-pos))
+                  (ns-protein-pattern-resolve ns-pattern start-pos end-pos))
                 (when (eq end-cat 'category::amino-acid)
                   (ns-amino-pattern-resolve  ns-pattern start-pos end-pos))
                 (ns-pattern-dispatch ns-pattern start-pos end-pos)))))))
@@ -154,12 +154,22 @@
 ;;;----------
 
 (defun ns-pattern-dispatch (ns-pattern start-pos end-pos  &optional final-colon?)
+  "Checks for some (more) special cases, then dispatches to different specialists
+ depending principally on what punctuation characters are part of the pattern.
+"
   ;; Subroutine of collect-no-space-segment-into-word that does the
   ;; dispatch. Every path is expected to form an edge over the
   ;; span one way or another.
   
   (let* ((edges (treetops-between start-pos end-pos))
          (pattern ns-pattern))
+
+    #+ignore
+    (when edges
+      (tr :ns-pattern-includes-edges edges)
+      (setq pattern (convert-mixed-pattern-edges-to-labels pattern)))
+
+    (tr :segment-ns-pattern pattern)
     
     (when final-colon?
       ;; If the span to the left of the colon is a single word then
@@ -171,15 +181,9 @@
         (return-from ns-pattern-dispatch t)))
 
     (when (known-bogus-pattern pattern start-pos end-pos)
+      (tr :pattern-on-bogus-list)
       (throw :punt-on-nospace-without-resolution nil))
-    
-    #+ignore
-    (when edges
-      (tr :ns-pattern-includes-edges edges)
-      (setq pattern (convert-mixed-pattern-edges-to-labels pattern)))
-    
-    (tr :segment-ns-pattern pattern)
-
+ 
     (cond 
       ((eq :double-quote (car pattern))
        (tr :ns-scare-quote)
@@ -242,6 +246,7 @@
   '((:period :hyphen) ; m736 "Mexico, 25 Nov (Notimex).-\"after Babel."
     (:money :lower) ; "$57bn" m737
     (:unit-of-measure :digits :lower) ; "PS435bn"  m737
+    (:unit-of-measure :ago) ; "12 years ago"
     (:period :period :lower) ; "..and" m58
     (:lower :elipsis-dots) ; "with..." m738 -- only two periods!
     (:digits :unit-of-measure) ; "1600s"
@@ -533,6 +538,7 @@
    
     
 (defun is-phosphorylated-protein? (start end)
+  (declare (special category::protein))
   (let* ((extr-string (extract-characters-between-positions start end))
          (sur-str  (when (> (length extr-string) 0) (trim-whitespace extr-string)))
          (pro-string? (cond ((equal extr-string "") ;; couldn't get it
@@ -651,10 +657,9 @@ included, collect ns from n june articles"
            (ns-split (ns-punct-pattern-split ns-patt-edges))
            (ns-undef-patt (get-undefined-ns-patterns ns-split)))
       (declare (special edge-strings ns-patt-edges ns-split ns-undef-patt))
-;      (lsp-break "save-ns post 2nd let")
       (loop for i in ns-undef-patt
-            do (pushnew i *ns-sub-patterns* :test #'equal))))
-  )
+            do (pushnew i *ns-sub-patterns* :test #'equal)))))
+  
 
 (defun edge-pattern-to-cats (ns-edge-pattern)
   (convert-mixed-pattern-edges-to-labels ns-edge-pattern))
