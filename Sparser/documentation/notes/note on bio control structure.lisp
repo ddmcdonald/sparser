@@ -3,6 +3,8 @@
 ;; Note on the "sweeping" control structure used 
 ;; in the Big Mechanism treatment of biology.
 
+;; First version 8/15/21
+
 Before we began to work on the molecular biology of signaling pathways in cancer, all of the parsing operations were tightly interleaved by a tail recursive network of function calls orchestrated by the code in /drivers/chart/psp/scan.lisp. 
 
 Such tight control makes sense in a sublanguage for which there is a rich semantic grammar. We do not have this for scientific journal articles in biology, which have the most complex lexico-syntactic patterns we have seen this side of contracts law. To compensate, we developed a control structure that makes multiple passes over a sentence, beginning with the simplest, most likely to be correct, analysis, continuing through the most heuristic. When all of the processing on a sentence is finished, it moves on to the next sentence and repeats the process.
