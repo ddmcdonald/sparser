@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993,2010-2011,2018-2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993,2010-2011,2018-2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "relative moments"
 ;;;   Module:  "model;core:time:"
-;;;  version:  June 2021
+;;;  version:  September 2023
 
 ;; initiated 7/8/93 v2.3.
 ;; 0.1 (5/24/94) redid the rdata as 'time-deictic'. 6/26 fixed omission of
@@ -136,27 +136,44 @@
       (push-debug `(,ordinal ,sequence))
       (break "next"))))
 
+;;;-----
+;;; ago
+;;;-----
+
+(define-category ago
+  :specializes relative-time
+  :realization (:adverb "ago")
+  :documentation "Used in refering to a past time.
+ 'it happened a long ago', or as part of an amount
+ of time 'ten years ago'. Doesn't have a meaning
+ outside of a phrase.")
+
+(def-cfr ago ("-" ago)
+  :form adverb
+  :referent (:daughter right-edge))
 
 
-(define-category  age-ago ;; "10 years ago"
-  :specializes time
-  :instantiates self
+(define-category  amount-of-time-ago ;; "10 years ago"
+  :specializes amount-of-time
+  :instantiates time
   :binds ((age-ago . amount-of-time))
   :index (:sequential-keys age-ago)
-  :realization (:tree-family  item+idiomatic-head
-                :mapping ((np . :self)
-                          (modifier (:or amount-of-time ; "10 years"
-                                         time)) ; "just weeks"
-                          (np-head . "ago")
-                          (result-type . :self)
-                          (item . age-ago)))
   :documentation "Picks out a time a specific distance in the past,
  compare 'ten years from now' which has the same formulation of
- an amount of time followed by a temporal adverb. N.b. the way
- this realization is formulated it does depend on 'ago' referenced
- as a literal word. We could change that when we find more patterns
- to formulate.")
+ an amount of time followed by a temporal adverb. word. 
+ We could change this when we find more patterns to formulate.")
 
+(def-cfr time (amount-of-time ago)
+  :form n-bar
+  :referent (:instantiate-individual amount-of-time-ago
+             :with (age-ago left-edge)))
+
+;;/// "not long ago (event)"
+;;    "it happened a long time ago"
+
+;;;----------
+;;; deictics
+;;;----------
 
 ;;--- Specific instance of time (units): "that day", "last month"
 ;;  These become particular times that can be dereferenced in context
