@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2015-2023 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "charaterize-words"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  February 2021
+;;;  version:  September 2023
 
 ;; initiated 5/15/15 breaking out the routines that look at the words
 ;; and characterize them as patterns to drive the matcher. Moved in
@@ -23,34 +23,34 @@
          (top-edge (ev-top-node start-ev)))
     ;;(break "For ~s caps = ~a, top-edge = ~a" (word-pname word) caps top-edge)
     (if (not (word-p word)) ;; can be an edge!
-        (intern (pname (edge-category word)) :keyword)
-        (case caps
-          (:digits
-           (if (= 1 (length (word-pname word)))
-               :single-digit
-               :digits))
-          (:initial-letter-capitalized
-           :capitalized) ;; "Gly", "Ras"
-          (:single-capitalized-letter
-           :single-cap)
-          (:all-caps
-           :full)
-          (:mixed-case
-           :mixed ) ;;(characterize-type-for-mixed-case word))
-          (:lower-case
-           (if (= 1 (length (word-pname word)))
-               (if (string-equal (word-pname word) "p")
-                   :little-p
-                   :single-lower)
-               :lower))
-          (:punctuation
-           (keyword-for-word word))
-          (otherwise (break "~a is a new case to characterize for p~a and ~s~
+      (intern (pname (edge-category word)) :keyword)
+      (case caps
+        (:digits
+         (if (= 1 (length (word-pname word)))
+           :single-digit
+           :digits))
+        (:initial-letter-capitalized
+         :capitalized) ;; "Gly", "Ras"
+        (:single-capitalized-letter
+         :single-cap)
+        (:all-caps
+         :full)
+        (:mixed-case
+         :mixed ) ;;// (characterize-type-for-mixed-case word))
+        (:lower-case
+         (if (= 1 (length (word-pname word)))
+           (if (string-equal (word-pname word) "p")
+             :little-p
+             :single-lower)
+           :lower))
+        (:punctuation
+         (keyword-for-word word))
+        (otherwise (break "~a is a new case to characterize for p~a and ~s~
                        ~%under ~a"
-                            caps
-                            (pos-token-index position) 
-                            (word-pname word)
-                            top-edge))))))
+                          caps
+                          (pos-token-index position) 
+                          (word-pname word)
+                          top-edge))))))
 
 (defparameter *word-nospace-keywords*
   '(:capitalized :single-cap :full :mixed :single-lower :little-p :lower))
@@ -121,7 +121,6 @@
                  ((itypep label 'protein)
                   :protein)
                  ((memq label '(wild-type nucleotide))
-                  ;;(eq label 'protein) 
                   (intern (pname label) :keyword))
                  ((and (edge-p item)
                        (single-word-edge? item))

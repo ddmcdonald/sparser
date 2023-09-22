@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2021  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2023 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "traces"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  January 2021
+;;;  version:  September 2023
 
 ;; Broken out from driver 2/5/13. Added more cases 9/11/14. Imported
 ;; cases from traces/scan-patterns 7/21/15. 
@@ -79,8 +79,9 @@
 
 
 (deftrace :no-space-sequence-started-at (p)
+  ;; called from collect-no-space-segment-into-word
   (when (or *trace-ns-sequences*)
-    (trace-msg "[ns] simple no-space collector started at p~a"
+    (trace-msg "[ns] no-space collector started at p~a"
 	       (pos-token-index p))))
 
 (deftrace :no-space-initial-long-edge (edge)
@@ -156,6 +157,7 @@
                start-pos end-pos)))
 
 (deftrace :looking-at-ns-segment (start-pos end-pos)
+  ;; called from collect-no-space-segment-into-word
   (when *trace-ns-sequences*
     (trace-msg "[ns] Looking at the segment from p~a to p~a: ~s"
                (pos-token-index start-pos)
@@ -175,9 +177,14 @@
               ~%       so returning without pattern check."
                (word-pname word))))
 
+(deftrace :pattern-on-bogus-list ()
+  ;; called early in ns-pattern-dispatch
+  (when *trace-ns-sequences*
+    (trace-msg "[ns] That pattern is on the bogus patterns list")))
+
 (deftrace :segment-ns-pattern (pattern)
   (when *trace-ns-sequences*
-    (trace-msg "[ns] The pattern is ~a" pattern)))
+    (trace-msg "[ns] The pattern is: ~a" pattern)))
 
 (deftrace :ns-pattern-includes-edges (edges)
   (when *trace-ns-sequences*
