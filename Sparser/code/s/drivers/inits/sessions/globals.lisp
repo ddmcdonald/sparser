@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1997,2011-2021  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1997,2011-2023  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "globals"
 ;;;   Module:  "drivers;inits:sessions:"
-;;;  Version:  August 2021
+;;;  Version:  September 2023
 
 ;;;  Flags and the code to initialize them, as pertain to the state
 ;;;  of an entire session with the analyzer.
@@ -244,6 +244,12 @@
    of the words (terminal under edges). Going that far through
    the core sweeps lets us appreciate polywords and such rather than
    just orthographic words")
+
+(defparameter *integrated-word-frequency-count* nil
+  "Builds on idea of *smart-frequency-count* but allows the
+   parsing process to continue and have the frequency data
+   stored in the content fields of all the document structure.
+   See do-integrated-wf-count and objects/doc/word-freq-methods.lisp")
 
 (defparameter *grammar-and-model-based-parsing* nil
   "Wrapped around all of the parsing calls in sentence-processing-core

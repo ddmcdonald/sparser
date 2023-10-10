@@ -284,13 +284,21 @@
 
 (defun scan-terminals-and-do-core (sentence)
   "Do the remaining processing of the terminals followed
-   by all the sentence-level parsing"
-  (declare (special *smart-frequency-count*))
+   by all the sentence-level parsing. If the 'smart' word
+   frequency flag it up that is all we do. Otherwise if
+   the 'smart' flag is up we collect the word frequency
+   data for the sentence and then continue with the
+   rest of our normal processing."
+  (declare (special *smart-frequency-count*
+                    *integrated-word-frequency-count*))
   (setq *sentence-in-core* sentence) ;; note 1
   (scan-terminals-of-sentence sentence) ;; (tr :scanning-done)
   (if *smart-frequency-count*
     (do-smart-frequency-count sentence)
-    (sentence-processing-core sentence))) ;; (tr :sweep-core-done)
+    (else
+      (when *integrated-word-frequency-count*
+        (do-integrated-wf-count sentence))
+      (sentence-processing-core sentence)))) ;; (tr :sweep-core-done)
 
 #| Note #1  We sometimes get errors in scan-terminals-of-sentence
  so it is important for the error message routines

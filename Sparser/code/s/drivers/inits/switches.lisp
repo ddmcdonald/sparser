@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  August 2023
+;;;  Version:  October 2023
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -719,6 +719,15 @@
    :standard 'wf-classification/ignore-caps/known)
   (setq *include-function-words-in-frequency-counts* nil)
   (setq *stem-words-for-frequency-counts* nil))
+
+(defun embedded-word-frequency ()
+  "Setting that has the word frequency information collected
+   in-line with a full parse and aggregated at higher levels
+   of document structure. Essentially an alternative path
+   through scan-terminals-and-do-core that stores the information
+   in the document structure. See objects/doc/word-freq.lisp"
+  (setq *smart-frequency-count* nil
+        *integrated-word-frequency-count* t))
 
 
 (defun just-bracketing-setting ()
