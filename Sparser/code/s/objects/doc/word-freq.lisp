@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2012-2013,2019-2020  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2012-2013,2019-2023  David D. McDonald  -- all rights reserved
 ;;;
 ;;;    File:  "word-freq"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  April 2020
+;;;  Version:  October 2023
 
 ;; initiated 9/2/12 to provide a mix-in for tabulating word-frequency information.
 ;; 10/26/13 Reworked as a regular class form with initial values since the initialize
@@ -23,8 +23,11 @@
     :documentation "list of the words in the document")
    (token-count :type integer :initform 0 :accessor token-count
     :documentation "total word token count in the document"))
-  (:documentation "Provides a mix-in for anything that contains words whose
- frequencies can be counted."))
+  (:documentation "Provides a mix-in for anything that contains words
+ whose frequencies can be counted.
+ In particular, it is one of the classes that is incorporated into
+ the document-element class meaning that all of the classes in our
+ document structure stack include it."))
 
 
 ;;;------------
@@ -37,29 +40,12 @@
   (clrhash (words-to-count o))
   o)
 
-;;;---------------------------
-;;; tallying word-frequencies
-;;;---------------------------
 
-(defgeneric incf-word-count (word table)
-  (:documentation "Assumes the table is an instance of word-frequency.
-    Bumps up the count, and if the word is new it is added to that list.")
-  (:method  ((w word) (o word-frequency))
-    (let* ((table (words-to-count o))
-           (count (gethash w table)))
-      (unless count
-        (push w (words o))
-        (setf (gethash w table) 0))
-      (incf (token-count o))
-      (incf (gethash w table))
-      w))
-  (:method ((w polyword) (o word-frequency))
-    (let* ((table (words-to-count o))
-           (count (gethash w table)))
-      (unless count
-        (push w (words o))
-        (setf (gethash w table) 0))
-      (incf (token-count o))
-      (incf (gethash w table))
-      w)))
-
+;;--- testing
+#|
+(p/a "Apple also sold 14.1 million iPads during the quarter, 
+compared to 14 million in the year-ago quarter. 
+The Company sold 4.6 million Macs, 
+compared to 4.9 million in the year-ago quarter.")
+|#
+s
