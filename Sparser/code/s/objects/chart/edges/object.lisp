@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1999,2012-2021  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2012-2023  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "objects;chart:edges:"
-;;;  Version:  May 2021
+;;;  Version:  September 2023
 
 ;; 3.0 (9/3/92 v2.3) flushed the fields used by earlier psp algorithms
 ;; 3.1 (5/14/93) Allowed Set-used-by to make a list to help redundancy checking
@@ -112,6 +112,7 @@
         (dependencies
          (make-mention value edge category dependencies)
          (setf (edge-referent edge) value))
+
         (t (when create-mention
              (unless (or
                       (typep (edge-mention edge) 'discourse-mention)
@@ -163,7 +164,6 @@ code is make-edge-over-abbreviation and its feeders. |#
   ;; i.e. a word directly referenced in a rule.
   (eq :literal-in-a-rule (edge-right-daughter e)))
 
-
 (defgeneric edge-over-function-word? (edge)
   (:documentation "Does this edge correspond to a function word,
      i.e. does it directly dominate a word that was marked as
@@ -175,6 +175,28 @@ code is make-edge-over-abbreviation and its feeders. |#
       (when (word-p w)
         (get-tag :function-word w)))))
 
+(defun word-from-edge (e)
+  "Walk down from an edge and return the word it
+  dominates. Written for do-integrated-wf-count so the
+  edges will correspond to singletons or small trees"
+  (declare (special *number-word*))
+  (let ((left-daughter (edge-left-daughter e)))
+    (cond ((word-p left-daughter)
+           left-daughter)
+          ((edge-p left-daughter)
+           (cond ((itypep (edge-referent e) 'number)
+                  *number-word*)
+                 (t (break "another edge case: ~a" e))))
+          (t (break "Another case: ~a" e)))))
+
+             #|
+  (cond ((eq :single-term (edge-right-daughter e))
+         (if (edge-p (edge-left-daughter e))
+           ;; happens with things like the protein over MEK1
+           (word-from-edge (edge-left-daughter e))
+           (edge-left-daughter e)))
+        (t ;;(warn "no word at ~s" e)
+         nil)))  |#
 
 ;;;----------------------
 ;;; special Set routines

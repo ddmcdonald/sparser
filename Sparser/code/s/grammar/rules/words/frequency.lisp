@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990-1996,2010-2014,2017-2020  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1996,2010-2014,2017-2023  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "frequency"
 ;;;   Module:  "rules;words:"
-;;;  Version:  April 2020
+;;;  Version:  October 2023
 
 ;; initiated 10/90
 ;; 3/21/92 Added capitalization information to the dummy words
@@ -173,7 +173,6 @@
   (hash-table-count *word-frequency-table*))
 
 
-
 ;;;-----------------------------
 ;;; driver - hooks into Sparser
 ;;;-----------------------------
@@ -197,22 +196,12 @@
 
 (defun do-smart-frequency-count (sentence)
   "Called from scan-terminals-and-do-core when the *smart-frequency-count*
-   flag is up as an alternative to continuing with above-the-word analysis.
-   At that point we will have found all polywords, run any applicable FSAs
-   (e.g. for digit sequences), run word-level completion, introduced terminal
-   edges over the words and run any edge-level FSAs."
+   flag is up. At that point we will have found all polywords, run 
+   any applicable FSAs  (e.g. for digit sequences), run word-level completion,
+    introduced terminal edges over the words and run any edge-level FSAs."
   (loop for e in (all-tts (starts-at-pos sentence) (ends-at-pos sentence))
      when (edge-p e)
      do (record-word-frequency (word-from-edge e) (pos-edge-starts-at e))))
-
-(defun word-from-edge (e)
-  (cond ((eq :single-term (edge-right-daughter e))
-         (if (edge-p (edge-left-daughter e))
-           ;; happens with things like the protein over MEK1
-           (word-from-edge (edge-left-daughter e))
-           (edge-left-daughter e)))
-        (t ;;(warn "no word at ~s" e)
-         nil)))
 
 
 ;;;----------------------------------------------
