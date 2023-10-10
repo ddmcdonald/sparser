@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2023 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "no-brackets-protocol"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  May 2021
+;;;  version:  October 2023
 
 ;; Initiated 10/5/14, starting from the code for detecting bio-entities.
 ;; 10/29/14 added flags to turn off various steps so lower ones

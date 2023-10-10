@@ -290,7 +290,8 @@
     paragraph to get a coarse style marker of a sort.")
   
   (:method ((p paragraph))
-    (declare (special *print-text-stats* *show-article-progress*))
+    (declare (special *print-text-stats* *show-article-progress*
+                      *integrated-word-frequency-count*))
     (when (and (starts-at-pos p) (ends-at-pos p))
       (let* ((content (contents p))
              (sentences (sentences-in-paragraph p)) ; list of sentence objects
@@ -300,6 +301,9 @@
         (setf (sentence-count content) (length sentences))
         (setf (word-count content) word-count)
         (setf (token-count p) word-count)
+
+        (when *integrated-word-frequency-count*
+          (aggregate-frequency-data p))
 
         (when (and *print-text-stats*
                    *show-article-progress*)
@@ -318,9 +322,12 @@
     daughters. Other paragraph-level assessed characteristics
     can be put here later.")
   (:method ((e document-element))
+    (declare (special *integrated-word-frequency-count*))
     (let ((count (loop for d in (children e)
                     sum (token-count d))))
       (setf (token-count e) count)
+      (when *integrated-word-frequency-count*
+        (aggregate-frequency-data e))
       count)))
 
 

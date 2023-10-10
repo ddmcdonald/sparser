@@ -1,17 +1,113 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2020  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2020-2023 David D. McDonald  -- all rights reserved
 ;;;
 ;;;    File:  "word-freq-methods"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  April 2020
+;;;  Version:  October 2023
 
 ;; initiated 4/8/20 to allow methods to be loaded after all the classs
 ;; that they refer to. 
 
 (in-package :sparser)
 
+;;;------------
+;;; populators
+;;;------------
 
-;;--- analogs to the readouts over the globals
+;;--- sentences
+
+(defgeneric do-integrated-wf-count (sentence)
+  (:documentation "Called from scan-terminals-and-do-core when the
+ *smart-frequency-count* flag is nil, and the *integrated-word-frequency-count*
+ flag is up. Gets the treetop edges of the sentence, extracts their words,
+ and updates the word-frequence fields in the sentence.")
+  (:method ((s sentence))
+    (let* ((edges (all-tts (starts-at-pos s) (ends-at-pos s)))
+           (words (loop for e in edges collect (word-from-edge e))))
+      (setf (words s) words)
+      (setf (token-count s) (length words))
+      (loop for w in words
+        do (incf-word-count w s)))))
+
+
+;;--- higher levels
+
+(defgeneric aggregate-frequency-data (doc-element)
+  (:documentation "Piggy-backs on the text-characteristics methods:
+    collect-text-characteristics for paragraphs, with all the higher
+    levels in aggregate-text-characteristics. These dispatch is
+    controlled by the parameter *integrated-word-frequency-count*.")
+  (:method ((p paragraph))
+    (let* ((sentences (sentences-in-paragraph p))
+           (all-words (loop for s in sentences append (words s)))
+           (words (remove-duplicates all-words)))
+      (setf (token-count p)
+            (loop for s in sentences
+                  sum (token-count s)))
+      (setf (words p) words)
+      (push-debug `(,words ,p ,sentences)) ;; (break "test")
+      (increment-word-count words sentences (words-to-count p))))
+  
+  (:method ((e document-element))
+    (let* ((daughters (children e))
+           (parent-table (words-to-count e))
+           (all-words (loop for d in daughters append (words d)))
+           (words (remove-duplicates all-words)))
+      (setf (words e) words)
+      (setf (token-count e)
+            (loop for d in daughters
+                  sum (token-count d)))
+      (increment-word-count words daughters parent-table))))
+    
+
+;;--- tally methods
+
+(defun increment-word-count (words sentences parent-table)
+  "At the base level we have to sum the instance counts in
+   each of the sentences, then update the table in the
+   parent paragraph."
+  (loop for w in words
+        as count = (count-in-daughters w sentences)
+        do (setf (gethash w parent-table) count)))
+
+(defun count-in-daughters (w daughters)
+  "Get the number of instances of the word 'w' in each of
+   the hashtables (words-to-count) of the daughters
+   and sum the result. If w is not in a daugher table enter 0."
+  (flet ((pad-frequency-table (w table)
+           "The word often as not will not be in the table.
+            If that's the case we enter 0 for it."
+           (unless (gethash w table)
+             (setf (gethash w table) 0))
+           table))
+    (loop for d in daughters
+          as table = (words-to-count d)
+          as padded-table = (pad-frequency-table w table)
+          sum (gethash w padded-table))))
+
+(defgeneric incf-word-count (word sentence)
+  (:documentation "Assumes the sentence is an instance of word-frequency.
+    Bumps the count on each word.")
+  (:method  ((w word) (s sentence))
+    (let* ((table (words-to-count s))
+           (count (gethash w table)))
+      (unless count
+        (setf (gethash w table) 0))
+      (incf (gethash w table))
+      w))
+  (:method ((w polyword) (s sentence))
+    (let* ((table (words-to-count s))
+           (count (gethash w table)))
+      (unless count
+        (setf (gethash w table) 0))
+      (incf (gethash w table))
+      w)))
+
+
+
+;;;------------------------------------------
+;;; analogs to the readouts over the globals
+;;;------------------------------------------
 
 (defgeneric readout-frequency-record (word-frequency)
   (:documentation "Given an instance of a document class that
