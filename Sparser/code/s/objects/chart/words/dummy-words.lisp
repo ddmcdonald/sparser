@@ -13,13 +13,14 @@
 
 (in-package :sparser)
 
+;;/// rethink what we want -- removing "ABSTRACT-WORD-" is a start
 
 (defun define-dummy-word/expr (symbol
                                &key capitalization )
   ;; These are for such purposes as calculating word frequencies, where
   ;; we want to accumulate counts on Capitalized-words, numbers, etc.
   (let ((w-symbol (intern (concatenate 'string
-                                       "ABSTRACT-WORD-"
+                                      ;; "ABSTRACT-WORD-"
                                        (symbol-name symbol))
                           *word-package*)))
 
