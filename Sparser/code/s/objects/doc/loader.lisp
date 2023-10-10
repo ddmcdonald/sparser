@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  August 2023
+;;;  Version:  October 2023
 
 ;; initiated 10/91
 ;; 0.1  (10/21 v2.0) Bumped [section] to "1".  Added [SGML tags]
@@ -31,8 +31,8 @@
 
 (lload "doc;classes")
 (lload "doc;analysis-parameters")
-(lload "doc;word-freq")
 (lload "doc;globals")
+(lload "doc;word-freq")
 (lload "doc;rhetoric")
 (lload "doc;section markers")
 (lload "doc;sgml tags")
