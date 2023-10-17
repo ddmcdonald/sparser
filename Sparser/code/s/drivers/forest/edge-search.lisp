@@ -519,6 +519,13 @@
   (when (and (eq (left-edge-of-triple r-triple) (right-edge-of-triple l-triple))
              (not (high-priority-postmod? r-triple)))
 
+    ;; hack in lieu of doing something more general.
+    ;; We if the l-triple's rule rhs starts with a word it's
+    ;; failed without looking at it. Otherwise it will blow up
+    ;; when we try to bind l-triple-left
+    (when (word-p (car (cfr-rhs (triple-rule l-triple))))
+      (return-from losing-competition? nil)) ; fail rule with literal
+
     (let* ((l-triple-rhs (cfr-rhs (triple-rule l-triple)))
            (l-triple-left (cat-symbol (car l-triple-rhs)))
            (r-triple-3 (right-edge-of-triple r-triple)))
