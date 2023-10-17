@@ -80,10 +80,10 @@ a 'subject', e.g. "southern Chinese girls are never tall"
   :binds ((comparative :primitive category)
           (superlative :primitive category)
           (for-grouping)
-          (per-grouping)
+          ;;(per-grouping) interfers w/ clean preposition reading
           (by-grouping))
   :realization (:for for-grouping
-                :per per-grouping
+                ;; :per per-grouping
                 :by by-grouping)
   :documentation "Calling this 'scalar' is to say that
  its values are arranged along some dimension, in this
