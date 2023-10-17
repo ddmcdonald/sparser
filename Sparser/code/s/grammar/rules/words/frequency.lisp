@@ -664,17 +664,17 @@
 ;;;----------------------------
 
 (defparameter *capitalized-word*
-  (define-dummy-word/expr 'capitalized-word
+  (define-dummy-word 'capitalized-word
     :capitalization :initial-letter-capitalized))
 
 (defparameter *number-word*
-  (define-dummy-word/expr 'number-word))
+  (define-dummy-word 'number-word))
 
 (defparameter *function-word*
-  (define-dummy-word/expr 'function-word))
+  (define-dummy-word 'function-word))
 
 (defparameter *punctuation-word*
-  (define-dummy-word/expr 'punctuation-word))
+  (define-dummy-word 'punctuation-word))
 
 
 (defun classify-word-for-frequency (word position)
