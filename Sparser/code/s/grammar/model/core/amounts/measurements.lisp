@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2000,2014-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2000,2014-2023 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "measurements"
 ;;;   module:  "model;core:amounts:"
-;;;  Version:  February 2021
+;;;  Version:  October 2023
 
 ;; original version initiated 10/2/91
 ;; completely made over 9/18/93 in new semantics.  10/24/93 gave it rdata
@@ -66,8 +66,7 @@ The basic case is "the <measure-term> is <measurement>
 and the word can stand by itself "that distance"
 |#
 
-(define-category named-measure ; 
-                 ;; Provides a common supercategory. ///Easily replaced
+(define-category named-measure ;; Provides a common supercategory. ///Easily replaced
   :binds ((name :primitive word))
   :specializes measurement)
 
@@ -75,15 +74,6 @@ and the word can stand by itself "that distance"
 ;;;----------------------------
 ;;; imported from bio;taxonomy
 ;;;----------------------------
-
-(define-category ratio :specializes scalar-attribute
-  :binds ((measured hyphenated-triple)
-	  (divisor))
-  :realization
-     (:noun "ratio"
-      :m measured
-      :of measured
-      :to divisor))
 
 (define-category value
   :specializes measurement
@@ -99,7 +89,7 @@ and the word can stand by itself "that distance"
  :realization (:noun "level")) |#
 
 
-;; more suspect imports -- have to generalize bio-method
+;; more suspect imports -- /// have to generalize bio-method
 
 (define-category measure
   :specializes activity-with-a-purpose
@@ -109,8 +99,7 @@ and the word can stand by itself "that distance"
    :with instrument))
 
 (define-category measure-as-measurement :specializes attribute
-  :realization (:noun "measure")
-  )
+  :realization (:noun "measure"))
      
 (define-category correlate
   :specializes measure
@@ -123,6 +112,16 @@ and the word can stand by itself "that distance"
 ;;;-------
 ;;; rate
 ;;;-------
+
+(define-category ratio :specializes scalar-attribute
+  :binds ((measured hyphenated-triple)
+          ;;/// needs generalization after digging for its original use
+	  (divisor))
+  :realization
+     (:noun "ratio"
+      :m measured
+      :of measured
+      :to divisor))
 
 (define-category rate
   :specializes measurement
@@ -142,41 +141,56 @@ multiple.
 second (i.e., hertz); e.g., radio frequencies, heart rates, or sample
 rates |#
 
+;;/// generalize to ratio once we have criteria
 (defgeneric make-a-rate (unit per-unit)
   (:documentation "Find or make a rate. Paradigm case (so far) is the
     slash pattern over time-units. Initially called from no-space
-    code: make-edge-over-rate")
+    code: make-edge-over-rate") ;; "hours/day"
   (:method ((unit individual) (per-unit individual))
     (define-or-find-individual 'rate
         :units unit
         :per-unit per-unit)))
 
-;;;-------------------------
-;;; rate of change measures
-;;;-------------------------
+;;;-------------
+;;; 'per' rules
+;;;-------------
+#| 'per' is a preposition. 
+Collins says it is use to express rates or ratios. 
+'a/an' serves the same function
+"$10 per hour" 
+"Buses and trains use much less fuel per person than cars"
+  To invert these, we need to record what term they used
+and need to respect the pp's bounds.
+|#
 
-;; Original version, 9/00 -- Reconcile once it's easy
-;;    to trace out to the users of a category.
-#| This is broken out because the meaning is so different
-   as well as the realization. The fact that they have the very
-   same bindings is inmaterial. |#
-#|   oops!   This is identical to 'measurement' What was I really
-             thinking about. |#
+(define-category per-item
+  :specializes measurement
+  :binds ((marker) ; per
+          (item))
+  :documentation "")
+
+(def-cfr per-item (per time-unit)
+  :form pp
+  :referent (:instantiate-individual per-item
+             :with (marker left-edge
+                   item right-edge)))
+(def-cfr per-item (a time-unit) ; doesn't work w/ 'a' as a determiner
+  :form pp
+  :referent (:instantiate-individual per-item
+             :with (marker left-edge
+                    item right-edge)))
+
+
+;;------
+
 (define-category proportional-measurement  ;; "2 inches a year"
   :specializes measurement
   :instantiates measurement ;; ??
   :binds ((units . unit-of-measure)  ;; 'scalar' or 'measurable' might be good
           (quantity :or quantity number))
-  :realization (:tree-family  N-per-unit
-                :mapping ((type . :self)
-                          (N . quantity)
-                          (unit . units)
-                          (unit-head . unit-of-measure)
-                          (unit-np . per-unit-of-measure)
-                          (N-np . (quantity number))
-                          (top-np . :self))))
-
-
+  :documentation "This is identical to measurement, though the realization
+ of that category yields simple quantities. Here we want to to make
+")
 ;;---- virtually identical (modulo name choices) version
 ;; done for Canto.
 
@@ -186,15 +200,8 @@ rates |#
           (time-measure . time-unit)  ;; e.g. hour
           (name :primitive word)) ;; need compact form for generating
   :index (:permanent :sequential-keys distance-measure time-measure)
-  ;; "knot" is a rate of change all in one word: one nautical mile per hour
-  :realization (:tree-family  N-per-unit
-                :mapping ((type . :self)
-                          (N . distance-measure)
-                          (unit . time-measure)
-                          (unit-head . time-unit)
-                          (unit-np . time-unit)
-                          (N-np . unit-of-measure)
-                          (top-np . :self))))
+  :documentation ""
+  )
 
 (defmacro def-rate-of-change-unit (unit-of-measure unit-of-time abreviations)
   ;;/// confirm that they're all strings
@@ -236,66 +243,6 @@ rates |#
                           (np-head . unit-of-rate-of-change)
                           (modifier . (number quantity))
                           (result-type . :self)))))
-
-(define-category qualitative-rate
-  :specializes rate-measurement
-  :index (:permanent :key name)
-  :documentation "The category of any word that describes the rate
-    at which something happens without giving it a precise value
-    (for which we use 'rate'), e.g. 'fast', 'slow'. This could
-    evalove when we get a better handle on attributes and their 
-    values more generally. These terms are scalar: 'fast' is
-    'more' than 'slow', and they can be refined with a set of
-    pretty standard modifiers: '(go) a little bit faster'. 
-    Like other qualitative measures of attributes they are always
-    relative to the thematic participant of the process that they're
-    describing: 'fast for a snail', cf. 'big for a mouse' vs. for
-    an elephant."
-  :realization (:adjective name))
-
-(define-category rate-of-process
-  :specializes measurement
-  :binds ((process . process)
-          (value . rate))
-  ;;:index (:sequential-keys process value)
-  :documentation "Gives the rate at which some process in taking place. ; 
-    only makes sense when there's a particlar process. Could have
-    several of these about the same process, some with qualitative 
-    measures and some with quantitative."
-) #|
-  :realization ((:tree-family empty-head-of-complement
-                 :mapping ((of-item . process)
-                           (np . :self)
-                           (base-np . "rate")
- I want the of construction to combine with a copula that will
- supply the value and don't see the obvious way to do it yet
- and a rube goldburg scheme will be confusing
-|#
-
-#| 1/8/15 The rule spanning "of" is now beyond the pale because
-   it adds such complexity to Whack-a-Rule processing
-;;  Use these ugly things instead for now.
-(def-cfr rate-of-process-of (rate of) ;; the spanned 'of', not literal
-  :form np ;;/// ugh
-  :referent (:head left-edge
-             :instantiate-individual rate-of-process))
-
-(def-cfr rate-of-process (rate-of-process-of process)
-  :form np
-  :referent (:head left-edge
-             :bind (process right-edge)))
-
-(find-or-make-value-categories 'qualitative-rate)
-;;  =>  is-qualitative-rate
-
-(def-cfr rate-of-process (rate-of-process is-qualitative-rate)
-  :form s
-  :referent (:head left-edge
-             :bind (value right-edge)))
-|#
-
-
-
 
 
 
