@@ -56,10 +56,6 @@ indigo and gray.Mar 28, 2017
 (define-length "long" :dir :+)
 ;;(define-length "short" :dir :-) duplicate w/ height?, need neutral
 
-;;--- rate of change
-(define-rate-of-change "fast" :dir :+)
-(define-rate-of-change "slow" :dir :-)
-
 ;;--- quality (called goodness to avoid clash)
 (define-goodness "good" :dir :+  :er "better" :est "best")
 (define-goodness "great" :dir :+ :er "greater" :est "greatest") ; default more doubles the 't'
@@ -83,3 +79,24 @@ may be somewhat more resistant to
 were more common in
 was suppressed more effectively by
 |#
+
+;;--- rate of change
+(define-rate-of-change "fast" :dir :+)
+(define-rate-of-change "slow" :dir :-)
+
+;; (define-category qualitative-rate  Alternative treatment
+;;   :specializes rate-measurement
+;;   :index (:permanent :key name)
+;;   :documentation
+  "The category of any word that describes the rate
+    at which something happens without giving it a precise value
+    (for which we use 'rate'), e.g. 'fast', 'slow'. This could
+    evalove when we get a better handle on attributes and their 
+    values more generally. These terms are scalar: 'fast' is
+    'more' than 'slow', and they can be refined with a set of
+    pretty standard modifiers: '(go) a little bit faster'. 
+    Like other qualitative measures of attributes they are always
+    relative to the thematic participant of the process that they're
+    describing: 'fast for a snail', cf. 'big for a mouse' vs. for
+    an elephant."
+;;  :realization (:adjective name))
