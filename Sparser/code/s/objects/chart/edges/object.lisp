@@ -209,16 +209,24 @@ code is make-edge-over-abbreviation and its feeders. |#
   ;; strings. Alternatively we could lump them like we do numbers
   (let* ((referent (edge-referent e))
          (name (value-of 'name referent)))
-    (unless name (break "no 'name' on proper name ~a" e))
-    (let* ((sequence (value-of 'sequence name))
-           (string (string/sequence sequence)))
-      (or (polyword-named string)
-          (define-polyword-any-words string)))))
+    (cond
+      ((null name)
+       (if (and (itypep referent 'uncategorized-name)
+                (eq (edge-rule e) 'do-single-word-name))
+         (edge-left-daughter e)
+         (break "Another 'no name' on proper name case")))
+      (t
+       (let* ((sequence (value-of 'sequence name))
+              (string (string/sequence sequence)))
+         (or (polyword-named string)
+             (define-polyword-any-words string)))))))
 
 
 (defun word-from-edge-left-daughter (left-daughter e)
   (cond
     ((word-p left-daughter) ; "how"
+     left-daughter)
+    ((polyword-p left-daughter)
      left-daughter)
     ((edge-p left-daughter)
      (let* ((category (edge-category left-daughter))
@@ -233,7 +241,8 @@ code is make-edge-over-abbreviation and its feeders. |#
           (let ((name (value-of 'name referent)))
             (unless name
               (break "no 'name' on referent"))
-            (if (polyword-p name)
+            (if (or (polyword-p name)
+                    (word-p name)) ;; "Florida"
               name
               (break "name is not a polyword"))))
 
