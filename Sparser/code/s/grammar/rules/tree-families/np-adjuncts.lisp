@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995-2005,2011-2013,2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-2005,2011-2013,2019-2023 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "np adjuncts"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  October 2019
+;;;  version:  October 2023
 
 ;; initiated 6/14/95.  8/11 added pp-after-np.  11/15 added premodifier-adds-
 ;; property and filled in a missing description.  12/5 added determiner-adds-property
@@ -29,7 +29,7 @@
      np-participle ----------------- "third quarter ended June 26, 2004"
      pp-after-np ------------------- the pp adds a property. "of" is a special case
                                         in its own file.
-     N-per-unit -------------------- "10 cents a {per} share", "$125 an hour", "(grows by) an inch a year"
+    ;; N-per-unit -------------------- "10 cents a {per} share", "$125 an hour", "(grows by) an inch a year"
 |#
 
 
@@ -183,7 +183,11 @@
      ))
 
 
-
+#| Block the literal, 'per', as it cause issues when comparing
+   rules during filter-rules-by-local-competion. Words have the
+   same relevant properties as categories, but the manipulating
+   code (e.g. cat-symbol) can't be generalized to take both.
+   Open-coded in measurement code
 (define-exploded-tree-family  N-per-unit
   :description ""
   :binding-parameters ( type  N  unit )
@@ -202,3 +206,4 @@
                                 :form det
                                 :head right-edge
                                 :daughter right-edge))))
+|#
