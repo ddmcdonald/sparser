@@ -175,28 +175,73 @@ code is make-edge-over-abbreviation and its feeders. |#
       (when (word-p w)
         (get-tag :function-word w)))))
 
+
+;;;-----------------------------------
+;;; looking up the word under an edge
+;;;-----------------------------------
+
 (defun word-from-edge (e)
   "Walk down from an edge and return the word it
   dominates. Written for do-integrated-wf-count so the
   edges will correspond to singletons or small trees"
   (declare (special *number-word*))
-  (let ((left-daughter (edge-left-daughter e)))
-    (cond ((word-p left-daughter)
-           left-daughter)
-          ((edge-p left-daughter)
-           (cond ((itypep (edge-referent e) 'number)
-                  *number-word*)
-                 (t (break "another edge case: ~a" e))))
-          (t (break "Another case: ~a" e)))))
+  (cond
+    ((word-p e)
+     e)
+    ((edge-p e)
+     (cond
+       ((eq (form-cat-name e) 'proper-name)
+        (word-from-proper-name-edge e))
+       (t
+        (let ((left-daughter (edge-left-daughter e)))
+          (word-from-edge-left-daughter left-daughter e)))))
+    (t
+     (break "argument 'e' is neither a word nor an edge:~
+           ~% ~a  ~a" e (type-of e)))))
+  
+;; Perhaps convert these to flet's when dust has finally settled
 
-             #|
-  (cond ((eq :single-term (edge-right-daughter e))
-         (if (edge-p (edge-left-daughter e))
-           ;; happens with things like the protein over MEK1
-           (word-from-edge (edge-left-daughter e))
-           (edge-left-daughter e)))
-        (t ;;(warn "no word at ~s" e)
-         nil)))  |#
+(defun word-from-proper-name-edge (e)
+  ;; For a company or other sort of proper-name (formed by PNF)
+  ;; the edge's left-daughter is a red-herring
+  ;; Looks like its easy to get a string from companies, people
+  ;; locations, .. and we could find/make polywords from those
+  ;; strings. Alternatively we could lump them like we do numbers
+  (let* ((referent (edge-referent e))
+         (name (value-of 'name referent)))
+    (unless name (break "no 'name' on proper name ~a" e))
+    (let* ((sequence (value-of 'sequence name))
+           (string (string/sequence sequence)))
+      (or (polyword-named string)
+          (define-polyword-any-words string)))))
+
+
+(defun word-from-edge-left-daughter (left-daughter e)
+  (cond
+    ((word-p left-daughter) ; "how"
+     left-daughter)
+    ((edge-p left-daughter)
+     (let* ((category (edge-category left-daughter))
+            (referent (edge-referent left-daughter)))
+       (cond
+         ((itypep referent 'number)
+          *number-word*)
+         ((polyword-p (edge-category left-daughter))
+          (edge-category left-daughter))
+         
+         ((itypep referent 'geographical-region)
+          (let ((name (value-of 'name referent)))
+            (unless name
+              (break "no 'name' on referent"))
+            (if (polyword-p name)
+              name
+              (break "name is not a polyword"))))
+
+         (t (break "another edge case: ~a" e)))))
+    (t (break "left-daughter neither a word nor an edge:~
+              % ~a  ~a" left-daughter (type-of left-daughter)))))
+
+
 
 ;;;----------------------
 ;;; special Set routines
