@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1990  Content Technologies Inc.
-;;; copyright (c) 1991,1992  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1992,2023 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "dummy words"
 ;;;    Module:   "objects;chart:words:"
-;;;   Version:   March 1992
+;;;   Version:   October 2023
 
 ;; inititated 10/90
 ;; 12/91 tweeked package
@@ -13,16 +13,10 @@
 
 (in-package :sparser)
 
-;;/// rethink what we want -- removing "ABSTRACT-WORD-" is a start
-
-(defun define-dummy-word/expr (symbol
-                               &key capitalization )
+(defun define-dummy-word (symbol &key capitalization )
   ;; These are for such purposes as calculating word frequencies, where
   ;; we want to accumulate counts on Capitalized-words, numbers, etc.
-  (let ((w-symbol (intern (concatenate 'string
-                                      ;; "ABSTRACT-WORD-"
-                                       (symbol-name symbol))
-                          *word-package*)))
+  (let ((w-symbol (intern (symbol-name symbol) *word-package*)))
 
     (let ((new? (not (boundp w-symbol)))
           (word (if (boundp w-symbol)
