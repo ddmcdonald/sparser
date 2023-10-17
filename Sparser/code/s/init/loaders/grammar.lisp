@@ -137,14 +137,14 @@ omitted and then run (perhaps) after the image has been launched."
   (gate-grammar *general-words* ;; can depend on mid-level
     (gload "words;loader 2"))
 
+  (gate-grammar *amounts*
+    (gload "amounts;loader"))
+
   (gate-grammar *paired-punctuation*
     (gload "traversal;loader"))
 
   (gate-grammar *numbers*
     (gload "numbers;loader"))
-
-  (gate-grammar *amounts*
-    (gload "amounts;loader"))
 
   (gate-grammar *standard-adjuncts*
     (gload "adjuncts;loader"))
