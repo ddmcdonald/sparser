@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1999,2011-2020 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2023 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "prepositions"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   April 2020
+;;;   Version:   October 2023
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3
 ;; 1/11/94 added "through"  7/14 added "up" & "down"  8/19 added "off"
@@ -117,7 +117,10 @@ these are really prepositions, and should function as such
 (define-preposition "as for")
 (define-preposition "as from")
 (define-preposition "as of")
+
+(define-preposition "per") ;; cf. per-item in core/amounts/measurement
 (define-preposition "as per")
+
 (define-preposition "as to")
 
 (define-preposition "aside from")
@@ -216,7 +219,6 @@ these are really prepositions, and should function as such
 (define-preposition "out of" )
 (define-preposition "owing to")
 (define-preposition "pending")
-(define-preposition "per")
 (define-preposition "plus")
 (define-preposition "prior to")
 (define-preposition "preliminary to")
