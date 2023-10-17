@@ -11,8 +11,9 @@
 ;;      the better treatments that this must have been migrating to
 ;;      but not gotten all the way. Removed redundant share-of-stock and
 ;;      amount-per-share categories.
+
 ;;----------- 2/20/11 Don't load this one (nobody presently does)
-;;   instead use /core/finance/per-share1.lisp ----------------------
+;;   instead use /core/finance/per-share.lisp ----------------------
 ;;   Contents were copied out of here in toto to core/finance/per-share
 ;;   in January 1996.
 
