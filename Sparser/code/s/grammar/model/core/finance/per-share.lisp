@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995-2001,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-2001,2011,2023  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "per share"
 ;;;   Module:  "model;core:finance:"
-;;;  Version:  1.0 February 2011
+;;;  Version:  October 2023
 
 ;;/// Also see per-share, which was the pre-lattice-points version of
 ;; this with some additional (if ad-hoc) rules to consider incorporating.
@@ -37,7 +37,7 @@
 (define-marker-category per-share-of-stock
   :realization (:tree-family transparent-pp
                 :mapping ((pp . per-share-of-stock)
-                          (preposition . "per")
+                          ;;(preposition . "per")
                           (complement . share-of-stock))))
 
 
@@ -46,14 +46,15 @@
   :instantiates self
   :binds ((quantity . money)
           (shares-in-a-company . share-of-stock))
-  :realization (:tree-family N-per-unit
-                :mapping ((type . :self)
-                          (N . quantity)
-                          (unit . shares-in-a-company)
-                          (unit-head . share-of-stock)
-                          (unit-np . per-share-of-stock)
-                          (N-np . money)
-                          (top-np . :self))))
+  ;; :realization (:tree-family N-per-unit
+  ;;               :mapping ((type . :self)
+  ;;                         (N . quantity)
+  ;;                         (unit . shares-in-a-company)
+  ;;                         (unit-head . share-of-stock)
+  ;;                         (unit-np . per-share-of-stock)
+  ;;                         (N-np . money)
+  ;;                         (top-np . :self)))
+  )
 
 
 
