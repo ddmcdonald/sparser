@@ -28,7 +28,7 @@
 ;;;---------------------
 ;;; standard attributes
 ;;;---------------------
-;; Their values are defined in model/dossiers/modifiers.lisp
+;; Their values are defined in model/dossiers/qualities.lisp
 ;; along with their values for comparatives by using the
 ;; functions these definitions created
 
