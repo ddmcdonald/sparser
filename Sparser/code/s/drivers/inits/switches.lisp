@@ -661,7 +661,8 @@
   (designate-article-container :texture)
   
   (setq *recognize-sections-within-articles* t) ;; otherwise won't be sentences
- 
+  (embedded-word-frequency)
+
   (setq *switch-setting* :neo-fire))
 
 
