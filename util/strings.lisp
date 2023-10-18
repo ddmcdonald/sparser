@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:  "strings"
 ;;;    module:  "util:"
-;;;   Version:  September 2023
+;;;   Version:  October 2023
 
 ;; (3/9/11) Reworked to fit in ddm-util. 7/5 fixed old case in
 ;; string-append. 2/1/16 added strings-to-hyphenated-string.
@@ -64,7 +64,9 @@
   "Simple, single newline case"
   (substitute #\space #\newline string))
 
-
+(defun string-contains-newline (string)
+  "Syntactic sugar for the obvious call"
+  (find #\newline string))
 
 (defun spaced-string (list)
   "given a list, probably of words, return a string where
