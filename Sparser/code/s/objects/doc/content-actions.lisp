@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "content-actions"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  August 2023
+;;;  Version:  October 2023
 
 #| Created 8/27/19 to move general action out of content-methods.lisp
 and make that file easier to understand. |#
@@ -342,10 +342,11 @@ and make that file easier to understand. |#
                       *show-noted-categories* *show-motif-terms*
                       *show-runtime-stats*))
     (unless stream (setq stream *standard-output*))
-    (format stream "~&~%For ~a" a)
+    
     (when *show-runtime-stats*
       (report-time-to-read-article a stream))
     (unless *minimal-reporting*
+      (format stream "~&~%For ~a" a)
       (when *show-parser-performance*
         (show-parse-performance a stream))
       (when *print-bio-terms*
