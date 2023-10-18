@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2018-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2018-20213 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "paragraphs"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  August 2021
+;;;  Version:  October 20213
 
 #| Aggregates the special handling of paragraph objects that
 are found incrementally during the handling of large texts.
@@ -276,20 +276,14 @@ set up the sentences state (initialize-sentences)  |#
       (error "Something other than paragraphs in ~a" section))
 
     ;; parameters for modulating after actions go here
-    
     (after-actions section)
     (after-actions article)
 
     (stop-timer '*time-to-read-document*)
     (report-time-to-read-article article)
-    (unless *minimal-reporting*
-      (when *show-parser-performance*
-        (show-parse-performance article))
-      (when *show-noted-categories*
-        (show-noted-categories article))
-      (when *show-motif-terms*
-        (show-motif-term-context article)))
+
+    ;; tailor what's presented according to the settings
+    ;; in this function.
+    (summary-document-stats article)
     article))
     
-    
-

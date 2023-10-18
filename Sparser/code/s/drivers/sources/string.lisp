@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "string"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:  August 2023
+;;;  Version:  October 2023
 
 ;; Created February 1991 or earlier
 ;; 5/1/13 Added section and paragraph initialization that will not be
@@ -42,7 +42,7 @@
 
 (defun analyze-string-as-article (string
                                   &key name quiet skip)
-  "Does the equivalent of finish-paragraph-based-article. Has the
+ "Does the equivalent of finish-paragraph-based-article. Has the
  string parsed. In the normal case it will be a multi-sentence
  example. This will as always entail the creation of a paragraph
  around the text, and a vacuous section and article above it,
@@ -62,39 +62,49 @@
   (start-timer '*time-to-read-document*)
 
   (let ((*trap-error-skip-sentence* skip)
-        (*show-runtime-stats* nil)) ; we're doing this locally
+        (*show-runtime-stats* nil) ; instead we're doing this here
+        (*paragraphs-from-orthography* (string-contains-newline string))
+        (*cache-warnings-for-later-review* quiet))
     (declare (special *trap-error-skip-sentence*
-                      *show-runtime-stats*))
+                      *show-runtime-stats*
+                      *paragraphs-from-orthography*
+                      *cache-warnings-for-later-review*))
 
     (if quiet
       (with-total-quiet (analyze-text-from-string string))        
-      (analyze-text-from-string string)))
+      (analyze-text-from-string string))
 
-  (let* ((article (article))
-         (section (first-section article)))
-    (unless section (error "threading bug: no section in ~a" article))
-    (unless (every #'(lambda (c) (typep c 'paragraph)) (children section))
-      (error "Something other than paragraphs in ~a" section))
-    
-    (let ((p *current-paragraph*)
-          (start-pos (position# 1))); cribbs from begin-new-paragraph
-      (setf (starts-at-pos p) start-pos
-            (starts-at-char p) (pos-character-index start-pos))
-      (setf (ends-at-pos p)
-            (chart-position-before (next-chart-position-to-fill)))
-      (setf (ends-at-char p) (pos-character-index (ends-at-pos p)))
-      (setf (content-string p) string)
+    (let ((article (article)))
+      (unless *paragraphs-from-orthography*
+        ;; When it turns out that we're doing paragraphs (rather than
+        ;; a simple string without newlines in it), the analyse text
+        ;; call will be directed in initiate-successive-sweeps to
+        ;; parse-successive-paragraphs. That routine ends with a call
+        ;; to finish-paragraph-based-article, which is what the
+        ;; code here is based on.
+        (let ((section (first-section article)))
+          (unless section (error "threading bug: no section in ~a" article))
+          (unless (every #'(lambda (c) (typep c 'paragraph)) (children section))
+            (error "Something other than paragraphs in ~a" section))
+          ;; terminate the paragraph
+          (let ((p *current-paragraph*)
+                (start-pos (position# 1))); cribbs from begin-new-paragraph
+            (setf (starts-at-pos p) start-pos
+                  (starts-at-char p) (pos-character-index start-pos))
+            (setf (ends-at-pos p)
+                  (chart-position-before (next-chart-position-to-fill)))
+            (setf (ends-at-char p) (pos-character-index (ends-at-pos p)))
+            (setf (content-string p) string)
 
-      (after-actions p)
-      (after-actions section)
-      (after-actions article)
-      (stop-timer '*time-to-read-document*)
+            (after-actions p)
+            (after-actions section)
+            (after-actions article)
 
-      (report-time-to-read-article article)
-
-      ;; wrap this call in appropriates parameter settings
-      ;; depending on what you want to see.
-      (summary-document-stats article)
+            (stop-timer '*time-to-read-document*)
+            (report-time-to-read-article article)
+            ;; wrap this call in appropriates parameter settings
+            ;; depending on what stats you want to see.
+            (summary-document-stats article))))
 
       article)))
   
