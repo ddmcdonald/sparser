@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "analysis-parameters"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  August 2023
+;;;  Version:  October 2023
 
 ;; Created 8/24/23 to provide a place to systematically organize
 ;; all of the gating parameters in how we analyze parsed content
@@ -12,7 +12,7 @@
 
 (in-package :sparser)
 
-(defparameter *minimal-reporting* nil
+(defparameter *minimal-reporting* t
   "If this is up turn off all the reporting that's not needed
    to populate the data in the article.")
 
