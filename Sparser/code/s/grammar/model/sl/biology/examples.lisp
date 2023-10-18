@@ -5,8 +5,6 @@
 ;;;  Module: "grammar/model/sl/biology/
 ;;; version: October 2023
 
-;; Broken out from Biology-workspace 10/8/15
-
 (in-package :sparser)
 
 (defun examples-in-biology () t) ; for meta-.
@@ -34,7 +32,8 @@
   "Johnson & Johnson, the only major drugmaker developing a single-dose Covid vaccine, announced on Friday that its shot had provided strong protection in clinical trials.
 If the Food and Drug Administration grants the company an emergency authorization, it would expand the vaccine supply in the United States as the Biden administration seeks to immunize many more Americans.
 The results came with a significant cautionary note: In the U.S., the vaccine had an efficacy rate of 72 percent in clinical trials. But in South Africa, a country gripped by a new and more contagious variant, the efficacy rate dropped to just 57 percent.
-The variant, which has spread to at least 31 countries, including the United States, may also blunt the effectiveness of Covid vaccines made by Pfizer-BioNTech, Moderna and Novavax.")
+The variant, which has spread to at least 31 countries, including the United States, may also blunt the effectiveness of Covid vaccines made by Pfizer-BioNTech, Moderna and Novavax.
+")
 
 
 ;; NYT Evening Briefing 1/20/21
@@ -74,10 +73,6 @@ https://www.theguardian.com/world/2020/dec/29/us-first-case-new-uk-covid-variant
 [ Conclusions ]
 "SEM showed that medical staff in China who were treating patients with COVID-19 infection during January and February 2020 had levels of anxiety, stress, and self-efficacy that were dependent on sleep quality and social support."
 
-
-
-
-
 |#
 
 
@@ -93,13 +88,15 @@ Over the past month in Spain, the number of new cases has increased fivefold —
 
 The country is now seeing about 430 new cases per day on average, according to data from Johns Hopkins University, about 18 per million residents.
 
-Victoria has been averaging 482 new cases per day over the past week, according to Johns Hopkins, 73 per million residents. Of Florida's 67 counties, three (Broward, Miami-Dade and Palm Beach) are currently averaging more daily cases than Victoria saw in the past 24 hours. Sixty-six of Florida's counties are seeing more cases each day on average as a function of population. In Texas, there are four counties with more cases and 187 of 254 counties with more cases as a function of population.")
+Victoria has been averaging 482 new cases per day over the past week, according to Johns Hopkins, 73 per million residents. Of Florida's 67 counties, three (Broward, Miami-Dade and Palm Beach) are currently averaging more daily cases than Victoria saw in the past 24 hours. Sixty-six of Florida's counties are seeing more cases each day on average as a function of population. In Texas, there are four counties with more cases and 187 of 254 counties with more cases as a function of population.
+") ; end with a newline so the last paragraph thinks its terminated
 
 
 
-#| clipped from https://www.nytimes.com/2020/06/30/world/asia/h1n1-swine-flu-virus-china-pig.html  7/1/20
+#| clipped from https://www.nytimes.com/2020/06/30/world/asia/h1n1-swine-flu-virus-china-pig.html  7/1/20 |#
 
-Scientists Say New Strain of Swine Flu Virus Is Spreading to Humans in China
+(defparameter *new-swine-flu*
+ "Scientists Say New Strain of Swine Flu Virus Is Spreading to Humans in China
 
 A new study warns that the strain of H1N1, common on China’s pig farms since 2016, should be “urgently” controlled to avoid another pandemic.
 
@@ -114,8 +111,8 @@ The newer strain, known as G4 EA H1N1, has been common on China’s pig farms si
 Eurasian variations of H1N1 have been circulating in pigs in Europe and Asia for decades, the study said, but the incidence of G4 viruses in farmed Chinese pigs with respiratory symptoms began rising sharply after 2014.
 
 Recent evidence \“indicates that G4 EA H1N1 virus is a growing problem in pig farms, and the widespread circulation of G4 viruses in pigs inevitably increases their exposure to humans,\” it said.
+")
 
-|#
 
 
 #| Clipped from NYT "Coronavirus Briefing" of 6/16/20
@@ -573,41 +570,7 @@ the four serine/threonine residues at the amino terminus of β-catenin,
 as β-catenin (S→A), which is a mutant β-catenin with alanine substitutions
  of these serine/threonine residues (see Fig.4A),
 completely lost the ability to associate with β-Trcp (Fig. 1 A and B)."))
-#| Very first pass after translating the arrow as a hyphen
 
-
-Unpacking #<word "substitution">
-  it is an unambiguous noun
-Unpacking #<word "see">
-  it is ambiguous between (noun verb)
-Unpacking #<word "lose">
-  it is an unambiguous verb
-[importantly], [ the association] between [ β-trcp and β-catenin]
-[ depended] on [the four serine/threonine residues] at
-[ the] amino [ terminus] of [ β-catenin],
-as [ β-catenin] (s-a), which [ is][ a mutant β-catenin]
-with [ alanine substitutions] of [ these serine/threonine residues]
-(see fig.4a), [completely lost][ the ability] to [ associate] with [ β-trcp]
-
-                    source-start
-e132  ADVERB        1 "importantly ," 3
-e102  BIO-ASSOCIATE 3 "the association" 5
-e131  BETWEEN       5 "between β - trcp and β - catenin" 13
-e130  DEPEND        13 "depended on the four serine / threonine residues" 21
-e128  AT            21 "at the" 23
-e25                 "amino"
-e26 e27             "terminus" :: #<word "terminus">, PROTEIN-TERMINUS
-e127  OF            25 "of β - catenin" 29
-e32                 "COMMA"
-e126  AS            30 "as β - catenin ( s - a ) , which is a mutant β - catenin" 47
-e121  WITH          47 "with alanine substitutions" 50
-e120  OF            50 "of these serine / threonine residues ( see fig . 4 a )" 63
-e72                 "COMMA"
-e111  LOSE          64 "completely lost" 66
-e119  ABILITY       66 "the ability to associate with β - trcp ( fig . 1 a and b )" 82
-                    period
-                    end-of-source
-|#
 
 ;;----- phrases from the 12/3/14 Darpa trainng data
 ;
@@ -871,15 +834,17 @@ Proteins (GAPs) or by both mechanisms. |#
 
 
 ;; From 15677466
-(defvar *pc* "The processing of the nfκb2 gene product p100 to generate p52 is a regulated event, which is important for the instrumental function of NF-κB. We previously demonstrated that this tightly controlled event is regulated positively by NF-κB-inducing kinase (NIK) and its downstream kinase, IκB kinase α (IKKα).
+(defparameter *pc*
+  "The processing of the nfκb2 gene product p100 to generate p52 is a regulated event, which is important for the instrumental function of NF-κB. We previously demonstrated that this tightly controlled event is regulated positively by NF-κB-inducing kinase (NIK) and its downstream kinase, IκB kinase α (IKKα).
 However, the precise mechanisms by which NIK and IKKα induce p100 processing remain unclear.
 Here, we show that, besides activating IKKα, NIK also serves as a docking molecule recruiting IKKα to p100.
 This novel function of NIK requires two specific amino acid residues, serine 866 and serine 870, of p100 that are known to be essential for inducible processing of p100.
 We also show that, after being recruited into p100 complex, activated IKKα phosphorylates specific serines located in both N- and C-terminal regions of p100 (serines 99, 108, 115, 123, and 872).
 The phosphorylation of these specific serines is the prerequisite for ubiquitination and subsequent processing of p100 mediated by the β-TrCP ubiquitin ligase and 26 S proteasome, respectively.
 These results highlight the critical but different roles of NIK and IKKα in regulating p100 processing and shed light on the mechanisms mediating the tight control of p100 processing.
-These data also provide the first evidence for explaining why overexpression of IKKα or its activation by many other stimuli such as tumor necrosis factor and mitogens fails to induce p100 processing."
-  "target paragraph for proposal")
+These data also provide the first evidence for explaining why overexpression of IKKα or its activation by many other stimuli such as tumor necrosis factor and mitogens fails to induce p100 processing.
+")
+ 
 
 (defun kappa-1 ()
   ;; Rewrite of *pc* without the greek letters to get around 4/19 wierdness
@@ -902,7 +867,8 @@ These data also provide the first evidence for explaining why overexpression of 
 (defun kappa-9 ()
   (p "These data also provide the first evidence for explaining why overexpression of IKKalpha or its activation by many other stimuli such as tumor necrosis factor and mitogens fails to induce p100 processing."))
 
-
-(defvar *nkf2* "Processing of NF-kappaB2 precursor protein p100 to generate p52 is tightly controlled, which is important for proper function of NF-kappaB. Accordingly, constitutive processing of p100, caused by the loss of its C-terminal processing inhibitory domain due to nfkappab2 gene rearrangements, is associated with the development of various lymphomas and leukemia. In contrast to the physiological processing of p100 triggered by NF-kappaB-inducing kinase (NIK) and its downstream kinase, IkappaB kinase alpha (IKKalpha), which requires the E3 ligase, beta-transducin repeat-containing protein (beta-TrCP), and occurs only in the cytoplasm, the constitutive processing of p100 is independent of beta-TrCP but rather is regulated by the nuclear shuttling of p100. Here, we show that constitutive processing of p100 also requires IKKalpha, but not IKKbeta (IkappaB kinase beta) or IKKgamma (IkappaB kinase gamma). It seems that NIK is also dispensable for this pathogenic processing of p100. These results demonstrate a general role of IKKalpha in p100 processing under both physiological and pathogenic conditions. Additionally, we find that IKKalpha is not required for the nuclear translocation of p100. Thus, these results also indicate that p100 nuclear translocation is not sufficient for the constitutive processing of p100."
-  "The entire abstact according to the abstractor, not as in the article")
+;; The entire abstact according to the abstractor, not as in the article"
+(defparameter *nkf2*
+  "Processing of NF-kappaB2 precursor protein p100 to generate p52 is tightly controlled, which is important for proper function of NF-kappaB. Accordingly, constitutive processing of p100, caused by the loss of its C-terminal processing inhibitory domain due to nfkappab2 gene rearrangements, is associated with the development of various lymphomas and leukemia. In contrast to the physiological processing of p100 triggered by NF-kappaB-inducing kinase (NIK) and its downstream kinase, IkappaB kinase alpha (IKKalpha), which requires the E3 ligase, beta-transducin repeat-containing protein (beta-TrCP), and occurs only in the cytoplasm, the constitutive processing of p100 is independent of beta-TrCP but rather is regulated by the nuclear shuttling of p100. Here, we show that constitutive processing of p100 also requires IKKalpha, but not IKKbeta (IkappaB kinase beta) or IKKgamma (IkappaB kinase gamma). It seems that NIK is also dispensable for this pathogenic processing of p100. These results demonstrate a general role of IKKalpha in p100 processing under both physiological and pathogenic conditions. Additionally, we find that IKKalpha is not required for the nuclear translocation of p100. Thus, these results also indicate that p100 nuclear translocation is not sufficient for the constitutive processing of p100.
+")
 
