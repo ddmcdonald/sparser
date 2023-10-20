@@ -504,7 +504,9 @@
             (setq rest (cdr rest)))
     (values group rest)))
 
-
+(defun cat-name-in? (cat? cat-name-list)
+  (when (category-p cat?)
+       (member (cat-name cat?) cat-name-list)))
 
 (defun losing-competition? (l-triple r-triple)
   (declare (special #|r-triple l-triple|# category::as
@@ -533,10 +535,10 @@
       (tr :triples-competing-over l-triple r-triple (right-edge-of-triple l-triple))
       ;;(break "competing over ~a" (right-edge-of-triple l-triple))
       (or
-       (member (cat-name (cfr-form (triple-rule l-triple)))
+       (cat-name-in? (cfr-form (triple-rule l-triple))
                '(syntactic-there)) ;; competing against a "there BE"
        (losing-to-leftwards-pp? l-triple r-triple)
-       (and (eq (cat-name (cfr-form (triple-rule r-triple))) 's)
+       (and (cat-name-in? (cfr-form (triple-rule r-triple)) '(s))
             (or  (member (edge-form-name (left-edge-of-triple l-triple))
                          '(possessive))
                  (and
@@ -550,12 +552,12 @@
             (let ((r-triple-rhs (cfr-rhs (triple-rule r-triple))))
               (and
                (not
-                (and (member (cat-name (car r-triple-rhs)) '(np))
-                     (member (cat-name (second r-triple-rhs)) '(vp))
+                (and (cat-name-in? (car r-triple-rhs) '(np))
+                     (cat-name-in? (second r-triple-rhs) '(vp))
                      (thatcomp-verb (second l-triple))))
                (not
-                (and (member (cat-name (car r-triple-rhs)) '(np))
-                     (member (cat-name (second r-triple-rhs)) '(adjp))))))
+                (and (cat-name-in? (car r-triple-rhs) '(np))
+                     (cat-name-in? (second r-triple-rhs) '(adjp))))))
             (not (eq 'thatcomp (form-cat-name r-triple-3)))
         
             ;; likely competition against a relative clause or a main clause
@@ -567,7 +569,7 @@
                   (or (eq (second (cfr-referent (triple-rule r-triple))) 'interpret-premod-to-verb)
                       ;;(eq (second (cfr-referent (car r-triple))) 'assimilate-subject-to-vp-ed)
                       )))
-            (not (and (member (edge-cat-name (left-edge-of-triple l-triple)) '(be have))
+            (not (and (cat-name-in? (edge-category (left-edge-of-triple l-triple)) '(be have))
                       (member (form-cat-name r-triple-3) '(vp+ed vp+ing))))
                   
             (or
@@ -629,6 +631,7 @@
   (let ((r-triple-rhs (cfr-rhs (triple-rule r-triple))))
     (push-debug `(,l-triple ,r-triple ,r-triple-rhs))
     (and
+     (category-p (car (cfr-rhs (triple-rule l-triple))))
      (prep? (cat-name (car (cfr-rhs (triple-rule l-triple))))) ;;l-triple-left
      (not (subordinate-conjunction? (left-edge-of-triple l-triple)))
      (or (not (possible-spatio-temporal-prep? l-triple))
@@ -644,7 +647,7 @@
                (edge-form (edge-left-daughter (right-edge-of-triple r-triple))))))
      (or
       (pp-relative-clause? r-triple)
-      (and (category-p (second r-triple-rhs))
+      (when (category-p (second r-triple-rhs))
            (memq (cat-symbol (second r-triple-rhs))
                  '(category::vg category::vp category::vg+ed category::vp+ed
                    category::vp+past
@@ -689,6 +692,7 @@
 (defun high-priority-postmod? (r-triple &aux (r-triple-rhs (cfr-rhs (triple-rule r-triple))))
   (and ;; need to generalize this for "high priority" NP post-modifiers
    (category-p (second r-triple-rhs))
+   (category-p (left-edge-of-triple r-triple-rhs))
    ;; this is for the case where an S can be formed on the right
    (or (member (cat-name (left-edge-of-triple r-triple-rhs)) '(in-vitro in-vivo))
        (eq (form-cat-name (right-edge-of-triple r-triple))
@@ -733,9 +737,11 @@
   (when (eq (second r-triple) (third l-triple))	
     ;; there is an edge which is being competed for
     (let* ((l-triple-rhs (cfr-rhs (car l-triple)))
-           (l-triple-left (cat-name (car l-triple-rhs)))
+           (l-triple-left (when (category-p (car l-triple-rhs))
+                               (cat-name (car l-triple-rhs))))
            (r-triple-rhs (cfr-rhs (car r-triple)))
-           (r-triple-left (cat-symbol (car r-triple-rhs)))
+           (r-triple-left (when (category-p (car r-triple-rhs))
+                            (cat-symbol (car r-triple-rhs))))
            (r-triple-right 
             (when (category-p (second r-triple-rhs))
               (cat-symbol (second r-triple-rhs))))
@@ -745,8 +751,7 @@
       ;;(lsp-break "compete")
       (when
 	  (not (and ;; need to generalize this for "high priority" NP post-modifiers
-		(category-p (second r-triple-rhs))
-                (or (member (cat-name (second r-triple-rhs)) '(in-vitro in-vivo))
+                (or (cat-name-in? (second r-triple-rhs) '(in-vitro in-vivo))
                     (eq (form-cat-name r-triple-3) 'object-relative-clause))))
 	(or
          
