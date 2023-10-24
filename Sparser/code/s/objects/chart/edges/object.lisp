@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "objects;chart:edges:"
-;;;  Version:  September 2023
+;;;  Version:  October 2023
 
 ;; 3.0 (9/3/92 v2.3) flushed the fields used by earlier psp algorithms
 ;; 3.1 (5/14/93) Allowed Set-used-by to make a list to help redundancy checking
@@ -192,6 +192,8 @@ code is make-edge-over-abbreviation and its feeders. |#
      (cond
        ((eq (form-cat-name e) 'proper-name)
         (word-from-proper-name-edge e))
+       ((eq (form-cat-name e) 'number) ; (B.0"1.1.7"
+        *number-word*)
        (t
         (let ((left-daughter (edge-left-daughter e)))
           (word-from-edge-left-daughter left-daughter e)))))
@@ -221,8 +223,8 @@ code is make-edge-over-abbreviation and its feeders. |#
          (or (polyword-named string)
              (define-polyword-any-words string)))))))
 
-
 (defun word-from-edge-left-daughter (left-daughter e)
+  (declare (special *number-word*))
   (cond
     ((word-p left-daughter) ; "how"
      left-daughter)
@@ -234,8 +236,16 @@ code is make-edge-over-abbreviation and its feeders. |#
        (cond
          ((itypep referent 'number)
           *number-word*)
+
          ((polyword-p (edge-category left-daughter))
           (edge-category left-daughter))
+
+         ((eq (form-cat-name e) 'possessive) ; "quarter's"
+          ;; ignore possessive, just return the base word
+          (word-from-edge left-daughter))
+
+         ((eq (form-cat-name e) 'wh-pronoun) ; "who"
+          (word-from-edge left-daughter))                 
          
          ((itypep referent 'geographical-region)
           (let ((name (value-of 'name referent)))
