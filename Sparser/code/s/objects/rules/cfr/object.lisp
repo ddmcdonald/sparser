@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2013-2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2013-2023  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "object"
 ;;;    Module:   "objects;rules:cfr:"   ;; "context free rules"
-;;;   Version:   February 2019
+;;;   Version:   October 2023
 
 ;; 1.1  (v1.5) added new fields to handle the new rule regime
 ;; 1.2  (1/29 v1.8) Moved in Binary-rule?
@@ -188,6 +188,30 @@
   ;; See objects/rules/da/object.lisp for the machinery
   ;; Most of the rules are in grammar/rules/da/da-rules.lisp
   (hash-table-count *debris-analysis-rules*))
+
+
+
+;;--- collect rules that use one or more literals (words) in their RHS
+
+(defun rule-includes-literal? (r)
+  (let ((rhs (cfr-rhs r)))
+    (let ((literals
+            (loop for term in rhs
+               when (word-p term) collect term)))
+    literals)))
+
+(defgeneric collect-literals-in-rules ()
+  (:documentation "Scan all the rules. Ignoring lexical rules, collect
+ all those rules that include one or more words in their righthand-side")
+  (:method ()
+    (declare (special *rules-containing-literals*))
+    (let ((list
+            (loop for r in *cfrs-defined*
+                  unless (lexical-rule? r)
+                    when (rule-includes-literal? r) collect r)))
+      (setq *rules-containing-literals* list)
+      (length list))))
+
 
 
 ;;;----------
