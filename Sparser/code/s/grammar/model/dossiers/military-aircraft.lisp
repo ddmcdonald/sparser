@@ -1,10 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2022 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2022-2023 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "military-aircraft"
 ;;;   Module:  "model/dossiers/
-;;;  version:  July 2022
+;;;  version:  October 2023
 
 ;; initiated 7/10/22 for NGA prototyping
 
@@ -33,9 +32,10 @@
 (define-kind-of-aircraft "")
 (define-kind-of-aircraft "") |#
 
+#|  Redesign to adapt general scale to this function
 ;; attributes
 (define-aircraft-property "small")
 (define-aircraft-property "medium")
 (define-aircraft-property "light")
 ;;(define-aircraft-property "")
-
+|#
