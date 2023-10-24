@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1998,2014-2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1998,2014-2023  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "percentages"
 ;;;   Module:  "grammar;model:core:numbers:"
-;;;  Version:  May 2019
+;;;  Version:  October 2023
 
 ;; 1.1 (7/16/92 v2.3) pilot instances of the new representation regime
 ;; 1.2 (1/10/94) stubbed measurement to get around load-order paradox
@@ -62,9 +62,43 @@
                           (np-head . "fold") ;; literal
                           (modifier . number)
                           (result-type . :self)
-                          (item . number))))
+                          (item . number)))
+  :documentation "Says of some countable thing how many times
+ how many times its amount should be multiplied. For example,
+ if 'the number of new cases has increased fivefold', there are
+ now five times as many cases as there were before.
+ This formulation with the ETF is for cases where people use
+ a number '22-fold' to indicate the multiplier. There isn't
+ a meaning of the word 'fold' other than to indicate this
+ multiplication.")
 
+;; From bio;examples *italy-new-cases*
+;;   "the number of new cases has increased fivefold"
+;; The interpretation is very pedestrian -- goes through interpret-adverb+verb
 
+(defun define-n-fold (string integer)
+  "For defining the words that incorporate 'fold' in their spelling."
+  ;;(check-type string (string)) ;/// fix the syntax
+  ;;(check-type integer (integer))
+  (let* ((word (resolve/make string))
+         (number (find-number integer))
+         (i (define-or-find-individual 'n-fold :number number)))
+    (make-corresponding-mumble-resource word :adverb i)
+    (let ((rule (define-cfr category::n-fold `(,word)
+                  :form category::adverb
+                  :referent i)))
+      (values word rule))))
+
+(define-n-fold "twofold" 2)
+(define-n-fold "threefold" 3)
+(define-n-fold "fourfold" 4)
+(define-n-fold "fivefold" 5)
+(define-n-fold "sixfold" 6)
+(define-n-fold "sevenfold" 7)
+(define-n-fold "eightfold" 8)
+(define-n-fold "ninefold" 9)
+(define-n-fold "tenfold" 10)
+;;/// more?
 
 
 ;;;--------------------
