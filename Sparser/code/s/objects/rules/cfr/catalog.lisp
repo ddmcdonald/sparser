@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1990 Content Technologies Inc.  -- all rights reserved
-;;; copyright (c) 1991,2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991,2016,2023 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "catalog"
 ;;;    Module:   "objects;rules:cfr:"   ;; "context free rules"
-;;;   Version:   July 2016
+;;;   Version:   October 2023
 
 (in-package :sparser)
 
@@ -21,6 +21,9 @@
    primary accumulator, that is rebound and unbound locally for
    specific domains of rules.")
 
+(defvar *rules-containing-literals* nil
+  "List of all the rules that include a word in their rhs.
+   Populated by collect-literals-in-rules")
 
 ;;;-----------------------
 ;;; cataloging operation
