@@ -506,12 +506,17 @@
 
 (defun cat-name-in? (cat? cat-name-list)
   (when (category-p cat?)
-       (member (cat-name cat?) cat-name-list)))
+    (member (cat-name cat?) cat-name-list)))
+
+(defun cat-symbol-in? (cat? cat-sym-list)
+  (when (category-p cat?)
+    (member (cat-symbol cat?) cat-sym-list)))
 
 (defun losing-competition? (l-triple r-triple)
   (declare (special #|r-triple l-triple|# category::as
                     category::adjective *ng-head-categories*
-                    *adjg-head-categories* *vg-head-categories*))
+                    *adjg-head-categories* *vg-head-categories*)
+           )
   "The goal here is to put off object attachment until the object 
    is as large as possible. We get here when the two triples have
    overlapping edges that they are contenting over. The default 
@@ -525,11 +530,12 @@
     ;; We if the l-triple's rule rhs starts with a word it's
     ;; failed without looking at it. Otherwise it will blow up
     ;; when we try to bind l-triple-left
+    #+ignore
     (when (word-p (car (cfr-rhs (triple-rule l-triple))))
       (return-from losing-competition? nil)) ; fail rule with literal
 
     (let* ((l-triple-rhs (cfr-rhs (triple-rule l-triple)))
-           (l-triple-left (cat-symbol (car l-triple-rhs)))
+           (l-triple-left (car l-triple-rhs))
            (r-triple-3 (right-edge-of-triple r-triple)))
       ;;(declare (special l-triple-rhs l-triple-left triple-1-rhs r-triple-3))
       (tr :triples-competing-over l-triple r-triple (right-edge-of-triple l-triple))
@@ -632,7 +638,7 @@
     (push-debug `(,l-triple ,r-triple ,r-triple-rhs))
     (and
      (category-p (car (cfr-rhs (triple-rule l-triple))))
-     (prep? (cat-name (car (cfr-rhs (triple-rule l-triple))))) ;;l-triple-left
+     (prep? (car (cfr-rhs (triple-rule l-triple)))) ;;l-triple-left
      (not (subordinate-conjunction? (left-edge-of-triple l-triple)))
      (or (not (possible-spatio-temporal-prep? l-triple))
          (itypep (edge-referent (right-edge-of-triple l-triple)) 'process))
@@ -648,7 +654,7 @@
      (or
       (pp-relative-clause? r-triple)
       (when (category-p (second r-triple-rhs))
-           (memq (cat-symbol (second r-triple-rhs))
+           (cat-symbol-in? (second r-triple-rhs)
                  '(category::vg category::vp category::vg+ed category::vp+ed
                    category::vp+past
                    category::vg+passive category::vp+passive
@@ -686,7 +692,7 @@
 (defun safe-edge-form (edge? &aux (ef (and (edge-p edge?)
                                            (edge-form edge?))))
   ;; got a case with COMMA as a literal edge
-  (when ef (cat-symbol ef)))
+  (when (category-p ef)(cat-symbol ef)))
 
 
 (defun high-priority-postmod? (r-triple &aux (r-triple-rhs (cfr-rhs (triple-rule r-triple))))
@@ -694,19 +700,19 @@
    (category-p (second r-triple-rhs))
    (category-p (left-edge-of-triple r-triple-rhs))
    ;; this is for the case where an S can be formed on the right
-   (or (member (cat-name (left-edge-of-triple r-triple-rhs)) '(in-vitro in-vivo))
+   (or (cat-name-in? (left-edge-of-triple r-triple-rhs) '(in-vitro in-vivo))
        (eq (form-cat-name (right-edge-of-triple r-triple))
            'object-relative-clause))))
 
 (defun pp-relative-clause? (r-triple &aux (r-triple-rhs (cfr-rhs (triple-rule r-triple))))
   ;; pp starting a relative clause -- "in which"
   (and 
-   (memq (cat-symbol (car r-triple-rhs))
+   (cat-symbol-in? (car r-triple-rhs)
          '(category::which category::who category::whom category::where))
-   (eq (cat-symbol (second r-triple-rhs)) 'category::s)))
+   (cat-symbol-in? (second r-triple-rhs) 'category::s)))
 
-(defun prep? (cat-name)
-  (member cat-name '(preposition spatial-preposition spatio-temporal-preposition)))
+(defun prep? (cat?)
+  (cat-name-in? cat? '(preposition spatial-preposition spatio-temporal-preposition)))
 
 (defun possible-spatio-temporal-prep? (l-triple)
   (declare (special category::spatio-temporal-preposition))
