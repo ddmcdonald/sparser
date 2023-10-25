@@ -115,7 +115,7 @@ and the word can stand by itself "that distance"
 
 (define-category ratio :specializes scalar-attribute
   :binds ((measured hyphenated-triple)
-          ;;/// needs generalization after digging for its original use
+          ;;/// needs generalization after locating its original use
 	  (divisor))
   :realization
      (:noun "ratio"
@@ -128,18 +128,14 @@ and the word can stand by itself "that distance"
   :binds ((units unit-of-measure)
           (per-unit unit-of-measure))
   :realization (:noun "rate")
-  :documentation "Wikipedia: 'a rate it the ratio between two related
- quantities in different units'. It can be expressed using 'per' to
- separate the units, or by using a slash.")
-
-#| Wikipedia: A rate defined using two numbers of the same units (such
-as tax rates) or counts (such as literacy rate) will result in a
-dimensionless quantity, which can be expressed as a percentage (for
-example, the global literacy rate in 1998 was 80%), fraction, or
-multiple. 
+  :documentation "Wikipedia: A rate defined using two numbers
+ of the same units (such as tax rates) or counts (such as literacy rate)
+ will result in a dimensionless quantity, which can be expressed
+ as a percentage (for example, 'the global literacy rate in 1998 was 80%'),
+ fraction, or multiple. 
    Often rate is a synonym of rhythm or frequency, a count per
-second (i.e., hertz); e.g., radio frequencies, heart rates, or sample
-rates |#
+ second (i.e., hertz); e.g., radio frequencies, heart rates, or sample
+ rates ")
 
 ;;/// generalize to ratio once we have criteria
 (defgeneric make-a-rate (unit per-unit)
@@ -156,11 +152,11 @@ rates |#
 ;;;-------------
 #| 'per' is a preposition. 
 Collins says it is use to express rates or ratios. 
-'a/an' serves the same function
+'a/an' serves the same function:
 "$10 per hour" 
 "Buses and trains use much less fuel per person than cars"
   To invert these, we need to record what term they used
-and need to respect the pp's bounds.
+to express 'per' and need to respect the pp's bounds.
 |#
 
 (define-category per-item
@@ -173,8 +169,10 @@ and need to respect the pp's bounds.
   :form pp
   :referent (:instantiate-individual per-item
              :with (marker left-edge
-                   item right-edge)))
-(def-cfr per-item (a time-unit) ; doesn't work w/ 'a' as a determiner
+                           item right-edge)))
+
+(def-cfr per-item (a time-unit)
+  ;; doesn't work w/ 'a' as a determiner - det binds to its right
   :form pp
   :referent (:instantiate-individual per-item
              :with (marker left-edge
@@ -193,6 +191,11 @@ and need to respect the pp's bounds.
 ")
 ;;---- virtually identical (modulo name choices) version
 ;; done for Canto.
+
+
+;;;--------------------------------
+;;; units for the rate of a change
+;;;--------------------------------
 
 (define-category unit-of-rate-of-change
   :specializes unit-of-measure
