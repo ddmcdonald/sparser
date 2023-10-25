@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  September 2023
+;;;  Version:  October 2023
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -1694,6 +1694,7 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
   "The error is ubiquitous in a long run. This converts it a format statement")
 
 (defun interpret-pp-adjunct-to-np (np pp)
+  (declare (special *subcat-test*))
   (cond
     ((null np) 
      (break "null interpretation for NP in interpret-pp-adjunct-to-np edge ~s~&"
@@ -1729,30 +1730,36 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
          ;; as an instance of such a check.
 
          (if *subcat-test*
-           (or variable-to-bind
-               (not (location-in-locative-context? pp))
-               (maybe-extend-premod-adjective-with-pp np pp)
-               (and *force-modifiers* 'modifier)
-               (valid-method compose-of np pobj-referent) ; apply the subcat test
-               (valid-method compose np pp)
-               (valid-method compose np pobj-referent)
+           (cond
+             ;; reasons to fail the composition
+             ((itypep pobj-referent 'stat-measure) nil) ;; "on average"
+             ((itypep pp 'per-item) nil) ;; "per day"
+             
+             (t ;; reasons to do the composition
+              (or variable-to-bind
+                  (not (location-in-locative-context? pp))
+                  (maybe-extend-premod-adjective-with-pp np pp)
+                  (and *force-modifiers* 'modifier)
+                  (valid-method compose-of np pobj-referent) ; apply the subcat test
+                  (valid-method compose np pp)
+                  (valid-method compose np pobj-referent)
 
-               (is-domain-adjunctive-pp? np (right-edge-for-referent))
-               (and (eq prep-word of)
-                    (or (itypep np 'attribute)
-                        (itypep np 'of-prototype-description)
-                        (itypep np 'compass-point) ; compass-point < direction
-                        (or (itypep np 'measurement) ; "42% of all new cases"
-                            (itypep np 'number) ; "two of them"
-                            (itypep np 'quantifier) ; "all of them" "the majority of them"
-                            (itypep np 'fractional-term) ; "half of them"
-                            (itypep np 'ordinal) ; "a seventh of the pie"
-                            (itypep np 'amount-of-time)) ; "40 days of rain"
-                        (and (itypep np 'object-dependent-location)
-                             (itypep pobj-referent 'partonomic))
-                        (and (itypep np 'partonomic)
-                             (compatible-with-specified-part-type pobj-referent np))
-                        (valid-method compose np pobj-referent))))
+                  (is-domain-adjunctive-pp? np (right-edge-for-referent))
+                  (and (eq prep-word of)
+                       (or (itypep np 'attribute)
+                           (itypep np 'of-prototype-description)
+                           (itypep np 'compass-point) ; compass-point < direction
+                           (or (itypep np 'measurement) ; "42% of all new cases"
+                               (itypep np 'number) ; "two of them"
+                               (itypep np 'quantifier) ; "all of them" "the majority of them"
+                               (itypep np 'fractional-term) ; "half of them"
+                               (itypep np 'ordinal) ; "a seventh of the pie"
+                               (itypep np 'amount-of-time)) ; "40 days of rain"
+                           (and (itypep np 'object-dependent-location)
+                                (itypep pobj-referent 'partonomic))
+                           (and (itypep np 'partonomic)
+                                (compatible-with-specified-part-type pobj-referent np))
+                           (valid-method compose np pobj-referent))))))
 
            ;; This side runs when subcat test passed and we're really interpreting.
            ;; Specific cases are ordered before looking for applicable methods
