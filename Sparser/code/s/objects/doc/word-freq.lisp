@@ -48,4 +48,4 @@ compared to 14 million in the year-ago quarter.
 The Company sold 4.6 million Macs, 
 compared to 4.9 million in the year-ago quarter.")
 |#
-s
+

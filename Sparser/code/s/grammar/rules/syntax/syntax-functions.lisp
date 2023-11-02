@@ -2283,7 +2283,7 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
 
 (defun assimilate-object-comp (vp obj)
   (assimilate-subcat vp :oc obj))
-;;#################################################################3
+
 (defun assimilate-np-to-v-as-object (vg obj)
   "Sort out whether the 'obj' is a direct object, indirect object, or
    object complement, while ruling out spurious cases."
@@ -2348,7 +2348,7 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                       ((to-comp) category::to-comp)
                       (t (warn-or-error 
                           "bad verb form in assimilate-np-to-v-as-object.~
-                           interpreting as an NP? in ~s!" current-string)
+                           interpreting as an NP? in ~s!" (full-current-string))
                          category::n-bar)))
             :referent result)))
        result))))

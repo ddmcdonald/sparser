@@ -14,6 +14,7 @@
 (defun follow-out-matched-arc (arc)
   "We matched this arc. Look at the vertex that it ends at
    ('next-vertex') and use that to determine what to do next"
+  (declare (special *da-search-is-going-leftwards*))
   (if *da-search-is-going-leftwards*
     (follow-out-matched-arc/leftwards arc)
     (let ((next-vertex (arc-right-vertex arc)))

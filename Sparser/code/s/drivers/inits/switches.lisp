@@ -266,10 +266,14 @@
 ;;--- post-chunking extras
 
 (defun experimental-settings ()
+  (declare (special *do-adjunctive-attachments*
+                    *do-last-ditch-non-semantic-whacks*))
   (setq *do-adjunctive-attachments* t
         *do-last-ditch-non-semantic-whacks* t))
 
 (defun turn-off-experimental-settings ()
+  (declare (special *do-adjunctive-attachments*
+                    *do-last-ditch-non-semantic-whacks*))
   (setq *do-adjunctive-attachments* nil
         *do-last-ditch-non-semantic-whacks* nil))
 
@@ -498,6 +502,7 @@
 
 
 (defun score-setting ()
+  (declare (special *arabic-names*))
   (bio-core-settings)
   
   ;; add PNF (goes with the extension of the grammar configuration)

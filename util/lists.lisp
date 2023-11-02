@@ -237,6 +237,7 @@ edge of the tree, except for nils. Can deal with non-list cdrs."
 ;       (alphanumericp next-char)))
 
 (defun is-type (char type)
+  (declare (special *whitespace-chars*))
   (cond ((and (listp type)
 	      (eq (first type) 'not))
 	 (not (is-type char (second type))))

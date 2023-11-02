@@ -39,7 +39,7 @@
    on the fly."
   (declare (special *introduce-brackets-for-unknown-words-from-their-suffixes*
                     *edge-for-unknown-words* *source-of-unknown-words-definition*
-                    *comlex-words-primed*))
+                    *comlex-words-primed* *word-to-be-defined?*))
   (unless (and *introduce-brackets-for-unknown-words-from-their-suffixes*
                *edge-for-unknown-words*)
     (error "Category-creating machinery is deliberately turned off"))

@@ -30,7 +30,9 @@
                        *display-word-stream*
                        *show-handled-sentence-errors*
                        *trace-lexicon-unpacking* *trace-morphology*
-                       *workshop-window*))
+                       *workshop-window*
+                       *warn-or-error-choice*
+                       *cache-warnings-for-later-review*))
      (setq *warn-or-error-choice* :warn
            w-or-e-cache? t)
      ,@body

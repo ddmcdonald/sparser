@@ -53,7 +53,7 @@
  end position.  Returns the article object.
  Keys are as in analyze-text-from-file:
    :name -- sets the name field of the article
-   :quiet -- runs within with-total-quiet
+   :quiet -- runs within with-total-quiet, suppresses error
    :skip -- errors within a sentence do not go to the debugger
 "
   (clean-out-history-and-temp-objects)
@@ -86,6 +86,7 @@
           (unless section (error "threading bug: no section in ~a" article))
           (unless (every #'(lambda (c) (typep c 'paragraph)) (children section))
             (error "Something other than paragraphs in ~a" section))
+          
           ;; terminate the paragraph
           (let ((p *current-paragraph*)
                 (start-pos (position# 1))); cribbs from begin-new-paragraph

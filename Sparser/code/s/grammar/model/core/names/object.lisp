@@ -245,6 +245,7 @@
 
 
 (defun collection-is-compound-name (collection)
+  (declare (special *debug-pnf*))
   (let ((type (value-of 'type collection)))
     (if (eq 'named-object (cat-name type))
       t

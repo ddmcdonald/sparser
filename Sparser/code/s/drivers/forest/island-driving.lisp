@@ -1,10 +1,10 @@
 
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2023 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "island-driving"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  February 2021
+;;;  Version:  November 2023
 
 ;; Initiated 8/30/14. Controls the forest-level parsing under the
 ;; new 'whole sentence at a time, start anywhere' protocol.
@@ -107,8 +107,10 @@
    driven rules. Tends to attach subjects and objects that haven't been
    explicitly licensed -- but probably should be"
   (when *do-last-ditch-non-semantic-whacks*
-    (let ((*subcat-accept-all-semantics* t))
-      (declare (special *subcat-accept-all-semantics*))
+    (let ((*subcat-accept-all-semantics* t)
+          (*check-semantic-applicability* nil))
+      (declare (special *subcat-accept-all-semantics*
+                        *check-semantic-applicability*))
       (let ((triples-executed (whack-a-rule-cycle sentence)))
         (tally-last-ditch-rules triples-executed)))))
 

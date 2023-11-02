@@ -235,6 +235,7 @@
 
 
 (defmethod collect-model ((i individual))
+  (declare (special category::number))
 
   (unless (gethash i *individuals-seen*)
     
@@ -688,7 +689,6 @@ and word-has-associated-category who encounter unknown words.|#
     (error (e)
       (format t "~&Error in dumping unknown word set: ~a, Error is: ~a~%" name e))))
 
-
 (defun write-list-to-param (param-name list stream)
   (format stream
           "~%~%(defparameter ~a~
@@ -698,7 +698,7 @@ and word-has-associated-category who encounter unknown words.|#
              ~%         '"
           param-name param-name param-name)
   (pprint list stream)
-  #+gnore
+  #+ignore
   (loop for item in list
      do (format stream "~s " item))
   (format stream ")~%    :test #'equalp))~%"))

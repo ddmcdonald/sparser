@@ -298,6 +298,7 @@
   (read-paragraph-guts p))
 
 (defun read-paragraph-guts (p)
+  (declare (special *trap-error-skip-sentence*))
   (if *trap-error-skip-sentence*
       (handler-case
           (read-paragraph-guts-internal p)

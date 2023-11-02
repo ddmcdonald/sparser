@@ -59,6 +59,7 @@ drivers/sources/score.lisp
 |#
 
 (defun initialize-score-article-parsing ()
+  (declare (special *score-json*))
   (unless (probe-file *score-json*)
     (error "Set *score-json* to where the articles are"))
   (collect-score-json)

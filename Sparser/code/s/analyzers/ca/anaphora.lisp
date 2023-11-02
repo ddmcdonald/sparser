@@ -605,6 +605,7 @@ saturated? is a good entry point. |#
                     *lattice-individuals-mentioned-in-paragraph*
 		    *maximal-lattice-mentions-in-paragraph*
                     *objects-in-the-discourse*
+                    *save-clause-semantics*
                     *lattice-individuals-to-mentions*))
   (setq *lifo-instance-list* nil
         *lattice-individuals-mentioned-in-paragraph* nil)

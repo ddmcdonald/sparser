@@ -779,7 +779,7 @@
 (defun verb-premod-sequence? (e)
   "special case for a noun preceding the verb where the noun is a verb-premod
    e.g. '... tyrosine phosphorylated'"
-  (declare (special category::that word::comma))
+  (declare (special category::that word::comma category::det))
   (when (edge-p e)
     (let ((right (edge-just-to-right-of e))
           (left (edge-just-to-left-of e)))

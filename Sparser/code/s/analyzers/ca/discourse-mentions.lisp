@@ -1168,8 +1168,10 @@ so we return the edge for the POBJ"
 
 ;;; methods for writing semantics for discourse-mentions
 
-(defmethod write-sem ((m discourse-mention) stream &optional (newline t)
-                                                     &aux (i (base-description m)))
+(defmethod write-sem ((m discourse-mention) stream
+                      &optional (newline t)
+                      &aux (i (base-description m)))
+  (declare (special category::protein))
   (cond ((simple-number? i)
          (space-prin1 (value-of 'value i) stream))
         ((and (eq *semantic-output-format* :xml)

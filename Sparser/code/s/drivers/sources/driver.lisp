@@ -21,8 +21,7 @@
    article from the json corpus. Designed for iterating over:
      (loop for i from 11 to 50 do (run-json-article-from-handle :n i))
    Passes its keyword arguments through to the routines that actually
-   use them. 
-"
+   use them."
   (declare (special *write-article-objects-file*))
   (multiple-value-bind (article para-count sexp)
       (make-article-from-handle :n n :corpus corpus :verbose verbose)

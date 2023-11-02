@@ -70,9 +70,7 @@
   (defun consider-converting-title-to-person (convering-edge)
     (declare (ignore convering-edge)))
   (defun make/company-with-name (name)
-    (declare (ignore name)))
-  (defun make-company-name-as-simple-sequence (original-items)
-    (declare (ignore original-items))))
+    (declare (ignore name))))
 
 (unless *people*
   (defun find/person-with-name (name)

@@ -23,6 +23,10 @@ The functions at the top of this file are being used, word by word
   "If there is a space after this it is punctuation.
    If there's no space between it and the next then it's part
    of the ns sequence"
+  (declare (special *the-punctuation-period*
+                    *the-punctuation-question-mark*
+                    *the-punctuation-comma*
+                    *the-punctuation-semicolon*))
   (or (eq word *the-punctuation-period*)
       (eq word *the-punctuation-question-mark*)
       (eq word *the-punctuation-comma*)
@@ -30,6 +34,8 @@ The functions at the top of this file are being used, word by word
 
 (defun punct-normally-in-ns? (word)
   "These characters are normal in no-space sequences"
+  (declare (special *the-punctuation-rightwards-arrow*
+                    *the-punctuation-plus-minus*))
   (or (eq word (punctuation-named #\-))
       (eq word (punctuation-named #\/))
       (eq word (punctuation-named #\@))

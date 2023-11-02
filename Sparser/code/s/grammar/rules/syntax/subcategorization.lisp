@@ -1001,7 +1001,10 @@
 
 
 (defparameter *trivial-test-for-biological* nil)
-(defvar *subcat-accept-all-semantics* nil)
+
+(defparameter *subcat-accept-all-semantics* nil
+  "Dynamically bound to T inside run-last-ditch-whack-cycle to turn off
+   checking the value restrictions and thereby permiting more composition")
 
 (defun satisfies-subcat-restriction? (item pat-or-v/r)
   "Does the individual 'item' satisfy the type restriction specified in this
@@ -1148,7 +1151,6 @@
     (t
      (find-subcat-var item label head))))
 
-(defparameter *subcat-accept-all-semantics* nil)
 
 (defun find-subcat-var (item label head)
   "Looks up the subcategorizations defined on this head.

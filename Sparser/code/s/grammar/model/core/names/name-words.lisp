@@ -358,6 +358,7 @@
    name that includes a known category (the 'other' case). This makes
    a name-word object for what might otherwise be a normal word
    (e.g. the 'ball' in 'George K. Ball')"
+  (declare (special *lc-person-words*))
   (if (one-word-long? edge)
     (let* ((daughter (edge-left-daughter edge)) ; "Market News Publishing Inc."
            (word (typecase daughter

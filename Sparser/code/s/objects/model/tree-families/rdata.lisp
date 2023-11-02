@@ -656,7 +656,7 @@ Should mirror the cases on the *single-words* ETF."
                 (when (string-equal (symbol-name word)
                                     (symbol-name (cat-name category)))
                   category)
-                (category-named symbol) ; for :phrase case
+                (category-named word) ; for :phrase case
                 (error "The symbol ~a does not correspond to a variable of ~a."
                        word category)))
     (cons

@@ -224,6 +224,7 @@
   "When reify-spelled-name gets more characters in its string that it wants
    (because the it terminated in a newline). The word list also has to have
    its final period and final newline removed"
+  (declare (special *the-punctuation-period*))
   (let ((reversed (reverse words)))
     (when (eq (car reversed) *newline*)
       (setq reversed (cdr reversed)))

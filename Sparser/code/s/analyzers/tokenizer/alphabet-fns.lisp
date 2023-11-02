@@ -52,7 +52,7 @@ add-punctuation-char over the list. |#
                (eql (aref string 0) #\#)
                (eql (aref string 1) #\x))
     (error "wrong format for hex-to-char"))
-  (let ((decimal (read-from-string xstring)))
+  (let ((decimal (read-from-string string)))
     (code-char decimal)))
 
 

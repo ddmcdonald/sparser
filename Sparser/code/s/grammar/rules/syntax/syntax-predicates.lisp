@@ -589,7 +589,7 @@
   ;; the correct referent once we've identified it. Kind of Rube Goldberg
   ;; -esque, but it's the price we pay for delaying rather than trying to
   ;; identify the referent at moment the pronoun is encountered.
-  (declare (special var))
+  (declare (special var *debug-pronouns*))
   (cond
     ((and *do-anaphora* (is-pronoun? item))
      (push-debug `(,head ,item ,subcat-label ,var))

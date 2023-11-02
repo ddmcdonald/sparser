@@ -15,9 +15,11 @@
   (:documentation "Accesses the table to see if there is an entry
      for this word/polyword. Returns the spotter instance or nil")
   (:method ((w word))
+    (declare (special *words-to-triggers*))
     (let ((entry (gethash w *words-to-triggers*)))
       entry))
   (:method ((pw polyword))
+    (declare (special *words-to-triggers*))
     (let ((entry (gethash pw *words-to-triggers*)))
       entry)))
 
@@ -71,7 +73,7 @@
     (let* ((j (edge-referent e))
            (word (value-of 'spotter-index j)))
       (unless word
-        (push-debug `(,j ,edge))
+        (push-debug `(,j ,e))
         (break "no spotter-index recorded on ~a" j))
       (let ((spotter (target-word-to-spot word)))
         (unless spotter (break "connection to spotter didn't work"))

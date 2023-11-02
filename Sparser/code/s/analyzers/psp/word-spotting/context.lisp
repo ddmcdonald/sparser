@@ -385,7 +385,7 @@
     daughter it's part of. If there's no nearby np we return nil.")
   (:method ((target-edge edge) (chain edge-chain))
     (let ((np-edge (covered-by-np? chain)))
-      (position-in-np edge np-edge))))
+      (position-in-np target-edge np-edge))))
 
 (defun position-in-np (target-edge covering-np-edge)
   (if covering-np-edge

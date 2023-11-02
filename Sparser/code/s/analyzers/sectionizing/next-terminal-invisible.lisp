@@ -55,6 +55,7 @@
   ;; the angle-bracket that triggered all this.  Since we
   ;; were just peeking, the next call to next-terminal will
   ;; get this token that we just found (or found some prefix of it)
+  (declare (special word::open-angle-bracket))
   (multiple-value-bind (tag length swapped?)
                        (peek-at-next-chars/trie/invis-markup
                         (trie-network *invisible-markup-trie*) 1 nil nil)
@@ -160,7 +161,7 @@
   ;; it's clear what token we return, i.e. the "<" that precipitated
   ;; the lookahead.  The word we find when working out what to do
   ;; with the debris goes onto the buffer.
-
+  (declare (special word::open-angle-bracket))
   (let* ((count (car kcons))
          (list-of-chars (cdr kcons))
          (chars-before (when (listp (first list-of-chars))
@@ -191,29 +192,19 @@
     
     (setq *index-of-next-character*
           (+ *index-of-next-character*
-             (1+ count)
-             ))
-
-    #|(if (= count 1)
-      (if (punctuation-char? (first chars-after))
-        (let ((entry (tokenizer-entry (first list-of-chars))))
-          (kpush (cdr entry) *buffered-token*)
-          word::open-angle-bracket )
-        (break "single character pushed, but it's not punctuation: ~A"
-               (first list-of-chars)))
-      (else |#
-
-        ;; we have to reconstruct what tokens would have occurred 
-        ;; and push them onto the buffer. We return the token that
-        ;; got us into this path, the angle-bracket
-        (let ((char-sequence (nreverse (append chars-after chars-before))))
-          (when *trace-invisible-markup*
-            (format t "~&>>>>>>>>>> working from: ~A~
-                       ~%           count = ~A~
-                       ~%           index = ~A~%"
-                    char-sequence count *index-of-next-character*))
-          (tokenize-and-buffer-chars-peeked-at char-sequence)
-          word::open-angle-bracket )))
+             (1+ count)))
+ 
+    ;; we have to reconstruct what tokens would have occurred 
+    ;; and push them onto the buffer. We return the token that
+    ;; got us into this path, the angle-bracket
+    (let ((char-sequence (nreverse (append chars-after chars-before))))
+      (when *trace-invisible-markup*
+        (format t "~&>>>>>>>>>> working from: ~A~
+                   ~%           count = ~A~
+                   ~%           index = ~A~%"
+                char-sequence count *index-of-next-character*))
+      (tokenize-and-buffer-chars-peeked-at char-sequence)
+      word::open-angle-bracket )))
 
 
 

@@ -246,6 +246,7 @@ rules, including any DA rules.
   (:method ((r cfr))
     (get-record-of-rule (rule-name r)))
   (:method ((s symbol))
+    (declare (special *rule-firing-counts*))
     (gethash s *rule-firing-counts*)))
 
 (defgeneric show-recorded-contexts (rule)

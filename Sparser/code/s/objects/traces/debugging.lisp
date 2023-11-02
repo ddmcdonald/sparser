@@ -66,7 +66,7 @@
 ;;;-----------------------------------------------
 
 (defun turn-on-debugging-flags ()
-  (declare (special *announce-missing-sort-routines* *debug-pronouns* *debug-pnf
+  (declare (special *announce-missing-sort-routines* *debug-pronouns* *debug-pnf*
                     *break-on-new-categories-in-cap-seq* *break-on-new-name-converter-cases*
                     *break-on-new-bracket-situations* *announce-missing-sort-routines*))
   (setq *announce-missing-sort-routines* t
@@ -85,7 +85,7 @@
         ))
 
 (defun turn-off-debugging-flags ()
-  (declare (special *announce-missing-sort-routines* *debug-pronouns* *debug-pnf
+  (declare (special *announce-missing-sort-routines* *debug-pronouns* *debug-pnf*
                     *break-on-new-categories-in-cap-seq* *break-on-new-name-converter-cases*
                     *break-on-new-bracket-situations* *announce-missing-sort-routines*))
   (setq *announce-missing-sort-routines* nil

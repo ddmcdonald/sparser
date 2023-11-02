@@ -14,9 +14,8 @@
 
 (in-package :sparser)
 
-
-
 (defun find-comlex-intrans () ;; 2,216
+  (declare (special *comlex-verbs-list*))
   (loop for word in *comlex-verbs-list*
      as entry = (comlex-entry word)
      as verb-section = (assq 'verb entry) ; (verb (...) (:subc ...))

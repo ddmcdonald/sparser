@@ -52,7 +52,7 @@
 (defun arc-matches-tt? (arc tt)
   "Called from the compare-tt-to-arc-set function which determined
    which arc to compare against this treetop"
-  (declare (special *da-execution*))
+  (declare (special *da-execution* *trace-da-match*))
   (tr :arc-matches-tt? arc tt)
   (when *trace-da-match*
     (format t "   *edge-tt* = ~a~%   *word-tt* = ~a~

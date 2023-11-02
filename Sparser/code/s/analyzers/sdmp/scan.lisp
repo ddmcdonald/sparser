@@ -151,7 +151,7 @@ to make any semantic or form edges that the grammar dictates.
    properties of its suffix. The edge is presumed to be an NP
    though nothing looks carefully at that."
   (declare (special category::adjective category::vg category::np category::np-head
-                    category::n-bar *current-chunk*
+                    category::n-bar *current-chunk* category::adjg
                     *left-segment-boundary* *right-segment-boundary*))
   (unless *inhibit-just-spanning-segments*
     (let* ((start-pos (or start-at

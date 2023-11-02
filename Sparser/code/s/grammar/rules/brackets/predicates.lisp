@@ -165,6 +165,7 @@
   ;; thing to do provided that we haven't already seen
   ;; a main verb, e.g. in "she said testing for bird flu .."
   ;; the second verb is actually a sentential complement
+  (declare (special *break-on-new-bracket-situations*))
   (let* ((words-between (words-between start-pos end-pos))
          (edges-betweeen (edges-between start-pos end-pos))
          (length (length words-between)))

@@ -341,6 +341,7 @@ symbol 't' -- (t #<flow-endurant plural 98209>)   ddm 3/25/20|#
 
 ;;; THIS IS BIO-SPECIFIC CODE -- figure out how to segregate it appropriately
 (defun special-collection-interp (mention)
+  (declare (special category::protein))
   (let ((i (base-description mention)))
     (when (and *special-collection-interp*
                (itypep i category::protein) ;; protein-family is included
