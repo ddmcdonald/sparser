@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2018-2021  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2018-2023  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "verbs"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  December 2021
+;;;  version:  November 2021
 
 (in-package :sparser)
 
@@ -408,7 +408,8 @@ dm #79 "a more precise answer" --> see answer/info in mid-level/things.lisp
   :specializes process
   :mixins (resultative)
   :restrict ((patient endurant))
-  :documentation "Handles both transitive and svo-adj. Should it?"
+  :documentation "in the sense of 'compose'
+ 'the residues make up the binding site'"
   :realization (:verb ("make" :prep "up") ))
 
 (define-category park-something-somewhere
@@ -462,6 +463,30 @@ dm #79 "a more precise answer" --> see answer/info in mid-level/things.lisp
   :realization (:verb "rate")
   :documentation "The noun reading of 'rate' as the measurement of
     the change in some value over time is in amounts;measurements.lisp")
+
+
+(define-category rise
+  :specializes change-by-amount
+  :instantiates :self
+  :mixins (change-of-amount) 
+  :realization (:verb ("rise" :tensed/singular "rises" 
+                              :infinitive "rise"
+                              :past-tense "rose"
+                              :present-participle "rising"
+                              :past-participle "risen")
+                ;; :noun "rise" -- see note in subcat pattern
+                      ))
+
+;; "rise above" "rising star"
+#|sp> (comlex-entry "rise")
+((verb (:tensed/singular "rises" :infinitive "rise" :past-tense "rose")
+  (:subc
+   ((advp) (advp-pp :pval ("on" "above" "over")) (nunitp-to-range)
+    (pp-pp :pval ("from" "to"))
+    (pp :pval ("above" "against" "out of" "toward" "from" "to")) (intrans)
+    (np))))
+ (noun (:features ((countable :pval ("at")))))) |#
+
 
 
 (define-category seem ; Molly experiment
