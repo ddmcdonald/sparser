@@ -6,7 +6,7 @@
 ;; July 2017
 
 ;; Initated 9/16/09. Added derivation tree nodes 10/6. 3/9/11 removed
-;; co: from the defobject calls not that's it's been brought into utils.
+;; co: from the defobject calls now that's it's been brought into utils.
 ;; Resumed work 10/7/15. Generalizing lexicalized types 1/11/16
 
 (in-package :mumble) 
@@ -81,8 +81,8 @@
       up to the top and to our immediate superior."))
   (:documentation
     "This is the top of the derivation tree taxonomy. 
-     The inheritend 'referent' slot from referential points back to the 
-     Individual or whatever we're realizing. The 'resource' slot points
+     The inherited 'referent' slot from referential points back to the 
+     individual or whatever we're realizing. The 'resource' slot points
      to the 'linguistic resource' we're going to use as the basis of
      our realization. It is typically a phrase or a lexicalized phrase"))
 
@@ -90,14 +90,14 @@
 (defclass derivation-tree-node (base-dt-node)
   ((complements :initarg :complements :initform nil :accessor complements
     :documentation "Contains a list of complement nodes that specify the 
-     values of the open variables for  parameterized resource like a 
+     values of the open variables for a parameterized resource like a 
      phrase or lexicalized phrase.")
    (adjuncts :initarg :adjuncts :initform nil :accessor adjuncts
     :documentation "Contains a list of adjunct nodes for any attachments.
       This is an ordered list. The attachments will be done in order from
       first to last. This is the only way at present to handle arbitrary
       ordering conventions (as in 'little brown fox'). The alternative
-      would be a systemicist-style approach that would differentiate the AP
+      would be a systemics-style approach that would differentiate the AP
       with each successive modifier.")
    (features :initarg :features :initform nil :accessor features
     :documentation "An unordered list of Mumble features. The ordering
@@ -211,7 +211,7 @@
 (defclass mumble-rdata (category-linked-phrase)
   ((variables :initarg  :vars :initform nil :accessor variables-consumed
     :documentation "An individual will often have more germane
-      bindings than will handled by this CLP. Here we list
+      bindings than will be handled by this CLP. Here we list
       the variables we're using so they can be taken out of
       consideration in realize-via-binding.")
    (head :initarg :head :initform nil :accessor head-word
