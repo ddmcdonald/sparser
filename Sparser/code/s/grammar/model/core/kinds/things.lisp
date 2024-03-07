@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "things"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  July 2022
+;;;  version:  November 2023
 
 ;; Broken out from upper-model and added long definitions 3/31/14.
 ;; 7/20/14 Added lemmas and realizations as needed to hold the
@@ -117,7 +117,6 @@
 
 (define-category aggregate 
   :specializes physical
-  :lemma (:common-noun "feature")
   :documentation
   "Aggregates have no unity. They aren't wholes. They don't have good
   connection relations among their parts or a sensible notion of their
