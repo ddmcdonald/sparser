@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2023 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "display-ontology"
 ;;;    Module:   interface/grammar/
-;;;   Version:   October 2021
+;;;   Version:   December 2023
 
 ;; Adapted 10/22/16 from MAB's code for Trips.
 
@@ -103,7 +103,7 @@
          (var-names (when variables
                       (loop for v in variables
                          collect (var-name v)))))
-    (format stream "~%~VT+ ~d ~a ~@[vars: {~{~A~^, ~}}~]"
+    (format stream "~%~VT+ ~d ~a ~@[ vars: {~{~A~^, ~}}~]"
             indent ;; provides an index 
             (round indent 2)
             (string-downcase (cat-symbol category))
@@ -116,6 +116,8 @@
   (clrhash *category-was-displayed*)
   (write-cat-org (category-named cat-name :error-if-nil) stream 0))
 
+
+;; (save-subcat-tree-to-file 'top)
 
 (defun save-subcat-tree-to-file (category-name
                                  &key reference-system file-location file-name)
