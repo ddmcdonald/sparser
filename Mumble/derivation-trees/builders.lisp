@@ -60,7 +60,7 @@
 
 (defgeneric verb (word phrase-name)
   (:documentation "Given a designator for a verb, return 
-    a lexicalized phraes for it. If the phrase-name argument
+    a lexicalized for phrase it. If the phrase-name argument
     is nil we use SVO.")
   (:method ((w word) (phrase-name symbol))
     (verb (pname w)
@@ -212,7 +212,7 @@
    rather than through adjunction. The motivating case
    is 'together' which describes a state of affairs. 
    An adverb would modulate the meaning of an eventuality.
-   Returns a saturated lexicalized phrase. Using the
+   Returns a saturated lexicalized phrase, using the
    phrase for adverb, but it should be customized.")
   (:method ((pname string))
     (let ((phrase (phrase-named 'advp))
@@ -416,7 +416,7 @@ a message to be expressed. See discussion in make.lisp |#
       fn-name)))
 
 (defun dereference-pvp-list (parameter-value-pairs)
-  ;;??? add phase as an argument to check these are appropriate parameters?
+  ;;??? add phrase as an argument to check these are appropriate parameters?
   (let ( pvp-list  pvp  parameter  value )
     (do ((parameter-name (car parameter-value-pairs) (car rest))
          (value-exp (cadr parameter-value-pairs) (cadr rest))
