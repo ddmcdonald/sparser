@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "percentages"
 ;;;   Module:  "grammar;model:core:numbers:"
-;;;  Version:  October 2023
+;;;  Version:  November 2023
 
 ;; 1.1 (7/16/92 v2.3) pilot instances of the new representation regime
 ;; 1.2 (1/10/94) stubbed measurement to get around load-order paradox
@@ -49,7 +49,7 @@
 ;; These describe changes in amount.
 ;;/// we ought to reflect that is some relation that 
 ;; can be used to organize search if it's not in construction
-;; this this
+;; with a term like 'increase' or 'rose'
 
 (define-category n-fold
   :instantiates :self
@@ -98,6 +98,11 @@
 (define-n-fold "eightfold" 8)
 (define-n-fold "ninefold" 9)
 (define-n-fold "tenfold" 10)
+(define-n-fold "elevenfold" 11)
+(define-n-fold "twelvefold" 12)
+(define-n-fold "thirteenfold" 13)
+(define-n-fold "fourteenfold" 14)
+
 ;;/// more?
 
 
