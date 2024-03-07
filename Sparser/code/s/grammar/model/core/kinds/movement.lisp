@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2024 David D. McDonald  -- all rights reserved
 ;;; This file is part of the SIFT-Brandeis C3 project
 ;;;
 ;;;     File:  "movement"
 ;;;   Module:  "grammar/model/core/kinds/"
-;;;  version:  November 2016
+;;;  version:  January 2024
 
 ;; Initiated 3/20/14. Elaborated 3/31/14. 4/14/14 Moved to core/kinds/
 ;; and expunged of ISR vocabulary. 5/12/14 Working on getting 
@@ -55,7 +55,7 @@ from 'from ... to ..' and such
           ;; as simple categories and get expanded once
           ;; their actual definitions are reached
           (via-path . path)
-          (for-distance . measurement) ;; distance?
+          (for-distance . distance) ;; a measurement in practice
           (in-direction . direction)
           (when-done . time)
           (landmark . location)))
