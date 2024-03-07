@@ -17,7 +17,7 @@
 ;;;------------
 
 (define-category change-by-amount  ;; "rose 15%", "dropped to $101 million" 
-  :specializes transition
+  :specializes change-to-an-aspect
   :instantiates self
   :binds ((amount)  ;; too many kinds to list
           (direction))  ;; should be " . direction", except that without
