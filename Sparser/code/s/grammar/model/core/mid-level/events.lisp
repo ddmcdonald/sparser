@@ -41,7 +41,7 @@
  for the previous version where we had mental-construction-concerning and
  create-mental-construction-concerning (which was for frustrate, surprise,
  worry, forecast, publish, focus, show, demonstrate, endorse. This class
- provides adjuncts, the same sort of this as takes-tense-aspect-modal or
+ provides adjuncts, the same sort as takes-tense-aspect-modal or
  temporally-localized for perdurant.
  It also supplies slots:
     for the 'experiencer' who has the thought (v/r physical-agent),
