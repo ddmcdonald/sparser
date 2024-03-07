@@ -1,8 +1,8 @@
-;;; Copyright (c) 2021 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2021-2023 SIFT LLC. All Rights Reserved
 
 ;;; Generated file of category definitions for from word-lists
 ;;; Written 9/13/21 16:0:47
-;; Hand edited 6/13/22, 4/24/23
+;; Hand edited 6/13/22, 4/24/23, 11/13/23
 
 (in-package :sparser)
 
@@ -16899,7 +16899,7 @@
   :realization (:verb "room"))
 
 
-
+#+ignore  ;; moved to main verb file
 (define-category rise-perdurant
   :specializes perdurant
   :instantiates :self
