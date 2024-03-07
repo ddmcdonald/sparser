@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "processes"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  June 2023
+;;;  version:  November 2023
 
 ;; Broken out from upper-model and added long definitions 3/31/14.
 ;; 9/24/14 Moved event above perdurant as a hack to ensure that
@@ -80,6 +80,7 @@
           (reason)  ;; answers "why", "because E"
           (circumstance)
           (manner)
+          (amount) ;; quantity or measurement of stuff affected by event
           (occurs-at-moment) ;; future, past
           (relative-position) ;; w.r.t. other eventualities
           )
