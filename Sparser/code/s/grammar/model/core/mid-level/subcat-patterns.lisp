@@ -471,9 +471,9 @@ a simplified realization for a verb are (5/17)
                 :ac result
                 :mumble (svo-adj :s agent :o patient :adj result)))
 
-(define-mixin-category explicit-change-of-state
+(define-mixin-category change-of-state
   :specializes subcategorization-pattern
-  :documentation "Perhaps needs a better name.
+  :documentation "
   Any verb that represents an explicit change of state for a patient. 
   Rise, fall, change etc. Binds source and goal.
   'The company went from a failure to a success.'
@@ -485,6 +485,34 @@ a simplified realization for a verb are (5/17)
                 :mumble ((svo1o2 :s patient :o1 source :o2 goal)
                          (svo :s patient :o goal))))
 
+(define-mixin-category change-of-amount
+  :specializes subcategorization-pattern
+  :mixins (with-amount with-patient)
+  :documentation "
+increase in stuff by amount
+stuff rose (by amount)
+a amount {rise, increase} in stuff
+stuff rose amount
+"
+  ;;/// The mumble-spec decoder doesn't yet handle
+  ;; multiple parts of speech. It simply wasn't finished.
+  ;; Has to be conceptualized and that conceptualization
+  ;; integrated into the machinery
+
+  :realization (:s patient  ; stuff rose
+                :o amount   ; rose amount
+                :by amount  ; rose by amount
+                :in patient ; a __ in stuff
+                ;; :of amount  ; a  __ of amount
+                ;; :m amount   ; an amount rise
+     
+                :mumble ((sv :s patient)
+                         (svo :s patient :o amount)
+                         (svpo :s patient :o amount :p "by")
+                         ;;(qualifier-head :qualifier amount)
+                         )
+                   ))
+                   
 
 ;;;---------------
 ;;; noun patterns
@@ -513,7 +541,7 @@ a simplified realization for a verb are (5/17)
   :documentation "There is a very wide array of of-construction
  patterns (Quirk et al. 17.38), from partives ('a cup of water')
  to gentives ('the population of a city', 'the city's population'),
- to this is weak choice of variables"
+ that realize this is weak choice of variables"
   :realization (:of theme))
 
 
