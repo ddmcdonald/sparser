@@ -439,9 +439,10 @@ have been filled in if the rdata includes an etf and a word.
    Returns a mumble-rdata, which is a category-linked-phrase plus head
    and variable data."
   (flet ((make-lexicalized-phrase (m-word m-pos phrase)
-           (let ((lp (ecase m-pos ;; Reduced version of make-resource-for-sparser-word
+           (let ((lp (ecase m-pos ;; uses functions from derivation-trees/builders
                        (m::verb (m::verb m-word phrase))
-                       (m::adjective (m::adjective m-word phrase)))))
+                       (m::adjective (m::adjective m-word phrase))
+                       (m::noun (m::noun m-word phrase)))))
              (m::record-lexicalized-phrase category lp m-pos)
              lp)))
 
