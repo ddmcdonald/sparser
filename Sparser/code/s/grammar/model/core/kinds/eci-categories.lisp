@@ -1,12 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2022 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2022-2023 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "eci-categories"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  July 2022
+;;;  version:  December 2023
 
 ;; Initiated 6/10/22 to fold in useful conceptualizations from
 ;; when we developed the ECIs. Closely parallels TRIPS taxonomy.
+;; Excerpts are from cwc-integ/clic/ecipedia/doc/ecis.org
 
 (in-package :sparser)
 
@@ -17,7 +18,18 @@
     takes-tense-aspect-modal and
     temporally-localized
 
- Perdurant also mixes in takes-adverb and has-location
+ Perdurant also mixes in takes-adverb, with-frequency, and has-location.
+ Its local variables:
+  :binds ((participant) ;; is this one still useful given mixed-in roles?
+          (time)
+          (purpose)  ;; in order to ...
+          (reason)  ;; answers "why", "because E"
+          (circumstance)
+          (manner)
+          (amount) ;; quantity or measurement of stuff affected by event
+          (occurs-at-moment) ;; future, past
+          (relative-position) ;; w.r.t. other eventualities
+          )
  
  Its specialization are
    state
@@ -45,6 +57,36 @@ here from processes.lisp
  sequence of smaller events that that can be given the same
  description: 'the flow of Mississippi river', 'my life, 'your reading
  this documentation'.")
+
+
+These more specific categories can be good starting points
+
+(define-category transition
+  :specializes process
+  :lemma (:common-noun "transition")
+  :documentation
+  "A transition is an action that culminates in a change of state,
+ often an opposition: open, give, build. 'Lia is walking' is a
+ process.  'Lia walked to the store' is a transition. 'Greg built a
+ house' is a transition: a sequence of events leading to the existence
+ of the house.")
+
+(define-category accomplishment
+  :specializes transition
+  :lemma (:common-noun "accomplishment")
+  :documentation
+  "A transition that occurs over a period of time: building a house
+ baking a cake. It involves a process that ends with a change in
+ state.")
+
+(define-category achievement
+  :specializes transition
+  :lemma (:common-noun "achievement")
+  :documentation
+  "A transition that occurs instantly. At one point we're in one
+ state and the next moment we're in another ('summiting Everest')")
+
+
 
 |#
 
@@ -129,9 +171,19 @@ here from processes.lisp
 ;;---------- event of change
 
 (define-category event-of-change
-  :specializes process
+  :specializes transition
   :documentation 
-   ":args ((@agent :isa entity) ;; animate or not, physical or not
+   "There are two broad kinds of change. The ecis listed (in various
+ places) as subcategories of event-of-change are changes -to- something.
+ The predicate ecis listed below the first set of changes-to are about
+ changing some -aspect of- something: its quantity, one of its attributes,
+ and so on without changing the essential identity of the thing.
+   We can use event-of-change as the supercategory of the first sort.
+ For the second sort we define a new category, tentatively called
+ change-to-aspect.
+
+   From the eci
+   :args ((@agent :isa entity) ;; animate or not, physical or not
           (@patient :isa entity)  ;; trips affected
           (@beneficiary :isa entity)
          (@result-state :isa state-description)) ;; trips result ")
@@ -161,7 +213,22 @@ here from processes.lisp
             + 6 put
         + 4 transfer-to
           + 5 receive
-        + 4 transfer-from |#
+        + 4 transfer-from 
+
+  + 1 predicate
+    + 2 change-to
+    + 2 change-from
+    + 2 change-in
+    + 2 decrease
+    + 2 increase     |#
+
+(define-category change-to-an-aspect
+  :specializes event-of-change
+  :mixins (with-patient) ; thing that has the aspect
+  :documentation "Invites specialization according to what aspect,
+ attribute, etc. is changing. Would call its just 'change' but that
+ is for the verb.")
+
 
 (define-category transfer-generic ; leave 'transfer' for the verb
   :specializes event-of-change
@@ -177,6 +244,7 @@ here from processes.lisp
      ((:holds-in @start-e (@path_rel @source @theme))
       (:holds-in @e (transfering :theme @theme))
       (:holds-in @end-e (@path_rel @result @theme)))  ")
+
 
 #|  + 2 event-of-change
       + 3 cognitive-event
@@ -295,6 +363,8 @@ here from processes.lisp
   :specializes event-of-action
   :documentation "From TRIPS, with synonyms 'act', 'behave', 'do', 'perform'")
 
+
+;;---- causation
 
 (define-category event-of-causation
   :specializes event-of-action
