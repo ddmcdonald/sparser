@@ -182,3 +182,10 @@
   :binds ((pronoun pronoun))
   :documentation "Used for reflexive verbs, in which the subject and object refer
   to the same entity.")
+
+(define-mixin-category with-amount
+  :specializes thematic-role
+  :binds ((amount))
+  :documentation "A quantity or measurement that plays an integral part
+ of an event. The amount that some changes, the level it reaches,
+ the cost of a purchase. Invites very loose construals.")
