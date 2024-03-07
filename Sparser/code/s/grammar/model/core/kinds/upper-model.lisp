@@ -275,7 +275,7 @@
 
 (define-category designator
   :specializes abstract
-  :documentation "Provides a generalization over diffent
+  :documentation "Provides a generalization over different
   kinds of things that pick out instances.")
 
 (define-category index
@@ -331,6 +331,7 @@
  'scalar-quality' in the model. They are unlikely to have any
  consequence given how light this is, but putting this back should
  provide some temporary relief.")
+
 
 ;;;----------------------
 ;;; extension in a model
