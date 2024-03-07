@@ -22,7 +22,7 @@
 ;;;--------
 
 (define-category  measurement  ;; "10 yards"
-  :specializes scalar ;; not attribute-value
+  :specializes abstract
   :instantiates self
   :lemma (:common-noun "measurement")
   :binds ((units . unit-of-measure)
