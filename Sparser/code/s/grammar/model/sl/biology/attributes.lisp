@@ -164,7 +164,8 @@ have with phosphorylated as a preposed modifier.) |#
 (noun "purpose" :specializes related-thing)
 (noun "recipient" :specializes related-thing)
 (noun results :noun "result" :specializes related-thing)
-(noun "rise" :specializes related-thing)
+(unless (eq script :fire) ;; focus on the change in value reading
+  (noun "rise" :specializes related-thing))
 (noun "risk" :specializes related-thing)
 (noun "sense" :specializes related-thing)
 (noun "shortage" :specializes related-thing) ;; maybe scalar-attribute??
