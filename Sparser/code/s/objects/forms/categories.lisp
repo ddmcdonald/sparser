@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2010  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2010,2024  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "categories"
 ;;;    Module:   "objects;forms:"
-;;;   Version:   1.4 September 1993
+;;;   Version:   March 2024
 
 ;; 1.1 (2/20/92 v2.2) Changed the call out of the macro so the source
 ;;     of the category could be disentangled.
@@ -14,24 +14,37 @@
 
 (in-package :sparser)
 
+;;;---------------------------------------------------
+;;; version for real categories of stuff in the model
+;;;---------------------------------------------------
+
+(defmacro define-category (symbol &rest full-args)
+  ;; 7/16/92 -- This form is already in wide-spread use in its
+  ;; trivial version with only the single argument, symbol. 
+  ;;    We make a dispatch here to the expr routine in
+  ;; "objects;model:categories:define" whenever there is more
+  ;; than that one argument.
+  (if full-args
+    `(define-category/expr ',symbol ',full-args #+sbcl (sb-c:source-location))
+    `(find-or-make-category-object ',symbol :define-category #+sbcl (sb-c:source-location))))
+
+(defmacro define-mixin-category (symbol &rest full-args)
+  `(define-mixin-category/expr ',symbol ',full-args))
+
+
+
 ;;;-------------------------------------------------------
 ;;; version used for categories that are purely syntactic
 ;;;-------------------------------------------------------
 
-(if *include-model-facilities*
-  (then
-    (defmacro def-category (symbol &rest keys)
-      (unless (member :lattice-position keys)
-        (ed *file-being-lloaded*)
-        (break "check need to switch to defINE-category~
+(defmacro def-category (symbol &rest keys)
+  (unless (member :lattice-position keys)
+    (break "check need to switch to defINE-category~
                 ~%  or put in :lattice-position :non-terminal"))
-      `(def-category/expr/toplevel ',symbol
-         ,@(quote-every-other-one keys :odd)) ))
-  (else
-    (defmacro def-category (symbol)
-      `(def-category/expr ',symbol :source :def-category))))
+  `(def-category/expr/toplevel ',symbol
+       ,@(quote-every-other-one keys :odd)))
 
-#| grep results 10/5/21
+#| def-category grep results 10/5/21
 grammar/rules/sectionizing/header.lisp:(def-category header :lattice-position :non-terminal)
 grammar/rules/traversal/angle-brackets.lisp:(def-category  angle-brackets :lattice-position :non-terminal)
 grammar/rules/traversal/other-brackets.lisp:(def-category  curly-brackets :lattice-position :non-terminal)
@@ -52,21 +65,3 @@ grammar/model/sl/jv/patches.lisp:(def-category not-yet :lattice-position :non-te
 grammar/model/core/companies/subsid/subsidiary-nouns.lisp:(def-category subsidiary-head :lattice-position :non-terminal)
 |#
 
-
-
-;;;---------------------------------------------------
-;;; version for real categories of stuff in the model
-;;;---------------------------------------------------
-
-(defmacro define-category (symbol &rest full-args)
-  ;; 7/16/92 -- This form is already in wide-spread use in its
-  ;; trivial version with only the single argument, symbol. 
-  ;;    We make a dispatch here to the expr routine in
-  ;; "objects;model:categories:define" whenever there is more
-  ;; than that one argument.
-  (if full-args
-    `(define-category/expr ',symbol ',full-args #+sbcl (sb-c:source-location))
-    `(find-or-make-category-object ',symbol :define-category #+sbcl (sb-c:source-location))))
-
-(defmacro define-mixin-category (symbol &rest full-args)
-  `(define-mixin-category/expr ',symbol ',full-args))
