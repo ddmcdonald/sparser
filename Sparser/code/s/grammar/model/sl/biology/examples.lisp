@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2015-2023 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2015-2024 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "examples"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: October 2023
+;;; version: April 2024
 
 (in-package :sparser)
 
@@ -12,6 +12,16 @@
 ;;;---------------
 ;;; Example texts
 ;;;---------------
+
+
+;; excepts from NYT article 3/30/24 "How much would you pay
+;; to make sure you never sawed off a finger"
+;; -- looks at how to phrase '<amt> per year"
+(defparameter *saw-off-finger*
+    "Government mandates of new safety technology are classic trade-offs, whether the product is a power tool or a car or a pill. In this case, regulations requiring that table saws be sold with this safety device might mean a few thousand fingers saved per year. But they might also lead to higher costs for consumers.
+  Among tools likely to be found in someone’s garage, table saws are the biggest driver of serious woodworking-related injuries: Each year they are responsible for about 30,000 injuries that require emergency department treatment — and nearly 4,300 amputations.
+  By comparison, the thousands of other products tracked by the Consumer Protection Safety Commission, a federal agency, are responsible for roughly 3,600 amputations per year combined.
+")
 
 ;; Anonymous email from 10/28/13
 ;; Headline: "Apple Reports Fourth Quarter Results; iPhone Sales Grow 26 Percent to Set New September Quarter Record"
