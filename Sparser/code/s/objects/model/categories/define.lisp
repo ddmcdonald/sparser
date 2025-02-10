@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2010-2023 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2010-2025 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "define"
 ;;;   Module:  "objects;model:categories:"
-;;;  version:  April 2023
+;;;  version:  January 2025
 
 ;; initiated 7/16/92 v2.3
 ;; 8/5 added call to process rdata, 8/31 gated it by the field having
@@ -63,17 +63,21 @@
    the symbol. If just the symbol is given it's an implicit action
    by define-cfr to establish a non-terminal.
 
-   NOTE:: We assume that this is the only way that categories can be defined with variables!!
-   so that all calls to find-or-make-category-object that do not come through here
-   simply make the category itself"
+   NOTE:: We assume that this is the only way that categories can be
+   defined with variables!! All calls to find-or-make-category-object
+   that do not come through here simply make the category itself"
 
   (let ((old-obj (category-named symbol)))
     (when old-obj
-      (when (not (referential-category-p old-obj))
+      (when (not (model-category-p old-obj))
         (delete/category old-obj)))
 
     (let ((category (find-or-make-category-object symbol :referential source-location)))
-      (apply #'decode-category-parameter-list category parameter-list)
+      ;; (unless (peripheral-category-mention category)
+      ;;   (apply #'decode-category-parameter-list category parameter-list))
+      (if (peripheral-category-mention category)
+        (break "what is the stack?, reason")
+        (apply #'decode-category-parameter-list category parameter-list))
       
       (when (and old-obj (cached-variable-lookup?)
                  (subcategories-of old-obj))
@@ -84,62 +88,6 @@
       
       category )))
 
-
-(defun define-mixin-category/expr (symbol parameter-list)
-  "called from define-mixin-category.
-   These can't be instantiated"
-  (let ((category (find-or-make-category-object symbol :mixin)))
-    (apply #'decode-category-parameter-list category parameter-list)
-    category ))
-
-
-
-;; Called from make-subtype
-;;
-(defun define-subtype-derived-category (subtype-lp super-category mixin)
-  (let* ((namestring (lp-supertype-print-string subtype-lp))
-         (category (find-or-make-category-object
-                    (intern namestring)
-                    :derived))
-         (operations (make-category-operations :category category))
-         (base-slots (cat-slots super-category))
-         (mixin-slots (cat-slots mixin)))
-
-    (setf (cat-slots category) 
-          (append mixin-slots base-slots))
-    (setf (cat-lattice-position category) subtype-lp)
-
-    (let ((super-ops (cat-operations super-category)))
-      ;; -- copy the other fields too? --
-      (setf (cat-ops-print operations) (cat-ops-print super-ops))
-      (setf (cat-operations category) operations)
-      category)))
-
-
-;; Called from setup-phrasal-verb
-;;
-(defgeneric create-new-category (base)
-  (:documentation "Intended for programmatic construction of categories
-    and the words that realize them. Effectively reproduces the activity
-    done by establish-unknown-word when the base is a word encountered
-    while parsing. We have to determine what the realizing word is and
-    set it up like any other word, and we have to flesh out a category
-    for it, including Comlex information as if it had come in by that route.
-    Returns the label for this category for insertion in a rule.")
-  (:method ((pname string))
-    "Set up the pname as a word, then pass on to standard setup routines"
-    (let ((word (resolve/make pname :source :programmatic)))
-      (create-new-category word)))
-  (:method ((name symbol))
-    "Create the word, then invoke that path"
-    (let ((word (create-new-category (string-downcase (symbol-name name)))))
-      (create-new-category word)))
-  (:method ((word word))
-    "Invoke the category-creation machinery and return the result"
-    (create-category-from-word word :pos 'noun))
-  (:method ((c category))
-    ;; the has-rules? check in the caller has failed
-    c))
 
 ;;;-----------
 ;;; workhorse
@@ -157,19 +105,25 @@
                                        ((:realization rdata))
                                        lemma
                                        index )
-  
+
+  ;; This clause has to know not to assign top on initial definitions
+  ;; of categories only used as restrictions
   (let ((specialized-category
          (cond (specializes (etypecase specializes
                              (symbol (category-named specializes))
                              (referential-category specializes)))
-               ((not (eq (cat-name category) 'top))
+               #+ignore((not (eq (cat-name category) 'top))
                 (category-named 'top))))
         (mixin-categories
          (when mixins
            (loop for symbol in mixins
              collect (category-named symbol :break-if-missing)))))
     
-    (remove-tag :super-categories category) ;; clear the cache
+    ;; Not having superc's is a problem when we're running over
+    ;;  category (forms) many time. Trying not deleting them,
+    ;;  do something more interesting if setup-session-globals/grammar
+    ;;  isn't enough
+    ;; (remove-tag :super-categories category) ;; clear the cache
     
     (when specializes
       (unless specialized-category
@@ -227,6 +181,65 @@
       (setup-category-lemma category lemma))
     
     category ))
+
+
+;;;----------------------------------
+;;; other category-creating routines
+;;;----------------------------------
+
+(defun define-mixin-category/expr (symbol parameter-list)
+  "called from define-mixin-category.
+   These can't be instantiated"
+  (let ((category (find-or-make-category-object symbol :mixin)))
+    (apply #'decode-category-parameter-list category parameter-list)
+    category ))
+
+;; Called from make-subtype
+;;
+(defun define-subtype-derived-category (subtype-lp super-category mixin)
+  (let* ((namestring (lp-supertype-print-string subtype-lp))
+         (category (find-or-make-category-object
+                    (intern namestring)
+                    :derived))
+         (operations (make-category-operations :category category))
+         (base-slots (cat-slots super-category))
+         (mixin-slots (cat-slots mixin)))
+
+    (setf (cat-slots category) 
+          (append mixin-slots base-slots))
+    (setf (cat-lattice-position category) subtype-lp)
+
+    (let ((super-ops (cat-operations super-category)))
+      ;; -- copy the other fields too? --
+      (setf (cat-ops-print operations) (cat-ops-print super-ops))
+      (setf (cat-operations category) operations)
+      category)))
+
+;; Called from setup-phrasal-verb
+;;
+(defgeneric create-new-category (base)
+  (:documentation "Intended for programmatic construction of categories
+    and the words that realize them. Effectively reproduces the activity
+    done by establish-unknown-word when the base is a word encountered
+    while parsing. We have to determine what the realizing word is and
+    set it up like any other word, and we have to flesh out a category
+    for it, including Comlex information as if it had come in by that route.
+    Returns the label for this category for insertion in a rule.")
+  (:method ((pname string))
+    "Set up the pname as a word, then pass on to standard setup routines"
+    (let ((word (resolve/make pname :source :programmatic)))
+      (create-new-category word)))
+  (:method ((name symbol))
+    "Create the word, then invoke that path"
+    (let ((word (create-new-category (string-downcase (symbol-name name)))))
+      (create-new-category word)))
+  (:method ((word word))
+    "Invoke the category-creation machinery and return the result"
+    (create-category-from-word word :pos 'noun))
+  (:method ((c category))
+    ;; the has-rules? check in the caller has failed
+    c))
+
 
 
 
@@ -467,11 +480,12 @@
   ;; the same name having copied over its properties
   (let ((plist (unit-plist sc))
         (c-symbol (cat-symbol sc))
-        (rule-set (cat-rule-set sc)))
-   ;  (break "1")
+        (rule-set (cat-rule-set sc))
+        (lp (cat-lattice-position sc)))
+    (break "simple category: ~a" c-symbol)
     ;; Copied from Delete/category 4/19/95
     (setq *categories-defined*
-        (delete sc *categories-defined*))
+          (delete sc *categories-defined*))
 
     (when (member sc *grammatical-categories* :test #'eq)
       (setq *grammatical-categories*
@@ -480,7 +494,8 @@
     (let ((rc (make-referential-category
                :symbol c-symbol
                :plist plist
-               :rule-set rule-set )))
+               :rule-set rule-set
+               :lattice-position lp)))
 
       ;; copied from Find-or-make-category-object
       (catalog/category rc c-symbol)
