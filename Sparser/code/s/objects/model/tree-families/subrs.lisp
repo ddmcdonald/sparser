@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1998.2014-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1998,2014-2016,2024 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "subrs"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  July 2016
+;;;  version:  April 2024
 
 ;; initiated 8/4/92 v2.3. Fleshed out 8/28
 ;; 0.1 (6/6/93) Added decoding of symbolic specializations like vg/+ed
@@ -53,7 +53,7 @@
                                      (or ,ending
                                          ,following-string))
                         *sparser-source-package*)))
-                  (find-or-make-category-object composed-name))))
+                  (find-or-make-category-object composed-name :composite-label))))
   (if (word-p label)
     label
     (let ((target
@@ -114,7 +114,7 @@
           (error "The rule schema term ~A is undefined.~
                   ~%There is no mapping entry or actual category ~
                   with that name" label)))
-
+       
         target )))))
 
 
@@ -155,7 +155,8 @@
 
     (find-or-make-category-object
      (intern (concatenate 'string string1 "-" string2)
-             *sparser-source-package*))))
+             *sparser-source-package*)
+     :composite-label)))
 
 
 ;;;---------
