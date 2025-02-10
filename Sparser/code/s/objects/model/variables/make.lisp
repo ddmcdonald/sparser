@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992,2013-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992,2013-2014,2024 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "form"
 ;;;   Module:  "objects;model:variables:"
-;;;  version:  February 2014
+;;;  version:  April 2024
 
 ;; initiated 11/18/91  v2.1
 ;; 1.1 (7/92 v2.3) shifted from gl entries to straight categories
@@ -35,48 +35,52 @@
 (defun define-lambda-variable (name-symbol
                                restriction-expression
                                category)
-
+  "This is called from define-variables to convert an expression
+   for a binding variable to the corresponding object."
   (when (symbolp category)
     (setq category (category-named category t)))
 
-  (let ((restriction (resolve-variable-restriction
-                      restriction-expression)))
+  (let ((*constructing-value-restriction* t))
+    (declare (special *constructing-value-restriction*))
 
-    (let ((v (find/make-lambda-variable-for-category 
-              name-symbol restriction category))
-          (bindings (cat-slots category)))
+    (let ((restriction (resolve-variable-restriction
+                        restriction-expression)))
 
-      (cond
-       ((null bindings)
-        (setf (cat-slots category) `(,v)))
-       ((memq v bindings))
-       (t (tail-cons v bindings)))
+      (let ((v (find/make-lambda-variable-for-category 
+                name-symbol restriction category))
+            (bindings (cat-slots category)))
 
-      (register-var-name-to-category-list 
-       name-symbol v category)
+        (cond
+          ((null bindings)
+           (setf (cat-slots category) `(,v)))
+          ((memq v bindings))
+          (t (tail-cons v bindings)))
 
-      v)))
+        (register-var-name-to-category-list 
+         name-symbol v category)
+
+        (catalog-binding-variable v)
+
+        v))))
+
 
 (defun define-disjunctive-lambda-variable (vars category)
   (let* ((v (find/make-disjunctive-lambda-variable-for-category vars category))
 	 (cat (var-category v))
 	 (bindings (cat-slots category)))
-
     (cond
       ((null bindings)
        (setf (cat-slots category) `(,v)))
       ((member v bindings))
       (t (tail-cons v bindings)))
-
     (register-var-name-to-category-list (var-name v) v category)
-
     v))
       
 
 
 
 (defun resolve-variable-restriction (restriction-expression)
-  ;; called fromd define-lambda-variable to convert expressions
+  ;; called from define-lambda-variable to convert expressions
   ;; into objects
   (if restriction-expression
     (typecase restriction-expression
