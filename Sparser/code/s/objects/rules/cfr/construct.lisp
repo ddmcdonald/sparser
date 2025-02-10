@@ -32,6 +32,8 @@
 
 (defun construct-cfr (lhs rhs form referent source
                       &optional schema-to-use)
+  "Principally called from define-cfr/resolved. Makes the
+   cfr and has it cataloged"
   (declare (special *schema-being-instantiated*))
   (let* ((r-symbol (gen-cfr-symbol))
          (cfr (make-cfr
@@ -87,15 +89,15 @@
   (if *deliberate-duplication*
     (construct-cfr lhs rhs form referent source)
     (else
-     ;; Check that we're putting the changes on the right object
-     (when (nary-rule cfr)
-       (setq cfr (first (intermediaries-of-nary-rule cfr))))
+      ;; Check that we're putting the changes on the right object
+      (when (nary-rule cfr)
+        (setq cfr (first (intermediaries-of-nary-rule cfr))))
 
-     (setf (cfr-form cfr) form)
-     (setf (cfr-referent cfr) referent)
-     (setf (cfr-schema cfr) (or schema-to-use
-                                *schema-being-instantiated*))
-     cfr )))
+      (setf (cfr-form cfr) form)
+      (setf (cfr-referent cfr) referent)
+      (setf (cfr-schema cfr) (or schema-to-use
+                                 *schema-being-instantiated*))
+      cfr )))
 
 
 
