@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2011-2021  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011-2024  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "moving"
 ;;;   Module:  "model;core:places:"
-;;;  version:  November 2021
+;;;  version:  March 2024
 
 ;; Intended for modeling movement in direction or w.r.t. some
 ;; spatial feature.
@@ -26,7 +26,7 @@
 ;; at a time in order.
 
 ;; drive to <location>
-;; travel <measurement (distance)> <direction> on<path> to<location
+;; travel <distance) <direction> on<path> to<location
 ;; turn <direction> onto<path>
 ;; cross <landmark ??>
 ;; follow <path> to<configuration> past<landmark> (<distance>)
@@ -40,7 +40,7 @@
                    :realization ((:tree-family vp+adjunct
                                   :mapping ((vg . :self)
                                             (vp . move)
-                                            (adjunct . measurement) ;; "2.5 miles"
+                                            (adjunct . distance) ;; "2.5 miles"
                                             (slot . for-distance)))
                                  (:tree-family vp+adjunct
                                   :mapping ((vg . :self)
