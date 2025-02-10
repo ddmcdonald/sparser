@@ -118,7 +118,7 @@
 
 
 (defun fill-inherited-vars (cat)
-  "populate the hashtable for this category with the varibles it
+  "populate the hashtable for this category with the variables it
    directly specifies and the ones it is known to inherit."
   (if (not (itypep cat 'top))
     (setf (gethash cat *inherited-cat-variables*)
@@ -369,7 +369,7 @@
    variable and category. Set during the find-or-make.")
 
 (defun register-var-name-to-category-list (name-symbol variable category)
-  ;; called by define-lambda-variable
+  ;; called by define-lambda-variable. Adds to a global alist of
   (let ((entry (get-variable-category-pairs-for-var-name name-symbol)))
     (if (null entry)
       (setf (gethash name-symbol *symbols-to-variables*)
