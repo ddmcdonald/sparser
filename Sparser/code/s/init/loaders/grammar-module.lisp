@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-2005,2014,2021  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2014,2021,2024  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "grammar-module"
 ;;;    Module:  "init;loaders;"
-;;;   version:  October 2021
+;;;   version:  May 2024
 
 ;; initiated 2/9/92 v2.2, finished 2/10
 ;; 1.1 (2/20 v2.2) Added a notion of "source" to Note-grammar-module
@@ -74,8 +74,8 @@
 
 (defparameter *grammar-modules* (make-hash-table :test #'eq)
   "Table of names (symbols) to grammar-module objects.
-   Lists all of the grammar modules that have defined and
-   could be included in an image.")
+   Lists all of the grammar modules that have been defined
+   and could be included in an image.")
 
 (defun grammar-module-named (symbol)
   (gethash symbol *grammar-modules*))
@@ -286,7 +286,8 @@ of defining something else (e.g. a category) in the list of cfrs.")
            (:def-category
             (push obj (gmod-non-terminals gm))
             (push obj *non-terminals-defined*))
-           ((:define-category :referential :mixin :form :derived)
+           ((:define-category :referential :mixin
+             :form :derived :composite-label)
             (push obj (gmod-object-types gm))
             (push obj *objects-defined*))
            ((:dotted-rule :dm&p))))
