@@ -11,9 +11,10 @@
 
 
 (defun define-variables (slot-v/r-pairs category)
-
-  ;; called internally as part of defining a category.
-
+  "Called from decode-category-parameter-list to create the variables
+   that constitute the categories bindings. Sets the category's
+   'slots' field."
+  
   (let ( variables  variable-name  restriction )
     (dolist (pair slot-v/r-pairs)
       (setq variable-name (car pair))
