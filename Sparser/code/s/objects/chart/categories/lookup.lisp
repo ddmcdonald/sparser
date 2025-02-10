@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-2005,2010-2021 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2010-2024 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "lookup"
 ;;;   Module:  "objects;chart:categories:"
-;;;  Version:  April 2021
+;;;  Version:  April 2024
 
 (in-package :sparser)
 
@@ -33,11 +33,56 @@
 ;;     (4/16/14) Added the extra arg for mixins in CLOS backing. 
 ;; 3/21/2015 SBCL conditionalization to be like MCL on capitalization
 
+
+;;;-------------------
+;;; update references
+;;;-------------------
+#| Categories can be used as value restrictions before they are defined.
+We need to track these cases (multiple files where they're referenced,
+multiple functions, etc.). We need state flags to indicated what sort
+of processing is being done to a category and block or redirect
+actions that could be premature.
+|#
+
+
+
+(defvar *constructing-value-restriction* nil
+  "Dynamically bound around the guts of define-lambda-variable and populated
+   by catalog-binding-variable once a variable has been created")
+
+(defvar *decoding-realization-mapping* nil
+  "Dynamically bound inside instantiate-rule-schema around the
+   call to replace-from-mapping")
+
+(defvar *assembling-cfr* nil
+  "Dynamically bound around the operations in def-cfr/expr to
+   let us handle references to categories. Set to the cfr object
+   in construct-cfr after its cataloged")
+
+
+(defun peripheral-category-mention (category)
+  "Called from define-category/expr to ensure that we do not decode
+   a category that is in the process of being assimilated into
+   a value restriction or a grammar rule, etc. 
+   Not in a call to define-category that will provide its full definition."
+  (declare (special *constructing-value-restriction*
+                    *decoding-realization-mapping*
+                    *assembling-cfr*))
+  ;; We're in the scope of one of these operations
+  (or ;;*constructing-value-restriction* ;; too simple?
+      *decoding-realization-mapping*
+      *assembling-cfr*
+      (part-of-a-value-restriction category)))
+
+
+
 ;;;------
 ;;; find
 ;;;------
 
 (defun find-or-make-category (item &optional (source :define-category))
+  ;; called from construct-referent and define-main-verb. Its just a bump
+  ;; along the way to find-or-make-category-object
   (etypecase item
     (symbol (find-or-make-category-object item source))
     (word
@@ -48,15 +93,19 @@
        (find-or-make-category-object symbol source)))))
 
 
-(defun find-or-make-category-object (symbol &optional (source :define-category) source-location)
+(defun find-or-make-category-object (symbol
+                                     &optional (source :define-category) source-location)
   "The core routine used by all the various sources for categories to
-   make the minimal object and have it cataloged."
+   make the minimal object and have it cataloged. Uses the 'source' information
+   to push newly created categories into various bins. Consults point-of-reference
+   globals to add information to the category's plist."
   (declare (special *all-intra-category-relationships-noticed?*
-                    *dotted-categories*))
-  (unless (if *include-model-facilities*
-            (referential-category-p symbol) ;; can happen in generated code
-            nil)
-    (let* ( new?
+                    *constructing-value-restriction*
+                    *decoding-realization-mapping*
+                    *assembling-cfr*))
+  
+  (unless (referential-category-p symbol) ;; can happen in generated code
+    (let* ((new? nil)
            (pname (symbol-name symbol))
            (c-symbol
             (or (find-symbol pname *category-package*)
@@ -67,55 +116,153 @@
           (setq new? t)))
 
       (let ((category
-             (if new?
-               (case source
-                 (:referential
-                  (make-referential-category :symbol c-symbol))
-                 (:form
-                  ;; the distinction is on the plist
-                  (if *include-model-facilities*
-                    (make-referential-category :symbol c-symbol)
-                    (make-category :symbol c-symbol)))
-                 (:mixin
-                  (make-mixin-category :symbol c-symbol))
-                 (:derived
-                  (make-subtyped-category :symbol c-symbol))
-                 (otherwise
-                  (if *include-model-facilities*
-                    (make-referential-category :symbol c-symbol)
-                    (make-category :symbol c-symbol))))
+              (if new?
+                (instantiate-according-to-source c-symbol source)
+                (symbol-value c-symbol))))
 
-               (symbol-value c-symbol))))
+        ;; Can do specific recording here according to what
+        ;; flags are up or maybe source specified
+                   
+        (when *assembling-cfr*
+          (record-rule-used-in category))
 
-        (when new?
-          (catalog/category category c-symbol)
-          (note-file-location category)
-          (note-file-location c-symbol source-location)
-          (note-grammar-module category :source source)
-          (mark-definition-source category) ;; for morph or comlex sources
-          
-          (ecase source
-            (:referential
-             (push category *referential-categories*))
+        (when *decoding-realization-mapping*) ;////
 
-            (:form
-             (push category *form-categories*))
-
-            ((or :def-category :define-category :dm&p)
-             (push category *grammatical-categories*))
-
-            (:dotted-rule
-             (push category *dotted-categories*))
-
-            (:mixin
-             (push category *mixin-categories*))
-
-            (:derived
-             (push category *derived-categories*))))
+        (if new?
+          (then
+            (catalog/category category c-symbol)
+            (note-file-location category)
+            (note-file-location c-symbol source-location)
+            (note-grammar-module category :source source)
+            (mark-definition-source category) ;; for morph or comlex word sources
+            (bin-according-to-source category source))
+          (else
+            (update-file-location category)
+            ;;/// and what else?
+            ))
 
         (setq *all-intra-category-relationships-noticed?* nil)
 
         (values category new?) ))))
+
+
+;;//// move these two in flet when dust has settled
+
+(defun instantiate-according-to-source (c-symbol source)
+  "Virtually everyone becomes a referential-category, but keeping
+   the others if we have a reason to go down those routes."
+  (case source
+    (:referential
+     (make-referential-category :symbol c-symbol))
+    (:form ;; the distinction is on the plist
+     (make-referential-category :symbol c-symbol))
+    (:mixin
+     (make-mixin-category :symbol c-symbol))
+    (:derived
+     (make-subtyped-category :symbol c-symbol))
+    (otherwise
+     (make-referential-category :symbol c-symbol))))
+
+
+(defun bin-according-to-source (category source)
+  "The choice of accumulator is dependent on proper management
+   of the source parameter, with has been hard to accurately
+   trace to what sets it."
+  (declare (special *referential-categories* *form-categories*
+                    *grammatical-categories* *dotted-categories*
+                    *mixin-categories* *derived-categories*))
+  (ecase source
+    (:referential
+     (push category *referential-categories*))
+    
+    (:form
+     (push category *form-categories*))
+    
+    ((or :def-category ;; used in def-cfr/expr
+         :define-category :dm&p
+         :composite-label) ;; from ccl/2e and replace-from-mapping
+     (push category *grammatical-categories*))
+
+    (:dotted-rule
+     (push category *dotted-categories*))
+
+    (:mixin
+     (push category *mixin-categories*))
+
+    (:derived
+     (push category *derived-categories*))))
+
+
+;;;----------------------------
+;;; embedded category handling
+;;;----------------------------
+
+(defun catalog-binding-variable (v)
+  "Called from define-lambda-variable after it has created the
+ variable and before it returns. Pays the most attention to
+ categories, and records the fact of this restriction on their
+ plists." ;;/// could track more info about the bindings per se.
+  (declare (special *constructing-value-restriction*))
+  (let ((name (var-name v)) ;; name of the bindings
+        (category (var-category v))
+        (restriction (var-value-restriction v)))
+    ;; cases
+    (cond
+      ((category-p restriction) ;;///also bind the flag as a signal
+       ;;    or go completely to plist checks?
+       ;; fraction: :binds ((numerator . number)
+       ;; variant-on: :binds ((prototype top))
+       (record-use-as-vr restriction category name))
+
+      ((null restriction)
+       ;; interval: :binds ((begin)
+       (setq *constructing-value-restriction* nil))
+
+      ((eq (car restriction) :primitive)
+       ;; approximator: :binds (name (:primitive sparser::word))
+       ;; nothing below here needs special handling
+       (setq *constructing-value-restriction* nil))
+
+      ((eq (car restriction) ':or)
+       ;; with-agent :binds ((agent (:or physical-agent social-agent)))
+       ;; check that they're all categories at this point
+       (loop for r-cat in (cdr restriction)
+             do (record-use-as-vr r-cat category name)))    
+
+      (t (break "new restriction case:~
+               ~%  category: ~a~
+               ~%  variable: ~a~
+               ~%  restriction: ~a"
+                category name restriction)))))
+
+(defun record-use-as-vr (vr-category in-category var-name)
+  "The definition of 'in-category' includes a binding of 'var-name'
+   where its value restricted to the category 'vr-category'"
+  (let ((prior-value (get-tag :value-restriction vr-category)))
+    (let ((value 
+            (if prior-value
+              (push `((:in-category ,in-category :to-variable ,var-name))
+                    prior-value)
+              (else
+                `((:in-category ,in-category :to-variable ,var-name))))))
+      (setf (get-tag :value-restriction vr-category) value)
+      value)))
+
+(defun part-of-a-value-restriction (category)
+  "Called from peripheral-category-mention as part of gating whether
+   we treat this category as a definition to be thoughly absorbed
+   or as a peripheral mention. In this case as part of a v/r."
+  (let ((entry (get-tag :value-restriction category)))
+    (when entry
+)))
+
+(defun record-rule-used-in (category)
+  (declare (special *assembling-cfr*))
+  (let ((form `(:in-cfr ,*assembling-cfr*)))
+    (setf (get-tag :cfr-reference category) form)
+    form))
+;; When I set the global to the rule inside construct-cfr it was sticky
+;; and didn't revert to nil outside that scope -- stuck on its first instance
 
 
 
