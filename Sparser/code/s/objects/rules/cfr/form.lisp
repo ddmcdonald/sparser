@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1995,2011-2020  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1995,2011-2020,2024  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "form"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   June 2020
+;;;   Version:   April 2024
 
 ;; 6.0 (9/4/92 v2.3) Reworked the definition for parsimony with other cases
 ;;      and to have form and referent redone for already existing rules
@@ -43,15 +43,17 @@
   ;; strings) as its arguments. Checks that it's not an illegal
   ;; duplication of a rhs and passes it through to construct-cfr.
   
-  (let ((lhs (resolve/make lhs-expression :source :def-category))
-        (rhs (if (and (eq 1 (length rhs-expressions))
-                      (stringp (first rhs-expressions))
-                      (not-all-same-character-type (first rhs-expressions)))
-               (list (or (polyword-named (first rhs-expressions))
-                         (define-polyword/expr (first rhs-expressions))))
-               (mapcar #'resolve/make rhs-expressions)))
-        (form-object (and form (resolve/make form :source :def-category)))
-        (decoded-referent-exp (resolve-referent-expression referent)))
+  (let* ((*assembling-cfr* t) ; see find-or-make-category-object
+         (lhs (resolve/make lhs-expression :source :def-category))
+         (rhs (if (and (eq 1 (length rhs-expressions))
+                       (stringp (first rhs-expressions))
+                       (not-all-same-character-type (first rhs-expressions)))
+                (list (or (polyword-named (first rhs-expressions))
+                          (define-polyword/expr (first rhs-expressions))))
+                (mapcar #'resolve/make rhs-expressions)))
+         (form-object (and form (resolve/make form :source :def-category)))
+         (decoded-referent-exp (resolve-referent-expression referent)))
+    (declare (special *assembling-cfr*))
     (define-cfr/resolved lhs rhs form-object decoded-referent-exp schema)))
 
 
