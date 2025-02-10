@@ -1,0 +1,84 @@
+-*- org -*-
+#+STARTUP: showall
+#+DATE: 
+#+TITLE: Introduction to Emacs org-mode 
+
+This document shows by example how to write plain text documents
+according to the org-mode conventions.
+
+* Heading 1
+
+Blocks of text under are paragraphs. Plain text. A single line break
+is treated as a space when exporting to LaTeX, PDF, etc. Text can
+include links to web pages (http://www.sift.net/). Don't worry about
+using special formatting to anchor the URL under text links. Links can
+also refer to other files in the repository, for example, the manual
+lives at: file:../doc/manual/main.tex. Note that org-mode is smart
+about that trailing period not being part of the filename.
+
+This is a new paragraph. The first line of this file tells Emacs that
+it's not just plain text, but also uses org-mode formatting. You need
+to always either include this line, or give your file the org
+suffix. The TITLE line tells org-mode what the document title is, so
+that it can do the right thing when exporting to other formats. If you
+omit the title, export will take the first bit of text to be the
+title. There is also an AUTHOR line; use "Alpha Bravo and Junior Wells
+and Fifty Cent" as in LaTeX.  More header options:
+http://orgmode.org/org.html#Structural-markup-elements
+
+* Heading 2
+
+Sometimes, we want lists of things (like for agendas). Format these
+with hyphens:
+- Top-level list items are flush left.
+- This is an easy way to take notes.
+- If I want sub-bullets for some reason.
+  - I just indent them further.
+  - The standard in org-mode is to indent a sub-bullet to line up with
+    the left edge of the text of its parent.
+There are also numbered lists:
+1. Just like bullet lists except with a number and a period.
+2. The export to LaTeX, PDF, etc. will do the right thing with
+   formatting.
+And finally there's a description list.
+- The item :: Written just like a bullet list, but separate the item
+              and its description with a double-colon.
+- List types are different :: Don't mix the different types of items
+     in a single list. The exporters will get confused.
+
+* Heading 3
+
+Sometimes we need subsections. These just get more * characters.
+
+** Subheading (equivalent to 3.1)
+
+Then, more text. Or more lists.
+
+** Another Subheading (3.2)
+
+- For emphasis, use *bold*, just like in email.
+- /Italics/ also works.
+- We can also have +monospace+ for code.
+- For multi-line code examples use:
+  #+begin_example
+  Begin my code
+    it's my code
+  End my code
+  #+end_example
+
+Org-mode understands LaTeX, and it usually does the right thing when
+exporting a $\frac{\mathit{mathematical}}{\mathrm{formula}}$ to
+PDF. But it does /not/ run =latex2html= when exporting HTML.
+
+** Exprting org-mode documents
+To export an org-mode document from Emacs into some other format, type
+=C-c C-e=. This will pull up a menu with a number of options for
+different export formats:
+- Press =l= for a LaTeX file.
+- Press =p= for PDF (requires pdflatex on your system, and goes via
+  LaTeX).
+- Press =a= for plain (ASCII) text.
+- Press =h= for an HTML file.
+The generated file will have the same root name as your org-mode file,
+with the appropriate suffix.
+
