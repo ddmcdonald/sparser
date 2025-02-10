@@ -170,7 +170,7 @@
                (setup-unknown-word-by-default word))))))
       
       (:greek
-       ;; Get here when there are two (or more) Greek characteris in a row.
+       ;; Get here when there are two (or more) Greek characters in a row.
        ;; They're almost certainly a suffix on a protein that will be
        ;; picked up by the no-space routine later. This call makes a noun
        ;; and also gives them a category. But it's better than falling
