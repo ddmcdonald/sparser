@@ -16,10 +16,6 @@
 
 (in-package :sparser)
 
-;; referenced by percent before it's loaded itself, so we supply a stub
-(define-category  measurement
-  :specializes nil)
-
 ;;;--------
 ;;; object
 ;;;--------
