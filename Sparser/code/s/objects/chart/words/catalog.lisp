@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-1994,2012,2016,2020-2021  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1994,2012,2016,2020-2024  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "catalog"
 ;;;   Module:  "objects/chart/words/"
-;;;  Version:  November 2021
+;;;  Version:  April 2024
 
 ;; 1.1 (2/13 v2.2) Moved the the file and grammar module checking into
 ;;     the catalog routine.
@@ -59,7 +59,8 @@
    file location to any that are already there.
      The first time catalog/word calls note-file-location
    to put the file-being-loaded on the word's :file-location
-   property (where 'loc' will look for it)."
+   property (where 'loc' will look for it).
+      Also used with categories."
   (declare (special *file-being-lloaded*))
   (when *file-being-lloaded*
     ;; only do this while the grammar is being loaded
@@ -67,7 +68,7 @@
       (unless (memq *file-being-lloaded* known)
         (let ((augmented
                (if (listp known)
-                 (push *file-being-lloaded* known)
+                 (tail-cons *file-being-lloaded* known)
                  (list *file-being-lloaded* known))))
           ;; (format t "  ~s " (pname word))
           (setf (get-tag :file-location word) augmented))))))
