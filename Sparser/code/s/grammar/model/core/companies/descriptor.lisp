@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2026  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "descriptor"
 ;;;   Module:  "model;core:companies:"
-;;;  version:  September 1994
+;;;  version:  February 2025
 
 ;; initiated 9/28/94 v2.3
 
@@ -14,7 +14,7 @@
 ;;;--------
 
 (define-category  company-descriptor
-  :specializes nil
+  :specializes designator
   :instantiates self
   :binds ((head)
           (kind-of-company . kind-of-company)  ;; group
@@ -22,10 +22,4 @@
           (location)                           ;; Dutch
           )
   :index (:key head))
-
-;;;-------
-;;; rules
-;;;-------
-
-;;(def-cfr company-description (
 
