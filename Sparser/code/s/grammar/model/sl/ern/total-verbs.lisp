@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995-1998  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-1998,2025  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "'total' verbs"
 ;;;   Module:  "model;sl:ERN:"
-;;;  Version:  1.0 July 1998
+;;;  Version:  February 2025
 
 ;; initiated 12/20/95. Elaborated through 1/8/96.
 ;; 1.0 (7/12/98) reworked for lattice-points. All the consequential rules went
@@ -16,7 +16,7 @@
 ;;;-----------------------------------
 
 (define-category  financial-datum-value-verb
-  :specializes nil
+  :specializes state
   :instantiates self
   :binds ((name  :primitive word))
   :index (:permanent :key name)
@@ -35,5 +35,5 @@
   :dossier "dossiers;financial data items"
   :form 'define-financial-datum-value-verb
   :description "A verb that takes a financial indicator as its subject and its value as its direct object"
-  :examples "\"total\"" )
+  :examples "'total'" )
 
