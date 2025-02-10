@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1997-2005,2013-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1997-2005,2013-2016,2025 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "initialize"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  May 2016
+;;;  version:  February 2025
 
 ;; initiated 11/29/97. Moved code in from other files 7/7/98. 9/3/99 renamed
 ;; Construct-self-lattice-point to avoid brain-dead conflict with the
@@ -26,15 +26,20 @@
 
 (in-package :sparser)
 
-
 ;;;-------------
 ;;; entry point 
 ;;;-------------
 
-;; Called from decode-category-parameter-list. Returned value becomes
-;; the value of the category's lattice-position field.
-
 (defun initialize-top-lattice-point (category &key specializes)
+  "Called from decode-category-parameter-list.
+   Returned value becomes the value of the category's
+   lattice-position field."
+  (unless specializes
+    (unless (or (typep category 'mixin-category) ; e.g. adjective-adverb
+                (eq (cat-name category) 'top))
+      (push-debug `(,category))
+      (break "No 'specializes' value supplied for ~a" category)))
+  
   (let ((lp (get-lp 'top-lattice-point
              :category category
              :super-category specializes))
