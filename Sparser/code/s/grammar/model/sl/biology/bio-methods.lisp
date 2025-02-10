@@ -1,9 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
 ;;; Copyright (c) 2019 SIFT LLC. All Rights Reserved
+;;; copyright (c) 2025  David D. McDonald  -- all rights reserved
 ;;;
 ;;;    File: "bio-methods-processes"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: May 2019
+;;; version: February 2025
 
 ;; Broken out from terms 4/27/17
 ;;; Sections: bio-methods, bio-methods with IDs, knock-out types,
@@ -69,7 +70,7 @@
                  (:verb "immortalize" :noun "immortalization"
                        :etf (svo-passive)
                        ))
-
+#+ignore
 (define-category label :specializes bio-method
                  ;; e.g. "SILAC labeling" ; n.b. this is explicitly defined somewhere
   :bindings (uid "EFO:0000562")
@@ -237,12 +238,15 @@
 
 (noun "algorithm" :super bio-method)
 
+;; bio-method doesn't inherit from a category
+;; that binds 'object'
+#|
 (noun "means" :super bio-method
       :restrict ((object over-ridden))
       :binds ((process bio-process))
       :realization
       (:noun "means"
-             :of process))
+       :of process))
 
 (noun "way" :super bio-method
       :restrict ((object over-ridden))
@@ -251,15 +255,14 @@
       (:noun "way"
              :of process))
 
-(noun "work" :super bio-method)
-
-
 (noun "panel" :super bio-method
       :restrict ((object over-ridden))
       :binds ((component molecule)) ;; this should be for genes and proteins
       :realization
       (:noun "panel"
              :of component))
+|#
+(noun "work" :super bio-method)
 
 (def-indiv-with-id bio-method "pellet" "NCIT:C45813" :name "pellet formation")
 
