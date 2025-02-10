@@ -1,9 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
 ;;; Copyright (c) 2014-2020 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2025 David D. McDonald  -- all rights reserved
+
 ;;;
 ;;;    File: "terms"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: November 2020
+;;; version: February 2025
 
 ;; Initiated 7/23/14 by lifting proteins from NFkappaB experiment.
 ;; Moved proteins out to their own file 9/8/14
@@ -381,6 +383,8 @@
      :realization
      (:to treatment))
 
+;; Supercategories of bio-relation do not bind a 'purpose' variable
+#+ignore
 (define-category useful :specializes bio-relation
      :restrict ((purpose (:or bio-process bio-method activity-with-a-purpose)))
      :realization
