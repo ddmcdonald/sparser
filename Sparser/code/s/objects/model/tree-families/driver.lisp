@@ -227,9 +227,13 @@
          (schematic-form (unless additional-rule
                            (schr-form schema)))
          (lhs (replace-from-mapping schematic-lhs mapping category))
-         (rhs (mapcar (lambda (label)
-                        (replace-from-mapping label mapping category))
-                      schematic-rhs))
+
+         (rhs (let ((*decoding-realization-mapping* t))
+                (declare (special *decoding-realization-mapping*))
+                (mapcar (lambda (label)
+                          (replace-from-mapping label mapping category))
+                        schematic-rhs)))
+
          (form (or schematic-form (eft-case-rule-form schematic-lhs mapping)))
          (referent-schema (massage-referent-schema schematic-referent mapping))
          (referent (apply #'construct-referent mapping category category-of-locals
