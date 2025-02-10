@@ -1,9 +1,9 @@
 ;;; -*- Mode: LISP; Syntax: Common-Lisp; Package: SPARSER -*-
-;;; Copyright (c) 2016-2024 SIFT LLC. All Rights Reserved.
+;;; Copyright (c) 2016-2025 SIFT LLC. All Rights Reserved.
 ;;;
 ;;;      File: "session"
 ;;;    Module: "init;"
-;;;   Version: January 2024
+;;;   Version: February 2025
 
 (in-package :sparser)
 
@@ -34,7 +34,7 @@
 
 ;; Finally, print a salutation to the REPL.
 (format t "~%Welcome to the Sparser natural language analysis system.~
-           ~%Copyright (c) David D. McDonald 1991-2005,2010-2024.~
+           ~%Copyright (c) David D. McDonald 1991-2005,2010-2025.~
            ~%Distributed under the Eclipse Public License.~
            ~%~
            ~%Type (in-package :sparser) to use Sparser symbols directly.~
