@@ -8,13 +8,13 @@ Developers of Sparser need to follow good practices in the Lisp code
 they write. Easily read, reasonably documented code will make life
 much easier for our users and ourselves. (Imagine reading your own code
 a year after you wrote it.) To quote from one of the better style
-guides (IMHO), https://www.cs.umd.edu/~nau/cmsc421/norvig-lisp-style.pdf, 
+guides (IMHO), https://www.cs.umd.edu/~nau/cmsc421/norvig-lisp-style.pdf:
 "Good style leads to programs that are understandable, reusable,
 extensible, and easy to develop and debug." Good style is not optional.
-
-I commend Norvig and Pitman's style tutorial to everyone. What follows
-here some specific points of layout that I have found to make a big
-difference in the quality of code. 
+I commend Norvig and Pitman's style tutorial to everyone (there is a
+copy of it in the 'other peoples papers' subdirectory.
+  What follows here some specific points of layout that I have found 
+to make a big difference in the quality of code. 
 
 * indentation
 
