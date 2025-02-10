@@ -1,14 +1,15 @@
 ;; nlp/Sparser/documentation/notes in preparation/realizations
-;; 11/10/21
+;; 11/10/21, tweaked 11/23
 
 The idea of realization comes from language generation, where we ask how a particular concept or situation is 'realized' in language. For Sparser, we turn this on its head. The purpose of parsing is to recover the meaning (and moreover the situated intent) of a text, which we model in Krisp and store in the 'referent' fields of the edges.
 
-The potential realizations of a Krisp category -- the different ways that it is expressed in language -- can be specified in several different ways. Which way is the best has evolved over the history of the project, and largely comes down to which way is most convenient for the grammar writer. In the end, all this is cashed out in a set of rules that specify how to identify or extend edge referents when they execute.
+The potential realizations of a Krisp category -- the different ways that it is expressed in language -- can be specified in several different ways. Which way is the best has evolved over the history of the project, and largely comes down to which way is most convenient for the grammar writer. In the end, all this is cashed out in a set of rules that specify how to identify or extend edge referents.
 
 
-@---- Providing the Realization as Part of the Rule
+@---- Providing the Realization as Part of category
 
-When you are defining objects in the model -- lexical-level categories, individuals for specific companies or diseases -- you can include their realization as part of the definition you create. The referent fields in the resulting rule(s) can then point directly to the Krisp object you defined. Here is example from grammar/model/core/time/seasons.lisp. 
+When you are defining objects in the model -- lexical-level categories, individuals for specific companies or diseases -- you can include their realization as part of the definition you create. The referent fields in the resulting rule(s) can then point directly to the Krisp object you defined. Here is example from grammar/model/core/time/seasons.lisp,
+edited slightly to remove distracting comments.
 
 (define-category  season
   :specializes time
@@ -26,10 +27,10 @@ The seasons dossier has a set of expresions like this:
 with this definition. 
 
 (defun define-season (string integer)
-  ;; The define-or-find does the conversion of the string
-  ;; into a word and creates the two rules that go with
-  ;; being a common noun (i.e. singular and plural forms)
-  ;; with the season individual as their referent
+  "The define-or-find does the conversion of the string
+   into a word and creates the two rules that go with
+   being a common noun (i.e. singular and plural forms)
+   with the season individual as their referent"
   (let ((season (define-or-find-individual
                     'season :name string))
         (ordinal (nth-ordinal integer)))
@@ -106,11 +107,11 @@ sp> (ir 2892)
 
 @---- Stating the Mapping Directly in the Rule.
 
-For relational categories, the basic task is to map the consituents that are being composed to the appropriate bindings in the individual that instantiates the relation. Sparser was designed to run semantic grammars using a provably efficent algorithm (linear real time). At that time the grammar just consisted of hand-written phrase-structure rules, with structured expression in their realization fields. Now we have more options in our toolbox and these are less frequent.
+For relational categories, the basic task is to map the consituents that are being composed to the appropriate bindings in the individual that instantiates the relation. Sparser was designed to run semantic grammars using a provably efficent algorithm (linear real time). At that time the grammar just consisted of hand-written phrase-structure rules with structured expression in their realization fields. Now we have more options in our toolbox and these are used less frequently.
 
 Here is an example. This is from the grammar for specifier phrases (grammar/rules/syntax/specifiers.lisp), which builds on the grammar for sequences (core/collections/object.lisp).
 
-from collections:
+From collections:
 
 (define-mixin-category part-of-a-sequence
   :instantiates nil
@@ -126,7 +127,7 @@ from collections:
  that function as specifications of what to select from the reference
  set (which will usually be construed as an ordered sequence).")
 
-from specifiers:
+From specifiers:
 
 (define-category sequencer-number
   :specializes sequence-selector
@@ -158,9 +159,9 @@ sp> (semtree 3)
  (position (#<first-sequence "first" 2895> (name "first")))
  (number 2))
 
-This semantic rule for sequence-selector (i.e. the def-cfr) illustrates the most common pattern in this style of realization. The expression in this rule's referent field says that first we instantiate an individual of type sequencer-number. Then we map the constituent on the left ("first") to bind the position variable of this individual, and we map the constituent on the right ("two") to bind its number variable.
+This semantic rule for sequence-selector (i.e. the def-cfr) illustrates the most common pattern in this style of realization. The expression in this rule's referent field says that first we instantiate an individual of type sequencer-number. Then we map the constituent on the left to bind the position variable of this individual ("first"), and we map the constituent on the right to bind its number variable ("two").
 
-To set this up, the expression that we typed into the :referent field of the rule is examined during the construction of the rule in order to substitute objects for symbols. At runtime, decoded referent expressions are interpreted by the core function 'referent-from-rule' in analyzers/psp/referent/driver.lisp. All of the routines in that referent directory are part of this enterprise. In particular, the function 'resolve-referent-expression' in referent/decode-exp.lisp organizes the walk through the original expression to render it into the form to interpret at runtime.
+To set this up, the expression that we typed into the :referent field of the rule is examined during the construction of the rule in order to substitute objects for symbols. At runtime, decoded referent expressions are interpreted by the core function 'referent-from-rule' (in analyzers/psp/referent/driver.lisp). All of the routines in the referent directory are part of this enterprise. In particular, the function 'resolve-referent-expression' in referent/decode-exp.lisp organizes the walk through the original expression to render it into the form to interpret at runtime.
 
 This is the result for our example. Note that the instantiate-individual and binds expressions has been compacted into :instantiate-individual-with-binding.
 
@@ -192,21 +193,19 @@ Some examples.
 This 'immediate' style of defining the referents of a rule is thoroughly described in the 1994 Sparser manual (sparser/Sparser/documentation/manual/) in section 4.2 (pg. 8) of 'Phrase Structure Rules.pdf'.
 
 
+
+
 @---- Using Tree Families
 
 There is an extensive set of 'exploded-tree-families' in the grammar/rules/tree-families/ directory. They are part of a systematic effort to generate semantic rules that can be guarenteed to follow standard grammatical structural contraints, and to make distinctions that are valuable to appreciate when inverting the grammar and generating. There are papers describing the rationale behind the design choices involved (in Sparser/documentation/papers/ see McD-IWPT-93 and also 'Krisp in Iwanska & Spiro 2000').
 
 Exploded tree families ('etf') define rule schemas: sets of abstract rules written in terms of parameters. Here is an example from pre-head-np-modifiers.lisp. If you squint slightly you will see schematic versions of the rules with explit referent instructions that we just described.
 
-#|  "the Southeast Bank unit"
-  The result is an N-bar.  It requires a definite determiner.
-  The modifier is a specific individual, hence the requirement of
-   a definite determiner. 
-|#
 (define-exploded-tree-family  def+proper+np-head
-  :description "A combination of a general head and a modifier that refers to a specific 
-    individual. The result needs a determiner to be a complete NP, and refers to 
-    a different kind of individual than the head does. E.g. \"(the) Southeast Bank unit\""
+  :description "A combination of a general head and a modifier that refers
+    to a specific individual. The result needs a determiner to be a complete    
+    NP, and refers to a different kind of individual than the head does.
+    E.g. \"(the) Southeast Bank unit\""
   :incorporates np-common-noun/definite
   :binding-parameters ( individual  base )
   :labels ( np n-bar proper-modifier np-head result-type )
@@ -217,7 +216,7 @@ Exploded tree families ('etf') define rule schemas: sets of abstract rules writt
                                base right-edge))
                     :head right-edge )))
 
-Here is an example of it being used as the realization of a category, along with an example of it being run and the list of the rules that were created. To make this sort of realization you use keywords to indicate the name of the tree-family and then a set of symbol-value pairs (:mapping) where you specify what variables of the category should be associated with the 'binding-parameters' of the ETF and what semantic categories should be used for the ETF's 'labels'. When this realization expression is processed, symbols are replaced with objects as usual, and multiple rules are created for cases where there are multiple categories in the mapping, as in the np-head in this case. 
+Here is an example of it being used as the realization of a category, along with an example of it being run and the list of the rules that were created. To make this sort of realization you use keywords to indicate the name of the tree-family and then a set of symbol-value pairs (:mapping) where you specify what variables of the category should be associated with the 'binding-parameters' of the ETF and what semantic categories should be used for the ETF's 'labels'. When this realization expression is processed, symbols are replaced with objects as usual, and multiple rules are created for cases where there are multiple categories in the mapping, such as the np-head label in this case. 
                
 (define-category  currency
   :specializes  unit-of-measure
@@ -255,7 +254,7 @@ sp> (has-rules? 'currency)
  #<PSR-3135 currency → country denomination/money>)
 
 
-Realizations that are specified in this way go through the same machinery as all of the other cases when a realization is given as part of defining the category, the function decode-rdata (see below). Besides instantiating the rule schema and creating the rules, decode-rdata collects all the information about what was specified in an instance of the realization-data class. There is an compact accessor that retrives a category's realization(s) -- rdata.
+Realizations that are specified in this way go through the same machinery as all of the other cases when a realization is given as part of defining the category: the function decode-rdata (see below). Besides instantiating the rule schema and creating the rules, decode-rdata collects all the information about what was specified in an instance of the realization-data class. There is an compact accessor that retrives a category's realization(s) -- rdata.
 
 sp> (rdata 'currency)
 (#<realization for currency>)
@@ -302,8 +301,10 @@ This style of realization was designed for realizations where there are several 
 There are several thing to note about that expression. It has four parts: the specification of the verb, and three family+mapping expressions where the last two also specify a word. The cat-realization slot of the category has four instances of realization-data, and substantial set of semantic rules were created.
 
 sp> (rdata 'die)
-(#<realization for die: "die" verb> #<realization for die>
- #<realization for die: "death" common-noun> #<realization for die: "die" verb>)
+(#<realization for die: "die" verb>
+  #<realization for die>
+  #<realization for die: "death" common-noun>
+  #<realization for die: "die" verb>)
 
 sp> (has-rules? die)
 (#<PSR-3204 die → "die">
@@ -321,7 +322,7 @@ sp> (has-rules? die)
 A similar, even larger multi-part realization is define-movement-verb (in model/core/places/moving.lisp). It is a schematic definition that can be fed words (in the verbs dossier) and produces categories with a set of standard realization options.
 
 
-The files in the directory grammar/rules/tree-families/ are a mixture of files defining tree families and files that carry out the mechanics of setting up realizations or providing alternatives. There are two load files:
+The files in the grammar/rules/tree-families/ directory are a mixture of files defining tree families and files that carry out the mechanics of setting up realizations or providing alternatives. There are two load files:
 
 shortcut-mechanics.lisp loads early and puts in place actual shortcuts (below), the mophological analysis, and glue code of various sorts to help interpret realization expressions.
 
@@ -404,9 +405,9 @@ sp> (has-rules? 'answer)
 
 The presence of an etf in a realization is detected at the very first step of its process, setup-rdata. That initiates a call to decode-shortcut-rdata in tree-families/shortcut-master.lisp. This function knows how to expand the arguments you use with the etf. If you want to extend the set of families and add more arguments, you will need to extend this function.
 
-As decode-shortcut-data goes through the rdata expression it was passed it builds up a substitution map where it records the variables refered to and the their subcategory restrictions. Just as it is about about to return to setup-rdata, it passes the schema, the subsitution-make, and the category that this is for to the function make-scheme-mapping in tree-families/shortcut-expansion.lisp. Make-scheme-mapping does the expression to objects substitution as spelled out by the subtitution-map and returns the decode expression to be bound to the mapping variable in setup-rata.
+As decode-shortcut-data goes through the rdata expression it was passed it builds up a substitution map where it records the variables refered to and the their subcategory restrictions. Just as it is about about to return to setup-rdata, it passes the schema, the subsitution-map, and the category that this is for to the function make-scheme-mapping in tree-families/shortcut-expansion.lisp. Make-scheme-mapping does the expression to objects substitution as spelled out by the subtitution-map and returns the decode expression to be bound to the mapping variable in setup-rata.
 
-The labels on the generated rules are as a precise or as general as the value restrictions dictated by the category and what it inherits from. For rapidly defined terms, and for any term imported from Comlex, these restrictions are extremely general, and presently will rarely be useful. To forstall this largely wasted effort we have the parameter *inhibit-construction-of-systematic-semantic-rules* which blocks these rules from being built, presently for all of the verbs and other relational terms in biology. This means that as it stands, all of the etf expressions is the realizations of, say, biology/general-verbs.lisp could be removed with no effect on the other parts of the realization.
+The labels on the generated rules are as a precise or as general as the value restrictions dictated by the category and what it inherits from. For rapidly defined terms, and for any term imported from Comlex, these restrictions are extremely general, and will rarely be useful. To forstall this largely wasted effort we have the parameter *inhibit-construction-of-systematic-semantic-rules* which blocks these rules from being built, presently for all of the verbs and other relational terms in biology. This means that as it stands, all of the etf expressions is the realizations of, say, biology/general-verbs.lisp could be removed with no effect on the other parts of the realization.
 
 
 
@@ -414,7 +415,7 @@ The labels on the generated rules are as a precise or as general as the value re
 
 The detailed handling of the realization data on a category is orchestrated by setup-rdata in objects/model/tree-familes/rdata.lisp. A companion file in that directory, driver.lisp, handles the actual rule creation and invoking of morphology. 
 
-Rdata.lisp starts by defining types. These provide constraints on the notation in all of the realization specification ('rdata') that can be defined. For example this defines the set of keywords that can be used for head words.
+Rdata.lisp starts by defining several Lisp types. These provide constraints on the notation in all of the realization specification ('rdata') that can be defined. For example this defines the set of keywords that can be used for head words.
 
 (deftype head-keyword ()
   "A keyword indicating part-of-speech for a head word.
@@ -462,7 +463,7 @@ There are a vast number of sanctioned keywords that can be used to designate map
     :down :up
     ... ))
 
-There are aliases for these as well.
+There are aliase for a few of these as well.
 
 (defparameter *subcat-aliases*
     '((:s . :subject)
@@ -470,7 +471,7 @@ There are aliases for these as well.
       (:i . :indirect-object))
   "An alist of aliases for subcategorization slot names.")
 
-There is another deftype that is used by override-subcat-patterns that distinguishes slot keywords between arguments a prepositions.
+In the file grammar/rules/syntax/subcategorization.lisp, which supports the technical details of the subcategorization machinery, there is another deftype that is used by override-subcat-patterns. It distinguishes slot keywords refering to arguments (this set) and the much larger set of prepositions.
 
 (deftype literal-subcat-slot-label ()
   '(member
@@ -478,15 +479,15 @@ There is another deftype that is used by override-subcat-patterns that distingui
     :ac ; adjective complement
     :as-comp
     :ifcomp
-    :l
-    :m
+    :l ; independent location constituent
+    :m ; pre-head modifier
     :howcomp
     :indirect-object
     :object
     :premod
     :subject
     :thatcomp
-    :s-comp ;; for verbs like "Let (me know ...)", "Make John ride the bike"
+    :s-comp ;; for verbs like "Let (me know ...)", "Make (John ride the bike)"
     :to-comp
     :oc ; object-complement
     :verb-premod
@@ -496,7 +497,9 @@ There is another deftype that is used by override-subcat-patterns that distingui
 
 
 
-Setup-rdata is called as part of defining a category. It begins by removing any rules that are already on the category. (This is controlled by a parameter, which is bound to nil by forms like def-synonym so that those rules can be added in.) It then walks over the keyword-value pairs using the function decode-subcat-slots to divide them into three piles using the type definitions -- slots, relations, and arguments -- where the 'arguments' are every other keyword, which will include the head-keywords and the keywords that are part of classic definitions.
+@--- Inheriting subcategorizations
+
+Setup-rdata orchestrates creating the realization ('rdata') when we are defining a category. It begins by removing any rules that are already on the category. (This is controlled by a parameter, which is bound to nil by forms like def-synonym so that its rules can be added in.) It then walks over the keyword-value pairs using the function decode-subcat-slots to divide them into three piles using the type definitions -- slots, relations, and arguments -- where the 'arguments' are every other keyword, which will include the head-keywords and the keywords that are part of classic definitions.
 
 Setup-rdata's body is a loop over every subexpression in its input rdata. Like the example of 'die' above, realizations can specify several independent realization instructions, each in its own set of parentheses, with enveloping parentheses around the whole set.
 
@@ -515,7 +518,8 @@ It inherits the subcategorization information in basic-intransitive.
   :specializes subcategorization-pattern
   :instantiates nil
   :mixins (with-patient)
-  :realization (:s patient :mumble (sv :s patient)))
+  :realization (:s patient
+                :mumble (sv :s patient)))
 
 And it inherits this information from all of its supercategories that have subcategorization information. The function 'dsc', is the short form of display-subcategorization, which displays all of the accumulated subcat-patterns in a nicely formatted form showing their keyword, value-restriction ('v/r') corresponding variable, and what category provided the pattern.
 
