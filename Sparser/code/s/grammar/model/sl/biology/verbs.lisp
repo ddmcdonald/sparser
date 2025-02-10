@@ -1,9 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
 ;;; Copyright (c) 2014-2023 SIFT LLC. All Rights Reserved
+;;; copyright (c) 2025  David D. McDonald  -- all rights reserved
 ;;;
 ;;;    File: "verbs1"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: July 2023
+;;; version: February 2025
 
 ;; verbs initiated 7/23/14 by lifting verbs from NFkappaB experiment. Continued
 ;; through 12/3/14.
@@ -681,6 +682,8 @@
    :etf (svo-passive)))
   
 
+;; 'object' is not defined on any supercategory of positive-bio-control
+#+ignore
 (define-category drive :specializes positive-bio-control
   :restrict ((object bio-process))
   :realization
@@ -1222,11 +1225,12 @@
     (:verb "suppress" ;; keyword: ENDS-IN-ED 
 	   :noun "suppression"
 	   :etf (svo-passive)))
-
+#+ignore
 (define-category target :specializes bio-control
   :binds ((destination biological))
   :realization
-  (:verb ("target" :third-singular "targets" :present-participle "targeting" :past-tense "targeted")  ;; keyword: ENDS-IN-ED
+  (:verb ("target" :third-singular "targets" :present-participle "targeting"
+                   :past-tense "targeted")  ;; keyword: ENDS-IN-ED
    :etf (svo-passive)
    :to destination))
 
