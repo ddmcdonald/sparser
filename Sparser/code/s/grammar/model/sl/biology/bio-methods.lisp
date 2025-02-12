@@ -77,7 +77,8 @@
   :realization
   (:verb ("label" :present-participle ("labeling" "labelling")
                   :past-tense ("labeled" "labelled"))
-         :etf (svo-passive))) ;; how to add single-l version for "labeling"?
+   :etf (svo-passive)))
+;; how to add single-l version for "labeling"?
 ;; cf. the designator, noun "label" in mid-level/things.lisp
 ;; That sort of label is the result of the processing of labeling
 ;; in this category
