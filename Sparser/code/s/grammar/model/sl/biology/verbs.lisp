@@ -84,7 +84,7 @@
 (defparameter *comlex-category-names* nil)
 (defparameter *new-bio-processes* nil) 
 
-;; define-mixin-category comlex-derived moved to upper-model
+;; define-mixin-category comlex-derived -- moved to upper-model
 
 (defun svo/bio/expr (verb &optional comlex-clause)
   (declare (special category::bio-process))
@@ -128,7 +128,7 @@
                                :mixins (comlex-derived)
                                :binds ((participant endurant)
                                        (object endurant))
-                               :realization (:etf (svo-passive)
+                               :realization (;; :etf (svo-passive)
                                              :verb ,verb :o object))))
                     (category (or existing-bio-verb-category (eval form))))
                (pushnew category *new-bio-processes*)
@@ -1225,13 +1225,12 @@
     (:verb "suppress" ;; keyword: ENDS-IN-ED 
 	   :noun "suppression"
 	   :etf (svo-passive)))
-#+ignore
+
 (define-category target :specializes bio-control
   :binds ((destination biological))
   :realization
   (:verb ("target" :third-singular "targets" :present-participle "targeting"
                    :past-tense "targeted")  ;; keyword: ENDS-IN-ED
-   :etf (svo-passive)
    :to destination))
 
 (define-category target-protein :specializes protein
